@@ -309,7 +309,7 @@ public class RenderBlock implements Collidable {
 
     @Override
     public void colTranslateBy(Vector3 vec) {
-        this.position = this.position.add(vec.clone());
+        this.position = this.position.add(vec);
     }
 
     @Override

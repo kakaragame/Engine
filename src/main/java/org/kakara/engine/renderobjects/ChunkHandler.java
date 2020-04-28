@@ -55,7 +55,8 @@ public class ChunkHandler {
         List<RenderChunk> renderChunks = new ArrayList<>(renderChunkList);
         for(RenderChunk chunk : renderChunks){
             if(KMath.distance(new Vector3(0, chunk.getPosition().y, 0), new Vector3(0, pos.y, 0)) > 16) continue;
-            if(KMath.distance(new Vector3(chunk.getPosition().x, 0, chunk.getPosition().z), new Vector3(pos.x, 0, pos.z)) < 17){
+            if(KMath.distance(new Vector3(chunk.getPosition().x, 0, 0), new Vector3(pos.x, 0, 0)) < 17
+                    && KMath.distance(new Vector3(0, 0, chunk.getPosition().z), new Vector3(0, 0, pos.z)) < 17){
                 for(int x = -1; x < 2; x++){
                     for(int y=-2; y < 3; y++){
                         for(int z = -1; z < 2; z++){

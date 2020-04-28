@@ -221,7 +221,7 @@ public class MeshGameItem implements GameItem, Collidable {
 
     @Override
     public final Vector3 getColPosition() {
-        return getPosition();
+        return getPosition().clone();
     }
 
     @Override
