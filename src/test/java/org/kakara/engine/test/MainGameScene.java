@@ -216,7 +216,7 @@ public class MainGameScene extends AbstractGameScene {
 
         ComponentCanvas cc = new ComponentCanvas(this);
 
-        Font font = new Font("Roboto-Regular", resourceManager.getResource("Roboto-Regular.ttf"));
+        Font font = new Font("Roboto-Regular", resourceManager.getResource("Roboto-Regular.ttf"), this);
         hud.addFont(font);
 
         Text fps = new Text("FPS: 000", font);

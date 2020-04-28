@@ -102,8 +102,8 @@ public class LoadingBar extends GeneralComponent {
     @Override
     public void render(Vector2 relative, HUD hud, GameHandler handler){
         pollRender(relative, hud, handler);
-
-        inner.setScale(outer.scale.x * percent, scale.y);
+        if(percent <= 1)
+            inner.setScale(outer.scale.x * percent, scale.y);
         percentText.setText(Math.round(percent*100) + "%");
 
         /*

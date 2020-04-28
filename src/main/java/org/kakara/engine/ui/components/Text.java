@@ -11,8 +11,9 @@ import static org.lwjgl.nanovg.NanoVG.*;
 
 /**
  * Displays text to the UI.
+ * <p>The scale of the text is the line width in the x position.</p>
  */
-public class Text extends GeneralComponent{
+public class Text extends GeneralComponent {
     private String text;
     private Font font;
     private float size;
@@ -37,6 +38,7 @@ public class Text extends GeneralComponent{
         this.lineHeight = 5;
         this.textAlign = NVG_ALIGN_LEFT;
         this.color = new RGBA(255, 255, 255, 1);
+        this.scale = new Vector2(100, 0);
     }
 
     @Override
@@ -122,10 +124,12 @@ public class Text extends GeneralComponent{
 
     /**
      * Set how wide the text should be before it wraps.
+     * <p>The scale of the text is automatically set with this method.</p>
      * @param width The width.
      */
     public void setLineWidth(float width){
         this.lineWidth = width;
+        this.scale = new Vector2(width, 0);
     }
 
     /**

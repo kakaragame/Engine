@@ -16,6 +16,8 @@ import org.kakara.engine.ui.events.HUDClickEvent;
 import org.kakara.engine.ui.events.HUDHoverEnterEvent;
 import org.kakara.engine.ui.events.HUDHoverLeaveEvent;
 import org.kakara.engine.ui.items.ComponentCanvas;
+import org.kakara.engine.ui.properties.GridProperty;
+import org.kakara.engine.ui.properties.HorizontalCenterProperty;
 import org.kakara.engine.ui.text.Font;
 import org.kakara.engine.ui.text.TextAlign;
 import org.kakara.engine.utils.Time;
@@ -52,9 +54,7 @@ public class TitleScreenScene extends AbstractMenuScene {
         ResourceManager resourceManager = gameHandler.getResourceManager();
 
         // Make a new font. It is (fontName, the resource for the font)
-        Font roboto = new Font("Roboto-Regular", resourceManager.getResource("Roboto-Regular.ttf"));
-        // Don't forget to add the font to the HUD. The font won't be initialized if you don't
-        hud.addFont(roboto);
+        Font roboto = new Font("Roboto-Regular", resourceManager.getResource("Roboto-Regular.ttf"), this);
 
         // Create a new componentcanvas. This holds the components for the UI.
         ComponentCanvas cc = new ComponentCanvas(this);
@@ -63,11 +63,13 @@ public class TitleScreenScene extends AbstractMenuScene {
         Text title = new Text("Kakara", roboto);
         title.setSize(200);
         title.setLineWidth(500);
-        title.setPosition(gameHandler.getWindow().getWidth()/2 - 250, 200);
+        title.setPosition(0, 200);
+        title.addProperty(new HorizontalCenterProperty());
 
         // Create the play button from a rectangle.
-        Rectangle playButton = new Rectangle(new Vector2(gameHandler.getWindow().getWidth()/2 - 100, gameHandler.getWindow().getHeight() - 300),
+        Rectangle playButton = new Rectangle(new Vector2(0, gameHandler.getWindow().getHeight() - 300),
                 new Vector2(100, 100));
+        playButton.addProperty(new GridProperty(4, 7, 1, 4));
         playButton.setColor(new RGBA(0, 150, 150, 1));
         // Setup the events for the button.
         playButton.addUActionEvent(new HUDHoverEnterEvent() {
@@ -102,6 +104,22 @@ public class TitleScreenScene extends AbstractMenuScene {
         playButton.add(txt);
         cc.add(title);
         cc.add(playButton);
+
+        // Custom Component
+        LoadingBar lb = new LoadingBar(new Vector2(300, 300), new Vector2(300, 30), roboto);
+        lb.addProperty(new HorizontalCenterProperty());
+        cc.add(lb);
+        this.lb = lb;
+
+        this.lb.addUActionEvent(new LoadingBarCompleteEvent() {
+            @Override
+            public void LoadingBarCompleteEvent(float percent) {
+                System.out.println("hit 100%!");
+                lb.setPercent(0);
+            }
+        }, LoadingBarCompleteEvent.class);
+
+        //end
 
         Rectangle popupMenu = new Rectangle(new Vector2(gameHandler.getWindow().getWidth()/2-150, 100), new Vector2(300, 500));
         popupMenu.setColor(new RGBA(181, 181, 181, 1));
@@ -147,6 +165,7 @@ public class TitleScreenScene extends AbstractMenuScene {
         Rectangle openMenuButton = new Rectangle(new Vector2(gameHandler.getWindow().getWidth()/2 + 100, gameHandler.getWindow().getHeight() - 300),
                 new Vector2(100, 100));
         openMenuButton.setColor(new RGBA(0, 150, 150, 1));
+        openMenuButton.addProperty(new GridProperty(4, 7, 2, 4));
         openMenuButton.addUActionEvent(new HUDHoverEnterEvent() {
             @Override
             public void OnHudHoverEnter(Vector2 location) {
@@ -190,20 +209,7 @@ public class TitleScreenScene extends AbstractMenuScene {
         cc.add(fps);
         this.fps = fps;
 
-        // Custom Component
-        LoadingBar lb = new LoadingBar(new Vector2(300, 300), new Vector2(300, 30), roboto);
-        cc.add(lb);
-        this.lb = lb;
 
-        this.lb.addUActionEvent(new LoadingBarCompleteEvent() {
-            @Override
-            public void LoadingBarCompleteEvent(float percent) {
-                System.out.println("hit 100%!");
-                lb.setPercent(0);
-            }
-        }, LoadingBarCompleteEvent.class);
-
-        //end
 
 
         // Make sure to add the component canvas to the hud!

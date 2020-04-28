@@ -1,9 +1,11 @@
 package org.kakara.engine.ui.components;
 
+import org.jetbrains.annotations.Nullable;
 import org.kakara.engine.GameHandler;
 import org.kakara.engine.math.Vector2;
 import org.kakara.engine.ui.HUD;
 import org.kakara.engine.ui.events.UActionEvent;
+import org.kakara.engine.ui.properties.ComponentProperty;
 
 import java.util.List;
 
@@ -95,5 +97,34 @@ public interface Component {
      * @param component The component to remove.
      */
     void remove(Component component);
+
+    /**
+     * Get the parent of the component
+     * @since 1.0-Pre1
+     * @return The parent of the component (Null if none or the parent is the canvas component).
+     */
+    Component getParent();
+
+    /**
+     * Set the parent of the component
+     * <p><b>Internal Use Only!</b></p>
+     * @since 1.0-Pre1
+     * @param parent The parent.
+     */
+    void setParent(@Nullable Component parent);
+
+    /**
+     * Add a property to the component
+     * @since 1.0-Pre1
+     * @param property The property to add.
+     */
+    void addProperty(ComponentProperty property);
+
+    /**
+     * Remove a property from the component
+     * @since 1.0-Pre1
+     * @param property The property class to remove.
+     */
+    void removeProperty(Class<ComponentProperty> property);
 
 }

@@ -98,7 +98,7 @@ public class HUD {
 
     /**
      * Add a font to the HUD.
-     * <p>This allows the font to be processed and initialized correctly by the engine.</p>
+     * <p><b>Internal Use Only!</b></p>
      * @param font The font toa add.
      */
     public void addFont(Font font){

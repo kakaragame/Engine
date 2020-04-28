@@ -34,6 +34,8 @@ public class ComponentCanvas implements HUDItem {
      * @param component The component to add.
      */
     public void add(Component component){
+        if(component.getParent() != null)
+            throw new RuntimeException("Error: That component already has a parent!");
         components.add(component);
         if(init){
             component.init(scene.getHUD(), GameHandler.getInstance());

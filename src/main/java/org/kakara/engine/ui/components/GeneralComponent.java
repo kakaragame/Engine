@@ -1,15 +1,16 @@
 package org.kakara.engine.ui.components;
 
+import org.jetbrains.annotations.Nullable;
+import org.kakara.engine.GameEngine;
 import org.kakara.engine.GameHandler;
 import org.kakara.engine.math.Vector2;
 import org.kakara.engine.ui.HUD;
 import org.kakara.engine.ui.events.UActionEvent;
+import org.kakara.engine.ui.properties.ComponentProperty;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * The standard component template.
@@ -18,6 +19,9 @@ public abstract class GeneralComponent implements Component {
 
     protected Map<UActionEvent, Class<? extends UActionEvent>> events;
     protected List<Component> components;
+    protected List<ComponentProperty> properties;
+
+    private Component parent;
 
     boolean init = false;
 
@@ -32,6 +36,7 @@ public abstract class GeneralComponent implements Component {
     public GeneralComponent(){
         events = new HashMap<>();
         components = new ArrayList<>();
+        properties = new ArrayList<>();
         position = new Vector2(0, 0);
         scale = new Vector2(0, 0);
         truePosition = new Vector2(0, 0);
@@ -58,7 +63,10 @@ public abstract class GeneralComponent implements Component {
 
     @Override
     public void add(Component component){
+        if(component.getParent() != null)
+            throw new RuntimeException("Error: That UI component already has a parent!");
         this.components.add(component);
+        component.setParent(this);
         if(init)
             component.init(GameHandler.getInstance().getSceneManager().getCurrentScene().getHUD(), GameHandler.getInstance());
     }
@@ -95,13 +103,23 @@ public abstract class GeneralComponent implements Component {
         return scale;
     }
 
+    @Override
+    public Component getParent(){
+        return parent;
+    }
+
+    @Override
+    public void setParent(@Nullable Component parent){
+        this.parent = parent;
+    }
+
     /**
      * Tells the engine to update crucial information of the object for you.
      * Not calling this means certain things, like events, won't work.
      * Call this in the render method first.
-     * @param relative
-     * @param hud
-     * @param handler
+     * @param relative The relative position
+     * @param hud The hud
+     * @param handler The handler.
      */
     public void pollRender(Vector2 relative, HUD hud, GameHandler handler){
         this.truePosition = position.clone().add(relative);
@@ -109,6 +127,10 @@ public abstract class GeneralComponent implements Component {
                 truePosition.y * ((float) handler.getWindow().getHeight()/(float)handler.getWindow().initalHeight));
         this.trueScale = new Vector2(scale.x * ((float) handler.getWindow().getWidth()/ (float)handler.getWindow().initalWidth),
                 scale.y * ((float) handler.getWindow().getHeight()/(float)handler.getWindow().initalHeight));
+
+        for (ComponentProperty cp : properties){
+            cp.update(this);
+        }
 
         for(Component cc : components){
             cc.render(relative.clone().add(position), hud, handler);
@@ -182,7 +204,29 @@ public abstract class GeneralComponent implements Component {
 
     @Override
     public void remove(Component component){
+        component.setParent(null);
         components.remove(component);
+    }
+
+    @Override
+    public void addProperty(ComponentProperty property){
+        if(properties.stream().anyMatch(prop -> prop.getClass() == property.getClass())){
+            GameEngine.LOGGER.warn("The property " + property.getClass().getName() + " already exists in this component!");
+            return;
+        }
+
+        properties.add(property);
+        property.onAdd(this);
+    }
+
+    @Override
+    public void removeProperty(Class<ComponentProperty> property){
+        List<ComponentProperty> props = properties.stream().filter(prop -> prop.getClass() == property).collect(Collectors.toList());
+        if(props.size() > 0){
+            ComponentProperty prop = props.get(0);
+            prop.onRemove(this);
+            properties.remove(prop);
+        }
     }
 
 }
