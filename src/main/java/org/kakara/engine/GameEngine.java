@@ -32,11 +32,12 @@ public class GameEngine implements Runnable {
 
     /**
      * Create a new game.
+     *
      * @param windowTitle The title of the window.
-     * @param width The width of the window
-     * @param height The height of the window
-     * @param vSync If the game is to use vsync.
-     * @param game The main game class.
+     * @param width       The width of the window
+     * @param height      The height of the window
+     * @param vSync       If the game is to use vsync.
+     * @param game        The main game class.
      */
     public GameEngine(String windowTitle, int width, int height, boolean vSync, Game game) {
         this.window = new Window(windowTitle, width, height, true, vSync);
@@ -121,6 +122,7 @@ public class GameEngine implements Runnable {
 
     /**
      * Updates for the game logic.
+     *
      * @param interval
      */
     protected void update(float interval) {
@@ -140,12 +142,30 @@ public class GameEngine implements Runnable {
             Check 3 times every frame that way the cpu is not overloaded, and the queue moves faster.
             TODO Find a better way to do this.
          */
-        if(!mainThreadQueue.isEmpty())
-            mainThreadQueue.poll().run();
-        if(!mainThreadQueue.isEmpty())
-            mainThreadQueue.poll().run();
-        if(!mainThreadQueue.isEmpty())
-            mainThreadQueue.poll().run();
+        if (!mainThreadQueue.isEmpty()) {
+            Runnable runnable = mainThreadQueue.poll();
+            if (runnable == null) {
+                System.out.println("Thats weird");
+                return;
+            }
+            runnable.run();
+        }
+        if (!mainThreadQueue.isEmpty()) {
+            Runnable runnable = mainThreadQueue.poll();
+            if (runnable == null) {
+                System.out.println("Thats weird");
+                return;
+            }
+            runnable.run();
+        }
+        if (!mainThreadQueue.isEmpty()) {
+            Runnable runnable = mainThreadQueue.poll();
+            if (runnable == null) {
+                System.out.println("Thats weird");
+                return;
+            }
+            runnable.run();
+        }
     }
 
     /**
@@ -153,10 +173,10 @@ public class GameEngine implements Runnable {
      * TODO This needs to be improved in the future.
      */
     protected void cleanup() {
-        if(gameHandler.getSceneManager().getCurrentScene() instanceof AbstractMenuScene) return;
-        if(gameHandler.getSceneManager().getCurrentScene() == null) return;
+        if (gameHandler.getSceneManager().getCurrentScene() instanceof AbstractMenuScene) return;
+        if (gameHandler.getSceneManager().getCurrentScene() == null) return;
         renderer.cleanup();
-        if(gameHandler.getSceneManager().getCurrentScene()== null) return;
+        if (gameHandler.getSceneManager().getCurrentScene() == null) return;
         gameHandler.getSceneManager().getCurrentScene().getItemHandler().cleanup();
     }
 
@@ -171,6 +191,7 @@ public class GameEngine implements Runnable {
 
     /**
      * Get the window for the game.
+     *
      * @return The window
      */
     public final Window getWindow() {
@@ -179,6 +200,7 @@ public class GameEngine implements Runnable {
 
     /**
      * Get the renderer for the game.
+     *
      * @return The renderer
      */
     public final Renderer getRenderer() {
@@ -187,6 +209,7 @@ public class GameEngine implements Runnable {
 
     /**
      * Get the gamehandler for the engine
+     *
      * @return
      */
     public GameHandler getGameHandler() {
@@ -195,6 +218,7 @@ public class GameEngine implements Runnable {
 
     /**
      * Reset the render. (To be used when the scene is changed).
+     *
      * @throws Exception
      */
     public void resetRender() throws Exception {
@@ -205,9 +229,10 @@ public class GameEngine implements Runnable {
     /**
      * Add an item to the main thread queue.
      * <p>This is used heavily by the engine, it is recommended you create your own version of this for use.</p>
+     *
      * @param run The runnable to be executed.
      */
-    public void addQueueItem(Runnable run){
+    public void addQueueItem(Runnable run) {
         mainThreadQueue.add(run);
     }
 

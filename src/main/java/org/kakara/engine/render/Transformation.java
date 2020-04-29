@@ -54,6 +54,7 @@ public class Transformation {
      * @return The model matrix.
      */
     public Matrix4f buildModelMatrix(GameItem gameItem) {
+
         Quaternionf rotation = gameItem.getRotation();
         return modelMatrix.translationRotateScale(
                 gameItem.getPosition().x, gameItem.getPosition().y, gameItem.getPosition().z,
