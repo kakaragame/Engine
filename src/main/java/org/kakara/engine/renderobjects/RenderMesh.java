@@ -27,9 +27,10 @@ public class RenderMesh {
 
     /**
      * Create a render mesh
+     *
      * @param renderBlocks The list of render blocks
      * @param textureAtlas The texture atlas to use
-     * @param async If this mesh is to be generated async.
+     * @param async        If this mesh is to be generated async.
      */
     public RenderMesh(List<RenderBlock> renderBlocks, TextureAtlas textureAtlas, boolean async) {
         this(renderBlocks, textureAtlas, async, null);
@@ -37,23 +38,24 @@ public class RenderMesh {
 
     /**
      * Create a render mesh
+     *
      * @param renderBlocks The list of render blocks
      * @param textureAtlas The texture atlas to use
-     * @param async If this mesh is to be generated async
-     * @param future The completable future that is to be completed once the generation is complete.
+     * @param async        If this mesh is to be generated async
+     * @param future       The completable future that is to be completed once the generation is complete.
      */
     public RenderMesh(List<RenderBlock> renderBlocks, TextureAtlas textureAtlas, boolean async, @Nullable CompletableFuture<RenderMesh> future) {
         vboIdList = new ArrayList<>();
-        if(!async)
+        if (!async)
             vaoId = glGenVertexArrays();
-        if(async)
+        if (async)
             GameHandler.getInstance().getGameEngine().addQueueItem(new Runnable() {
                 @Override
                 public void run() {
                     vaoId = glGenVertexArrays();
                 }
             });
-        if(!async){
+        if (!async) {
             finished = true;
             MeshLayout layout = setupLayout(renderBlocks, textureAtlas);
 
@@ -115,85 +117,85 @@ public class RenderMesh {
                 if (indicesBuffer != null)
                     MemoryUtil.memFree(indicesBuffer);
             }
-        }else {
+        } else {
             RenderMesh instance = this;
-            new Thread(new Runnable(){
-                @Override
-                public void run() {
-                    MeshLayout layout = setupLayout(renderBlocks, textureAtlas);
-                    vertexCount = layout.getIndices().length;
-                    finished = true;
-                    GameHandler.getInstance().getGameEngine().addQueueItem(new Runnable(){
-                        @Override
-                        public void run() {
-                            FloatBuffer posBuffer = null;
-                            FloatBuffer texCoordsBuffer = null;
-                            FloatBuffer vecNormalsBuffer = null;
-                            IntBuffer indicesBuffer = null;
+            ChunkHandler.EXECUTORS.submit(() -> {
 
-                            try {
-                                glBindVertexArray(vaoId);
+                MeshLayout layout = setupLayout(renderBlocks, textureAtlas);
+                vertexCount = layout.getIndices().length;
+                finished = true;
+                GameHandler.getInstance().getGameEngine().addQueueItem(new Runnable() {
+                    @Override
+                    public void run() {
+                        FloatBuffer posBuffer = null;
+                        FloatBuffer texCoordsBuffer = null;
+                        FloatBuffer vecNormalsBuffer = null;
+                        IntBuffer indicesBuffer = null;
 
-                                // Position VBO
-                                int vboId = glGenBuffers();
-                                vboIdList.add(vboId);
-                                posBuffer = MemoryUtil.memAllocFloat(layout.getVertex().length);
-                                posBuffer.put(layout.getVertex()).flip();
-                                glBindBuffer(GL_ARRAY_BUFFER, vboId);
-                                glBufferData(GL_ARRAY_BUFFER, posBuffer, GL_STATIC_DRAW);
-                                glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
+                        try {
+                            glBindVertexArray(vaoId);
 
-                                // Texture Coordinates VBO
-                                vboId = glGenBuffers();
-                                vboIdList.add(vboId);
-                                texCoordsBuffer = MemoryUtil.memAllocFloat(layout.getTextCoords().length);
-                                texCoordsBuffer.put(layout.getTextCoords()).flip();
-                                glBindBuffer(GL_ARRAY_BUFFER, vboId);
-                                glBufferData(GL_ARRAY_BUFFER, texCoordsBuffer, GL_STATIC_DRAW);
-                                glVertexAttribPointer(1, 2, GL_FLOAT, false, 0, 0);
+                            // Position VBO
+                            int vboId = glGenBuffers();
+                            vboIdList.add(vboId);
+                            posBuffer = MemoryUtil.memAllocFloat(layout.getVertex().length);
+                            posBuffer.put(layout.getVertex()).flip();
+                            glBindBuffer(GL_ARRAY_BUFFER, vboId);
+                            glBufferData(GL_ARRAY_BUFFER, posBuffer, GL_STATIC_DRAW);
+                            glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
 
-                                //Vertex Normals VBO
-                                vboId = glGenBuffers();
-                                vboIdList.add(vboId);
-                                vecNormalsBuffer = MemoryUtil.memAllocFloat(layout.getNormals().length);
-                                vecNormalsBuffer.put(layout.getNormals()).flip();
-                                glBindBuffer(GL_ARRAY_BUFFER, vboId);
-                                glBufferData(GL_ARRAY_BUFFER, vecNormalsBuffer, GL_STATIC_DRAW);
-                                glVertexAttribPointer(2, 3, GL_FLOAT, false, 0, 0);
+                            // Texture Coordinates VBO
+                            vboId = glGenBuffers();
+                            vboIdList.add(vboId);
+                            texCoordsBuffer = MemoryUtil.memAllocFloat(layout.getTextCoords().length);
+                            texCoordsBuffer.put(layout.getTextCoords()).flip();
+                            glBindBuffer(GL_ARRAY_BUFFER, vboId);
+                            glBufferData(GL_ARRAY_BUFFER, texCoordsBuffer, GL_STATIC_DRAW);
+                            glVertexAttribPointer(1, 2, GL_FLOAT, false, 0, 0);
 
-                                // Indices VBO
-                                vboId = glGenBuffers();
-                                vboIdList.add(vboId);
-                                indicesBuffer = MemoryUtil.memAllocInt(layout.getIndices().length);
-                                indicesBuffer.put(layout.getIndices()).flip();
-                                glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboId);
-                                glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicesBuffer, GL_STATIC_DRAW);
+                            //Vertex Normals VBO
+                            vboId = glGenBuffers();
+                            vboIdList.add(vboId);
+                            vecNormalsBuffer = MemoryUtil.memAllocFloat(layout.getNormals().length);
+                            vecNormalsBuffer.put(layout.getNormals()).flip();
+                            glBindBuffer(GL_ARRAY_BUFFER, vboId);
+                            glBufferData(GL_ARRAY_BUFFER, vecNormalsBuffer, GL_STATIC_DRAW);
+                            glVertexAttribPointer(2, 3, GL_FLOAT, false, 0, 0);
 
-                                glBindBuffer(GL_ARRAY_BUFFER, 0);
-                                glBindVertexArray(0);
+                            // Indices VBO
+                            vboId = glGenBuffers();
+                            vboIdList.add(vboId);
+                            indicesBuffer = MemoryUtil.memAllocInt(layout.getIndices().length);
+                            indicesBuffer.put(layout.getIndices()).flip();
+                            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboId);
+                            glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicesBuffer, GL_STATIC_DRAW);
+
+                            glBindBuffer(GL_ARRAY_BUFFER, 0);
+                            glBindVertexArray(0);
 
 
-                            } finally {
-                                if (posBuffer != null)
-                                    MemoryUtil.memFree(posBuffer);
-                                if (texCoordsBuffer != null)
-                                    MemoryUtil.memFree(texCoordsBuffer);
-                                if (vecNormalsBuffer != null)
-                                    MemoryUtil.memFree(vecNormalsBuffer);
-                                if (indicesBuffer != null)
-                                    MemoryUtil.memFree(indicesBuffer);
-                            }
-                            if(future != null)
-                                future.complete(instance);
+                        } finally {
+                            if (posBuffer != null)
+                                MemoryUtil.memFree(posBuffer);
+                            if (texCoordsBuffer != null)
+                                MemoryUtil.memFree(texCoordsBuffer);
+                            if (vecNormalsBuffer != null)
+                                MemoryUtil.memFree(vecNormalsBuffer);
+                            if (indicesBuffer != null)
+                                MemoryUtil.memFree(indicesBuffer);
                         }
-                    });
-                }
-            }).start();
+                        if (future != null)
+                            future.complete(instance);
+                    }
+                });
+
+            });
         }
     }
 
     /**
      * Get the vertex count
+     *
      * @return The vertex count
      */
     public int getVertexCount() {
@@ -212,7 +214,7 @@ public class RenderMesh {
      * <p>Internal Use Only</p>
      */
     public void render() {
-        if(!finished) return;
+        if (!finished) return;
         initRender();
         glDrawElements(GL_TRIANGLES, getVertexCount(), GL_UNSIGNED_INT, 0);
         closeRender();
