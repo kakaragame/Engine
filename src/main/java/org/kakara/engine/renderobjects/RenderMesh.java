@@ -33,8 +33,8 @@ public class RenderMesh {
      * @param textureAtlas The texture atlas to use
      * @param async        If this mesh is to be generated async.
      */
-    public RenderMesh(List<RenderBlock> renderBlocks, TextureAtlas textureAtlas, boolean async) {
-        this(renderBlocks, textureAtlas, async, null);
+    public RenderMesh(List<RenderBlock> renderBlocks, RenderChunk renderChunk, TextureAtlas textureAtlas, boolean async) {
+        this(renderBlocks, renderChunk, textureAtlas, async, null);
     }
 
     /**
@@ -45,13 +45,14 @@ public class RenderMesh {
      * @param async        If this mesh is to be generated async
      * @param future       The completable future that is to be completed once the generation is complete.
      */
-    public RenderMesh(List<RenderBlock> renderBlocks, TextureAtlas textureAtlas, boolean async, @Nullable CompletableFuture<RenderMesh> future) {
+    public RenderMesh(List<RenderBlock> blocks, RenderChunk renderChunk, TextureAtlas textureAtlas, boolean async, @Nullable CompletableFuture<RenderMesh> future) {
         vboIdList = new ArrayList<>();
         if (!async)
             vaoId = glGenVertexArrays();
         if (async)
             GameHandler.getInstance().getGameEngine().addQueueItem(() -> vaoId = glGenVertexArrays());
         if (!async) {
+            List<RenderBlock> renderBlocks = renderChunk.calculateVisibleBlocks(blocks);
             finished = true;
             MeshLayout layout = setupLayout(renderBlocks, textureAtlas);
             try {
@@ -103,7 +104,7 @@ public class RenderMesh {
             RenderMesh instance = this;
 
             ChunkHandler.EXECUTORS.submit(() -> {
-
+                List<RenderBlock> renderBlocks = renderChunk.calculateVisibleBlocks(blocks);
                 MeshLayout layout = null;
                 try {
                     layout = setupLayout(renderBlocks, textureAtlas);
@@ -289,7 +290,6 @@ public class RenderMesh {
 //            }
 //        };
 //    }
-
     private MeshLayout setupLayout(List<RenderBlock> renderBlocks, TextureAtlas textureAtlas) {
         List<Float> positions = new ArrayList<>();
         List<Float> texCoords = new ArrayList<>();
@@ -325,7 +325,7 @@ public class RenderMesh {
         vecNormalsBuffer.flip();
 
         indicesBuffer = MemoryUtil.memAllocInt(indicies.size());
-        for(Integer f : indicies)
+        for (Integer f : indicies)
             indicesBuffer.put(f);
         indicesBuffer.flip();
         return new MeshLayout() {

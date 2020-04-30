@@ -153,7 +153,7 @@ public class RenderChunk extends MeshGameItem {
             mesh.cleanUp();
         }
         List<RenderBlock> visBlocks = calculateVisibleBlocks(blocks);
-        this.mesh = new RenderMesh(visBlocks, atlas, false);
+        this.mesh = new RenderMesh(visBlocks, this,atlas, false);
     }
 
     /**
@@ -166,9 +166,9 @@ public class RenderChunk extends MeshGameItem {
      * @return The completable future that can be used to run code after a render mesh is done generating.
      */
     public CompletableFuture<RenderMesh> regenerateChunkAsync(TextureAtlas atlas){
-        List<RenderBlock> visBlocks = calculateVisibleBlocks(blocks);
         CompletableFuture<RenderMesh> completableFuture = new CompletableFuture<>();
-        new RenderMesh(visBlocks, atlas, true, completableFuture);
+        List<RenderBlock> visBlocks = calculateVisibleBlocks(blocks);
+        new RenderMesh(blocks, this,atlas, true, completableFuture);
         completableFuture.thenAccept(newmesh -> {
             if(mesh != null)
                 mesh.cleanUp();
