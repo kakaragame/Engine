@@ -127,8 +127,7 @@ public class RenderBlock implements Collidable {
      * Get the vertex array from the visible faces
      * @return The vertex array.
      */
-    protected List<Float> getVertexFromFaces(){
-        List<Float> vertex = new ArrayList<>();
+    protected void getVertexFromFaces(List<Float> vertex){
         for(Face f : this.visibleFaces){
             List<Float> temp;
             switch(f){
@@ -156,7 +155,6 @@ public class RenderBlock implements Collidable {
             }
             vertex.addAll(temp);
         }
-        return vertex;
     }
 
     /**
@@ -164,8 +162,7 @@ public class RenderBlock implements Collidable {
      * @param atlas The texture atlas
      * @return The texture coord array
      */
-    protected List<Float> getTextureFromFaces(TextureAtlas atlas){
-        List<Float> vertex = new ArrayList<>();
+    protected void getTextureFromFaces(List<Float> vertex, TextureAtlas atlas){
         for(Face f : this.visibleFaces){
             List<Float> temp;
             switch(f){
@@ -193,15 +190,13 @@ public class RenderBlock implements Collidable {
             }
             vertex.addAll(temp);
         }
-        return vertex;
     }
 
     /**
      * Get the normal array from the visible faces
      * @return The normal array.
      */
-    protected List<Float> getNormalsFromFaces(){
-        List<Float> vertex = new ArrayList<>();
+    protected void getNormalsFromFaces(List<Float> vertex){
         for(Face f : this.visibleFaces){
             List<Float> temp;
             switch(f){
@@ -229,7 +224,6 @@ public class RenderBlock implements Collidable {
             }
             vertex.addAll(temp);
         }
-        return vertex;
     }
 
     /**
@@ -237,8 +231,7 @@ public class RenderBlock implements Collidable {
      * @param currentIndex The current index. (Starting number of the indices)
      * @return The indices array
      */
-    protected List<Integer> getIndicesFromFaces(int currentIndex){
-        List<Integer> vertex = new ArrayList<>();
+    protected void getIndicesFromFaces(List<Integer> vertex, int currentIndex){
         int index = currentIndex;
         for(Face f : this.visibleFaces){
             List<Integer> temp;
@@ -269,7 +262,6 @@ public class RenderBlock implements Collidable {
             index += 4;
             vertex.addAll(temp);
         }
-        return vertex;
     }
 
     @Override

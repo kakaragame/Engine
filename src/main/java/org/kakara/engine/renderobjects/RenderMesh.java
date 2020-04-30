@@ -323,10 +323,10 @@ public class RenderMesh {
         List<Integer> indicies = new ArrayList<>();
         int count = 0;
         for (RenderBlock rb : renderBlocks) {
-            positions.addAll(rb.getVertexFromFaces());
-            texCoords.addAll(rb.getTextureFromFaces(textureAtlas));
-            normals.addAll(rb.getNormalsFromFaces());
-            indicies.addAll(rb.getIndicesFromFaces(count));
+            rb.getVertexFromFaces(positions);
+            rb.getTextureFromFaces(texCoords, textureAtlas);
+            rb.getNormalsFromFaces(normals);
+            rb.getIndicesFromFaces(indicies, count);
             count += rb.getVisibleFaces().size() * 4;
         }
 
