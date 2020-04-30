@@ -69,9 +69,10 @@ public class Renderer {
 
     /**
      * Render the game
+     *
      * @param window The window
      * @param camera The camera
-     * @param scene The scene
+     * @param scene  The scene
      */
     public void render(Window window, Camera camera, Scene scene) {
         clear();
@@ -93,16 +94,17 @@ public class Renderer {
     /**
      * Render a chunk
      * TODO check view matrix.
-     * @param window The window
-     * @param camera The camera
-     * @param scene The scene
+     *
+     * @param window   The window
+     * @param camera   The camera
+     * @param scene    The scene
      * @param depthMap if the depth map is being rendered at this time. <p>Internal use only.</p>
      */
-    public void renderChunk(Window window, Camera camera, Scene scene, boolean depthMap){
-        if(!(scene instanceof AbstractGameScene)) return;
+    public void renderChunk(Window window, Camera camera, Scene scene, boolean depthMap) {
+        if (!(scene instanceof AbstractGameScene)) return;
         AbstractGameScene ags = (AbstractGameScene) scene;
         List<RenderChunk> renderChunks = ags.getChunkHandler().getRenderChunkList();
-        if(renderChunks == null) return;
+        if (renderChunks == null) return;
         chunkShaderProgram.bind();
         Matrix4f projectionMatrix = transformation.getProjectionMatrix();
         chunkShaderProgram.setUniform("projectionMatrix", projectionMatrix);
@@ -124,7 +126,8 @@ public class Renderer {
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, ags.getTextureAtlas().getTexture().getId());
         glDisable(GL_CULL_FACE);
-        for(RenderChunk renderChunk : renderChunks){
+        for (RenderChunk renderChunk : renderChunks) {
+            if (renderChunk == null) continue;
             Matrix4f modelMatrix = transformation.buildModelMatrix(renderChunk);
 
             if (!depthMap) {
@@ -149,11 +152,12 @@ public class Renderer {
 
     /**
      * Render the main scene
+     *
      * @param window The window.
      * @param camera The camera
-     * @param scene The scene
+     * @param scene  The scene
      */
-    public void renderScene(Window window, Camera camera, Scene scene){
+    public void renderScene(Window window, Camera camera, Scene scene) {
         shaderProgram.bind();
         Matrix4f projectionMatrix = transformation.getProjectionMatrix();
         shaderProgram.setUniform("projectionMatrix", projectionMatrix);
@@ -179,10 +183,11 @@ public class Renderer {
 
     /**
      * Render all of the non instanced meshes
-     * @param scene The scene
-     * @param depthMap If the depthmap is being rendered
-     * @param shader The shader
-     * @param viewMatrix The view matrix
+     *
+     * @param scene           The scene
+     * @param depthMap        If the depthmap is being rendered
+     * @param shader          The shader
+     * @param viewMatrix      The view matrix
      * @param lightViewMatrix The light view matrix.
      */
     private void renderNonInstancedMeshes(Scene scene, boolean depthMap, Shader shader, Matrix4f viewMatrix, Matrix4f lightViewMatrix) {
@@ -213,10 +218,11 @@ public class Renderer {
 
     /**
      * Render instanced meshes.
-     * @param scene The scene
-     * @param depthMap If the depth map is being rendered
-     * @param shader The shader
-     * @param viewMatrix The view matrix
+     *
+     * @param scene           The scene
+     * @param depthMap        If the depth map is being rendered
+     * @param shader          The shader
+     * @param viewMatrix      The view matrix
      * @param lightViewMatrix The light view matrix.
      */
     private void renderInstancedMeshes(Scene scene, boolean depthMap, Shader shader, Matrix4f viewMatrix, Matrix4f lightViewMatrix) {
@@ -236,11 +242,12 @@ public class Renderer {
 
     /**
      * Render the depth map.
+     *
      * @param window
      * @param camera
      * @param scene
      */
-    private void renderDepthMap(Window window, Camera camera, Scene scene){
+    private void renderDepthMap(Window window, Camera camera, Scene scene) {
         glBindFramebuffer(GL_FRAMEBUFFER, shadowMap.getDepthMapFBO());
         glViewport(0, 0, ShadowMap.SHADOW_MAP_WIDTH, ShadowMap.SHADOW_MAP_HEIGHT);
         glClear(GL_DEPTH_BUFFER_BIT);
@@ -250,8 +257,8 @@ public class Renderer {
         DirectionalLight light = scene.getLightHandler().getDirectionalLight();
         Vector3f lightDirection = light.getDirection().toJoml();
 
-        float lightAngleX = (float)Math.toDegrees(Math.acos(lightDirection.z));
-        float lightAngleY = (float)Math.toDegrees(Math.asin(lightDirection.x));
+        float lightAngleX = (float) Math.toDegrees(Math.acos(lightDirection.z));
+        float lightAngleY = (float) Math.toDegrees(Math.asin(lightDirection.x));
         float lightAngleZ = 0;
         Matrix4f lightViewMatrix = transformation.updateLightViewMatrix(new Vector3f(lightDirection).mul(light.getShadowPosMult()), new Vector3f(lightAngleX, lightAngleY, lightAngleZ));
         DirectionalLight.OrthoCoords orthCoords = light.getOrthoCoords();
@@ -272,7 +279,7 @@ public class Renderer {
     /**
      * Handles the rendering of lights.
      */
-    private void renderLights(Matrix4f viewMatrix, Vector3f ambientLight, List<PointLight> pointLightList, List<SpotLight> spotLightList, DirectionalLight directionalLight, Shader program){
+    private void renderLights(Matrix4f viewMatrix, Vector3f ambientLight, List<PointLight> pointLightList, List<SpotLight> spotLightList, DirectionalLight directionalLight, Shader program) {
         program.setUniform("ambientLight", ambientLight);
         program.setUniform("specularPower", specularPower);
 
@@ -321,11 +328,12 @@ public class Renderer {
 
     /**
      * Render the skybox
+     *
      * @param window The window
      * @param camera The game
-     * @param scene The current scene
+     * @param scene  The current scene
      */
-    public void renderSkyBox(Window window, Camera camera, Scene scene){
+    public void renderSkyBox(Window window, Camera camera, Scene scene) {
         skyBoxShaderProgram.bind();
         skyBoxShaderProgram.setUniform("texture_sampler", 0);
         Matrix4f projectionMatrix = transformation.getProjectionMatrix();
@@ -347,9 +355,10 @@ public class Renderer {
 
     /**
      * Render the particles
+     *
      * @param window The window
      * @param camera The camera
-     * @param scene The scene.
+     * @param scene  The scene.
      */
     private void renderParticles(Window window, Camera camera, Scene scene) {
         particleShaderProgram.bind();
@@ -401,6 +410,7 @@ public class Renderer {
 
     /**
      * Setup the particle shader.
+     *
      * @throws Exception
      */
     private void setupParticleShader() throws Exception {
@@ -421,9 +431,10 @@ public class Renderer {
 
     /**
      * Setup the skybox shader.
+     *
      * @throws Exception
      */
-    private void setupSkyBoxShader() throws Exception{
+    private void setupSkyBoxShader() throws Exception {
         skyBoxShaderProgram = new Shader();
         skyBoxShaderProgram.createVertexShader(Utils.loadResource("/skyboxVertex.vs"));
         skyBoxShaderProgram.createFragmentShader(Utils.loadResource("/skyboxFragment.fs"));
@@ -437,6 +448,7 @@ public class Renderer {
 
     /**
      * Setup the scene shader.
+     *
      * @throws Exception
      */
     private void setupSceneShader() throws Exception {
@@ -463,9 +475,10 @@ public class Renderer {
 
     /**
      * Setup the chunk shader.
+     *
      * @throws Exception
      */
-    private void setupChunkShader() throws Exception{
+    private void setupChunkShader() throws Exception {
         chunkShaderProgram = new Shader();
         chunkShaderProgram.createVertexShader(Utils.loadResource("/shaders/chunkVertex.vs"));
         chunkShaderProgram.createFragmentShader(Utils.loadResource("/shaders/chunkFragment.fs"));
@@ -497,6 +510,7 @@ public class Renderer {
 
     /**
      * Setup the light shader.
+     *
      * @throws Exception
      */
     private void setupLightingShader() throws Exception {
@@ -509,6 +523,7 @@ public class Renderer {
 
     /**
      * Setup the depth shader.
+     *
      * @throws Exception
      */
     private void setupDepthShader() throws Exception {
@@ -537,10 +552,10 @@ public class Renderer {
             shaderProgram.cleanup();
         }
 
-        if(skyBoxShaderProgram != null){
+        if (skyBoxShaderProgram != null) {
             skyBoxShaderProgram.cleanup();
         }
-        if(depthShaderProgram != null){
+        if (depthShaderProgram != null) {
             depthShaderProgram.cleanup();
         }
         shadowMap.cleanup();
@@ -548,6 +563,7 @@ public class Renderer {
 
     /**
      * Get the transformation.
+     *
      * @return The transformation.
      */
     public Transformation getTransformation() {

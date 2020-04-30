@@ -19,7 +19,7 @@ public class SkyBox extends MeshGameItem {
         super();
         GameHandler gm = GameHandler.getInstance();
         if(useUniqueModel){
-            Mesh[] skyBoxMesh = StaticModelLoader.load(gm.getResourceManager().getResource("../skybox.obj"), "/player", gm.getSceneManager().getCurrentScene(),
+            Mesh[] skyBoxMesh = StaticModelLoader.load(gm.getResourceManager().getResource("skybox.obj"), "/player", gm.getSceneManager().getCurrentScene(),
                     gm.getResourceManager());
             for(Mesh m : skyBoxMesh){
                 m.setMaterial(new Material(skyBoxTexture, 0f));

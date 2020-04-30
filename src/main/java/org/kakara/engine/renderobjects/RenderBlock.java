@@ -127,10 +127,9 @@ public class RenderBlock implements Collidable {
      * Get the vertex array from the visible faces
      * @return The vertex array.
      */
-    protected float[] getVertexFromFaces(){
-        float[] vertex = {};
+    protected void getVertexFromFaces(List<Float> vertex){
         for(Face f : this.visibleFaces){
-            float[] temp;
+            List<Float> temp;
             switch(f){
                 case FRONT:
                     temp = layout.getVertex(getPosition()).getFront();
@@ -151,14 +150,11 @@ public class RenderBlock implements Collidable {
                     temp = layout.getVertex(getPosition()).getRight();
                     break;
                 default:
-                    temp = new float[0];
+                    temp = new ArrayList<>();
                     break;
             }
-            float[] both = Arrays.copyOf(vertex, vertex.length + temp.length);
-            System.arraycopy(temp, 0, both, vertex.length, temp.length);
-            vertex = both;
+            vertex.addAll(temp);
         }
-        return vertex;
     }
 
     /**
@@ -166,10 +162,9 @@ public class RenderBlock implements Collidable {
      * @param atlas The texture atlas
      * @return The texture coord array
      */
-    protected float[] getTextureFromFaces(TextureAtlas atlas){
-        float[] vertex = {};
+    protected void getTextureFromFaces(List<Float> vertex, TextureAtlas atlas){
         for(Face f : this.visibleFaces){
-            float[] temp;
+            List<Float> temp;
             switch(f){
                 case FRONT:
                     temp = layout.getTextureCords().getFront(getTexture().getXOffset(), getTexture().getYOffset(), atlas.getNumberOfRows());
@@ -190,24 +185,20 @@ public class RenderBlock implements Collidable {
                     temp = layout.getTextureCords().getRight(getTexture().getXOffset(), getTexture().getYOffset(), atlas.getNumberOfRows());
                     break;
                 default:
-                    temp = new float[0];
+                    temp = new ArrayList<>();
                     break;
             }
-            float[] both = Arrays.copyOf(vertex, vertex.length + temp.length);
-            System.arraycopy(temp, 0, both, vertex.length, temp.length);
-            vertex = both;
+            vertex.addAll(temp);
         }
-        return vertex;
     }
 
     /**
      * Get the normal array from the visible faces
      * @return The normal array.
      */
-    protected float[] getNormalsFromFaces(){
-        float[] vertex = {};
+    protected void getNormalsFromFaces(List<Float> vertex){
         for(Face f : this.visibleFaces){
-            float[] temp;
+            List<Float> temp;
             switch(f){
                 case FRONT:
                     temp = layout.getNormal().getFront();
@@ -228,14 +219,11 @@ public class RenderBlock implements Collidable {
                     temp = layout.getNormal().getRight();
                     break;
                 default:
-                    temp = new float[0];
+                    temp = new ArrayList<>();
                     break;
             }
-            float[] both = Arrays.copyOf(vertex, vertex.length + temp.length);
-            System.arraycopy(temp, 0, both, vertex.length, temp.length);
-            vertex = both;
+            vertex.addAll(temp);
         }
-        return vertex;
     }
 
     /**
@@ -243,11 +231,10 @@ public class RenderBlock implements Collidable {
      * @param currentIndex The current index. (Starting number of the indices)
      * @return The indices array
      */
-    protected int[] getIndicesFromFaces(int currentIndex){
-        int[] vertex = {};
+    protected void getIndicesFromFaces(List<Integer> vertex, int currentIndex){
         int index = currentIndex;
         for(Face f : this.visibleFaces){
-            int[] temp;
+            List<Integer> temp;
             switch(f){
                 case FRONT:
                     temp = layout.getIndices().getFront(index);
@@ -268,16 +255,13 @@ public class RenderBlock implements Collidable {
                     temp = layout.getIndices().getRight(index);
                     break;
                 default:
-                    temp = new int[0];
+                    temp = new ArrayList<>();
                     break;
             }
             //Increase the current index by five.
             index += 4;
-            int[] both = Arrays.copyOf(vertex, vertex.length + temp.length);
-            System.arraycopy(temp, 0, both, vertex.length, temp.length);
-            vertex = both;
+            vertex.addAll(temp);
         }
-        return vertex;
     }
 
     @Override
