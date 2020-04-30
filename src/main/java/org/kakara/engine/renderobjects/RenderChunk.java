@@ -167,7 +167,7 @@ public class RenderChunk extends MeshGameItem {
      */
     public CompletableFuture<RenderMesh> regenerateChunkAsync(TextureAtlas atlas){
         CompletableFuture<RenderMesh> completableFuture = new CompletableFuture<>();
-        List<RenderBlock> visBlocks = calculateVisibleBlocks(blocks);
+       // List<RenderBlock> visBlocks = calculateVisibleBlocks(blocks);
         new RenderMesh(blocks, this,atlas, true, completableFuture);
         completableFuture.thenAccept(newmesh -> {
             if(mesh != null)
