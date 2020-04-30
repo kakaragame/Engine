@@ -50,12 +50,7 @@ public class RenderMesh {
         if (!async)
             vaoId = glGenVertexArrays();
         if (async)
-            GameHandler.getInstance().getGameEngine().addQueueItem(new Runnable() {
-                @Override
-                public void run() {
-                    vaoId = glGenVertexArrays();
-                }
-            });
+            GameHandler.getInstance().getGameEngine().addQueueItem(() -> vaoId = glGenVertexArrays());
         if (!async) {
             finished = true;
             MeshLayout layout = setupLayout(renderBlocks, textureAtlas);

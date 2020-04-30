@@ -3,12 +3,14 @@ package org.kakara.engine;
 import org.kakara.engine.collision.Collidable;
 import org.kakara.engine.gui.Window;
 import org.kakara.engine.render.Renderer;
+import org.kakara.engine.renderobjects.ChunkHandler;
 import org.kakara.engine.scene.AbstractMenuScene;
 import org.kakara.engine.utils.Time;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.LinkedList;
+import java.util.Objects;
 import java.util.Queue;
 
 /**
@@ -146,6 +148,17 @@ public class GameEngine implements Runnable {
             Runnable runnable = mainThreadQueue.poll();
             if (runnable == null) {
                 System.out.println("Thats weird");
+                mainThreadQueue.removeIf(Objects::isNull);
+                return;
+            }
+
+            runnable.run();
+        }
+        if (!mainThreadQueue.isEmpty()) {
+            Runnable runnable = mainThreadQueue.poll();
+            if (runnable == null) {
+                System.out.println("Thats weird");
+                mainThreadQueue.removeIf(Objects::isNull);
                 return;
             }
             runnable.run();
@@ -154,14 +167,7 @@ public class GameEngine implements Runnable {
             Runnable runnable = mainThreadQueue.poll();
             if (runnable == null) {
                 System.out.println("Thats weird");
-                return;
-            }
-            runnable.run();
-        }
-        if (!mainThreadQueue.isEmpty()) {
-            Runnable runnable = mainThreadQueue.poll();
-            if (runnable == null) {
-                System.out.println("Thats weird");
+                mainThreadQueue.removeIf(Objects::isNull);
                 return;
             }
             runnable.run();
@@ -178,6 +184,7 @@ public class GameEngine implements Runnable {
         renderer.cleanup();
         if (gameHandler.getSceneManager().getCurrentScene() == null) return;
         gameHandler.getSceneManager().getCurrentScene().getItemHandler().cleanup();
+        ChunkHandler.EXECUTORS.shutdown();
     }
 
     /**
@@ -233,6 +240,8 @@ public class GameEngine implements Runnable {
      * @param run The runnable to be executed.
      */
     public void addQueueItem(Runnable run) {
+        if(run == null)
+            throw new RuntimeException("NULL!!");
         mainThreadQueue.add(run);
     }
 
