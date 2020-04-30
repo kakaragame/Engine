@@ -152,8 +152,8 @@ public class RenderChunk extends MeshGameItem {
         if(mesh != null){
             mesh.cleanUp();
         }
-        List<RenderBlock> visBlocks = calculateVisibleBlocks(blocks);
-        this.mesh = new RenderMesh(visBlocks, this,atlas, false);
+        //List<RenderBlock> visBlocks = calculateVisibleBlocks(blocks);
+        this.mesh = new RenderMesh(blocks, this,atlas, false);
     }
 
     /**
