@@ -54,64 +54,50 @@ public class RenderMesh {
         if (!async) {
             finished = true;
             MeshLayout layout = setupLayout(renderBlocks, textureAtlas);
-
-            FloatBuffer posBuffer = null;
-            FloatBuffer texCoordsBuffer = null;
-            FloatBuffer vecNormalsBuffer = null;
-            IntBuffer indicesBuffer = null;
-
             try {
-                vertexCount = layout.getIndices().length;
+                vertexCount = layout.getVertexLength();
                 glBindVertexArray(vaoId);
 
                 // Position VBO
                 int vboId = glGenBuffers();
                 vboIdList.add(vboId);
-                posBuffer = MemoryUtil.memAllocFloat(layout.getVertex().length);
-                posBuffer.put(layout.getVertex()).flip();
                 glBindBuffer(GL_ARRAY_BUFFER, vboId);
-                glBufferData(GL_ARRAY_BUFFER, posBuffer, GL_STATIC_DRAW);
+                glBufferData(GL_ARRAY_BUFFER, layout.getVertex(), GL_STATIC_DRAW);
                 glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
 
                 // Texture Coordinates VBO
                 vboId = glGenBuffers();
                 vboIdList.add(vboId);
-                texCoordsBuffer = MemoryUtil.memAllocFloat(layout.getTextCoords().length);
-                texCoordsBuffer.put(layout.getTextCoords()).flip();
                 glBindBuffer(GL_ARRAY_BUFFER, vboId);
-                glBufferData(GL_ARRAY_BUFFER, texCoordsBuffer, GL_STATIC_DRAW);
+                glBufferData(GL_ARRAY_BUFFER, layout.getTextCoords(), GL_STATIC_DRAW);
                 glVertexAttribPointer(1, 2, GL_FLOAT, false, 0, 0);
 
                 //Vertex Normals VBO
                 vboId = glGenBuffers();
                 vboIdList.add(vboId);
-                vecNormalsBuffer = MemoryUtil.memAllocFloat(layout.getNormals().length);
-                vecNormalsBuffer.put(layout.getNormals()).flip();
                 glBindBuffer(GL_ARRAY_BUFFER, vboId);
-                glBufferData(GL_ARRAY_BUFFER, vecNormalsBuffer, GL_STATIC_DRAW);
+                glBufferData(GL_ARRAY_BUFFER, layout.getNormals(), GL_STATIC_DRAW);
                 glVertexAttribPointer(2, 3, GL_FLOAT, false, 0, 0);
 
                 // Indices VBO
                 vboId = glGenBuffers();
                 vboIdList.add(vboId);
-                indicesBuffer = MemoryUtil.memAllocInt(layout.getIndices().length);
-                indicesBuffer.put(layout.getIndices()).flip();
                 glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboId);
-                glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicesBuffer, GL_STATIC_DRAW);
+                glBufferData(GL_ELEMENT_ARRAY_BUFFER, layout.getIndices(), GL_STATIC_DRAW);
 
                 glBindBuffer(GL_ARRAY_BUFFER, 0);
                 glBindVertexArray(0);
 
 
             } finally {
-                if (posBuffer != null)
-                    MemoryUtil.memFree(posBuffer);
-                if (texCoordsBuffer != null)
-                    MemoryUtil.memFree(texCoordsBuffer);
-                if (vecNormalsBuffer != null)
-                    MemoryUtil.memFree(vecNormalsBuffer);
-                if (indicesBuffer != null)
-                    MemoryUtil.memFree(indicesBuffer);
+                if (layout.getVertex() != null)
+                    MemoryUtil.memFree(layout.getVertex());
+                if (layout.getTextCoords() != null)
+                    MemoryUtil.memFree(layout.getTextCoords());
+                if (layout.getNormals() != null)
+                    MemoryUtil.memFree(layout.getNormals());
+                if (layout.getIndices() != null)
+                    MemoryUtil.memFree(layout.getIndices());
             }
         } else {
             RenderMesh instance = this;
@@ -121,7 +107,7 @@ public class RenderMesh {
                 MeshLayout layout = null;
                 try {
                     layout = setupLayout(renderBlocks, textureAtlas);
-                    vertexCount = layout.getIndices().length;
+                    vertexCount = layout.getVertexLength();
                 } catch (Exception e) {
                     GameEngine.LOGGER.error("Error While Building RenderChunk", e);
                 }
@@ -129,52 +115,40 @@ public class RenderMesh {
                     return;
                 }
                 finished = true;
+
                 MeshLayout finalLayout = layout;
                 GameHandler.getInstance().getGameEngine().addQueueItem(new Runnable() {
                     @Override
                     public void run() {
-                        FloatBuffer posBuffer = null;
-                        FloatBuffer texCoordsBuffer = null;
-                        FloatBuffer vecNormalsBuffer = null;
-                        IntBuffer indicesBuffer = null;
-
                         try {
                             glBindVertexArray(vaoId);
 
                             // Position VBO
                             int vboId = glGenBuffers();
                             vboIdList.add(vboId);
-                            posBuffer = MemoryUtil.memAllocFloat(finalLayout.getVertex().length);
-                            posBuffer.put(finalLayout.getVertex()).flip();
                             glBindBuffer(GL_ARRAY_BUFFER, vboId);
-                            glBufferData(GL_ARRAY_BUFFER, posBuffer, GL_STATIC_DRAW);
+                            glBufferData(GL_ARRAY_BUFFER, finalLayout.getVertex(), GL_STATIC_DRAW);
                             glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
 
                             // Texture Coordinates VBO
                             vboId = glGenBuffers();
                             vboIdList.add(vboId);
-                            texCoordsBuffer = MemoryUtil.memAllocFloat(finalLayout.getTextCoords().length);
-                            texCoordsBuffer.put(finalLayout.getTextCoords()).flip();
                             glBindBuffer(GL_ARRAY_BUFFER, vboId);
-                            glBufferData(GL_ARRAY_BUFFER, texCoordsBuffer, GL_STATIC_DRAW);
+                            glBufferData(GL_ARRAY_BUFFER, finalLayout.getTextCoords(), GL_STATIC_DRAW);
                             glVertexAttribPointer(1, 2, GL_FLOAT, false, 0, 0);
 
                             //Vertex Normals VBO
                             vboId = glGenBuffers();
                             vboIdList.add(vboId);
-                            vecNormalsBuffer = MemoryUtil.memAllocFloat(finalLayout.getNormals().length);
-                            vecNormalsBuffer.put(finalLayout.getNormals()).flip();
                             glBindBuffer(GL_ARRAY_BUFFER, vboId);
-                            glBufferData(GL_ARRAY_BUFFER, vecNormalsBuffer, GL_STATIC_DRAW);
+                            glBufferData(GL_ARRAY_BUFFER, finalLayout.getNormals(), GL_STATIC_DRAW);
                             glVertexAttribPointer(2, 3, GL_FLOAT, false, 0, 0);
 
                             // Indices VBO
                             vboId = glGenBuffers();
                             vboIdList.add(vboId);
-                            indicesBuffer = MemoryUtil.memAllocInt(finalLayout.getIndices().length);
-                            indicesBuffer.put(finalLayout.getIndices()).flip();
                             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboId);
-                            glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicesBuffer, GL_STATIC_DRAW);
+                            glBufferData(GL_ELEMENT_ARRAY_BUFFER, finalLayout.getIndices(), GL_STATIC_DRAW);
 
                             glBindBuffer(GL_ARRAY_BUFFER, 0);
                             glBindVertexArray(0);
@@ -183,14 +157,14 @@ public class RenderMesh {
                         } catch (Exception e) {
                             GameEngine.LOGGER.error("Error While Building RenderChunk", e);
                         } finally {
-                            if (posBuffer != null)
-                                MemoryUtil.memFree(posBuffer);
-                            if (texCoordsBuffer != null)
-                                MemoryUtil.memFree(texCoordsBuffer);
-                            if (vecNormalsBuffer != null)
-                                MemoryUtil.memFree(vecNormalsBuffer);
-                            if (indicesBuffer != null)
-                                MemoryUtil.memFree(indicesBuffer);
+                            if (finalLayout.getVertex() != null)
+                                MemoryUtil.memFree(finalLayout.getVertex());
+                            if (finalLayout.getTextCoords() != null)
+                                MemoryUtil.memFree(finalLayout.getTextCoords());
+                            if (finalLayout.getNormals() != null)
+                                MemoryUtil.memFree(finalLayout.getNormals());
+                            if (finalLayout.getIndices() != null)
+                                MemoryUtil.memFree(finalLayout.getIndices());
                         }
                         if (future != null)
                             future.complete(instance);
@@ -330,29 +304,54 @@ public class RenderMesh {
             count += rb.getVisibleFaces().size() * 4;
         }
 
-        final float[] finalPos = positions.stream().collect(() -> FloatBuffer.allocate(positions.size()), FloatBuffer::put, (l, r) -> {throw new UnsupportedOperationException("");}).array();
-        final float[] finalTexCord = texCoords.stream().collect(() -> FloatBuffer.allocate(texCoords.size()), FloatBuffer::put, (l, r) -> {throw new UnsupportedOperationException("");}).array();
-        final float[] finalNormals = normals.stream().collect(() -> FloatBuffer.allocate(normals.size()), FloatBuffer::put, (l, r) -> {throw new UnsupportedOperationException("");}).array();
-        final int[] finalIndices = indicies.stream().mapToInt(Integer::intValue).toArray();
+        final FloatBuffer posBuffer;
+        final FloatBuffer texCoordsBuffer;
+        final FloatBuffer vecNormalsBuffer;
+        final IntBuffer indicesBuffer;
+
+        posBuffer = MemoryUtil.memAllocFloat(positions.size());
+        for (Float f : positions)
+            posBuffer.put(f);
+        posBuffer.flip();
+
+        texCoordsBuffer = MemoryUtil.memAllocFloat(texCoords.size());
+        for (Float f : texCoords)
+            texCoordsBuffer.put(f);
+        texCoordsBuffer.flip();
+
+        vecNormalsBuffer = MemoryUtil.memAllocFloat(normals.size());
+        for (Float f : normals)
+            vecNormalsBuffer.put(f);
+        vecNormalsBuffer.flip();
+
+        indicesBuffer = MemoryUtil.memAllocInt(indicies.size());
+        for(Integer f : indicies)
+            indicesBuffer.put(f);
+        indicesBuffer.flip();
         return new MeshLayout() {
             @Override
-            public float[] getVertex() {
-                return finalPos;
+            public FloatBuffer getVertex() {
+                return posBuffer;
             }
 
             @Override
-            public float[] getTextCoords() {
-                return finalTexCord;
+            public FloatBuffer getTextCoords() {
+                return texCoordsBuffer;
             }
 
             @Override
-            public float[] getNormals() {
-                return finalNormals;
+            public FloatBuffer getNormals() {
+                return vecNormalsBuffer;
             }
 
             @Override
-            public int[] getIndices() {
-                return finalIndices;
+            public IntBuffer getIndices() {
+                return indicesBuffer;
+            }
+
+            @Override
+            public int getVertexLength() {
+                return indicies.size();
             }
         };
     }
