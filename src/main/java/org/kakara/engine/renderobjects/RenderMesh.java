@@ -256,43 +256,84 @@ public class RenderMesh {
      * @param renderBlocks The blocks to be rendered.
      * @return The layout.
      */
+//    private MeshLayout setupLayout(List<RenderBlock> renderBlocks, TextureAtlas textureAtlas) {
+//        float[] positions = {};
+//        float[] texCoords = {};
+//        float[] normals = {};
+//
+//        float[] copy;
+//        float[] both;
+//
+//        int[] indicies = {};
+//        int count = 0;
+//        for (RenderBlock rb : renderBlocks) {
+//            copy = rb.getVertexFromFaces();
+//            both = Arrays.copyOf(positions, positions.length + copy.length);
+//            System.arraycopy(copy, 0, both, positions.length, copy.length);
+//            positions = both;
+//
+//            copy = rb.getTextureFromFaces(textureAtlas);
+//            both = Arrays.copyOf(texCoords, texCoords.length + copy.length);
+//            System.arraycopy(copy, 0, both, texCoords.length, copy.length);
+//            texCoords = both;
+//
+//            copy = rb.getNormalsFromFaces();
+//            both = Arrays.copyOf(normals, normals.length + copy.length);
+//            System.arraycopy(copy, 0, both, normals.length, copy.length);
+//            normals = both;
+//
+//            int[] indCopy = rb.getIndicesFromFaces(count);
+//            int[] indBoth = Arrays.copyOf(indicies, indicies.length + indCopy.length);
+//            System.arraycopy(indCopy, 0, indBoth, indicies.length, indCopy.length);
+//            indicies = indBoth;
+//            count += rb.getVisibleFaces().size() * 4;
+//        }
+//
+//        final float[] finalPos = positions;
+//        final float[] finalTexCord = texCoords;
+//        final float[] finalNormals = normals;
+//        final int[] finalIndices = indicies;
+//        return new MeshLayout() {
+//            @Override
+//            public float[] getVertex() {
+//                return finalPos;
+//            }
+//
+//            @Override
+//            public float[] getTextCoords() {
+//                return finalTexCord;
+//            }
+//
+//            @Override
+//            public float[] getNormals() {
+//                return finalNormals;
+//            }
+//
+//            @Override
+//            public int[] getIndices() {
+//                return finalIndices;
+//            }
+//        };
+//    }
+
     private MeshLayout setupLayout(List<RenderBlock> renderBlocks, TextureAtlas textureAtlas) {
-        float[] positions = {};
-        float[] texCoords = {};
-        float[] normals = {};
-
-        float[] copy;
-        float[] both;
-
-        int[] indicies = {};
+        List<Float> positions = new ArrayList<>();
+        List<Float> texCoords = new ArrayList<>();
+        List<Float> normals = new ArrayList<>();
+        List<Integer> indicies = new ArrayList<>();
         int count = 0;
         for (RenderBlock rb : renderBlocks) {
-            copy = rb.getVertexFromFaces();
-            both = Arrays.copyOf(positions, positions.length + copy.length);
-            System.arraycopy(copy, 0, both, positions.length, copy.length);
-            positions = both;
-
-            copy = rb.getTextureFromFaces(textureAtlas);
-            both = Arrays.copyOf(texCoords, texCoords.length + copy.length);
-            System.arraycopy(copy, 0, both, texCoords.length, copy.length);
-            texCoords = both;
-
-            copy = rb.getNormalsFromFaces();
-            both = Arrays.copyOf(normals, normals.length + copy.length);
-            System.arraycopy(copy, 0, both, normals.length, copy.length);
-            normals = both;
-
-            int[] indCopy = rb.getIndicesFromFaces(count);
-            int[] indBoth = Arrays.copyOf(indicies, indicies.length + indCopy.length);
-            System.arraycopy(indCopy, 0, indBoth, indicies.length, indCopy.length);
-            indicies = indBoth;
+            positions.addAll(rb.getVertexFromFaces());
+            texCoords.addAll(rb.getTextureFromFaces(textureAtlas));
+            normals.addAll(rb.getNormalsFromFaces());
+            indicies.addAll(rb.getIndicesFromFaces(count));
             count += rb.getVisibleFaces().size() * 4;
         }
 
-        final float[] finalPos = positions;
-        final float[] finalTexCord = texCoords;
-        final float[] finalNormals = normals;
-        final int[] finalIndices = indicies;
+        final float[] finalPos = positions.stream().collect(() -> FloatBuffer.allocate(positions.size()), FloatBuffer::put, (l, r) -> {throw new UnsupportedOperationException("");}).array();
+        final float[] finalTexCord = texCoords.stream().collect(() -> FloatBuffer.allocate(texCoords.size()), FloatBuffer::put, (l, r) -> {throw new UnsupportedOperationException("");}).array();
+        final float[] finalNormals = normals.stream().collect(() -> FloatBuffer.allocate(normals.size()), FloatBuffer::put, (l, r) -> {throw new UnsupportedOperationException("");}).array();
+        final int[] finalIndices = indicies.stream().mapToInt(Integer::intValue).toArray();
         return new MeshLayout() {
             @Override
             public float[] getVertex() {
