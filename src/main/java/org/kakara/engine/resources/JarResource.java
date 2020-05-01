@@ -15,19 +15,26 @@ public class JarResource implements Resource {
     private String path;
     private URL url;
     private Class<?> justTheClass;
+    private String originalPath;
 
-    public JarResource(String path, URL url, Class<?> justTheClass) {
+    public JarResource(String path, URL url, Class<?> justTheClass, String originalPath) {
         this.path = path;
         this.url = url;
         this.justTheClass = justTheClass;
+        this.originalPath = originalPath;
     }
 
-    public JarResource(String path, URL url) {
-        this(path, url, JarResource.class);
+    public JarResource(String path, URL url, String originalPath) {
+        this(path, url, JarResource.class, originalPath);
     }
 
-    public JarResource(String path) {
-        this(path, JarResource.class.getResource(path), JarResource.class);
+    public JarResource(String path, String originalPath) {
+        this(path, JarResource.class.getResource(path), JarResource.class, originalPath);
+    }
+
+    @Override
+    public String getOriginalPath() {
+        return originalPath;
     }
 
     @Override

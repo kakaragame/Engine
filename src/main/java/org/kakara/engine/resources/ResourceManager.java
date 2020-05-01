@@ -38,12 +38,12 @@ public class ResourceManager {
         GameEngine.LOGGER.debug(externalResource.getAbsolutePath());
         if (externalResource.exists()) {
 
-            return new FileResource(externalResource.toURI().toURL());
+            return new FileResource(externalResource.toURI().toURL(), resourcePath);
         } else {
             String location = internalLocation + resourcePath;
             location = location.replace("//", "/");
             GameEngine.LOGGER.debug(location);
-            return new JarResource(location);
+            return new JarResource(location, resourcePath);
         }
     }
 

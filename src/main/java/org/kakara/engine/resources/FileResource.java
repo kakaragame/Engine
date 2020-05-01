@@ -11,9 +11,16 @@ import java.nio.ByteBuffer;
  */
 public class FileResource implements Resource {
     private URL url;
+    private String path;
 
-    public FileResource(URL url) {
+    public FileResource(URL url, String path) {
         this.url = url;
+        this.path = path;
+    }
+
+    @Override
+    public String getOriginalPath() {
+        return path;
     }
 
     @Override
