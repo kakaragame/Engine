@@ -147,7 +147,6 @@ public class GameEngine implements Runnable {
         if (!mainThreadQueue.isEmpty()) {
             Runnable runnable = mainThreadQueue.poll();
             if (runnable == null) {
-                System.out.println("Thats weird");
                 return;
             }
 
@@ -156,7 +155,6 @@ public class GameEngine implements Runnable {
         if (!mainThreadQueue.isEmpty()) {
             Runnable runnable = mainThreadQueue.poll();
             if (runnable == null) {
-                System.out.println("Thats weird");
                 return;
             }
             runnable.run();
@@ -164,7 +162,6 @@ public class GameEngine implements Runnable {
         if (!mainThreadQueue.isEmpty()) {
             Runnable runnable = mainThreadQueue.poll();
             if (runnable == null) {
-                System.out.println("Thats weird");
                 return;
             }
             runnable.run();
