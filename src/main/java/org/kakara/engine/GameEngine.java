@@ -145,7 +145,7 @@ public class GameEngine implements Runnable {
             TODO Find a better way to do this.
          */
         if (!mainThreadQueue.isEmpty()) {
-            Runnable runnable = mainThreadQueue.poll();
+            Runnable runnable = mainThreadQueue.remove();
             if (runnable == null) {
                 return;
             }
@@ -153,14 +153,14 @@ public class GameEngine implements Runnable {
             runnable.run();
         }
         if (!mainThreadQueue.isEmpty()) {
-            Runnable runnable = mainThreadQueue.poll();
+            Runnable runnable = mainThreadQueue.remove();
             if (runnable == null) {
                 return;
             }
             runnable.run();
         }
         if (!mainThreadQueue.isEmpty()) {
-            Runnable runnable = mainThreadQueue.poll();
+            Runnable runnable = mainThreadQueue.remove();
             if (runnable == null) {
                 return;
             }
