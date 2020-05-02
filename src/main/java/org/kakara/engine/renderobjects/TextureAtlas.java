@@ -23,8 +23,8 @@ public class TextureAtlas {
     private String output;
     private List<RenderTexture> textures;
 
-    public static final int textureWidth = 300;
-    public static final int textureHeight = 225;
+    private int textureWidth;
+    private int textureHeight;
 
     private Texture texture;
 
@@ -39,9 +39,24 @@ public class TextureAtlas {
      * @param currentScene The current scene
      */
     public TextureAtlas(List<RenderTexture> textures, String output, Scene currentScene){
+        this(textures, output, currentScene, 300, 255);
+    }
+
+    /**
+     * Create the texture atlas.
+     * @param textures The list of render textures.
+     * @param output The location of where the texture atlas is to be outputted.
+     * @param currentScene The current scene
+     * @param textureWidth The width of each texture
+     * @param textureHeight The height of each texture.
+     * @since 1.0-Pre1
+     */
+    public TextureAtlas(List<RenderTexture> textures, String output, Scene currentScene, int textureWidth, int textureHeight){
         this.textures = textures;
         this.output = output;
         this.currentScene = currentScene;
+        this.textureWidth = textureWidth;
+        this.textureHeight = textureHeight;
         try {
             calculateTextureAtlas(this.textures);
         }catch(IOException ex){
@@ -89,10 +104,10 @@ public class TextureAtlas {
      * @throws IOException If the file could not be read / created.
      */
     private void calculateTextureAtlas(List<RenderTexture> textures) throws IOException {
-        // This might now work V
+        if(texture != null)
+            texture.cleanup();
+
         List<InputStream> tempFiles = textures.stream().map(text -> text.getResource().getInputStream()).collect(Collectors.toList());
-
-
 
         int numOfRows = (int) Math.ceil(Math.sqrt(tempFiles.size()));
         this.numberOfRows = numOfRows;
@@ -107,7 +122,7 @@ public class TextureAtlas {
         for(int y = 0; y < h; y += textureHeight){
             for(int x = 0; x < w; x+=textureWidth){
                 if(i >= tempFiles.size()) break;
-                g.drawImage(scale(ImageIO.read(tempFiles.get(i)), textureWidth, textureHeight), x, y, null);
+                g.drawImage(resize(ImageIO.read(tempFiles.get(i)), textureWidth, textureHeight), x, y, null);
                 this.textures.get(i).init(i, this.getXOffset(i), this.getYOffset(i));
                 i++;
             }
@@ -115,7 +130,6 @@ public class TextureAtlas {
 
         ImageIO.write(combined, "PNG", new File(this.output, "textureAtlas.png"));
         g.dispose();
-        ResourceManager rm = GameHandler.getInstance().getResourceManager();
         this.texture = new Texture(this.output + File.separator + "textureAtlas.png", currentScene);
     }
 
@@ -125,6 +139,7 @@ public class TextureAtlas {
      * @param dWidth The width
      * @param dHeight The height
      * @return The image
+     * @deprecated Use {@link #resize(BufferedImage, int, int)} instead. To be removed in a future update.
      */
     private BufferedImage scale(BufferedImage imageToScale, int dWidth, int dHeight) {
         BufferedImage scaledImage = null;
@@ -141,11 +156,83 @@ public class TextureAtlas {
     }
 
     /**
+     * Resize the image to the desired size
+     * <p>This method replaces {@link #scale(BufferedImage, int, int)}, but is most likely slower.</p>
+     * <p>This method does not have artifacts.</p>
+     * @param imageToScale The image to scale
+     * @param newW The new width
+     * @param newH The new height
+     * @return The scaled image.
+     */
+    private BufferedImage resize(BufferedImage imageToScale, int newW, int newH){
+        Image tmp = imageToScale.getScaledInstance(newW, newH, Image.SCALE_SMOOTH);
+        BufferedImage dimg = new BufferedImage(newW, newH, BufferedImage.TYPE_INT_ARGB);
+
+        Graphics2D g2d = dimg.createGraphics();
+        g2d.drawImage(tmp, 0, 0, null);
+        g2d.dispose();
+
+        return dimg;
+    }
+
+    /**
      * Get the actual game texture for the texture atlas.
      * <p>This is the texture to be used by OpenGL</p>
      * @return The texture.
      */
     public Texture getTexture(){
         return texture;
+    }
+
+    /**
+     * Recalculate the texture atlas to include new textures!
+     * <p>The previous Texture is automatically cleared from memory.</p>
+     * @since 1.0-Pre1
+     */
+    public void recalculateTextureAtlas(){
+        try {
+            calculateTextureAtlas(textures);
+        }catch(IOException ex){
+            GameEngine.LOGGER.error("Cannot recalculate the texture atlas!", ex);
+        }
+    }
+
+    /**
+     * Scrub the TextureAtlas from memory.
+     * @since 1.0-Pre1
+     */
+    public void cleanup(){
+        if(texture != null)
+            texture.cleanup();
+    }
+
+    /**
+     * Get the width of a texture.
+     * @since 1.0-Pre1
+     * @return The width.
+     */
+    public int getTextureWidth(){
+        return textureWidth;
+    }
+
+    /**
+     * Get the height of a texture.
+     * @since 1.0-Pre1
+     * @return The height.
+     */
+    public int getTextureHeight(){
+        return textureHeight;
+    }
+
+    /**
+     * Change the resolution of the textures.
+     * <p>{@link #recalculateTextureAtlas()} is automatically called by this method.</p>
+     * @param width The width
+     * @param height The height.
+     */
+    public void setTextureSize(int width, int height){
+        this.textureWidth = width;
+        this.textureHeight = height;
+        recalculateTextureAtlas();
     }
 }

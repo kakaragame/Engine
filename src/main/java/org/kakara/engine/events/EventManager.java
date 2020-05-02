@@ -78,4 +78,12 @@ public class EventManager {
         // I think this was added in Java 8.
         handlers.entrySet().removeIf(event -> event.getValue() == GameHandler.getInstance().getSceneManager().getCurrentScene());
     }
+
+    /**
+     * Used to debug the game.
+     * @deprecated Not to be used in final release.
+     */
+    public void debug(){
+        GameEngine.LOGGER.debug(handlers.toString());
+    }
 }
