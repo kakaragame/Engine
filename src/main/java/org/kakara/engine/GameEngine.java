@@ -11,7 +11,12 @@ import org.slf4j.LoggerFactory;
 
 import java.util.LinkedList;
 import java.util.Objects;
+import java.util.PriorityQueue;
 import java.util.Queue;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.PriorityBlockingQueue;
+import java.util.concurrent.SynchronousQueue;
 
 /**
  * Primary class of the engine.
@@ -30,7 +35,7 @@ public class GameEngine implements Runnable {
     private final GameHandler gameHandler;
     protected boolean running = true;
 
-    private Queue<Runnable> mainThreadQueue = new LinkedList<>();
+    private final Queue<Runnable> mainThreadQueue = new LinkedBlockingQueue<>();
 
     /**
      * Create a new game.
@@ -145,26 +150,32 @@ public class GameEngine implements Runnable {
             TODO Find a better way to do this.
          */
         if (!mainThreadQueue.isEmpty()) {
-            Runnable runnable = mainThreadQueue.remove();
-            if (runnable == null) {
-                return;
-            }
+            synchronized (mainThreadQueue){
+                Runnable runnable = mainThreadQueue.remove();
+                if (runnable == null) {
+                    return;
+                }
 
-            runnable.run();
+                runnable.run();
+            }
         }
         if (!mainThreadQueue.isEmpty()) {
-            Runnable runnable = mainThreadQueue.remove();
-            if (runnable == null) {
-                return;
+            synchronized (mainThreadQueue) {
+                Runnable runnable = mainThreadQueue.remove();
+                if (runnable == null) {
+                    return;
+                }
+                runnable.run();
             }
-            runnable.run();
         }
         if (!mainThreadQueue.isEmpty()) {
-            Runnable runnable = mainThreadQueue.remove();
-            if (runnable == null) {
-                return;
+            synchronized (mainThreadQueue){
+                Runnable runnable = mainThreadQueue.remove();
+                if (runnable == null) {
+                    return;
+                }
+                runnable.run();
             }
-            runnable.run();
         }
 
     }
