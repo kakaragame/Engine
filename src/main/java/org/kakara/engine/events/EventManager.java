@@ -61,7 +61,7 @@ public class EventManager {
                         try {
                             msd.invoke(obj, eventInstance);
                         } catch (IllegalAccessException | InvocationTargetException ex) {
-                            GameEngine.LOGGER.error("Cannot fire event specified : " + eventInstance.getClass().getName());
+                            GameEngine.LOGGER.error("Cannot fire event specified : " + eventInstance.getClass().getName(), ex);
                         }
                     }
                 }
