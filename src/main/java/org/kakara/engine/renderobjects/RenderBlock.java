@@ -10,6 +10,7 @@ import org.kakara.engine.renderobjects.renderlayouts.Layout;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -150,7 +151,7 @@ public class RenderBlock implements Collidable {
                     temp = layout.getVertex(getPosition()).getRight();
                     break;
                 default:
-                    temp = new ArrayList<>();
+                    temp = new LinkedList<>();
                     break;
             }
             vertex.addAll(temp);
@@ -185,7 +186,7 @@ public class RenderBlock implements Collidable {
                     temp = layout.getTextureCords().getRight(getTexture().getXOffset(), getTexture().getYOffset(), atlas.getNumberOfRows());
                     break;
                 default:
-                    temp = new ArrayList<>();
+                    temp = new LinkedList<>();
                     break;
             }
             vertex.addAll(temp);
@@ -219,7 +220,7 @@ public class RenderBlock implements Collidable {
                     temp = layout.getNormal().getRight();
                     break;
                 default:
-                    temp = new ArrayList<>();
+                    temp = new LinkedList<>();
                     break;
             }
             vertex.addAll(temp);
@@ -255,7 +256,7 @@ public class RenderBlock implements Collidable {
                     temp = layout.getIndices().getRight(index);
                     break;
                 default:
-                    temp = new ArrayList<>();
+                    temp = new LinkedList<>();
                     break;
             }
             //Increase the current index by five.

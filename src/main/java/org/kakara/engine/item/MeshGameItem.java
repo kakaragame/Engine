@@ -2,6 +2,7 @@ package org.kakara.engine.item;
 
 import org.jetbrains.annotations.NotNull;
 import org.joml.Quaternionf;
+import org.kakara.engine.Camera;
 import org.kakara.engine.GameHandler;
 import org.kakara.engine.collision.Collidable;
 import org.kakara.engine.collision.Collider;
@@ -318,36 +319,38 @@ public class MeshGameItem implements GameItem, Collidable {
 
     /**
      * Move the position by an offset.
-     * <p>For use by particle only</p>
+     * <p>This is used when you want to move in the direction that the camera is facing.</p>
      * @param offsetX x offset
      * @param offsetY y offset
      * @param offsetZ z offset
+     * @param camera The camera that it is to move by.
      */
-    public void movePosition(float offsetX, float offsetY, float offsetZ) {
+    public void movePositionByCamera(float offsetX, float offsetY, float offsetZ, Camera camera) {
         if (offsetZ != 0) {
-            position.x += (float) Math.sin(Math.toRadians(rotation.y)) * -1.0f * offsetZ;
-            position.z += (float) Math.cos(Math.toRadians(rotation.y)) * offsetZ;
+            position.x += (float) Math.sin(Math.toRadians(camera.getRotation().y)) * -1.0f * offsetZ;
+            position.z += (float) Math.cos(Math.toRadians(camera.getRotation().y)) * offsetZ;
         }
         if (offsetX != 0) {
-            position.x += (float) Math.sin(Math.toRadians(rotation.y - 90)) * -1.0f * offsetX;
-            position.z += (float) Math.cos(Math.toRadians(rotation.y - 90)) * offsetX;
+            position.x += (float) Math.sin(Math.toRadians(camera.getRotation().y - 90)) * -1.0f * offsetX;
+            position.z += (float) Math.cos(Math.toRadians(camera.getRotation().y - 90)) * offsetX;
         }
         position.y += offsetY;
     }
 
     /**
      * Move the position by an offset.
-     * <p>For use by particles only!</p>
+     * <p>This is used when you want to move in the direction that the camera is facing.</p>
      * @param offset The offset vector
+     * @param camera The camera it is to move by.
      */
-    public void movePosition(Vector3 offset) {
+    public void movePositionByCamera(Vector3 offset, Camera camera) {
         if (offset.z != 0) {
-            position.x += (float) Math.sin(Math.toRadians(rotation.y)) * -1.0f * offset.z;
-            position.z += (float) Math.cos(Math.toRadians(rotation.y)) * offset.z;
+            position.x += (float) Math.sin(Math.toRadians(camera.getRotation().y)) * -1.0f * offset.z;
+            position.z += (float) Math.cos(Math.toRadians(camera.getRotation().y)) * offset.z;
         }
         if (offset.x != 0) {
-            position.x += (float) Math.sin(Math.toRadians(rotation.y - 90)) * -1.0f * offset.x;
-            position.z += (float) Math.cos(Math.toRadians(rotation.y - 90)) * offset.x;
+            position.x += (float) Math.sin(Math.toRadians(camera.getRotation().y - 90)) * -1.0f * offset.x;
+            position.z += (float) Math.cos(Math.toRadians(camera.getRotation().y - 90)) * offset.x;
         }
         position.y += offset.y;
     }

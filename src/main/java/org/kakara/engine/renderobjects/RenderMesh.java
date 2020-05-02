@@ -293,10 +293,10 @@ public class RenderMesh {
 //        };
 //    }
     private MeshLayout setupLayout(List<RenderBlock> renderBlocks, TextureAtlas textureAtlas) {
-        List<Float> positions = new ArrayList<>();
-        List<Float> texCoords = new ArrayList<>();
-        List<Float> normals = new ArrayList<>();
-        List<Integer> indicies = new ArrayList<>();
+        List<Float> positions = new LinkedList<>();
+        List<Float> texCoords = new LinkedList<>();
+        List<Float> normals = new LinkedList<>();
+        List<Integer> indicies = new LinkedList<>();
         int count = 0;
         for (RenderBlock rb : renderBlocks) {
             rb.getVertexFromFaces(positions);
