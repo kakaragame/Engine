@@ -54,7 +54,6 @@ public class JarResource implements Resource {
 
     @Override
     public byte[] getByteArray() {
-
         try {
             return IOUtils.toByteArray(getInputStream());
         } catch (IOException e) {
@@ -65,7 +64,6 @@ public class JarResource implements Resource {
 
     @Override
     public ByteBuffer getByteBuffer() {
-        System.out.println(getPath());
         try {
             return Utils.ioResourceToByteBuffer(getPath(), 1024);
         } catch (IOException e) {

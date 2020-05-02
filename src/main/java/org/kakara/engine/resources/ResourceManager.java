@@ -37,7 +37,6 @@ public class ResourceManager {
         File externalResource = new File(externalLocation, resourcePath.replace("/", File.separator));
         GameEngine.LOGGER.debug(externalResource.getAbsolutePath());
         if (externalResource.exists()) {
-
             return new FileResource(externalResource.toURI().toURL(), resourcePath);
         } else {
             String location = internalLocation + resourcePath;

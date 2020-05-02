@@ -77,7 +77,7 @@ public class Window {
 
         window = glfwCreateWindow(width, height, title, NULL, NULL);
         if (window == NULL) {
-            System.out.println("Could not create GLFW window");
+            GameEngine.LOGGER.error("Could not create GLFW window");
         }
 
         // On window resize.
