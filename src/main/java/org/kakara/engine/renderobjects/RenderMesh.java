@@ -3,6 +3,7 @@ package org.kakara.engine.renderobjects;
 import org.jetbrains.annotations.Nullable;
 import org.kakara.engine.GameEngine;
 import org.kakara.engine.GameHandler;
+import org.kakara.engine.renderobjects.renderlayouts.BasicMeshLayout;
 import org.kakara.engine.renderobjects.renderlayouts.MeshLayout;
 import org.lwjgl.system.MemoryUtil;
 
@@ -40,7 +41,8 @@ public class RenderMesh {
     /**
      * Create a render mesh
      *
-     * @param renderBlocks The list of render blocks
+     * @param blocks The list of render blocks
+     * @param renderChunk renderchunk
      * @param textureAtlas The texture atlas to use
      * @param async        If this mesh is to be generated async
      * @param future       The completable future that is to be completed once the generation is complete.
@@ -328,32 +330,7 @@ public class RenderMesh {
         for (Integer f : indicies)
             indicesBuffer.put(f);
         indicesBuffer.flip();
-        return new MeshLayout() {
-            @Override
-            public FloatBuffer getVertex() {
-                return posBuffer;
-            }
-
-            @Override
-            public FloatBuffer getTextCoords() {
-                return texCoordsBuffer;
-            }
-
-            @Override
-            public FloatBuffer getNormals() {
-                return vecNormalsBuffer;
-            }
-
-            @Override
-            public IntBuffer getIndices() {
-                return indicesBuffer;
-            }
-
-            @Override
-            public int getVertexLength() {
-                return indicies.size();
-            }
-        };
+        return new BasicMeshLayout(indicies.size(), posBuffer, texCoordsBuffer, vecNormalsBuffer, indicesBuffer);
     }
 
 }
