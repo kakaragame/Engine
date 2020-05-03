@@ -187,6 +187,7 @@ public class MeshGameItem implements GameItem, Collidable {
      * @return The mesh
      */
     public Mesh getMesh() {
+        if(meshes.length == 0) return null;
         return meshes[0];
     }
 
