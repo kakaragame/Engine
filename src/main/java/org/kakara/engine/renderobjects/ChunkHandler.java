@@ -60,8 +60,8 @@ public class ChunkHandler {
     public List<Collidable> getChunkCollisions(Vector3 position) {
         Vector3 pos = new Vector3((int) Math.floor(position.x), (int) Math.floor(position.y), (int) Math.floor(position.z));
         List<Collidable> collisionList = new ArrayList<>();
-        List<RenderChunk> renderChunks = new ArrayList<>(renderChunkList);
-        for (RenderChunk chunk : renderChunks) {
+        for (RenderChunk chunk : new ArrayList<>(renderChunkList)) {
+            if(chunk == null || chunk.getMesh() == null) continue;
             if (KMath.distance(new Vector3(0, chunk.getPosition().y, 0), new Vector3(0, pos.y, 0)) > 16) continue;
             if (KMath.distance(new Vector3(chunk.getPosition().x, 0, 0), new Vector3(pos.x, 0, 0)) < 17
                     && KMath.distance(new Vector3(0, 0, chunk.getPosition().z), new Vector3(0, 0, pos.z)) < 17) {
@@ -90,7 +90,7 @@ public class ChunkHandler {
     public List<Collidable> getChunkSelections(Vector3 position) {
         Vector3 pos = new Vector3((int) Math.floor(position.x), (int) Math.floor(position.y), (int) Math.floor(position.z));
         List<Collidable> collisionList = new ArrayList<>();
-        for (RenderChunk chunk : renderChunkList) {
+        for (RenderChunk chunk : new ArrayList<>(renderChunkList)) {
             if (KMath.distance(new Vector3(0, chunk.getPosition().y, 0), new Vector3(0, pos.y, 0)) > 17) continue;
             if (KMath.distance(new Vector3(chunk.getPosition().x, 0, chunk.getPosition().z), new Vector3(pos.x, 0, pos.z)) < 25) {
                 for (int x = -10; x < 10; x++) {
