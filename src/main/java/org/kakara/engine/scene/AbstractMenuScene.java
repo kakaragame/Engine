@@ -108,7 +108,7 @@ public abstract class AbstractMenuScene implements Scene {
      */
     public void setBackground(Texture texture){
         if(cc.getComponents().size() > 0)
-            ((BackgroundImage)cc.getComponents().get(0)).cleanup();
+            cc.getComponents().get(0).cleanup(gameHandler);
         cc.clearComponents();
         cc.add(new BackgroundImage(texture, gameHandler));
     }
@@ -159,7 +159,8 @@ class BackgroundImage extends GeneralComponent{
         pollRender(relative, hud, handler);
     }
 
-    public void cleanup(){
-        sprite.cleanup();
+    @Override
+    public void cleanup(GameHandler handler){
+        sprite.cleanup(handler);
     }
 }

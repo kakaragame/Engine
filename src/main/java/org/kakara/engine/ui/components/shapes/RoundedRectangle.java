@@ -1,4 +1,4 @@
-package org.kakara.engine.ui.components;
+package org.kakara.engine.ui.components.shapes;
 
 import org.kakara.engine.GameHandler;
 import org.kakara.engine.events.EventHandler;
@@ -6,6 +6,7 @@ import org.kakara.engine.events.event.MouseClickEvent;
 import org.kakara.engine.math.Vector2;
 import org.kakara.engine.ui.HUD;
 import org.kakara.engine.ui.RGBA;
+import org.kakara.engine.ui.components.GeneralComponent;
 import org.kakara.engine.ui.events.HUDClickEvent;
 import org.kakara.engine.ui.events.HUDHoverEnterEvent;
 import org.kakara.engine.ui.events.HUDHoverLeaveEvent;
@@ -14,34 +15,38 @@ import org.lwjgl.nanovg.NVGColor;
 import static org.lwjgl.nanovg.NanoVG.*;
 
 /**
- * Base Rectangle Component
+ * A rectangle with rounded corners.
+ * @since 1.0-Pre1
  */
-public class Rectangle extends GeneralComponent {
+public class RoundedRectangle extends GeneralComponent {
     private RGBA color;
-    private NVGColor colorz;
+    private NVGColor nvgColor;
+    private float radius;
 
     private boolean isHovering;
 
-    public Rectangle(){
-        this(new Vector2(0, 0), new Vector2(0, 0), new RGBA());
+    public RoundedRectangle(){
+        this(new Vector2(0, 0), new Vector2(40, 40), 1.0f, new RGBA());
     }
 
     /**
      * Create a rectangle
      * @param position The position of the rectangle
      * @param scale The scale of the rectangle
+     * @param radius The radius of the corners.
      * @param color The color of the rectangle.
      */
-    public Rectangle(Vector2 position, Vector2 scale, RGBA color){
+    public RoundedRectangle(Vector2 position, Vector2 scale, float radius, RGBA color){
         this.position = position;
         this.scale = scale;
         this.color = color;
-        this.colorz = NVGColor.create();
+        this.nvgColor = NVGColor.create();
         this.isHovering = false;
+        this.radius = radius;
     }
 
-    public Rectangle(Vector2 position, Vector2 scale){
-        this(position, scale, new RGBA());
+    public RoundedRectangle(Vector2 position, Vector2 scale){
+        this(position, scale, 1.0f, new RGBA());
     }
 
 
@@ -59,6 +64,22 @@ public class Rectangle extends GeneralComponent {
      */
     public RGBA getColor(){
         return color;
+    }
+
+    /**
+     * Get the radius of the corners.
+     * @return The radius of the corners.
+     */
+    public float getRadius(){
+        return radius;
+    }
+
+    /**
+     * Set the radius of the corners.
+     * @param radius The radius.
+     */
+    public void setRadius(float radius){
+        this.radius = radius;
     }
 
     @EventHandler
@@ -88,12 +109,18 @@ public class Rectangle extends GeneralComponent {
         }
 
         nvgBeginPath(hud.getVG());
-        nvgRect(hud.getVG(), getTruePosition().x, getTruePosition().y, getTrueScale().x, getTrueScale().y);
+        nvgRoundedRect(hud.getVG(), getTruePosition().x, getTruePosition().y, getTrueScale().x, getTrueScale().y, radius);
 
-        nvgRGBA((byte) color.r, (byte) color.g, (byte) color.b, (byte) color.aToNano(), colorz);
-        nvgFillColor(hud.getVG(), colorz);
+        nvgRGBA((byte) color.r, (byte) color.g, (byte) color.b, (byte) color.aToNano(), nvgColor);
+        nvgFillColor(hud.getVG(), nvgColor);
         nvgFill(hud.getVG());
 
         pollRender(relative, hud, handler);
+    }
+
+    @Override
+    public void cleanup(GameHandler handler){
+        super.cleanup(handler);
+        nvgColor.free();
     }
 }

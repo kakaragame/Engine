@@ -11,10 +11,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Holds all of the components.
- * <p>This is what is added directly to the hud.</p>
+ * Allows 3d objects to be rendered to the UI.
+ * @deprecated Not implemented.
+ * @since 1.0-Pre1
  */
-public class ComponentCanvas implements HUDItem {
+public class ObjectCanvas implements HUDItem {
     private List<Component> components;
     boolean init = false;
 
@@ -24,7 +25,7 @@ public class ComponentCanvas implements HUDItem {
      * Create a new canvas component
      * @param scene The current scene.
      */
-    public ComponentCanvas(Scene scene){
+    public ObjectCanvas(Scene scene){
         components = new ArrayList<>();
         this.scene = scene;
     }

@@ -132,9 +132,11 @@ public class Sprite extends GeneralComponent {
         pollRender(relative, hud, handler);
     }
 
-    public void cleanup(){
-        GameHandler.getInstance().getSceneManager().getCurrentScene().getHUD().getImageCache().removeImage(this.image);
-        nvgDeleteImage(GameHandler.getInstance().getSceneManager().getCurrentScene().getHUD().getVG(),
+    @Override
+    public void cleanup(GameHandler handler){
+        super.cleanup(handler);
+        handler.getSceneManager().getCurrentScene().getHUD().getImageCache().removeImage(this.image);
+        nvgDeleteImage(handler.getSceneManager().getCurrentScene().getHUD().getVG(),
                 image);
         image = 0;
     }

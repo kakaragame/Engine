@@ -5,8 +5,8 @@ import org.kakara.engine.math.Vector2;
 import org.kakara.engine.ui.HUD;
 import org.kakara.engine.ui.RGBA;
 import org.kakara.engine.ui.components.GeneralComponent;
-import org.kakara.engine.ui.components.Rectangle;
-import org.kakara.engine.ui.components.Text;
+import org.kakara.engine.ui.components.shapes.Rectangle;
+import org.kakara.engine.ui.components.text.Text;
 import org.kakara.engine.ui.text.Font;
 
 /**

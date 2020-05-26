@@ -8,6 +8,7 @@ import static org.lwjgl.nanovg.NanoVG.nvgDeleteImage;
 /**
  * Caches the images that way memory can be cleared up when the image is no longer being used.
  * <p>Primarily Internal Use Only</p>
+ * @deprecated Replaced by internal cleanup calls.
  */
 public class HUDImageCache {
     private List<Integer> image;
