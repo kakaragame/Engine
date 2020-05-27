@@ -123,7 +123,7 @@ public class PointLight implements Comparable<PointLight> {
 
     @Override
     public int compareTo(PointLight o) {
-        Vector3 cameraPos = GameHandler.getInstance().getCamera().getPosition();
+        Vector3 cameraPos = GameHandler.getInstance().getCurrentScene().getCamera().getPosition();
         return Math.round(KMath.distance(cameraPos, getPosition()) - KMath.distance(cameraPos, o.getPosition()));
     }
 

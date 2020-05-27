@@ -207,7 +207,8 @@ public class BoxCollider implements Collider {
         this.deltaPosition = item.getColPosition().subtract(this.lastPosition);
         this.lastPosition = item.getColPosition();
 
-        CollisionManager cm = handler.getCollisionManager();
+        CollisionManager cm = handler.getCurrentScene().getCollisionManager();
+        assert cm != null;
         //Loop through the colliding item list.
         for(Collidable gi : cm.getCollidngItems(item.getColPosition())){
             // Prevent collision with itself.

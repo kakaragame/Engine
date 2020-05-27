@@ -5,6 +5,7 @@ import org.kakara.engine.gui.Window;
 import org.kakara.engine.render.Renderer;
 import org.kakara.engine.renderobjects.ChunkHandler;
 import org.kakara.engine.scene.AbstractMenuScene;
+import org.kakara.engine.scene.AbstractScene;
 import org.kakara.engine.utils.Time;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -78,6 +79,7 @@ public class GameEngine implements Runnable {
             time.init();
             game.start(gameHandler);
             gameHandler.init();
+            gameHandler.getSceneManager().setScene(game.firstScene(gameHandler));
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -189,9 +191,7 @@ public class GameEngine implements Runnable {
      */
     protected void cleanup() {
         if (gameHandler.getSceneManager().getCurrentScene() instanceof AbstractMenuScene) return;
-        if (gameHandler.getSceneManager().getCurrentScene() == null) return;
         renderer.cleanup();
-        if (gameHandler.getSceneManager().getCurrentScene() == null) return;
         gameHandler.getSceneManager().getCurrentScene().getItemHandler().cleanup();
         ChunkHandler.EXECUTORS.shutdown();
     }
@@ -200,7 +200,8 @@ public class GameEngine implements Runnable {
      * Handles collision updates.
      */
     protected void collide() {
-        for (Collidable gi : gameHandler.getCollisionManager().getCollidngItems(null)) {
+        if(!(gameHandler.getCurrentScene() instanceof AbstractScene)) return;
+        for (Collidable gi : Objects.requireNonNull(gameHandler.getCurrentScene().getCollisionManager()).getCollidngItems(null)) {
             gi.getCollider().update();
         }
     }

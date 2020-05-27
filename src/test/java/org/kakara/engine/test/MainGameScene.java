@@ -82,7 +82,7 @@ public class MainGameScene extends AbstractGameScene {
 
         this.test = test;
         setCurserStatus(false);
-        gameHandler.getCamera().setPosition(0, 3, 0);
+        getCamera().setPosition(0, 3, 0);
         var resourceManager = gameHandler.getResourceManager();
         Mesh[] mainPlayer = StaticModelLoader.load(resourceManager.getResource("player/steve.obj"), "/player",this,resourceManager);
         MeshGameItem object = new MeshGameItem(mainPlayer);
@@ -127,7 +127,6 @@ public class MainGameScene extends AbstractGameScene {
         RenderTexture txt2 = new RenderTexture(resourceManager.getResource("/oop.png"));
         System.out.println(resourceManager.getResource("/m.png").getInputStream());
         RenderTexture txt3 = new RenderTexture(resourceManager.getResource("/m.png"));
-        System.out.println("Test");
         TextureAtlas atlas = new TextureAtlas(Arrays.asList(txt1, txt2, txt3), Paths.get("").toAbsolutePath().toString(), this);
         setTextureAtlas(atlas);
 
@@ -155,9 +154,9 @@ public class MainGameScene extends AbstractGameScene {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                for(int cx = 0; cx < 10; cx++){
-                    for(int cy = 0; cy < 10; cy++){
-                        for(int cz = 0; cz < 10; cz++){
+                for(int cx = 0; cx < 1; cx++){
+                    for(int cy = 0; cy < 1; cy++){
+                        for(int cz = 0; cz < 1; cz++){
                             RenderChunk rc = new RenderChunk(new ArrayList<>(), getTextureAtlas());
                             rc.setPosition(cx * 16, cy*16, cz * 16);
                             for(int x = 0; x < 16; x++){
@@ -270,22 +269,22 @@ public class MainGameScene extends AbstractGameScene {
         fps.setText("FPS: " + Math.round(1/ Time.deltaTime));
 
         if (ki.isKeyPressed(GLFW_KEY_W)) {
-            handler.getCamera().movePosition(0, 0, -1);
+            getCamera().movePosition(0, 0, -1);
         }
         if (ki.isKeyPressed(GLFW_KEY_S)) {
-            handler.getCamera().movePosition(0, 0, 1);
+            getCamera().movePosition(0, 0, 1);
         }
         if (ki.isKeyPressed(GLFW_KEY_A)) {
-            handler.getCamera().movePosition(-1, 0, 0);
+            getCamera().movePosition(-1, 0, 0);
         }
         if (ki.isKeyPressed(GLFW_KEY_D)) {
-            handler.getCamera().movePosition(1, 0, 0);
+            getCamera().movePosition(1, 0, 0);
         }
         if (ki.isKeyPressed(GLFW_KEY_SPACE)) {
-            handler.getCamera().movePosition(0, 1, 0);
+            getCamera().movePosition(0, 1, 0);
         }
         if (ki.isKeyPressed(GLFW_KEY_LEFT_SHIFT)) {
-            handler.getCamera().movePosition(0, -1, 0);
+            getCamera().movePosition(0, -1, 0);
         }
         if (ki.isKeyPressed(GLFW_KEY_ESCAPE)) {
             test.exit();
@@ -331,9 +330,9 @@ public class MainGameScene extends AbstractGameScene {
 //        getLightHandler().getSpotLight(0).setPosition(handler.getCamera().getPosition());
 
         MouseInput mi = handler.getMouseInput();
-        handler.getCamera().moveRotation((float) (mi.getDeltaPosition().y), (float) mi.getDeltaPosition().x, 0);
+        getCamera().moveRotation((float) (mi.getDeltaPosition().y), (float) mi.getDeltaPosition().x, 0);
         if (handler.getSoundManager().getListener() != null)
-            handler.getSoundManager().getListener().setPosition(gameHandler.getCamera().getPosition());
+            handler.getSoundManager().getListener().setPosition(getCamera().getPosition());
 
 
         lightAngle += Time.deltaTime * 1.3;

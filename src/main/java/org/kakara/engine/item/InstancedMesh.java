@@ -127,7 +127,7 @@ public class InstancedMesh extends Mesh {
         int i = 0;
         for (GameItem gameItem : gameItems) {
 
-            if(KMath.distance(gameItem.getPosition(), GameHandler.getInstance().getCamera().getPosition()) > 100)
+            if(KMath.distance(gameItem.getPosition(), GameHandler.getInstance().getCurrentScene().getCamera().getPosition()) > 100)
                 continue;
 
             Matrix4f modelMatrix = transformation.buildModelMatrix(gameItem);

@@ -96,7 +96,8 @@ public class ObjectBoxCollider implements Collider {
         this.deltaPosition = item.getColPosition().clone().subtract(this.lastPosition);
         this.lastPosition = item.getColPosition().clone();
 
-        CollisionManager cm = handler.getCollisionManager();
+        CollisionManager cm = handler.getCurrentScene().getCollisionManager();
+        assert cm != null;
         for(Collidable gi : cm.getCollidngItems(item.getColPosition())){
             if(gi == item) continue;
             if(cm.isColliding(gi, item)){

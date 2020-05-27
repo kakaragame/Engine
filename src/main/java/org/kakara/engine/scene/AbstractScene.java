@@ -27,10 +27,12 @@ import org.kakara.engine.weather.Fog;
  * See the source code of {@link AbstractGameScene} for assistance.</p>
  */
 public abstract class AbstractScene implements Scene {
+    private final Camera camera = new Camera();
     private final ItemHandler itemHandler = new ItemHandler();
     private final LightHandler lightHandler = new LightHandler();
     private final ParticleHandler particleHandler = new ParticleHandler();
     private final EventManager eventManager = new EventManager();
+    private final CollisionManager collisionManager;
     private SkyBox skyBox;
 
     protected final HUD hud = new HUD(this);
@@ -42,6 +44,7 @@ public abstract class AbstractScene implements Scene {
     protected AbstractScene(GameHandler gameHandler) {
         this.gameHandler = gameHandler;
         this.eventManager.registerHandler(this);
+        this.collisionManager = new CollisionManager(gameHandler);
         fog = Fog.NOFOG;
         try{
             hud.init(gameHandler.getWindow());
@@ -83,12 +86,17 @@ public abstract class AbstractScene implements Scene {
 
     @Override
     public Camera getCamera(){
-        return gameHandler.getCamera();
+        return camera;
     }
 
     @Override
     public EventManager getEventManager(){
         return eventManager;
+    }
+
+    @Override
+    public @NotNull CollisionManager getCollisionManager() {
+        return collisionManager;
     }
 
     /**

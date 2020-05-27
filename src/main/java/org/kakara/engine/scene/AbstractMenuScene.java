@@ -3,6 +3,7 @@ package org.kakara.engine.scene;
 import org.kakara.engine.Camera;
 import org.kakara.engine.GameEngine;
 import org.kakara.engine.GameHandler;
+import org.kakara.engine.collision.CollisionManager;
 import org.kakara.engine.events.EventManager;
 import org.kakara.engine.item.ItemHandler;
 import org.kakara.engine.item.particles.ParticleHandler;
@@ -27,6 +28,7 @@ public abstract class AbstractMenuScene implements Scene {
 
     protected final HUD hud = new HUD(this);
     private final EventManager eventManager = new EventManager();
+    private final Camera camera = new Camera();
 
     private boolean mouseStatus;
     protected GameHandler gameHandler;
@@ -103,6 +105,12 @@ public abstract class AbstractMenuScene implements Scene {
         return this.eventManager;
     }
 
+    @Override
+    public CollisionManager getCollisionManager(){
+        GameEngine.LOGGER.warn("There is not collision manager in this implementation of scene! Did you mean to use AbstractGameScene?");
+        return null;
+    }
+
     /**
      * Register an object to the scene event manager.
      * <p>Scenes are automatically added. Do not add the scene to this list.</p>
@@ -156,7 +164,7 @@ public abstract class AbstractMenuScene implements Scene {
 
     @Override
     public Camera getCamera(){
-        return gameHandler.getCamera();
+        return camera;
     }
 }
 

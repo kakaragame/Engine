@@ -1,5 +1,6 @@
 package org.kakara.engine.scene;
 
+import org.jetbrains.annotations.NotNull;
 import org.kakara.engine.GameHandler;
 import org.kakara.engine.models.TextureCache;
 
@@ -18,7 +19,7 @@ public class SceneManager {
      * Set the current scene.
      * @param scene The scene to set.
      */
-    public void setScene(Scene scene) {
+    public void setScene(@NotNull Scene scene) {
         if(currentScene != null)
             this.cleanupScenes();
         currentScene = null;
@@ -35,6 +36,7 @@ public class SceneManager {
         }
         // Continue loading the next scene.
         scene.work();
+        // TODO I don't this that this is suppose to be here???
         scene.unload();
         try {
             handler.getGameEngine().resetRender();
@@ -42,7 +44,6 @@ public class SceneManager {
         } catch (Exception e) {
             e.printStackTrace();
         }
-//        currentScene = scene;
     }
 
     /**
@@ -54,9 +55,10 @@ public class SceneManager {
 
     /**
      * Get the current scene.
+     * <p>This value will never be null.</p>
      * @return The current scene.
      */
-    public Scene getCurrentScene() {
+    public @NotNull Scene getCurrentScene() {
         return currentScene;
     }
 

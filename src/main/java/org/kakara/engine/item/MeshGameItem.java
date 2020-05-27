@@ -240,7 +240,7 @@ public class MeshGameItem implements GameItem, Collidable {
     public void setCollider(Collider collider) {
         this.collider = collider;
         collider.onRegister(this);
-        GameHandler.getInstance().getCollisionManager().addCollidingItem(this);
+        GameHandler.getInstance().getCurrentScene().getCollisionManager().addCollidingItem(this);
     }
 
     /**
@@ -248,7 +248,7 @@ public class MeshGameItem implements GameItem, Collidable {
      */
     public void removeCollider() {
         this.collider = null;
-        GameHandler.getInstance().getCollisionManager().removeCollidingItem(this);
+        GameHandler.getInstance().getCurrentScene().getCollisionManager().removeCollidingItem(this);
     }
 
     @Override
