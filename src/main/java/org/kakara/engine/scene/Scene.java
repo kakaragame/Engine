@@ -2,6 +2,7 @@ package org.kakara.engine.scene;
 
 import org.kakara.engine.Camera;
 import org.kakara.engine.GameHandler;
+import org.kakara.engine.events.EventManager;
 import org.kakara.engine.item.ItemHandler;
 import org.kakara.engine.item.particles.ParticleHandler;
 import org.kakara.engine.item.SkyBox;
@@ -68,17 +69,51 @@ public interface Scene {
      */
     HUD getHUD();
 
+    /**
+     * Get the particle handler for the scene.
+     * @return The particle handler.
+     */
     ParticleHandler getParticleHandler();
 
+    /**
+     *
+     */
     void unload();
 
+    /**
+     * Get the skybox.
+     * @return The skybox
+     */
     SkyBox getSkyBox();
 
+    /**
+     * Set the skybox.
+     * @param skyBox The skybox.
+     */
     void setSkyBox(SkyBox skyBox);
 
+    /**
+     * get the fog
+     * @return The fog
+     */
     Fog getFog();
 
+    /**
+     * Set the fog
+     * @param fog The fog
+     */
     void setFog(Fog fog);
 
+    /**
+     * Get the camera
+     * @return The camera
+     */
     Camera getCamera();
+
+    /**
+     * Get the event manager for the scene.
+     * @since 1.0-Pre1
+     * @return The event manager.
+     */
+    EventManager getEventManager();
 }

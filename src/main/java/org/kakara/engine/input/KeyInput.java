@@ -22,10 +22,10 @@ public class KeyInput {
     public void init(){
         glfwSetKeyCallback(engine.getWindow().getWindowHandler(), (window, key, scancode, action, mods)->{
             if(action != GLFW_PRESS) return;
-            engine.getGameHandler().getEventManager().fireHandler(new KeyPressEvent(key));
+            engine.getGameHandler().getSceneManager().getCurrentScene().getEventManager().fireHandler(new KeyPressEvent(key));
         });
         glfwSetCharCallback(engine.getWindow().getWindowHandler(), (window, codepoint) -> {
-           engine.getGameHandler().getEventManager().fireHandler(new CharacterPressEvent(codepoint));
+            engine.getGameHandler().getSceneManager().getCurrentScene().getEventManager().fireHandler(new CharacterPressEvent(codepoint));
         });
     }
 

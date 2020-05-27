@@ -46,7 +46,7 @@ public class Sprite extends GeneralComponent {
         pollInit(hud, handler);
         this.image = NanoVGGL3.nvglCreateImageFromHandle(hud.getVG(), texture.getId(), texture.getWidth(), texture.getHeight(), 0);
         hud.getImageCache().addImage(this.image);
-        handler.getEventManager().registerHandler(this, hud.getScene());
+        hud.getScene().getEventManager().registerHandler(this);
     }
 
     @EventHandler

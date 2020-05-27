@@ -5,6 +5,8 @@ import org.jetbrains.annotations.Nullable;
 import org.kakara.engine.Camera;
 import org.kakara.engine.GameEngine;
 import org.kakara.engine.GameHandler;
+import org.kakara.engine.collision.CollisionManager;
+import org.kakara.engine.events.EventManager;
 import org.kakara.engine.item.GameItem;
 import org.kakara.engine.item.ItemHandler;
 import org.kakara.engine.item.particles.ParticleEmitter;
@@ -25,12 +27,13 @@ import org.kakara.engine.weather.Fog;
  * See the source code of {@link AbstractGameScene} for assistance.</p>
  */
 public abstract class AbstractScene implements Scene {
-    private ItemHandler itemHandler = new ItemHandler();
-    private LightHandler lightHandler = new LightHandler();
-    private ParticleHandler particleHandler = new ParticleHandler();
+    private final ItemHandler itemHandler = new ItemHandler();
+    private final LightHandler lightHandler = new LightHandler();
+    private final ParticleHandler particleHandler = new ParticleHandler();
+    private final EventManager eventManager = new EventManager();
     private SkyBox skyBox;
 
-    protected HUD hud = new HUD(this);
+    protected final HUD hud = new HUD(this);
     private boolean mouseStatus;
     protected GameHandler gameHandler;
 
@@ -38,6 +41,7 @@ public abstract class AbstractScene implements Scene {
 
     protected AbstractScene(GameHandler gameHandler) {
         this.gameHandler = gameHandler;
+        this.eventManager.registerHandler(this);
         fog = Fog.NOFOG;
         try{
             hud.init(gameHandler.getWindow());
@@ -80,6 +84,25 @@ public abstract class AbstractScene implements Scene {
     @Override
     public Camera getCamera(){
         return gameHandler.getCamera();
+    }
+
+    @Override
+    public EventManager getEventManager(){
+        return eventManager;
+    }
+
+    /**
+     * Register an object to the scene event manager.
+     * <p>Scenes are automatically added. Do not add the scene to this list.</p>
+     * @since 1.0-Pre1
+     * @param obj The object to handle.
+     */
+    public void registerEventObject(Object obj){
+        if(obj instanceof Scene){
+            GameEngine.LOGGER.warn("Unable to register event object: Scenes are automatically added to the event list.");
+            return;
+        }
+        this.eventManager.registerHandler(obj);
     }
 
     /**
