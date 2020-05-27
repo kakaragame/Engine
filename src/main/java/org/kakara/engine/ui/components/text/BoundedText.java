@@ -35,6 +35,7 @@ public class BoundedText extends GeneralComponent {
     private RGBA color;
     private NVGColor nvgColor;
     private NVGTextRow.Buffer rows = NVGTextRow.create(3);
+    private FloatBuffer lineh = BufferUtils.createFloatBuffer(1);
 
     /**
      * Create some text.
@@ -78,6 +79,8 @@ public class BoundedText extends GeneralComponent {
 
         MemoryUtil.memFree(paragraph);
         MemoryUtil.memFree(rows);
+//        lineh.clear();
+        MemoryUtil.memFree(lineh);
         nvgColor.free();
     }
 
@@ -89,7 +92,9 @@ public class BoundedText extends GeneralComponent {
      * @param handler The handler.
      */
     private void displayText(HUD hud, GameHandler handler){
-        FloatBuffer lineh = BufferUtils.createFloatBuffer(1);
+
+        nvgSave(hud.getVG());
+
         long start = MemoryUtil.memAddress(paragraph);
         long end = start + paragraph.remaining();
         int  nrows, lnum = 0;
@@ -128,7 +133,7 @@ public class BoundedText extends GeneralComponent {
             start = rows.get(nrows - 1).next();
         }
 
-        MemoryUtil.memFree(lineh);
+        nvgRestore(hud.getVG());
     }
 
     private float toRelativeX(float x){

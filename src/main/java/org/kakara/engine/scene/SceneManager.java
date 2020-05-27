@@ -21,6 +21,19 @@ public class SceneManager {
     public void setScene(Scene scene) {
         if(currentScene != null)
             this.cleanupScenes();
+        currentScene = null;
+        // Tell java it is time to finalize objects for collection
+        System.runFinalization();
+        currentScene = scene;
+        // Tell java now would be a great time to run the garbage collector.
+        System.gc();
+        try{
+            // Sleep for 150ms to give the GC time to operate.
+            Thread.sleep(150);
+        }catch(InterruptedException ex){
+            ex.printStackTrace();
+        }
+        // Continue loading the next scene.
         scene.work();
         scene.unload();
         try {
@@ -29,7 +42,7 @@ public class SceneManager {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        currentScene = scene;
+//        currentScene = scene;
     }
 
     /**
