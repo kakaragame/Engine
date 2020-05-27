@@ -97,10 +97,4 @@ public class Rectangle extends GeneralComponent {
 
         pollRender(relative, hud, handler);
     }
-
-    @Override
-    public void cleanup(GameHandler handler){
-        super.cleanup(handler);
-        nvgColor.free();
-    }
 }

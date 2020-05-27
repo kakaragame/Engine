@@ -142,7 +142,6 @@ public class GameHandler {
      * <p>THIS IS THE RECOMMENDED WAY TO CLOSE THE GAME!</p>
      */
     public void exit() {
-        gameEngine.running = false;
-        soundManager.cleanup();
+        gameEngine.exit();
     }
 }
