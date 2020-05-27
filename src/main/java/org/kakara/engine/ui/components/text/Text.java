@@ -74,12 +74,6 @@ public class Text extends GeneralComponent {
         nvgTextBox(hud.getVG(), getTruePosition().x, getTruePosition().y, this.calculateLineWidth(handler),  text);
     }
 
-    @Override
-    public void cleanup(GameHandler handler){
-        super.cleanup(handler);
-        nvgColor.free();
-    }
-
     /**
      * Calculate the font size if the window is resized.
      * @param handler Instance of gamehandler.

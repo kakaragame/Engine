@@ -110,6 +110,9 @@ public class GameEngine implements Runnable {
                 sync();
             }
         }
+
+        gameHandler.getSceneManager().cleanupScenes();
+        gameHandler.getSoundManager().cleanup();
     }
 
     private void sync() {
@@ -249,6 +252,10 @@ public class GameEngine implements Runnable {
         if(run == null)
             throw new RuntimeException("NULL!!");
         mainThreadQueue.add(run);
+    }
+
+    protected void exit(){
+        running = false;
     }
 
 

@@ -78,10 +78,6 @@ public class BoundedText extends GeneralComponent {
         super.cleanup(handler);
 
         MemoryUtil.memFree(paragraph);
-        MemoryUtil.memFree(rows);
-//        lineh.clear();
-        MemoryUtil.memFree(lineh);
-        nvgColor.free();
     }
 
 
