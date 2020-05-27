@@ -51,7 +51,6 @@ public class SceneManager {
      * Cleanup the scene and clear the memory that way it is ready for the next scene to be loaded.
      */
     public void cleanupScenes(){
-        handler.getEventManager().cleanup();
         currentScene.getHUD().cleanup();
         TextureCache.getInstance(handler.getResourceManager()).cleanup(currentScene);
         if(getCurrentScene() instanceof AbstractMenuScene) return;

@@ -23,7 +23,7 @@ public class Panel extends GeneralComponent {
     @Override
     public void init(HUD hud, GameHandler handler) {
         pollInit(hud, handler);
-        handler.getEventManager().registerHandler(this, hud.getScene());
+        hud.getScene().getEventManager().registerHandler(this);
     }
 
     @Override

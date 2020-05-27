@@ -71,7 +71,7 @@ public class MouseInput {
                     mct = MouseClickType.OTHER;
                     break;
             }
-            handler.getEventManager().fireHandler(new MouseClickEvent(this.getPosition(), mct));
+            handler.getSceneManager().getCurrentScene().getEventManager().fireHandler(new MouseClickEvent(this.getPosition(), mct));
         });
     }
 

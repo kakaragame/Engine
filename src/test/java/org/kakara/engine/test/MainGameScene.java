@@ -127,6 +127,7 @@ public class MainGameScene extends AbstractGameScene {
         RenderTexture txt2 = new RenderTexture(resourceManager.getResource("/oop.png"));
         System.out.println(resourceManager.getResource("/m.png").getInputStream());
         RenderTexture txt3 = new RenderTexture(resourceManager.getResource("/m.png"));
+        System.out.println("Test");
         TextureAtlas atlas = new TextureAtlas(Arrays.asList(txt1, txt2, txt3), Paths.get("").toAbsolutePath().toString(), this);
         setTextureAtlas(atlas);
 
@@ -149,8 +150,6 @@ public class MainGameScene extends AbstractGameScene {
 //                getChunkHandler().addChunk(rc);
 //            }
 //        }
-
-
 
 
         new Thread(new Runnable() {
@@ -267,11 +266,6 @@ public class MainGameScene extends AbstractGameScene {
     @Override
     public void update(float interval) {
         KeyInput ki = handler.getKeyInput();
-
-        if(!once){
-            gameHandler.getEventManager().registerHandler(this, this);
-            once = true;
-        }
 
         fps.setText("FPS: " + Math.round(1/ Time.deltaTime));
 
