@@ -1,16 +1,13 @@
 package org.kakara.engine.math;
 
 import org.joml.Vector3f;
-import org.lwjgl.system.CallbackI;
 
 /**
  * A math class to provide a nice representation of a vector.
  */
 public class Vector3 {
 
-    public float x;
-    public float y;
-    public float z;
+    public float x, y, z;
 
     /**
      * Create a vector3.
@@ -46,19 +43,66 @@ public class Vector3 {
     }
 
     /**
+     * Get the x value.
+     * @since 1.0-Pre1
+     * @return The x value.
+     */
+    public float getX(){
+        return x;
+    }
+
+    /**
+     * Set the x value.
+     * @since 1.0-Pre1
+     * @param x The x value.
+     */
+    public void setX(float x){
+        this.x = x;
+    }
+
+    /**
+     * Get the y value.
+     * @since 1.0-Pre1
+     * @return The y value.
+     */
+    public float getY(){
+        return this.y;
+    }
+
+    /**
+     * Set the y value.
+     * @since 1.0-Pre1
+     * @param y The y value.
+     */
+    public void setY(float y){
+        this.y = y;
+    }
+
+    /**
+     * Get the z value.
+     * @since 1.0-Pre1
+     * @return The z value.
+     */
+    public float getZ(){
+        return this.z;
+    }
+
+    /**
+     * Set the z value.
+     * @since 1.0-Pre1
+     * @param z The z value.
+     */
+    public void setZ(float z){
+        this.z = z;
+    }
+
+    /**
      * Clone the vector
      * <p>The original vector is not mutated.</p>
      * @return The cloned vector.
      */
     public Vector3 clone(){
         return new Vector3(x, y, z);
-    }
-
-    @Override
-    public boolean equals(Object o){
-        if(!(o instanceof Vector3)) return false;
-        Vector3 vec = (Vector3) o;
-        return vec.x == x && vec.y == y && vec.z == z;
     }
 
     /**
@@ -133,11 +177,6 @@ public class Vector3 {
         return new Vector3f(this.x, this.y, this.z);
     }
 
-    @Override
-    public String toString(){
-        return "{" + this.x + ", " + this.y + ", " + this.z + "}";
-    }
-
     /**
      * Compare one vector to another.
      * @param other The other vector
@@ -155,5 +194,17 @@ public class Vector3 {
      */
     public boolean greaterThan(Vector3 other, Vector3 comparePoint){
         return KMath.distance(this, comparePoint) > KMath.distance(other, comparePoint);
+    }
+
+    @Override
+    public boolean equals(Object o){
+        if(!(o instanceof Vector3)) return false;
+        Vector3 vec = (Vector3) o;
+        return vec.x == x && vec.y == y && vec.z == z;
+    }
+
+    @Override
+    public String toString(){
+        return "{" + this.x + ", " + this.y + ", " + this.z + "}";
     }
 }

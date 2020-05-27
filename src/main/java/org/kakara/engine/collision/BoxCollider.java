@@ -3,23 +3,13 @@ package org.kakara.engine.collision;
 import org.kakara.engine.GameHandler;
 import org.kakara.engine.math.KMath;
 import org.kakara.engine.math.Vector3;
-import org.kakara.engine.render.DebugRender;
 import org.kakara.engine.utils.Time;
-import org.lwjgl.system.MemoryUtil;
-
-import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
-
-import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL15.*;
-import static org.lwjgl.opengl.GL20.*;
-import static org.lwjgl.opengl.GL30.glBindVertexArray;
-import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 
 /**
  * The BoxCollider class is to be used on non-primitive objects that are created using the model loader.
  * It is recommended to use the relative mode to define points.
  * To define the points pick two opposite corners.
+ * <p>For a collider to fits around a cube see: {@link ObjectBoxCollider}</p>
  */
 public class BoxCollider implements Collider {
 
