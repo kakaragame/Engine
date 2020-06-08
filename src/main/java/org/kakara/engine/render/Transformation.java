@@ -3,7 +3,11 @@ package org.kakara.engine.render;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
+import org.kakara.engine.Camera;
+import org.kakara.engine.GameHandler;
+import org.kakara.engine.gui.Window;
 import org.kakara.engine.item.GameItem;
+import org.kakara.engine.ui.objectcanvas.UIObject;
 
 /**
  * The transformation handler.
@@ -18,6 +22,7 @@ public class Transformation {
     private final Matrix4f orthoProjMatrix;
     private final Matrix4f ortho2DMatrix;
     private final Matrix4f orthoModelMatrix;
+    private final Matrix4f orthModelMatrix;
 
     public Transformation() {
         modelViewMatrix = new Matrix4f();
@@ -29,6 +34,7 @@ public class Transformation {
         ortho2DMatrix = new Matrix4f();
         orthoModelMatrix = new Matrix4f();
         lightViewMatrix = new Matrix4f();
+        orthModelMatrix = new Matrix4f();
     }
 
     /**
@@ -153,6 +159,7 @@ public class Transformation {
         return ortho2DMatrix;
     }
 
+
     /**
      * Build the model view matrix
      * @param gameItem The game item
@@ -165,6 +172,14 @@ public class Transformation {
                 gameItem.getScale(), gameItem.getScale());
         modelViewMatrix.set(matrix);
         return modelViewMatrix.mul(modelMatrix);
+    }
+
+    public Matrix4f buildModelViewMatrixUI(UIObject gameItem) {
+        Quaternionf rotation = gameItem.getRotation();
+        Matrix4f modelMatrix = new Matrix4f();
+        modelMatrix.translationRotateScale(gameItem.getTruePos().x, gameItem.getTruePos().y, 0, rotation.x, rotation.y, rotation.z, rotation.w, gameItem.getTrueScale(),
+                gameItem.getTrueScale(), gameItem.getTrueScale());
+        return modelMatrix;
     }
 
     /**
@@ -214,5 +229,19 @@ public class Transformation {
         orthoModelMatrix.set(orthoMatrix);
         orthoModelMatrix.mul(modelMatrix);
         return orthoModelMatrix;
+    }
+
+    public Matrix4f getOrtoProjUIModelMatrix(UIObject object, Matrix4f orthoMatrix) {
+        Quaternionf rotation = object.getRotation();
+        Matrix4f modelMatrix = new Matrix4f();
+        modelMatrix.identity().translationRotateScale(object.getPosition().x, object.getPosition().y, 0f,
+                rotation.x, rotation.y, rotation.z, rotation.w, object.getScale(), object.getScale(), object.getScale());
+//                rotateX((float)Math.toRadians(-rotation.x)).
+//                rotateY((float)Math.toRadians(-rotation.y)).
+//                rotateZ((float)Math.toRadians(-rotation.z)).
+//                scale(object.getScale());
+        orthModelMatrix.set(orthoMatrix);
+        orthModelMatrix.mul(modelMatrix);
+        return orthModelMatrix;
     }
 }

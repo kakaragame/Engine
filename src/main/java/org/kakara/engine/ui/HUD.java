@@ -5,6 +5,7 @@ import org.kakara.engine.gui.Window;
 import org.kakara.engine.math.Vector2;
 import org.kakara.engine.scene.Scene;
 import org.kakara.engine.ui.components.Component;
+import org.kakara.engine.ui.items.ObjectCanvas;
 import org.kakara.engine.ui.text.Font;
 
 import java.util.ArrayList;
@@ -61,6 +62,10 @@ public class HUD {
         nvgBeginFrame(vg, window.getWidth(), window.getHeight(), 1);
         for(HUDItem it : hudItems){
             it.render(this, GameHandler.getInstance());
+            if(it instanceof ObjectCanvas) {
+                System.out.println("Called");
+                return;
+            }
         }
         nvgEndFrame(vg);
         window.restoreState();

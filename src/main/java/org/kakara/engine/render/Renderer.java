@@ -1,6 +1,8 @@
 package org.kakara.engine.render;
 
+import org.eclipse.swt.internal.win32.SYSTEMTIME;
 import org.joml.Matrix4f;
+import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 import org.kakara.engine.Camera;
@@ -13,6 +15,7 @@ import org.kakara.engine.math.Vector3;
 import org.kakara.engine.renderobjects.RenderChunk;
 import org.kakara.engine.scene.AbstractGameScene;
 import org.kakara.engine.scene.Scene;
+import org.kakara.engine.ui.objectcanvas.UIObject;
 import org.kakara.engine.utils.Utils;
 
 import java.util.List;
@@ -39,6 +42,7 @@ public class Renderer {
     private Shader depthShaderProgram;
     private Shader particleShaderProgram;
     private Shader chunkShaderProgram;
+    private Shader hudShaderProgram;
 
     private ShadowMap shadowMap;
 
@@ -65,6 +69,7 @@ public class Renderer {
         setupDepthShader();
         setupParticleShader();
         setupChunkShader();
+        setupHudShader();
     }
 
     /**
@@ -89,6 +94,28 @@ public class Renderer {
         renderChunk(window, camera, scene, false);
         renderParticles(window, camera, scene);
 
+    }
+
+    public void renderHUD(Window window, List<UIObject> objects){
+        hudShaderProgram.bind();
+        for(UIObject object : objects){
+            Mesh mesh = object.getMesh();
+            hudShaderProgram.setUniform("projection", transformation.getOrthoProjectionMatrix());
+            hudShaderProgram.setUniform("model", transformation.buildModelViewMatrixUI(object));
+            mesh.render();
+        }
+        hudShaderProgram.unbind();
+    }
+
+    private void setupHudShader() throws Exception {
+        hudShaderProgram = new Shader();
+        hudShaderProgram.createVertexShader(Utils.loadResource("/shaders/hud/hudVertex.vs"));
+        hudShaderProgram.createFragmentShader(Utils.loadResource("/shaders/hud/hudFragment.fs"));
+        hudShaderProgram.link();
+
+        // Create uniforms for Orthographic-model projection matrix and base colour
+        hudShaderProgram.createUniform("projection");
+        hudShaderProgram.createUniform("model");
     }
 
     /**
