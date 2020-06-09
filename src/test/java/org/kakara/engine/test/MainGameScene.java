@@ -91,7 +91,7 @@ public class MainGameScene extends AbstractGameScene {
         var resourceManager = gameHandler.getResourceManager();
         Mesh[] mainPlayer = StaticModelLoader.load(resourceManager.getResource("player/steve.obj"), "/player",this,resourceManager);
         MeshGameItem object = new MeshGameItem(mainPlayer);
-        object.setPosition(4, 3f, 4);
+        object.setPosition(0, 20, 0);
         object.setScale(0.3f);
 //        object.setCollider(new BoxCollider(new Vector3(0, 0, 0), new Vector3(1, 1.5f, 1)));
 //        object.getCollider().setUseGravity(true).setTrigger(false);
@@ -112,6 +112,7 @@ public class MainGameScene extends AbstractGameScene {
         mt.setReflectance(0.3f);
 
         mesh.setMaterial(mt);
+
         MeshGameItem gi = new MeshGameItem(mesh);
         gi.setCollider(new ObjectBoxCollider(true, false));
         add(gi);
