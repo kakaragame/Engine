@@ -1,4 +1,4 @@
-package org.kakara.engine.ui.components;
+package org.kakara.engine.ui.components.shapes;
 
 import org.kakara.engine.GameHandler;
 import org.kakara.engine.events.EventHandler;
@@ -6,6 +6,7 @@ import org.kakara.engine.events.event.MouseClickEvent;
 import org.kakara.engine.math.Vector2;
 import org.kakara.engine.ui.HUD;
 import org.kakara.engine.ui.RGBA;
+import org.kakara.engine.ui.components.GeneralComponent;
 import org.kakara.engine.ui.events.HUDClickEvent;
 import org.kakara.engine.ui.events.HUDHoverEnterEvent;
 import org.kakara.engine.ui.events.HUDHoverLeaveEvent;
@@ -14,39 +15,48 @@ import org.lwjgl.nanovg.NVGColor;
 import static org.lwjgl.nanovg.NanoVG.*;
 
 /**
- * Base Rectangle Component
+ * The base Ellipse shape.
+ * <p>The scale is used as the x and y radius.</p>
+ * <p>the position of this component is in the center</p>
+ * <code>
+ *     Ellipse el = new Ellipse();
+ *     // Sets the x radius to 40
+ *     // and the y radius to 50.
+ *     el.setScale(40, 50);
+ * </code>
+ * @since 1.0-Pre1
  */
-public class Rectangle extends GeneralComponent {
+public class Ellipse extends GeneralComponent {
     private RGBA color;
-    private NVGColor colorz;
+    private NVGColor nvgColor;
 
     private boolean isHovering;
 
-    public Rectangle(){
-        this(new Vector2(0, 0), new Vector2(0, 0), new RGBA());
+    public Ellipse(){
+        this(new Vector2(0, 0), new Vector2(40, 40), new RGBA());
     }
 
     /**
      * Create a rectangle
-     * @param position The position of the rectangle
-     * @param scale The scale of the rectangle
-     * @param color The color of the rectangle.
+     * @param position The position of the ellipse.
+     * @param scale The x and y radius of the ellipse
+     * @param color The color of the ellipse.
      */
-    public Rectangle(Vector2 position, Vector2 scale, RGBA color){
+    public Ellipse(Vector2 position, Vector2 scale, RGBA color){
         this.position = position;
         this.scale = scale;
         this.color = color;
-        this.colorz = NVGColor.create();
+        this.nvgColor = NVGColor.create();
         this.isHovering = false;
     }
 
-    public Rectangle(Vector2 position, Vector2 scale){
+    public Ellipse(Vector2 position, Vector2 scale){
         this(position, scale, new RGBA());
     }
 
 
     /**
-     * Set the color of the rectangle.
+     * Set the color of the ellipse.
      * @param color The color value
      */
     public void setColor(RGBA color){
@@ -54,8 +64,8 @@ public class Rectangle extends GeneralComponent {
     }
 
     /**
-     * Get the color of the rectangle.
-     * @return The color of the rectangle.
+     * Get the color of the ellipse.
+     * @return The color of the ellipse.
      */
     public RGBA getColor(){
         return color;
@@ -72,7 +82,7 @@ public class Rectangle extends GeneralComponent {
     @Override
     public void init(HUD hud, GameHandler handler) {
         pollInit(hud, handler);
-        handler.getEventManager().registerHandler(this, hud.getScene());
+        hud.getScene().getEventManager().registerHandler(this);
     }
 
     @Override
@@ -88,10 +98,10 @@ public class Rectangle extends GeneralComponent {
         }
 
         nvgBeginPath(hud.getVG());
-        nvgRect(hud.getVG(), getTruePosition().x, getTruePosition().y, getTrueScale().x, getTrueScale().y);
+        nvgEllipse(hud.getVG(), getTruePosition().x, getTruePosition().y, getTrueScale().x, getTrueScale().y);
 
-        nvgRGBA((byte) color.r, (byte) color.g, (byte) color.b, (byte) color.aToNano(), colorz);
-        nvgFillColor(hud.getVG(), colorz);
+        nvgRGBA((byte) color.r, (byte) color.g, (byte) color.b, (byte) color.aToNano(), nvgColor);
+        nvgFillColor(hud.getVG(), nvgColor);
         nvgFill(hud.getVG());
 
         pollRender(relative, hud, handler);

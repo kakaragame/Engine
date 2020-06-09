@@ -16,9 +16,9 @@ public class Intersection {
      * Check to see if the collidable intersects with the ray from the camera.
      * @param collidable The collidable
      * @param camera The camera
-     * @param result This result stores the near and far values. You can use it to compare the result with other results.
+     * @param result This result vector is mutated and stores the near and far values. You can use it to compare the result with other results.
      *               <p>The x value contains the near value, the y value contains the far value.</p>
-     * @return If it intersects.
+     * @return If the way intersects with the collidable.
      */
     public static boolean intersect(Collidable collidable, Camera camera, Vector2 result){
         Vector3f dir = new Vector3f();
@@ -38,7 +38,16 @@ public class Intersection {
         return val;
     }
 
-    //todo finish commenting this stuff.
+    /**
+     * Check to see if a point intersects with a ray from the camera.
+     * @param x The x value of the point.
+     * @param y The y value of the point.
+     * @param z The z value of the point.
+     * @param camera The camera.
+     * @param result This result vector is mutated and stores the near and far values. You can use it to compare the result with other results.
+     *      <p>The x value contains the near value, the y value contains the far value.</p>
+     * @return If the ray intersects with the point.
+     */
     public static boolean intersect(int x, int y, int z, Camera camera, Vector2 result){
         Vector3f dir = new Vector3f();
         dir = camera.getViewMatrix().positiveZ(dir).negate();
@@ -57,6 +66,14 @@ public class Intersection {
         return val;
     }
 
+    /**
+     * Check to see if a vector intersects with a ray from the camera.
+     * @param position The vector
+     * @param camera The camera
+     * @param result This result vector is mutated and stores the near and far values. You can use it to compare the result with other results.
+     *               <p>The x value contains the near value, the y value contains the far value.</p>
+     * @return If the ray intersects with the vector.
+     */
     public static boolean intersect(Vector3 position, Camera camera, Vector2 result){
         Vector3f dir = new Vector3f();
         dir = camera.getViewMatrix().positiveZ(dir).negate();

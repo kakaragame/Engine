@@ -12,4 +12,10 @@ public interface HUDItem {
      * Internal use only
      */
     void render(HUD hud, GameHandler handler);
+
+
+    /**
+     * Internal use only.
+     */
+    void cleanup(GameHandler handler);
 }

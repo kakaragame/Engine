@@ -1,9 +1,10 @@
-package org.kakara.engine.ui.components;
+package org.kakara.engine.ui.components.text;
 
 import org.kakara.engine.GameHandler;
 import org.kakara.engine.math.Vector2;
 import org.kakara.engine.ui.HUD;
 import org.kakara.engine.ui.RGBA;
+import org.kakara.engine.ui.components.GeneralComponent;
 import org.kakara.engine.ui.text.Font;
 import org.lwjgl.nanovg.NVGColor;
 
@@ -12,6 +13,7 @@ import static org.lwjgl.nanovg.NanoVG.*;
 /**
  * Displays text to the UI.
  * <p>The scale of the text is the line width in the x position.</p>
+ * <p>As of 1.0-Pre1, all text properties are implemented.</p>
  */
 public class Text extends GeneralComponent {
     private String text;
@@ -21,24 +23,30 @@ public class Text extends GeneralComponent {
     private float lineHeight;
     private float lineWidth;
     private int textAlign;
+    private float blur;
     private RGBA color;
+
+    private NVGColor nvgColor;
 
     /**
      * Create some text.
      * <p>If the text is not displaying, then ensure that the Font is added to the HUD. See {@link HUD#addFont(Font)}</p>
+     * <p><b>The scale of this component should never be changed.</b></p>
      * @param text The text
      * @param font The font of the text.
      */
     public Text(String text, Font font){
         this.text = text;
         this.font = font;
-        size = 30;
-        lineWidth = 100;
-        this.letterSpacing = 5;
-        this.lineHeight = 5;
+        this.size = 30;
+        this.lineWidth = 100;
+        this.letterSpacing = 1;
+        this.lineHeight = 1;
         this.textAlign = NVG_ALIGN_LEFT;
         this.color = new RGBA(255, 255, 255, 1);
         this.scale = new Vector2(100, 0);
+
+        this.nvgColor = NVGColor.create();
     }
 
     @Override
@@ -56,9 +64,12 @@ public class Text extends GeneralComponent {
         nvgFontSize(hud.getVG(), calculateSize(handler));
         nvgFontFaceId(hud.getVG(), font.getFont());
         nvgTextAlign(hud.getVG(), textAlign);
-        NVGColor colorz = NVGColor.create();
-        nvgRGBA((byte) color.r, (byte) color.g, (byte) color.b, (byte) color.aToNano(), colorz);
-        nvgFillColor(hud.getVG(), colorz);
+        nvgFontBlur(hud.getVG(), blur);
+        nvgTextLetterSpacing(hud.getVG(), letterSpacing);
+        nvgTextLineHeight(hud.getVG(), lineHeight);
+
+        nvgRGBA((byte) color.r, (byte) color.g, (byte) color.b, (byte) color.aToNano(), nvgColor);
+        nvgFillColor(hud.getVG(), nvgColor);
 
         nvgTextBox(hud.getVG(), getTruePosition().x, getTruePosition().y, this.calculateLineWidth(handler),  text);
     }
@@ -84,7 +95,7 @@ public class Text extends GeneralComponent {
 
     /**
      * Set the font.
-     * @param font
+     * @param font The font that is to be used.
      */
     public void setFont(Font font){
         this.font = font;
@@ -194,5 +205,24 @@ public class Text extends GeneralComponent {
      */
     public RGBA getColor(){
         return this.color;
+    }
+
+    /**
+     * Set the blur of the text.
+     * <p>This can be used to create shadow effects.</p>
+     * @since 1.0-Pre1
+     * @param blur The blur.
+     */
+    public void setBlur(float blur){
+        this.blur = blur;
+    }
+
+    /**
+     * Get the current blur.
+     * @since 1.0-Pre1
+     * @return The current blur.
+     */
+    public float getBlur(){
+        return blur;
     }
 }

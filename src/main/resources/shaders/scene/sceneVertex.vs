@@ -32,14 +32,16 @@ void main()
         modelViewMatrix = modelViewInstancedMatrix;
         lightViewMatrix = modelLightViewInstancedMatrix;
         outSelected = selectedInstanced;
-
-        initPos = vec4(position, 1.0);
-        initNormal = vec4(vertexNormal, 0.0);
     }else{
         modelViewMatrix = modelViewNonInstancedMatrix;
         lightViewMatrix = modelLightViewNonInstancedMatrix;
         outSelected = selectedNonInstanced;
     }
+
+    initPos = vec4(position, 1.0);
+    initNormal = vec4(vertexNormal, 0.0);
+
+
     vec4 mvPos = modelViewMatrix * initPos;
     gl_Position = projectionMatrix * mvPos;
     outTexCoord = texCoord;

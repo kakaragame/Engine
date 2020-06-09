@@ -1,8 +1,10 @@
 package org.kakara.engine.test;
 
-import org.kakara.engine.Camera;
 import org.kakara.engine.GameHandler;
+import org.kakara.engine.engine.CubeData;
 import org.kakara.engine.input.MouseClickType;
+import org.kakara.engine.item.Material;
+import org.kakara.engine.item.mesh.Mesh;
 import org.kakara.engine.item.Texture;
 import org.kakara.engine.math.Vector2;
 import org.kakara.engine.resources.ResourceManager;
@@ -10,20 +12,23 @@ import org.kakara.engine.scene.AbstractMenuScene;
 import org.kakara.engine.test.components.LoadingBar;
 import org.kakara.engine.test.components.LoadingBarCompleteEvent;
 import org.kakara.engine.ui.RGBA;
-import org.kakara.engine.ui.components.Rectangle;
-import org.kakara.engine.ui.components.Text;
+import org.kakara.engine.ui.components.shapes.Rectangle;
+import org.kakara.engine.ui.components.text.BoundedText;
+import org.kakara.engine.ui.components.text.Text;
+import org.kakara.engine.ui.constraints.*;
 import org.kakara.engine.ui.events.HUDClickEvent;
 import org.kakara.engine.ui.events.HUDHoverEnterEvent;
 import org.kakara.engine.ui.events.HUDHoverLeaveEvent;
 import org.kakara.engine.ui.items.ComponentCanvas;
-import org.kakara.engine.ui.properties.GridProperty;
-import org.kakara.engine.ui.properties.HorizontalCenterProperty;
+import org.kakara.engine.ui.items.ObjectCanvas;
+import org.kakara.engine.ui.objectcanvas.UIObject;
 import org.kakara.engine.ui.text.Font;
 import org.kakara.engine.ui.text.TextAlign;
 import org.kakara.engine.utils.Time;
 import org.kakara.engine.utils.Utils;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * Example of how to make a proper UI Scene.
@@ -33,6 +38,8 @@ public class TitleScreenScene extends AbstractMenuScene {
 
     private Text fps;
     private LoadingBar lb;
+
+    UIObject obj;
 
     public TitleScreenScene(GameHandler gameHandler, KakaraTest kakaraTest) throws Exception {
         super(gameHandler);
@@ -64,12 +71,12 @@ public class TitleScreenScene extends AbstractMenuScene {
         title.setSize(200);
         title.setLineWidth(500);
         title.setPosition(0, 200);
-        title.addProperty(new HorizontalCenterProperty());
+        title.addConstraint(new HorizontalCenterConstraint());
 
         // Create the play button from a rectangle.
         Rectangle playButton = new Rectangle(new Vector2(0, gameHandler.getWindow().getHeight() - 300),
                 new Vector2(100, 100));
-        playButton.addProperty(new GridProperty(4, 7, 1, 4));
+        playButton.addConstraint(new GridConstraint(4, 7, 1, 4));
         playButton.setColor(new RGBA(0, 150, 150, 1));
         // Setup the events for the button.
         playButton.addUActionEvent(new HUDHoverEnterEvent() {
@@ -107,7 +114,7 @@ public class TitleScreenScene extends AbstractMenuScene {
 
         // Custom Component
         LoadingBar lb = new LoadingBar(new Vector2(300, 300), new Vector2(300, 30), roboto);
-        lb.addProperty(new HorizontalCenterProperty());
+        lb.addConstraint(new HorizontalCenterConstraint());
         cc.add(lb);
         this.lb = lb;
 
@@ -165,7 +172,7 @@ public class TitleScreenScene extends AbstractMenuScene {
         Rectangle openMenuButton = new Rectangle(new Vector2(gameHandler.getWindow().getWidth()/2 + 100, gameHandler.getWindow().getHeight() - 300),
                 new Vector2(100, 100));
         openMenuButton.setColor(new RGBA(0, 150, 150, 1));
-        openMenuButton.addProperty(new GridProperty(4, 7, 2, 4));
+        openMenuButton.addConstraint(new GridConstraint(4, 7, 2, 4));
         openMenuButton.addUActionEvent(new HUDHoverEnterEvent() {
             @Override
             public void OnHudHoverEnter(Vector2 location) {
@@ -209,11 +216,46 @@ public class TitleScreenScene extends AbstractMenuScene {
         cc.add(fps);
         this.fps = fps;
 
+        BoundedText btxt = new BoundedText("This is a test. I really need to make this string super long and stuff just so you know!", roboto);
+        btxt.setPosition(300, 60);
+        btxt.setMaximumBound(new Vector2(350, 90));
+        btxt.addConstraint(new GeneralConstraint(ComponentSide.LEFT, playButton, ComponentSide.RIGHT, 0));
+//        btxt.addConstraint(new GeneralConstraint(ComponentSide.TOP, playButton, ComponentSide.TOP, 1));
+        btxt.addConstraint(new GeneralConstraint(ComponentSide.BOTTOM, null, ComponentSide.BOTTOM, 0));
+        cc.add(btxt);
+
+        title.setVisible(false);
+
 
 
 
         // Make sure to add the component canvas to the hud!
         add(cc);
+
+        ObjectCanvas oc = new ObjectCanvas(this);
+        Mesh m = new Mesh(CubeData.vertex, CubeData.texture, CubeData.normal, CubeData.indices);
+        InputStream io = Texture.class.getResourceAsStream("/example_texture.png");
+        Texture grass = Utils.inputStreamToTexture(io);
+        Material mt = new Material(grass);
+        mt.addOverlayTexture(Utils.inputStreamToTexture(Texture.class.getResourceAsStream("/oa.png")));
+        mt.addOverlayTexture(Utils.inputStreamToTexture(Texture.class.getResourceAsStream("/ovly2.png")));
+        m.setMaterial(mt);
+
+        UIObject ui = new UIObject(m);
+        ui.setPosition((float)200, (float)200);
+        ui.setScale(100);
+        obj = ui;
+        obj.getRotation().rotateX((float)Math.toRadians(40));
+        obj.getRotation().rotateY((float)Math.toRadians(50));
+        oc.add(ui);
+        add(oc);
+
+        ComponentCanvas ontop = new ComponentCanvas(this);
+        Rectangle on = new Rectangle();
+        on.setPosition(200, 200);
+        on.setScale(40, 40);
+        ontop.add(on);
+        add(ontop);
 
         setCurserStatus(true);
 
@@ -225,5 +267,10 @@ public class TitleScreenScene extends AbstractMenuScene {
         fps.setText("FPS: " + Math.round(1/Time.deltaTime));
 
         lb.setPercent(lb.getPercent() + Time.deltaTime);
+
+        obj.setPosition(gameHandler.getMouseInput().getCurrentPosition().x, gameHandler.getMouseInput().getCurrentPosition().y);
+
+//        getCamera().setPosition(getCamera().getPosition().add(1,0,0));
+//        System.out.println(getCamera().getPosition());
     }
 }

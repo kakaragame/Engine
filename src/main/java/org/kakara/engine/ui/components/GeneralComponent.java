@@ -1,12 +1,11 @@
 package org.kakara.engine.ui.components;
 
 import org.jetbrains.annotations.Nullable;
-import org.kakara.engine.GameEngine;
 import org.kakara.engine.GameHandler;
 import org.kakara.engine.math.Vector2;
 import org.kakara.engine.ui.HUD;
 import org.kakara.engine.ui.events.UActionEvent;
-import org.kakara.engine.ui.properties.ComponentProperty;
+import org.kakara.engine.ui.constraints.Constraint;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
@@ -19,7 +18,7 @@ public abstract class GeneralComponent implements Component {
 
     protected Map<UActionEvent, Class<? extends UActionEvent>> events;
     protected List<Component> components;
-    protected List<ComponentProperty> properties;
+    protected List<Constraint> constraints;
 
     private Component parent;
 
@@ -36,7 +35,7 @@ public abstract class GeneralComponent implements Component {
     public GeneralComponent(){
         events = new HashMap<>();
         components = new ArrayList<>();
-        properties = new ArrayList<>();
+        constraints = new ArrayList<>();
         position = new Vector2(0, 0);
         scale = new Vector2(0, 0);
         truePosition = new Vector2(0, 0);
@@ -58,6 +57,13 @@ public abstract class GeneralComponent implements Component {
     public void render(Vector2 relative, HUD hud, GameHandler handler){
         for(Component c : components){
             c.render(relative.add(position), hud, handler);
+        }
+    }
+
+    @Override
+    public void cleanup(GameHandler handler){
+        for(Component c : components){
+            c.cleanup(handler);
         }
     }
 
@@ -128,8 +134,8 @@ public abstract class GeneralComponent implements Component {
         this.trueScale = new Vector2(scale.x * ((float) handler.getWindow().getWidth()/ (float)handler.getWindow().initalWidth),
                 scale.y * ((float) handler.getWindow().getHeight()/(float)handler.getWindow().initalHeight));
 
-        for (ComponentProperty cp : properties){
-            cp.update(this);
+        for(Constraint cc : constraints){
+            cc.update(this);
         }
 
         for(Component cc : components){
@@ -145,6 +151,16 @@ public abstract class GeneralComponent implements Component {
         init = true;
         for(Component cc : components){
             cc.init(hud, handler);
+        }
+    }
+
+    /**
+     * Allows the engine to handle the cleanup of sub components.
+     * @param handler The handler.
+     */
+    public void pollCleanup(GameHandler handler){
+        for(Component cc : components){
+            cc.cleanup(handler);
         }
     }
 
@@ -209,23 +225,18 @@ public abstract class GeneralComponent implements Component {
     }
 
     @Override
-    public void addProperty(ComponentProperty property){
-        if(properties.stream().anyMatch(prop -> prop.getClass() == property.getClass())){
-            GameEngine.LOGGER.warn("The property " + property.getClass().getName() + " already exists in this component!");
-            return;
-        }
-
-        properties.add(property);
-        property.onAdd(this);
+    public void addConstraint(Constraint constraint){
+        constraints.add(constraint);
+        constraint.onAdd(this);
     }
 
     @Override
-    public void removeProperty(Class<ComponentProperty> property){
-        List<ComponentProperty> props = properties.stream().filter(prop -> prop.getClass() == property).collect(Collectors.toList());
+    public void removeConstraint(Class<Constraint> constraintClass){
+        List<Constraint> props = constraints.stream().filter(prop -> prop.getClass() == constraintClass).collect(Collectors.toList());
         if(props.size() > 0){
-            ComponentProperty prop = props.get(0);
+            Constraint prop = props.get(0);
             prop.onRemove(this);
-            properties.remove(prop);
+            constraints.remove(prop);
         }
     }
 

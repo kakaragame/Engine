@@ -28,9 +28,9 @@ public abstract class AbstractGameScene extends AbstractScene {
 
     @Override
     public final void render( ) {
-        gameHandler.getGameEngine().getRenderer().render(gameHandler.getWindow(), gameHandler.getCamera(), this);
+        gameHandler.getGameEngine().getRenderer().render(gameHandler.getWindow(), getCamera(), this);
         if(getSkyBox() != null)
-            gameHandler.getGameEngine().getRenderer().renderSkyBox(gameHandler.getWindow(), gameHandler.getCamera(), this);
+            gameHandler.getGameEngine().getRenderer().renderSkyBox(gameHandler.getWindow(), getCamera(), this);
         hud.render(gameHandler.getWindow());
     }
 
@@ -80,7 +80,7 @@ public abstract class AbstractGameScene extends AbstractScene {
         Vector3f min = new Vector3f();
         Vector2f nearFar = new Vector2f();
 
-        for(Collidable collidable : gameHandler.getCollisionManager().getSelectionItems(getCamera().getPosition())){
+        for(Collidable collidable : getCollisionManager().getSelectionItems(getCamera().getPosition())){
             collidable.setSelected(false);
             min.set(collidable.getColPosition().toJoml());
             max.set(collidable.getColPosition().toJoml());

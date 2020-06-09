@@ -7,12 +7,16 @@ import org.kakara.engine.Camera;
 import org.kakara.engine.GameHandler;
 import org.kakara.engine.gui.Window;
 import org.kakara.engine.item.*;
+import org.kakara.engine.item.mesh.IMesh;
+import org.kakara.engine.item.mesh.InstancedMesh;
+import org.kakara.engine.item.mesh.Mesh;
 import org.kakara.engine.item.particles.ParticleEmitter;
 import org.kakara.engine.lighting.*;
 import org.kakara.engine.math.Vector3;
 import org.kakara.engine.renderobjects.RenderChunk;
 import org.kakara.engine.scene.AbstractGameScene;
 import org.kakara.engine.scene.Scene;
+import org.kakara.engine.ui.objectcanvas.UIObject;
 import org.kakara.engine.utils.Utils;
 
 import java.util.List;
@@ -39,6 +43,7 @@ public class Renderer {
     private Shader depthShaderProgram;
     private Shader particleShaderProgram;
     private Shader chunkShaderProgram;
+    private Shader hudShaderProgram;
 
     private ShadowMap shadowMap;
 
@@ -65,6 +70,7 @@ public class Renderer {
         setupDepthShader();
         setupParticleShader();
         setupChunkShader();
+        setupHudShader();
     }
 
     /**
@@ -92,8 +98,25 @@ public class Renderer {
     }
 
     /**
+     * Render the 3D portion of the HUD.
+     * <p>See {@link org.kakara.engine.ui.objectcanvas.UIObject} and {@link org.kakara.engine.ui.items.ObjectCanvas} for more info.</p>
+     * @param window The window of the current game.
+     * @param objects The list of objects.
+     */
+    public void renderHUD(Window window, List<UIObject> objects){
+        hudShaderProgram.bind();
+        Matrix4f orthoProjection = transformation.buildOrtho(0, window.getWidth(), window.getHeight(), 0);
+        for(UIObject object : objects){
+            IMesh mesh = object.getMesh();
+            hudShaderProgram.setUniform("ortho",  orthoProjection);
+            hudShaderProgram.setUniform("model", transformation.buildModelViewMatrixUI(object));
+            mesh.render();
+        }
+        hudShaderProgram.unbind();
+    }
+
+    /**
      * Render a chunk
-     * TODO check view matrix.
      *
      * @param window   The window
      * @param camera   The camera
@@ -211,6 +234,11 @@ public class Renderer {
                         }
                         Matrix4f modelLightViewMatrix = transformation.buildModelLightViewMatrix(modelMatrix, lightViewMatrix);
                         shaderProgram.setUniform("modelLightViewNonInstancedMatrix", modelLightViewMatrix);
+
+                        // Render every mesh (some game items can have more than one)
+                        for(Mesh m : ((MeshGameItem) gameItem).getMeshes()){
+                            m.render();
+                        }
                     }
             );
         }
@@ -409,14 +437,29 @@ public class Renderer {
     }
 
     /**
+     * Setup the hud shader.
+     * @throws Exception The hud shader.
+     */
+    private void setupHudShader() throws Exception {
+        hudShaderProgram = new Shader();
+        hudShaderProgram.createVertexShader(Utils.loadResource("/shaders/hud/hudVertex.vs"));
+        hudShaderProgram.createFragmentShader(Utils.loadResource("/shaders/hud/hudFragment.fs"));
+        hudShaderProgram.link();
+
+        // Create uniforms for Orthographic-model projection matrix and base colour
+        hudShaderProgram.createUniform("model");
+        hudShaderProgram.createUniform("ortho");
+    }
+
+    /**
      * Setup the particle shader.
      *
      * @throws Exception
      */
     private void setupParticleShader() throws Exception {
         particleShaderProgram = new Shader();
-        particleShaderProgram.createVertexShader(Utils.loadResource("/shaders/particleVertex.vs"));
-        particleShaderProgram.createFragmentShader(Utils.loadResource("/shaders/particleFragment.fs"));
+        particleShaderProgram.createVertexShader(Utils.loadResource("/shaders/particle/particleVertex.vs"));
+        particleShaderProgram.createFragmentShader(Utils.loadResource("/shaders/particle/particleFragment.fs"));
         particleShaderProgram.link();
 
         particleShaderProgram.createUniform("projectionMatrix");
@@ -436,8 +479,8 @@ public class Renderer {
      */
     private void setupSkyBoxShader() throws Exception {
         skyBoxShaderProgram = new Shader();
-        skyBoxShaderProgram.createVertexShader(Utils.loadResource("/skyboxVertex.vs"));
-        skyBoxShaderProgram.createFragmentShader(Utils.loadResource("/skyboxFragment.fs"));
+        skyBoxShaderProgram.createVertexShader(Utils.loadResource("/shaders/scene/skyboxVertex.vs"));
+        skyBoxShaderProgram.createFragmentShader(Utils.loadResource("/shaders/scene/skyboxFragment.fs"));
         skyBoxShaderProgram.link();
 
         skyBoxShaderProgram.createUniform("projectionMatrix");
@@ -453,8 +496,8 @@ public class Renderer {
      */
     private void setupSceneShader() throws Exception {
         shaderProgram = new Shader();
-        shaderProgram.createVertexShader(Utils.loadResource("/shaders/sceneVertex.vs"));
-        shaderProgram.createFragmentShader(Utils.loadResource("/shaders/sceneFragment.fs"));
+        shaderProgram.createVertexShader(Utils.loadResource("/shaders/scene/sceneVertex.vs"));
+        shaderProgram.createFragmentShader(Utils.loadResource("/shaders/scene/sceneFragment.fs"));
         shaderProgram.link();
         shaderProgram.createUniform("projectionMatrix");
         shaderProgram.createUniform("modelViewNonInstancedMatrix");
@@ -480,8 +523,8 @@ public class Renderer {
      */
     private void setupChunkShader() throws Exception {
         chunkShaderProgram = new Shader();
-        chunkShaderProgram.createVertexShader(Utils.loadResource("/shaders/chunkVertex.vs"));
-        chunkShaderProgram.createFragmentShader(Utils.loadResource("/shaders/chunkFragment.fs"));
+        chunkShaderProgram.createVertexShader(Utils.loadResource("/shaders/chunk/chunkVertex.vs"));
+        chunkShaderProgram.createFragmentShader(Utils.loadResource("/shaders/chunk/chunkFragment.fs"));
         chunkShaderProgram.link();
 
         chunkShaderProgram.createUniform("projectionMatrix");
@@ -528,8 +571,8 @@ public class Renderer {
      */
     private void setupDepthShader() throws Exception {
         depthShaderProgram = new Shader();
-        depthShaderProgram.createVertexShader(Utils.loadResource("/shaders/depthVertex.vs"));
-        depthShaderProgram.createFragmentShader(Utils.loadResource("/shaders/depthFragment.fs"));
+        depthShaderProgram.createVertexShader(Utils.loadResource("/shaders/depth/depthVertex.vs"));
+        depthShaderProgram.createFragmentShader(Utils.loadResource("/shaders/depth/depthFragment.fs"));
         depthShaderProgram.link();
 
         depthShaderProgram.createUniform("orthoProjectionMatrix");

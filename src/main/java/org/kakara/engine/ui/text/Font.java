@@ -47,7 +47,7 @@ public class Font {
 
     /**
      * Get the id of the font for use with NVG static functions.
-     * @return
+     * @return The id of the font.
      */
     public int getFont(){
         return font;

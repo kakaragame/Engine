@@ -28,16 +28,20 @@ public class ResourceManager {
     }
 
     /**
-     * use / as the path seperator. it will be handled for different systems if needed
-     *
-     * @param resourcePath Path to the resource
-     * @return path to the resource
+     * Get a resource from the specified file path.
+     * <p>Use '/' as the path separator. The separator will automatically be changed to match other operating system formats.</p>
+     * @param resourcePath Path to the resource (Can be inside or outside of the jar).
+     * @return path to the resource. (This will return null if the MalformedURLException occurs. Aka: if the path is not correct).
      */
-    public Resource getResource(String resourcePath) throws MalformedURLException {
+    public Resource getResource(String resourcePath) {
         File externalResource = new File(externalLocation, resourcePath.replace("/", File.separator));
         GameEngine.LOGGER.debug(externalResource.getAbsolutePath());
         if (externalResource.exists()) {
-            return new FileResource(externalResource.toURI().toURL(), resourcePath);
+            try {
+                return new FileResource(externalResource.toURI().toURL(), resourcePath);
+            }catch(MalformedURLException ex){
+                return null;
+            }
         } else {
             String location = internalLocation + resourcePath;
             location = location.replace("//", "/");

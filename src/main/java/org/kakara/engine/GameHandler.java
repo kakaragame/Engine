@@ -1,13 +1,11 @@
 package org.kakara.engine;
 
-import org.kakara.engine.collision.CollisionManager;
-import org.kakara.engine.events.EventManager;
+import org.jetbrains.annotations.NotNull;
 import org.kakara.engine.gui.Window;
 import org.kakara.engine.input.KeyInput;
 import org.kakara.engine.input.MouseInput;
-import org.kakara.engine.item.ItemHandler;
-import org.kakara.engine.lighting.LightHandler;
 import org.kakara.engine.resources.ResourceManager;
+import org.kakara.engine.scene.Scene;
 import org.kakara.engine.scene.SceneManager;
 import org.kakara.engine.sound.SoundManager;
 
@@ -16,11 +14,8 @@ import org.kakara.engine.sound.SoundManager;
  */
 public class GameHandler {
 
-    private Camera camera;
     private MouseInput mouseInput;
     private KeyInput keyInput;
-    private EventManager eventManager;
-    private CollisionManager collisionManager;
     private SceneManager sceneManager;
     private SoundManager soundManager;
     private static GameHandler gameHandler;
@@ -29,11 +24,8 @@ public class GameHandler {
 
     public GameHandler(GameEngine gameEngine) {
         this.gameEngine = gameEngine;
-        this.camera = new Camera();
         this.mouseInput = new MouseInput(this);
         this.keyInput = new KeyInput(gameEngine);
-        this.eventManager = new EventManager(this);
-        this.collisionManager = new CollisionManager(this);
         this.sceneManager = new SceneManager(this);
         soundManager = new SoundManager();
         GameHandler.gameHandler = this;
@@ -54,16 +46,6 @@ public class GameHandler {
      */
     protected void update() {
         mouseInput.update();
-    }
-
-
-    /**
-     * Get the main camera.
-     *
-     * @return The main camera
-     */
-    public Camera getCamera() {
-        return camera;
     }
 
     /**
@@ -91,23 +73,6 @@ public class GameHandler {
      */
     public Window getWindow() {
         return gameEngine.getWindow();
-    }
-
-    /**
-     * Get the EventManager
-     *
-     * @return The EventManager
-     */
-    public EventManager getEventManager() {
-        return eventManager;
-    }
-
-    /**
-     * Get the collision manager
-     * @return The collision manager
-     */
-    public CollisionManager getCollisionManager() {
-        return collisionManager;
     }
 
     /**
@@ -151,11 +116,18 @@ public class GameHandler {
     }
 
     /**
+     * Get the current scene.
+     * @return The current scene.
+     */
+    public @NotNull Scene getCurrentScene(){
+        return getSceneManager().getCurrentScene();
+    }
+
+    /**
      * Close out the game safely.
      * <p>THIS IS THE RECOMMENDED WAY TO CLOSE THE GAME!</p>
      */
     public void exit() {
-        gameEngine.running = false;
-        soundManager.cleanup();
+        gameEngine.exit();
     }
 }

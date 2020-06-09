@@ -96,7 +96,7 @@ public class SpotLight implements Comparable<SpotLight> {
 
     @Override
     public int compareTo(SpotLight o) {
-        Vector3 cameraPos = GameHandler.getInstance().getCamera().getPosition();
+        Vector3 cameraPos = GameHandler.getInstance().getCurrentScene().getCamera().getPosition();
         return Math.round(KMath.distance(cameraPos, getPointLight().getPosition()) - KMath.distance(cameraPos, o.getPointLight().getPosition()));
     }
 

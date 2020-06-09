@@ -9,7 +9,7 @@ public class Main {
         System.setProperty("org.slf4j.simpleLogger.defaultLogLevel","debug");
         KakaraTest kt = new KakaraTest();
 
-//        Configuration.DEBUG_MEMORY_ALLOCATOR.set(true);
+        Configuration.DEBUG_MEMORY_ALLOCATOR.set(true);
 
         GameEngine gameEng = new GameEngine("Kakara Engine :: Test", 1080, 720, true, kt);
         gameEng.run();

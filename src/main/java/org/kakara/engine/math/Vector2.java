@@ -75,7 +75,7 @@ public class Vector2 {
 
     /**
      * Subtract a value to the vector.
-     * <p>THis mutates the original vector. The vector being subtracted in unaffected.</p>
+     * <p>This mutates the original vector. The vector being subtracted in unaffected.</p>
      * @param vec The vector to subtract by
      * @return The original vector.
      */
@@ -90,6 +90,49 @@ public class Vector2 {
      */
     public Vector2 clone(){
         return new Vector2(this);
+    }
+
+    /**
+     * Get the value of x.
+     * @since 1.0-Pre1
+     * @return The value of x.
+     */
+    public float getX(){
+        return x;
+    }
+
+    /**
+     * Set the x value.
+     * @since 1.0-Pre1
+     * @param x The x value.
+     */
+    public void setX(float x){
+        this.x = x;
+    }
+
+    /**
+     * Get the value of y.
+     * @since 1.0-Pre1
+     * @return The value of y.
+     */
+    public float getY(){
+        return y;
+    }
+
+    /**
+     * Set the y value.
+     * @since 1.0-Pre1
+     * @param y The y value.
+     */
+    public void setY(float y){
+        this.y = y;
+    }
+
+    @Override
+    public boolean equals(Object obj){
+        if(!(obj instanceof Vector2)) return false;
+        Vector2 otherVec = (Vector2) obj;
+        return this.x == otherVec.x && this.y == otherVec.y;
     }
 
     @Override

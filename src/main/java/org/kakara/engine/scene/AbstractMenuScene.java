@@ -3,6 +3,8 @@ package org.kakara.engine.scene;
 import org.kakara.engine.Camera;
 import org.kakara.engine.GameEngine;
 import org.kakara.engine.GameHandler;
+import org.kakara.engine.collision.CollisionManager;
+import org.kakara.engine.events.EventManager;
 import org.kakara.engine.item.ItemHandler;
 import org.kakara.engine.item.particles.ParticleHandler;
 import org.kakara.engine.item.SkyBox;
@@ -24,13 +26,17 @@ import static org.lwjgl.opengl.GL11.glViewport;
  */
 public abstract class AbstractMenuScene implements Scene {
 
-    protected HUD hud = new HUD(this);
+    protected final HUD hud = new HUD(this);
+    private final EventManager eventManager = new EventManager();
+    private final Camera camera = new Camera();
+
     private boolean mouseStatus;
     protected GameHandler gameHandler;
     private ComponentCanvas cc;
 
     public AbstractMenuScene(GameHandler gameHandler){
         this.gameHandler = gameHandler;
+        this.eventManager.registerHandler(this);
         try{
             hud.init(gameHandler.getWindow());
             cc = new ComponentCanvas(this);
@@ -94,6 +100,31 @@ public abstract class AbstractMenuScene implements Scene {
         GameEngine.LOGGER.warn("There is no skybox in this implementation of scene! Did you mean to use AbstractGameScene?");
     }
 
+    @Override
+    public EventManager getEventManager(){
+        return this.eventManager;
+    }
+
+    @Override
+    public CollisionManager getCollisionManager(){
+        GameEngine.LOGGER.warn("There is not collision manager in this implementation of scene! Did you mean to use AbstractGameScene?");
+        return null;
+    }
+
+    /**
+     * Register an object to the scene event manager.
+     * <p>Scenes are automatically added. Do not add the scene to this list.</p>
+     * @since 1.0-Pre1
+     * @param obj The object to handle.
+     */
+    public void registerEventObject(Object obj){
+        if(obj instanceof Scene){
+            GameEngine.LOGGER.warn("Unable to register event object: Scenes are automatically added to the event list.");
+            return;
+        }
+        this.eventManager.registerHandler(obj);
+    }
+
     /**
      * Add a hud item to the scene.
      * @param hudItem The hud item to add.
@@ -108,7 +139,7 @@ public abstract class AbstractMenuScene implements Scene {
      */
     public void setBackground(Texture texture){
         if(cc.getComponents().size() > 0)
-            ((BackgroundImage)cc.getComponents().get(0)).cleanup();
+            cc.getComponents().get(0).cleanup(gameHandler);
         cc.clearComponents();
         cc.add(new BackgroundImage(texture, gameHandler));
     }
@@ -133,7 +164,7 @@ public abstract class AbstractMenuScene implements Scene {
 
     @Override
     public Camera getCamera(){
-        return gameHandler.getCamera();
+        return camera;
     }
 }
 
@@ -159,7 +190,8 @@ class BackgroundImage extends GeneralComponent{
         pollRender(relative, hud, handler);
     }
 
-    public void cleanup(){
-        sprite.cleanup();
+    @Override
+    public void cleanup(GameHandler handler){
+        sprite.cleanup(handler);
     }
 }

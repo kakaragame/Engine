@@ -1,6 +1,9 @@
-package org.kakara.engine.item;
+package org.kakara.engine.item.mesh;
 
 import org.jetbrains.annotations.NotNull;
+import org.kakara.engine.item.GameItem;
+import org.kakara.engine.item.Material;
+import org.kakara.engine.item.Texture;
 import org.lwjgl.system.MemoryUtil;
 
 import java.nio.FloatBuffer;
@@ -17,7 +20,7 @@ import static org.lwjgl.opengl.GL30.*;
  * If a ton of objects use this mesh, than consider changing to {@link InstancedMesh}.
  * <p>This class is <b>not</b> thread safe.</p>
  */
-public class Mesh {
+public class Mesh implements IMesh {
     public static final int MAX_WEIGHTS = 4;
 
     protected final int vaoId;

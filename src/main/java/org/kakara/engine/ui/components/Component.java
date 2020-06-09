@@ -5,7 +5,7 @@ import org.kakara.engine.GameHandler;
 import org.kakara.engine.math.Vector2;
 import org.kakara.engine.ui.HUD;
 import org.kakara.engine.ui.events.UActionEvent;
-import org.kakara.engine.ui.properties.ComponentProperty;
+import org.kakara.engine.ui.constraints.Constraint;
 
 import java.util.List;
 
@@ -30,6 +30,11 @@ public interface Component {
      * Internal Use Only
      */
     void init(HUD hud, GameHandler handler);
+
+    /**
+     * Internal Use Only
+     */
+    void cleanup(GameHandler handler);
 
     /**
      * Set the position of the element
@@ -114,17 +119,17 @@ public interface Component {
     void setParent(@Nullable Component parent);
 
     /**
-     * Add a property to the component
+     * Add a constraint to the component
      * @since 1.0-Pre1
-     * @param property The property to add.
+     * @param constraint The property to add.
      */
-    void addProperty(ComponentProperty property);
+    void addConstraint(Constraint constraint);
 
     /**
-     * Remove a property from the component
+     * Remove a constraint from the component
      * @since 1.0-Pre1
-     * @param property The property class to remove.
+     * @param constraint The property class to remove.
      */
-    void removeProperty(Class<ComponentProperty> property);
+    void removeConstraint(Class<Constraint> constraint);
 
 }

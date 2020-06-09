@@ -57,6 +57,13 @@ public class ComponentCanvas implements HUDItem {
         }
     }
 
+    @Override
+    public void cleanup(GameHandler handler) {
+        for(Component component : components){
+            component.cleanup(handler);
+        }
+    }
+
     /**
      * Get a list of the child components
      * @return The child components

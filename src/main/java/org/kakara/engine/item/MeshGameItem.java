@@ -6,6 +6,7 @@ import org.kakara.engine.Camera;
 import org.kakara.engine.GameHandler;
 import org.kakara.engine.collision.Collidable;
 import org.kakara.engine.collision.Collider;
+import org.kakara.engine.item.mesh.Mesh;
 import org.kakara.engine.math.Vector3;
 
 import java.util.UUID;
@@ -240,7 +241,7 @@ public class MeshGameItem implements GameItem, Collidable {
     public void setCollider(Collider collider) {
         this.collider = collider;
         collider.onRegister(this);
-        GameHandler.getInstance().getCollisionManager().addCollidingItem(this);
+        GameHandler.getInstance().getCurrentScene().getCollisionManager().addCollidingItem(this);
     }
 
     /**
@@ -248,7 +249,7 @@ public class MeshGameItem implements GameItem, Collidable {
      */
     public void removeCollider() {
         this.collider = null;
-        GameHandler.getInstance().getCollisionManager().removeCollidingItem(this);
+        GameHandler.getInstance().getCurrentScene().getCollisionManager().removeCollidingItem(this);
     }
 
     @Override

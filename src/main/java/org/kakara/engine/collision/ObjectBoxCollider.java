@@ -6,8 +6,9 @@ import org.kakara.engine.math.Vector3;
 import org.kakara.engine.utils.Time;
 
 /**
- * Handles collision for primative types. For objects using the model loader
- * {@link BoxCollider}
+ * Gives an objects a cube collision box that is automatically scaled around the object.
+ * <p>This type works best for primitives, like a cube.</p>
+ * <p>For a custom size collision box see: {@link BoxCollider}</p>
  */
 public class ObjectBoxCollider implements Collider {
 
@@ -96,7 +97,8 @@ public class ObjectBoxCollider implements Collider {
         this.deltaPosition = item.getColPosition().clone().subtract(this.lastPosition);
         this.lastPosition = item.getColPosition().clone();
 
-        CollisionManager cm = handler.getCollisionManager();
+        CollisionManager cm = handler.getCurrentScene().getCollisionManager();
+        assert cm != null;
         for(Collidable gi : cm.getCollidngItems(item.getColPosition())){
             if(gi == item) continue;
             if(cm.isColliding(gi, item)){

@@ -1,5 +1,6 @@
 package org.kakara.engine.collision;
 
+import org.jetbrains.annotations.Nullable;
 import org.kakara.engine.GameHandler;
 import org.kakara.engine.math.Vector3;
 import org.kakara.engine.scene.AbstractGameScene;
@@ -51,7 +52,7 @@ public class CollisionManager {
      * @param position The position of the current colliding object.
      * @return The list of collision objects.
      */
-    public List<Collidable> getCollidngItems(Vector3 position){
+    public List<Collidable> getCollidngItems(@Nullable Vector3 position){
         if(position == null) return collidingItems;
         List<Collidable> colliders = new ArrayList<>(collidingItems);
         if(handler.getSceneManager().getCurrentScene() instanceof  AbstractGameScene)

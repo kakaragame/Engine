@@ -1,7 +1,8 @@
-package org.kakara.engine.item;
+package org.kakara.engine.item.mesh;
 
 import org.joml.Matrix4f;
 import org.kakara.engine.GameHandler;
+import org.kakara.engine.item.GameItem;
 import org.kakara.engine.math.KMath;
 import org.kakara.engine.render.Transformation;
 import org.lwjgl.system.MemoryUtil;
@@ -127,7 +128,7 @@ public class InstancedMesh extends Mesh {
         int i = 0;
         for (GameItem gameItem : gameItems) {
 
-            if(KMath.distance(gameItem.getPosition(), GameHandler.getInstance().getCamera().getPosition()) > 100)
+            if(KMath.distance(gameItem.getPosition(), GameHandler.getInstance().getCurrentScene().getCamera().getPosition()) > 100)
                 continue;
 
             Matrix4f modelMatrix = transformation.buildModelMatrix(gameItem);

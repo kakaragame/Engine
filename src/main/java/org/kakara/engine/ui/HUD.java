@@ -5,6 +5,7 @@ import org.kakara.engine.gui.Window;
 import org.kakara.engine.math.Vector2;
 import org.kakara.engine.scene.Scene;
 import org.kakara.engine.ui.components.Component;
+import org.kakara.engine.ui.items.ObjectCanvas;
 import org.kakara.engine.ui.text.Font;
 
 import java.util.ArrayList;
@@ -67,6 +68,16 @@ public class HUD {
     }
 
     /**
+     * Internal Use Only.
+     */
+    public void cleanup(){
+        for(HUDItem item : hudItems){
+            item.cleanup(GameHandler.getInstance());
+        }
+    }
+
+
+    /**
      * Get the context of NanoVG.
      * @return The context of NanoVG.
      */
@@ -112,6 +123,7 @@ public class HUD {
     /**
      * Get the Image Cache.
      * <p>Primarily Internal Use Only</p>
+     * @deprecated Replaced by internal cleanup calls.
      * @return The image cache.
      */
     public HUDImageCache getImageCache(){
@@ -137,12 +149,5 @@ public class HUD {
         boolean overx = position.x < mouse.x && mouse.x < position.x + scale.x;
         boolean overy = position.y < mouse.y && mouse.y < position.y + scale.y;
         return overx && overy;
-    }
-
-    /**
-     * Internal Use Only.
-     */
-    public void cleanup(){
-        this.getImageCache().cleanup();
     }
 }
