@@ -1,7 +1,7 @@
 package org.kakara.engine.item.particles;
 
 import org.joml.Quaternionf;
-import org.kakara.engine.item.Mesh;
+import org.kakara.engine.item.mesh.Mesh;
 import org.kakara.engine.item.MeshGameItem;
 import org.kakara.engine.item.Texture;
 import org.kakara.engine.math.Vector3;

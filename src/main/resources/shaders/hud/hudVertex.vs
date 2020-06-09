@@ -6,11 +6,11 @@ layout (location=2) in vec3 vertexNormal;
 
 out vec2 outTexCoord;
 
-uniform mat4 projection;
 uniform mat4 model;
+uniform mat4 ortho;
 
 void main()
 {
-    gl_Position = projection * (model * vec4(position, 1.0));
+    gl_Position = ortho * (model * vec4(position, 1.0));
     outTexCoord = texCoord;
 }

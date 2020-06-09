@@ -40,7 +40,7 @@ public abstract class AbstractMenuScene implements Scene {
         try{
             hud.init(gameHandler.getWindow());
             cc = new ComponentCanvas(this);
-//            hud.addItem(cc);
+            hud.addItem(cc);
         }catch(Exception ex){
             GameEngine.LOGGER.error("Unable to load HUD", ex);
         }

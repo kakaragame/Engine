@@ -62,10 +62,6 @@ public class HUD {
         nvgBeginFrame(vg, window.getWidth(), window.getHeight(), 1);
         for(HUDItem it : hudItems){
             it.render(this, GameHandler.getInstance());
-            if(it instanceof ObjectCanvas) {
-                System.out.println("Called");
-                return;
-            }
         }
         nvgEndFrame(vg);
         window.restoreState();

@@ -1,12 +1,10 @@
 package org.kakara.engine.models;
 
-import org.joml.Vector3f;
 import org.joml.Vector4f;
 import org.kakara.engine.GameEngine;
-import org.kakara.engine.GameHandler;
 import org.kakara.engine.exceptions.ModelLoadException;
 import org.kakara.engine.item.Material;
-import org.kakara.engine.item.Mesh;
+import org.kakara.engine.item.mesh.Mesh;
 import org.kakara.engine.item.Texture;
 import org.kakara.engine.resources.FileResource;
 import org.kakara.engine.resources.JarResource;
@@ -17,7 +15,6 @@ import org.kakara.engine.utils.Utils;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.assimp.*;
 
-import java.io.IOException;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;

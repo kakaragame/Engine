@@ -1,14 +1,15 @@
 package org.kakara.engine.render;
 
-import org.eclipse.swt.internal.win32.SYSTEMTIME;
 import org.joml.Matrix4f;
-import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 import org.kakara.engine.Camera;
 import org.kakara.engine.GameHandler;
 import org.kakara.engine.gui.Window;
 import org.kakara.engine.item.*;
+import org.kakara.engine.item.mesh.IMesh;
+import org.kakara.engine.item.mesh.InstancedMesh;
+import org.kakara.engine.item.mesh.Mesh;
 import org.kakara.engine.item.particles.ParticleEmitter;
 import org.kakara.engine.lighting.*;
 import org.kakara.engine.math.Vector3;
@@ -96,31 +97,26 @@ public class Renderer {
 
     }
 
+    /**
+     * Render the 3D portion of the HUD.
+     * <p>See {@link org.kakara.engine.ui.objectcanvas.UIObject} and {@link org.kakara.engine.ui.items.ObjectCanvas} for more info.</p>
+     * @param window The window of the current game.
+     * @param objects The list of objects.
+     */
     public void renderHUD(Window window, List<UIObject> objects){
         hudShaderProgram.bind();
+        Matrix4f orthoProjection = transformation.buildOrtho(0, window.getWidth(), window.getHeight(), 0);
         for(UIObject object : objects){
-            Mesh mesh = object.getMesh();
-            hudShaderProgram.setUniform("projection", transformation.getOrthoProjectionMatrix());
+            IMesh mesh = object.getMesh();
+            hudShaderProgram.setUniform("ortho",  orthoProjection);
             hudShaderProgram.setUniform("model", transformation.buildModelViewMatrixUI(object));
             mesh.render();
         }
         hudShaderProgram.unbind();
     }
 
-    private void setupHudShader() throws Exception {
-        hudShaderProgram = new Shader();
-        hudShaderProgram.createVertexShader(Utils.loadResource("/shaders/hud/hudVertex.vs"));
-        hudShaderProgram.createFragmentShader(Utils.loadResource("/shaders/hud/hudFragment.fs"));
-        hudShaderProgram.link();
-
-        // Create uniforms for Orthographic-model projection matrix and base colour
-        hudShaderProgram.createUniform("projection");
-        hudShaderProgram.createUniform("model");
-    }
-
     /**
      * Render a chunk
-     * TODO check view matrix.
      *
      * @param window   The window
      * @param camera   The camera
@@ -433,6 +429,21 @@ public class Renderer {
         glDepthMask(true);
 
         particleShaderProgram.unbind();
+    }
+
+    /**
+     * Setup the hud shader.
+     * @throws Exception The hud shader.
+     */
+    private void setupHudShader() throws Exception {
+        hudShaderProgram = new Shader();
+        hudShaderProgram.createVertexShader(Utils.loadResource("/shaders/hud/hudVertex.vs"));
+        hudShaderProgram.createFragmentShader(Utils.loadResource("/shaders/hud/hudFragment.fs"));
+        hudShaderProgram.link();
+
+        // Create uniforms for Orthographic-model projection matrix and base colour
+        hudShaderProgram.createUniform("model");
+        hudShaderProgram.createUniform("ortho");
     }
 
     /**

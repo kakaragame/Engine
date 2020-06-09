@@ -11,6 +11,9 @@ import org.kakara.engine.input.KeyInput;
 import org.kakara.engine.input.MouseClickType;
 import org.kakara.engine.input.MouseInput;
 import org.kakara.engine.item.*;
+import org.kakara.engine.item.mesh.AtlasMesh;
+import org.kakara.engine.item.mesh.InstancedMesh;
+import org.kakara.engine.item.mesh.Mesh;
 import org.kakara.engine.item.particles.FlowParticleEmitter;
 import org.kakara.engine.item.particles.Particle;
 import org.kakara.engine.lighting.DirectionalLight;
@@ -28,6 +31,8 @@ import org.kakara.engine.ui.RGBA;
 import org.kakara.engine.ui.components.shapes.Rectangle;
 import org.kakara.engine.ui.components.text.Text;
 import org.kakara.engine.ui.items.ComponentCanvas;
+import org.kakara.engine.ui.items.ObjectCanvas;
+import org.kakara.engine.ui.objectcanvas.UIObject;
 import org.kakara.engine.ui.text.Font;
 import org.kakara.engine.utils.Time;
 import org.kakara.engine.utils.Utils;
@@ -230,6 +235,17 @@ public class MainGameScene extends AbstractGameScene {
         cc.add(rect);
 
         add(cc);
+
+        ObjectCanvas oc = new ObjectCanvas(this);
+        AtlasMesh m = new AtlasMesh(txt2, getTextureAtlas(), new BlockLayout(), CubeData.vertex, CubeData.normal, CubeData.indices);
+
+        UIObject ui = new UIObject(m);
+        ui.setPosition((float)200, (float)200);
+        ui.setScale(100);
+        ui.getRotation().rotateX((float) Math.toRadians(50));
+        ui.getRotation().rotateY((float) Math.toRadians(40));
+        oc.add(ui);
+        add(oc);
 
         /**
          * Particles

@@ -3,9 +3,6 @@ package org.kakara.engine.render;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
-import org.kakara.engine.Camera;
-import org.kakara.engine.GameHandler;
-import org.kakara.engine.gui.Window;
 import org.kakara.engine.item.GameItem;
 import org.kakara.engine.ui.objectcanvas.UIObject;
 
@@ -22,7 +19,6 @@ public class Transformation {
     private final Matrix4f orthoProjMatrix;
     private final Matrix4f ortho2DMatrix;
     private final Matrix4f orthoModelMatrix;
-    private final Matrix4f orthModelMatrix;
 
     public Transformation() {
         modelViewMatrix = new Matrix4f();
@@ -34,7 +30,6 @@ public class Transformation {
         ortho2DMatrix = new Matrix4f();
         orthoModelMatrix = new Matrix4f();
         lightViewMatrix = new Matrix4f();
-        orthModelMatrix = new Matrix4f();
     }
 
     /**
@@ -174,12 +169,31 @@ public class Transformation {
         return modelViewMatrix.mul(modelMatrix);
     }
 
+    /**
+     * Construct the model matrix for the 3D UI elements.
+     * @param gameItem The UIObject to construct for.
+     * @return The model matrix.
+     */
     public Matrix4f buildModelViewMatrixUI(UIObject gameItem) {
         Quaternionf rotation = gameItem.getRotation();
-        Matrix4f modelMatrix = new Matrix4f();
-        modelMatrix.translationRotateScale(gameItem.getTruePos().x, gameItem.getTruePos().y, 0, rotation.x, rotation.y, rotation.z, rotation.w, gameItem.getTrueScale(),
-                gameItem.getTrueScale(), gameItem.getTrueScale());
-        return modelMatrix;
+        Matrix4f modelMatrixOne = new Matrix4f();
+        modelMatrixOne.translationRotateScale(gameItem.getPosition().x, gameItem.getPosition().y, 0, rotation.x, rotation.y, rotation.z, rotation.w, gameItem.getScale(),
+                gameItem.getScale(), gameItem.getScale());
+        return modelMatrixOne;
+    }
+
+    /**
+     * Construct the ortho projection for the 3D UI layer.
+     * @param left The left value
+     * @param right The right value
+     * @param bottom The bottom value
+     * @param top The top value.
+     * @return The ortho projection matrix.
+     */
+    public Matrix4f buildOrtho(float left, float right, float bottom, float top){
+        orthoProjMatrix.identity();
+        orthoProjMatrix.setOrtho(left, right, bottom, top, -100, 1000);
+        return orthoProjMatrix;
     }
 
     /**
@@ -229,19 +243,5 @@ public class Transformation {
         orthoModelMatrix.set(orthoMatrix);
         orthoModelMatrix.mul(modelMatrix);
         return orthoModelMatrix;
-    }
-
-    public Matrix4f getOrtoProjUIModelMatrix(UIObject object, Matrix4f orthoMatrix) {
-        Quaternionf rotation = object.getRotation();
-        Matrix4f modelMatrix = new Matrix4f();
-        modelMatrix.identity().translationRotateScale(object.getPosition().x, object.getPosition().y, 0f,
-                rotation.x, rotation.y, rotation.z, rotation.w, object.getScale(), object.getScale(), object.getScale());
-//                rotateX((float)Math.toRadians(-rotation.x)).
-//                rotateY((float)Math.toRadians(-rotation.y)).
-//                rotateZ((float)Math.toRadians(-rotation.z)).
-//                scale(object.getScale());
-        orthModelMatrix.set(orthoMatrix);
-        orthModelMatrix.mul(modelMatrix);
-        return orthModelMatrix;
     }
 }

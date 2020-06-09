@@ -2,11 +2,9 @@ package org.kakara.engine.ui.items;
 
 import org.kakara.engine.GameHandler;
 import org.kakara.engine.gui.Window;
-import org.kakara.engine.math.Vector2;
 import org.kakara.engine.scene.Scene;
 import org.kakara.engine.ui.HUD;
 import org.kakara.engine.ui.HUDItem;
-import org.kakara.engine.ui.components.Component;
 import org.kakara.engine.ui.objectcanvas.UIObject;
 
 import java.util.ArrayList;
@@ -21,9 +19,6 @@ import static org.lwjgl.nanovg.NanoVG.nvgEndFrame;
  */
 public class ObjectCanvas implements HUDItem {
     private List<UIObject> objects;
-    boolean init = false;
-
-    private Scene scene;
 
     /**
      * Create a new canvas component
@@ -31,7 +26,6 @@ public class ObjectCanvas implements HUDItem {
      */
     public ObjectCanvas(Scene scene){
         objects = new ArrayList<>();
-        this.scene = scene;
     }
 
     /**
@@ -43,8 +37,7 @@ public class ObjectCanvas implements HUDItem {
     }
 
     @Override
-    public void init(HUD hud, GameHandler handler) {
-    }
+    public void init(HUD hud, GameHandler handler) {}
 
     @Override
     public void render(HUD hud, GameHandler handler) {
@@ -62,26 +55,26 @@ public class ObjectCanvas implements HUDItem {
         }
     }
 
-//    /**
-//     * Get a list of the child components
-//     * @return The child components
-//     */
-//    public List<Component> getComponents(){
-//        return components;
-//    }
-//
-//    /**
-//     * Clear all of the components
-//     */
-//    public void clearComponents(){
-//        components.clear();
-//    }
-//
-//    /**
-//     * Remove a component from the list.
-//     * @param c The component
-//     */
-//    public void removeComponent(Component c){
-//        components.remove(c);
-//    }
+    /**
+     * Get a list of the child objects
+     * @return The child objects
+     */
+    public List<UIObject> getObjects(){
+        return objects;
+    }
+
+    /**
+     * Clear all of the objects
+     */
+    public void clearObjects(){
+        objects.clear();
+    }
+
+    /**
+     * Remove an object from the list.
+     * @param o The object
+     */
+    public void removeObject(UIObject o){
+        objects.remove(o);
+    }
 }

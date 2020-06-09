@@ -4,7 +4,7 @@ import org.kakara.engine.GameHandler;
 import org.kakara.engine.engine.CubeData;
 import org.kakara.engine.input.MouseClickType;
 import org.kakara.engine.item.Material;
-import org.kakara.engine.item.Mesh;
+import org.kakara.engine.item.mesh.Mesh;
 import org.kakara.engine.item.Texture;
 import org.kakara.engine.math.Vector2;
 import org.kakara.engine.resources.ResourceManager;
@@ -230,7 +230,7 @@ public class TitleScreenScene extends AbstractMenuScene {
 
 
         // Make sure to add the component canvas to the hud!
-//        add(cc);
+        add(cc);
 
         ObjectCanvas oc = new ObjectCanvas(this);
         Mesh m = new Mesh(CubeData.vertex, CubeData.texture, CubeData.normal, CubeData.indices);
@@ -242,13 +242,20 @@ public class TitleScreenScene extends AbstractMenuScene {
         m.setMaterial(mt);
 
         UIObject ui = new UIObject(m);
-        ui.setPosition(0, 0);
-        ui.setScale(50);
+        ui.setPosition((float)200, (float)200);
+        ui.setScale(100);
         obj = ui;
-//        obj.getRotation().rotateY((float)Math.toRadians(50));
-//        obj.getRotation().rotateX((float)Math.toRadians(20));
+        obj.getRotation().rotateX((float)Math.toRadians(40));
+        obj.getRotation().rotateY((float)Math.toRadians(50));
         oc.add(ui);
         add(oc);
+
+        ComponentCanvas ontop = new ComponentCanvas(this);
+        Rectangle on = new Rectangle();
+        on.setPosition(200, 200);
+        on.setScale(40, 40);
+        ontop.add(on);
+        add(ontop);
 
         setCurserStatus(true);
 
@@ -261,7 +268,9 @@ public class TitleScreenScene extends AbstractMenuScene {
 
         lb.setPercent(lb.getPercent() + Time.deltaTime);
 
-        getCamera().setPosition(getCamera().getPosition().add(1,0,0));
-        System.out.println(getCamera().getPosition());
+        obj.setPosition(gameHandler.getMouseInput().getCurrentPosition().x, gameHandler.getMouseInput().getCurrentPosition().y);
+
+//        getCamera().setPosition(getCamera().getPosition().add(1,0,0));
+//        System.out.println(getCamera().getPosition());
     }
 }
