@@ -2,6 +2,7 @@ package org.kakara.engine.item;
 
 import org.kakara.engine.GameHandler;
 import org.kakara.engine.engine.CubeData;
+import org.kakara.engine.item.mesh.Mesh;
 import org.kakara.engine.models.StaticModelLoader;
 
 /**

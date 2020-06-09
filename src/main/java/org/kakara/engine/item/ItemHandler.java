@@ -1,5 +1,8 @@
 package org.kakara.engine.item;
 
+import org.kakara.engine.item.mesh.InstancedMesh;
+import org.kakara.engine.item.mesh.Mesh;
+
 import java.util.*;
 
 /**

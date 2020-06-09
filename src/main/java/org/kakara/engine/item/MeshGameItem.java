@@ -6,6 +6,7 @@ import org.kakara.engine.Camera;
 import org.kakara.engine.GameHandler;
 import org.kakara.engine.collision.Collidable;
 import org.kakara.engine.collision.Collider;
+import org.kakara.engine.item.mesh.Mesh;
 import org.kakara.engine.math.Vector3;
 
 import java.util.UUID;

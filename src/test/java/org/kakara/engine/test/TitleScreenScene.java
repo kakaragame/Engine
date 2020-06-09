@@ -1,7 +1,10 @@
 package org.kakara.engine.test;
 
 import org.kakara.engine.GameHandler;
+import org.kakara.engine.engine.CubeData;
 import org.kakara.engine.input.MouseClickType;
+import org.kakara.engine.item.Material;
+import org.kakara.engine.item.mesh.Mesh;
 import org.kakara.engine.item.Texture;
 import org.kakara.engine.math.Vector2;
 import org.kakara.engine.resources.ResourceManager;
@@ -17,12 +20,15 @@ import org.kakara.engine.ui.events.HUDClickEvent;
 import org.kakara.engine.ui.events.HUDHoverEnterEvent;
 import org.kakara.engine.ui.events.HUDHoverLeaveEvent;
 import org.kakara.engine.ui.items.ComponentCanvas;
+import org.kakara.engine.ui.items.ObjectCanvas;
+import org.kakara.engine.ui.objectcanvas.UIObject;
 import org.kakara.engine.ui.text.Font;
 import org.kakara.engine.ui.text.TextAlign;
 import org.kakara.engine.utils.Time;
 import org.kakara.engine.utils.Utils;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * Example of how to make a proper UI Scene.
@@ -32,6 +38,8 @@ public class TitleScreenScene extends AbstractMenuScene {
 
     private Text fps;
     private LoadingBar lb;
+
+    UIObject obj;
 
     public TitleScreenScene(GameHandler gameHandler, KakaraTest kakaraTest) throws Exception {
         super(gameHandler);
@@ -224,6 +232,31 @@ public class TitleScreenScene extends AbstractMenuScene {
         // Make sure to add the component canvas to the hud!
         add(cc);
 
+        ObjectCanvas oc = new ObjectCanvas(this);
+        Mesh m = new Mesh(CubeData.vertex, CubeData.texture, CubeData.normal, CubeData.indices);
+        InputStream io = Texture.class.getResourceAsStream("/example_texture.png");
+        Texture grass = Utils.inputStreamToTexture(io);
+        Material mt = new Material(grass);
+        mt.addOverlayTexture(Utils.inputStreamToTexture(Texture.class.getResourceAsStream("/oa.png")));
+        mt.addOverlayTexture(Utils.inputStreamToTexture(Texture.class.getResourceAsStream("/ovly2.png")));
+        m.setMaterial(mt);
+
+        UIObject ui = new UIObject(m);
+        ui.setPosition((float)200, (float)200);
+        ui.setScale(100);
+        obj = ui;
+        obj.getRotation().rotateX((float)Math.toRadians(40));
+        obj.getRotation().rotateY((float)Math.toRadians(50));
+        oc.add(ui);
+        add(oc);
+
+        ComponentCanvas ontop = new ComponentCanvas(this);
+        Rectangle on = new Rectangle();
+        on.setPosition(200, 200);
+        on.setScale(40, 40);
+        ontop.add(on);
+        add(ontop);
+
         setCurserStatus(true);
 
         setBackground(Utils.inputStreamToTexture(Texture.class.getResourceAsStream("/oa.png")));
@@ -234,5 +267,10 @@ public class TitleScreenScene extends AbstractMenuScene {
         fps.setText("FPS: " + Math.round(1/Time.deltaTime));
 
         lb.setPercent(lb.getPercent() + Time.deltaTime);
+
+        obj.setPosition(gameHandler.getMouseInput().getCurrentPosition().x, gameHandler.getMouseInput().getCurrentPosition().y);
+
+//        getCamera().setPosition(getCamera().getPosition().add(1,0,0));
+//        System.out.println(getCamera().getPosition());
     }
 }

@@ -4,6 +4,7 @@ import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import org.kakara.engine.item.GameItem;
+import org.kakara.engine.ui.objectcanvas.UIObject;
 
 /**
  * The transformation handler.
@@ -153,6 +154,7 @@ public class Transformation {
         return ortho2DMatrix;
     }
 
+
     /**
      * Build the model view matrix
      * @param gameItem The game item
@@ -165,6 +167,33 @@ public class Transformation {
                 gameItem.getScale(), gameItem.getScale());
         modelViewMatrix.set(matrix);
         return modelViewMatrix.mul(modelMatrix);
+    }
+
+    /**
+     * Construct the model matrix for the 3D UI elements.
+     * @param gameItem The UIObject to construct for.
+     * @return The model matrix.
+     */
+    public Matrix4f buildModelViewMatrixUI(UIObject gameItem) {
+        Quaternionf rotation = gameItem.getRotation();
+        Matrix4f modelMatrixOne = new Matrix4f();
+        modelMatrixOne.translationRotateScale(gameItem.getPosition().x, gameItem.getPosition().y, 0, rotation.x, rotation.y, rotation.z, rotation.w, gameItem.getScale(),
+                gameItem.getScale(), gameItem.getScale());
+        return modelMatrixOne;
+    }
+
+    /**
+     * Construct the ortho projection for the 3D UI layer.
+     * @param left The left value
+     * @param right The right value
+     * @param bottom The bottom value
+     * @param top The top value.
+     * @return The ortho projection matrix.
+     */
+    public Matrix4f buildOrtho(float left, float right, float bottom, float top){
+        orthoProjMatrix.identity();
+        orthoProjMatrix.setOrtho(left, right, bottom, top, -100, 1000);
+        return orthoProjMatrix;
     }
 
     /**

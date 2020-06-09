@@ -1,90 +1,80 @@
 package org.kakara.engine.ui.items;
 
 import org.kakara.engine.GameHandler;
-import org.kakara.engine.math.Vector2;
+import org.kakara.engine.gui.Window;
 import org.kakara.engine.scene.Scene;
 import org.kakara.engine.ui.HUD;
 import org.kakara.engine.ui.HUDItem;
-import org.kakara.engine.ui.components.Component;
+import org.kakara.engine.ui.objectcanvas.UIObject;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.lwjgl.nanovg.NanoVG.nvgBeginFrame;
+import static org.lwjgl.nanovg.NanoVG.nvgEndFrame;
+
 /**
  * Allows 3d objects to be rendered to the UI.
- * @deprecated Not implemented.
  * @since 1.0-Pre1
  */
 public class ObjectCanvas implements HUDItem {
-    private List<Component> components;
-    boolean init = false;
-
-    private Scene scene;
+    private List<UIObject> objects;
 
     /**
      * Create a new canvas component
      * @param scene The current scene.
      */
     public ObjectCanvas(Scene scene){
-        components = new ArrayList<>();
-        this.scene = scene;
+        objects = new ArrayList<>();
     }
 
     /**
      * Add a child component into the canvas
-     * @param component The component to add.
+     * @param object The component to add.
      */
-    public void add(Component component){
-        if(component.getParent() != null)
-            throw new RuntimeException("Error: That component already has a parent!");
-        components.add(component);
-        if(init){
-            component.init(scene.getHUD(), GameHandler.getInstance());
-        }
+    public void add(UIObject object){
+        objects.add(object);
     }
 
     @Override
-    public void init(HUD hud, GameHandler handler) {
-        init = true;
-        for(Component c : components){
-            c.init(hud, handler);
-        }
-    }
+    public void init(HUD hud, GameHandler handler) {}
 
     @Override
     public void render(HUD hud, GameHandler handler) {
-        for(Component component : components){
-            component.render(new Vector2(0, 0), hud, handler);
-        }
+        nvgEndFrame(hud.getVG());
+        Window win = handler.getGameEngine().getWindow();
+        win.restoreState();
+        handler.getGameEngine().getRenderer().renderHUD(win, objects);
+        nvgBeginFrame(hud.getVG(), win.getWidth(), win.getHeight(), 1);
     }
 
     @Override
     public void cleanup(GameHandler handler) {
-        for(Component component : components){
-            component.cleanup(handler);
+        for(UIObject obj : objects){
+            obj.getMesh().cleanUp();
         }
     }
 
     /**
-     * Get a list of the child components
-     * @return The child components
+     * Get a list of the child objects
+     * @return The child objects
      */
-    public List<Component> getComponents(){
-        return components;
+    public List<UIObject> getObjects(){
+        return objects;
     }
 
     /**
-     * Clear all of the components
+     * Clear all of the objects
      */
-    public void clearComponents(){
-        components.clear();
+    public void clearObjects(){
+        objects.clear();
     }
 
     /**
-     * Remove a component from the list.
-     * @param c The component
+     * Remove an object from the list.
+     * @param o The object
      */
-    public void removeComponent(Component c){
-        components.remove(c);
+    public void removeObject(UIObject o){
+        objects.remove(o);
     }
 }
