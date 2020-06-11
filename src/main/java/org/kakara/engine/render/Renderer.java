@@ -100,15 +100,16 @@ public class Renderer {
     /**
      * Render the 3D portion of the HUD.
      * <p>See {@link org.kakara.engine.ui.objectcanvas.UIObject} and {@link org.kakara.engine.ui.items.ObjectCanvas} for more info.</p>
-     * @param window The window of the current game.
+     *
+     * @param window  The window of the current game.
      * @param objects The list of objects.
      */
-    public void renderHUD(Window window, List<UIObject> objects){
+    public void renderHUD(Window window, List<UIObject> objects) {
         hudShaderProgram.bind();
         Matrix4f orthoProjection = transformation.buildOrtho(0, window.getWidth(), window.getHeight(), 0);
-        for(UIObject object : objects){
+        for (UIObject object : objects) {
             IMesh mesh = object.getMesh();
-            hudShaderProgram.setUniform("ortho",  orthoProjection);
+            hudShaderProgram.setUniform("ortho", orthoProjection);
             hudShaderProgram.setUniform("model", transformation.buildModelViewMatrixUI(object));
             mesh.render();
         }
@@ -226,18 +227,20 @@ public class Renderer {
             }
 
             mesh.renderList(mapMeshes.get(mesh), (GameItem gameItem) -> {
-                        shaderProgram.setUniform("selectedNonInstanced", ((MeshGameItem) gameItem).isSelected() ? 1f : 0f);
-                        Matrix4f modelMatrix = transformation.buildModelMatrix(gameItem);
-                        if (!depthMap) {
-                            Matrix4f modelViewMatrix = transformation.buildModelViewMatrix(modelMatrix, viewMatrix);
-                            shaderProgram.setUniform("modelViewNonInstancedMatrix", modelViewMatrix);
-                        }
-                        Matrix4f modelLightViewMatrix = transformation.buildModelLightViewMatrix(modelMatrix, lightViewMatrix);
-                        shaderProgram.setUniform("modelLightViewNonInstancedMatrix", modelLightViewMatrix);
-
-                        // Render every mesh (some game items can have more than one)
-                        for(Mesh m : ((MeshGameItem) gameItem).getMeshes()){
-                            m.render();
+                        MeshGameItem meshGameItem = ((MeshGameItem) gameItem);
+                        if (meshGameItem.isVisible()) {
+                            shaderProgram.setUniform("selectedNonInstanced", ((MeshGameItem) gameItem).isSelected() ? 1f : 0f);
+                            Matrix4f modelMatrix = transformation.buildModelMatrix(gameItem);
+                            if (!depthMap) {
+                                Matrix4f modelViewMatrix = transformation.buildModelViewMatrix(modelMatrix, viewMatrix);
+                                shaderProgram.setUniform("modelViewNonInstancedMatrix", modelViewMatrix);
+                            }
+                            Matrix4f modelLightViewMatrix = transformation.buildModelLightViewMatrix(modelMatrix, lightViewMatrix);
+                            shaderProgram.setUniform("modelLightViewNonInstancedMatrix", modelLightViewMatrix);
+                            // Render every mesh (some game items can have more than one)
+                            for (Mesh m : meshGameItem.getMeshes()) {
+                                m.render();
+                            }
                         }
                     }
             );
@@ -438,6 +441,7 @@ public class Renderer {
 
     /**
      * Setup the hud shader.
+     *
      * @throws Exception The hud shader.
      */
     private void setupHudShader() throws Exception {

@@ -25,7 +25,7 @@ public class MeshGameItem implements GameItem, Collidable {
     private final UUID uuid;
     private Collider collider;
     private int textPos;
-
+    private boolean visible = true;
     private boolean selected;
 
     public MeshGameItem() {
@@ -141,6 +141,7 @@ public class MeshGameItem implements GameItem, Collidable {
 
     /**
      * Get the rotation of the game item
+     *
      * @return The rotation
      */
     public Quaternionf getRotation() {
@@ -185,10 +186,11 @@ public class MeshGameItem implements GameItem, Collidable {
     /**
      * Get the mesh of the object
      * <p>If there is more than one mesh, than the first one is returned.</p>
+     *
      * @return The mesh
      */
     public Mesh getMesh() {
-        if(meshes.length == 0) return null;
+        if (meshes.length == 0) return null;
         return meshes[0];
     }
 
@@ -204,6 +206,7 @@ public class MeshGameItem implements GameItem, Collidable {
 
     /**
      * Get all of the meshes of the object.
+     *
      * @return The array of meshes.
      */
     public Mesh[] getMeshes() {
@@ -212,6 +215,7 @@ public class MeshGameItem implements GameItem, Collidable {
 
     /**
      * Set the array of meshes.
+     *
      * @param meshes The array of meshes
      */
     public void setMeshes(@NotNull Mesh[] meshes) {
@@ -286,8 +290,12 @@ public class MeshGameItem implements GameItem, Collidable {
      * <p>Internal Use Only</p>
      */
     public void render() {
-        for (Mesh mesh : meshes) {
-            mesh.render();
+        if (isVisible()) {
+            for (Mesh mesh : meshes) {
+                mesh.render();
+            }
+        }else{
+            System.out.println("Invisible");
         }
     }
 
@@ -322,10 +330,11 @@ public class MeshGameItem implements GameItem, Collidable {
     /**
      * Move the position by an offset.
      * <p>This is used when you want to move in the direction that the camera is facing.</p>
+     *
      * @param offsetX x offset
      * @param offsetY y offset
      * @param offsetZ z offset
-     * @param camera The camera that it is to move by.
+     * @param camera  The camera that it is to move by.
      */
     public void movePositionByCamera(float offsetX, float offsetY, float offsetZ, Camera camera) {
         if (offsetZ != 0) {
@@ -342,6 +351,7 @@ public class MeshGameItem implements GameItem, Collidable {
     /**
      * Move the position by an offset.
      * <p>This is used when you want to move in the direction that the camera is facing.</p>
+     *
      * @param offset The offset vector
      * @param camera The camera it is to move by.
      */
@@ -360,6 +370,7 @@ public class MeshGameItem implements GameItem, Collidable {
     /**
      * Move the rotation by an offset
      * <p>For use by particles only</p>
+     *
      * @param offsetX The x offset
      * @param offsetY The y offset
      * @param offsetZ The z offset
@@ -373,11 +384,25 @@ public class MeshGameItem implements GameItem, Collidable {
     /**
      * Move the rotation by an offset
      * <p>For use by particles only</p>
+     *
      * @param offset The offset vector.
      */
     public void moveRotation(Vector3 offset) {
         rotation.x += offset.x;
         rotation.y += offset.y;
         rotation.z += offset.z;
+    }
+
+    public boolean isVisible() {
+        return visible;
+    }
+
+    /**
+     * Sets weather the object is visible. The Collision Engine will continue to work
+     *
+     * @param visible is the item visible
+     */
+    public void setVisible(boolean visible) {
+        this.visible = visible;
     }
 }
