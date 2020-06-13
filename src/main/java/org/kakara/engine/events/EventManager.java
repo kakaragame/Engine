@@ -7,6 +7,7 @@ import org.kakara.engine.scene.Scene;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Handles all of the events.
@@ -15,7 +16,7 @@ public class EventManager {
     private List<Object> handlers;
 
     public EventManager() {
-        handlers = new ArrayList<>();
+        handlers = new CopyOnWriteArrayList<>();
     }
 
     /**
