@@ -193,7 +193,7 @@
         <dependency>
             <groupId>com.github.ryandw11</groupId>
             <artifactId>Octree</artifactId>
-            <version>master-104a60aa59-1</version>
+            <version>1.0</version>
         </dependency>
         <dependency>
             <groupId>org.jetbrains</groupId>
