@@ -128,7 +128,7 @@ public class RenderBlock implements Collidable {
      * Get the vertex array from the visible faces
      * @return The vertex array.
      */
-    protected void getVertexFromFaces(List<Float> vertex){
+    public void getVertexFromFaces(List<Float> vertex){
         for(Face f : this.visibleFaces){
             List<Float> temp;
             switch(f){
@@ -163,7 +163,7 @@ public class RenderBlock implements Collidable {
      * @param atlas The texture atlas
      * @return The texture coord array
      */
-    protected void getTextureFromFaces(List<Float> vertex, TextureAtlas atlas){
+    public void getTextureFromFaces(List<Float> vertex, TextureAtlas atlas){
         for(Face f : this.visibleFaces){
             List<Float> temp;
             switch(f){
@@ -197,7 +197,7 @@ public class RenderBlock implements Collidable {
      * Get the normal array from the visible faces
      * @return The normal array.
      */
-    protected void getNormalsFromFaces(List<Float> vertex){
+    public void getNormalsFromFaces(List<Float> vertex){
         for(Face f : this.visibleFaces){
             List<Float> temp;
             switch(f){
@@ -232,7 +232,7 @@ public class RenderBlock implements Collidable {
      * @param currentIndex The current index. (Starting number of the indices)
      * @return The indices array
      */
-    protected void getIndicesFromFaces(List<Integer> vertex, int currentIndex){
+    public void getIndicesFromFaces(List<Integer> vertex, int currentIndex){
         int index = currentIndex;
         for(Face f : this.visibleFaces){
             List<Integer> temp;

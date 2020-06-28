@@ -38,6 +38,8 @@ public class GameEngine implements Runnable {
 
     private final Queue<Runnable> mainThreadQueue = new LinkedBlockingQueue<>();
 
+    public static final Thread currentThread = Thread.currentThread();
+
     /**
      * Create a new game.
      *

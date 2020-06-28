@@ -1,6 +1,8 @@
 package org.kakara.engine.item.mesh;
 
 import org.jetbrains.annotations.NotNull;
+import org.kakara.engine.GameEngine;
+import org.kakara.engine.exceptions.InvalidThreadException;
 import org.kakara.engine.item.GameItem;
 import org.kakara.engine.item.Material;
 import org.kakara.engine.item.Texture;
@@ -57,6 +59,9 @@ public class Mesh implements IMesh {
      * @param weights Not implemented
      */
     public Mesh(@NotNull float[] positions, @NotNull float[] textCoords, @NotNull float[] normals, @NotNull int[] indices, @NotNull int[] jointIndices, @NotNull float[] weights) {
+        if(Thread.currentThread() != GameEngine.currentThread)
+            throw new InvalidThreadException("This class can only be constructed on the main thread.");
+
         FloatBuffer posBuffer = null;
         FloatBuffer textCoordsBuffer = null;
         FloatBuffer vecNormalsBuffer = null;

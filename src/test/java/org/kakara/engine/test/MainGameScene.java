@@ -25,6 +25,7 @@ import org.kakara.engine.renderobjects.RenderBlock;
 import org.kakara.engine.renderobjects.RenderChunk;
 import org.kakara.engine.renderobjects.RenderTexture;
 import org.kakara.engine.renderobjects.TextureAtlas;
+import org.kakara.engine.renderobjects.mesh.MeshType;
 import org.kakara.engine.renderobjects.renderlayouts.BlockLayout;
 import org.kakara.engine.scene.AbstractGameScene;
 import org.kakara.engine.ui.RGBA;
@@ -157,32 +158,24 @@ public class MainGameScene extends AbstractGameScene {
 //        }
 
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                for(int cx = 0; cx < 1; cx++){
-                    for(int cy = 0; cy < 1; cy++){
-                        for(int cz = 0; cz < 1; cz++){
-                            RenderChunk rc = new RenderChunk(new ArrayList<>(), getTextureAtlas());
-                            rc.setPosition(cx * 16, cy*16, cz * 16);
-                            for(int x = 0; x < 16; x++){
-                                for(int y = 0; y < 16; y++){
-                                    for(int z = 0; z < 16; z++){
-                                        RenderBlock rb = new RenderBlock(new BlockLayout(), getTextureAtlas().getTextures().get(ThreadLocalRandom.current().nextInt(0, 3)), new Vector3(x, y, z));
-                                        rc.addBlock(rb);
-                                    }
+        new Thread(() -> {
+            for(int cx = 0; cx < 5; cx++){
+                for(int cy = 0; cy < 5; cy++){
+                    for(int cz = 0; cz < 5; cz++){
+                        RenderChunk rc = new RenderChunk(new ArrayList<>(), getTextureAtlas());
+                        rc.setPosition(cx * 16, cy*16, cz * 16);
+                        for(int x = 0; x < 16; x++){
+                            for(int y = 0; y < 16; y++){
+                                for(int z = 0; z < 16; z++){
+                                    RenderBlock rb = new RenderBlock(new BlockLayout(), getTextureAtlas().getTextures().get(ThreadLocalRandom.current().nextInt(0, 3)), new Vector3(x, y, z));
+                                    rc.addBlock(rb);
                                 }
                             }
-
-                            rc.regenerateChunkAsync(getTextureAtlas());
-
-                            getChunkHandler().addChunk(rc);
                         }
-//                        try {
-//                            Thread.sleep(500);
-//                        } catch (InterruptedException e) {
-//                            e.printStackTrace();
-//                        }
+
+                        rc.regenerateChunk(getTextureAtlas(), MeshType.MULTITHREAD);
+
+                        getChunkHandler().addChunk(rc);
                     }
                 }
             }
@@ -379,7 +372,7 @@ public class MainGameScene extends AbstractGameScene {
                 RenderBlock block = (RenderBlock) selected;
                 RenderChunk parentChunk = block.getParentChunk();
                 parentChunk.removeBlock(block);
-                parentChunk.regenerateChunkAsync(getTextureAtlas());
+                parentChunk.regenerateChunk(getTextureAtlas(), MeshType.SYNC);
             }
         }
     }

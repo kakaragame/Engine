@@ -1,6 +1,8 @@
 package org.kakara.engine.item.mesh;
 
+import org.kakara.engine.GameEngine;
 import org.kakara.engine.engine.CubeData;
+import org.kakara.engine.exceptions.InvalidThreadException;
 import org.kakara.engine.item.GameItem;
 import org.kakara.engine.renderobjects.RenderTexture;
 import org.kakara.engine.renderobjects.TextureAtlas;
@@ -41,6 +43,8 @@ public class AtlasMesh implements IMesh {
      * @param indices The indices
      */
     public AtlasMesh(RenderTexture texture, TextureAtlas atlas, Layout layout, float[] positions, float[] normals, int[] indices) {
+        if(Thread.currentThread() != GameEngine.currentThread)
+            throw new InvalidThreadException("This class can only be constructed on the main thread!");
         this.atlas = atlas;
         List<Float> textCords = new ArrayList<>();
         textCords.addAll(layout.getTextureCords().getFront(texture.getXOffset(), texture.getYOffset(), atlas.getNumberOfRows()));
