@@ -1,4 +1,4 @@
-package org.kakara.engine.collision;
+package org.kakara.engine.physics.collision;
 
 import org.kakara.engine.math.Vector3;
 
@@ -102,5 +102,9 @@ public interface Collider {
      * @return The Vector of the point.
      */
     Vector3 getAbsolutePoint2();
+
+    void updateX();
+    void updateY();
+    void updateZ();
 
 }

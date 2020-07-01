@@ -1,12 +1,10 @@
-package org.kakara.engine.collision;
+package org.kakara.engine.physics.collision;
 
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 import org.kakara.engine.GameHandler;
 import org.kakara.engine.math.Vector3;
 import org.kakara.engine.scene.AbstractGameScene;
-import org.kakara.engine.ui.constraints.Constraint;
-import org.kakara.engine.utils.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -87,6 +85,26 @@ public class CollisionManager {
      * @param c2 The second collider.
      * @return The contact class.
      */
+    public Contact isCollidingXZ(Collider c1, Collider c2){
+        FloatContainer mtvDistance = new FloatContainer(Float.MAX_VALUE);
+        Vector3f mtvAxis = new Vector3f();
+        Contact contact = new Contact();
+        if(!testAxis(new Vector3f(1, 0, 0), c1.getAbsolutePoint1().x, c1.getAbsolutePoint2().x, c2.getAbsolutePoint1().x, c2.getAbsolutePoint2().x, mtvAxis, mtvDistance))
+            return contact;
+
+        if(!testAxis(new Vector3f(0, 1, 0), c1.getAbsolutePoint1().y, c1.getAbsolutePoint2().y, c2.getAbsolutePoint1().y, c2.getAbsolutePoint2().y, new Vector3f(), new FloatContainer(Float.MAX_VALUE)))
+            return contact;
+
+        if(!testAxis(new Vector3f(0, 0, 1), c1.getAbsolutePoint1().z, c1.getAbsolutePoint2().z, c2.getAbsolutePoint1().z, c2.getAbsolutePoint2().z, mtvAxis, mtvDistance))
+            return contact;
+
+        contact.setIntersecting(true);
+        contact.setnEnter(mtvAxis.normalize());
+        contact.setPenetration((float) Math.sqrt(mtvDistance.getFloat()) * 1.001f);
+
+        return contact;
+    }
+
     public Contact isColliding(Collider c1, Collider c2){
         FloatContainer mtvDistance = new FloatContainer(Float.MAX_VALUE);
         Vector3f mtvAxis = new Vector3f();
@@ -102,7 +120,7 @@ public class CollisionManager {
 
         contact.setIntersecting(true);
         contact.setnEnter(mtvAxis.normalize());
-        contact.setPenetration((float) Math.sqrt(mtvDistance.getFloat()) * 1.005f);
+        contact.setPenetration((float) Math.sqrt(mtvDistance.getFloat()) * 1.001f);
 
         return contact;
     }
@@ -111,12 +129,61 @@ public class CollisionManager {
         FloatContainer mtvDistance = new FloatContainer(Float.MAX_VALUE);
         Vector3f mtvAxis = new Vector3f();
         Contact contact = new Contact();
+
+        if(!testAxis(new Vector3f(1, 0, 0), c1.getAbsolutePoint1().x, c1.getAbsolutePoint2().x, c2.getAbsolutePoint1().x, c2.getAbsolutePoint2().x, new Vector3f(), new FloatContainer(Float.MAX_VALUE)))
+            return contact;
+
         if(!testAxis(new Vector3f(0, 1, 0), c1.getAbsolutePoint1().y, c1.getAbsolutePoint2().y, c2.getAbsolutePoint1().y, c2.getAbsolutePoint2().y, mtvAxis, mtvDistance))
+            return contact;
+
+        if(!testAxis(new Vector3f(0, 0, 1), c1.getAbsolutePoint1().z, c1.getAbsolutePoint2().z, c2.getAbsolutePoint1().z, c2.getAbsolutePoint2().z, new Vector3f(), new FloatContainer(Float.MAX_VALUE)))
             return contact;
 
         contact.setIntersecting(true);
         contact.setnEnter(mtvAxis.normalize());
-        contact.setPenetration((float) Math.sqrt(mtvDistance.getFloat()) * 1.005f);
+        contact.setPenetration((float) Math.sqrt(mtvDistance.getFloat()) * 1.001f);
+
+        return contact;
+    }
+
+    public Contact isCollidingX(Collider c1, Collider c2){
+        FloatContainer mtvDistance = new FloatContainer(Float.MAX_VALUE);
+        Vector3f mtvAxis = new Vector3f();
+        Contact contact = new Contact();
+
+        if(!testAxis(new Vector3f(0, 1, 0), c1.getAbsolutePoint1().x, c1.getAbsolutePoint2().x, c2.getAbsolutePoint1().x, c2.getAbsolutePoint2().x, new Vector3f(), new FloatContainer(Float.MAX_VALUE)))
+            return contact;
+
+        if(!testAxis(new Vector3f(1, 0, 0), c1.getAbsolutePoint1().y, c1.getAbsolutePoint2().y, c2.getAbsolutePoint1().y, c2.getAbsolutePoint2().y, mtvAxis, mtvDistance))
+            return contact;
+
+        if(!testAxis(new Vector3f(0, 0, 1), c1.getAbsolutePoint1().z, c1.getAbsolutePoint2().z, c2.getAbsolutePoint1().z, c2.getAbsolutePoint2().z, new Vector3f(), new FloatContainer(Float.MAX_VALUE)))
+            return contact;
+
+        contact.setIntersecting(true);
+        contact.setnEnter(mtvAxis.normalize());
+        contact.setPenetration((float) Math.sqrt(mtvDistance.getFloat()) * 1.001f);
+
+        return contact;
+    }
+
+    public Contact isCollidingZ(Collider c1, Collider c2){
+        FloatContainer mtvDistance = new FloatContainer(Float.MAX_VALUE);
+        Vector3f mtvAxis = new Vector3f();
+        Contact contact = new Contact();
+
+        if(!testAxis(new Vector3f(1, 0, 0), c1.getAbsolutePoint1().x, c1.getAbsolutePoint2().x, c2.getAbsolutePoint1().x, c2.getAbsolutePoint2().x, new Vector3f(), new FloatContainer(Float.MAX_VALUE)))
+            return contact;
+
+        if(!testAxis(new Vector3f(0, 0, 1), c1.getAbsolutePoint1().y, c1.getAbsolutePoint2().y, c2.getAbsolutePoint1().y, c2.getAbsolutePoint2().y, mtvAxis, mtvDistance))
+            return contact;
+
+        if(!testAxis(new Vector3f(0, 1, 0), c1.getAbsolutePoint1().z, c1.getAbsolutePoint2().z, c2.getAbsolutePoint1().z, c2.getAbsolutePoint2().z, new Vector3f(), new FloatContainer(Float.MAX_VALUE)))
+            return contact;
+
+        contact.setIntersecting(true);
+        contact.setnEnter(mtvAxis.normalize());
+        contact.setPenetration((float) Math.sqrt(mtvDistance.getFloat()) * 1.001f);
 
         return contact;
     }

@@ -1,6 +1,6 @@
 package org.kakara.engine;
 
-import org.kakara.engine.collision.Collidable;
+import org.kakara.engine.physics.collision.Collidable;
 import org.kakara.engine.gui.Window;
 import org.kakara.engine.render.Renderer;
 import org.kakara.engine.renderobjects.ChunkHandler;
@@ -10,14 +10,9 @@ import org.kakara.engine.utils.Time;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.LinkedList;
 import java.util.Objects;
-import java.util.PriorityQueue;
 import java.util.Queue;
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.PriorityBlockingQueue;
-import java.util.concurrent.SynchronousQueue;
 
 /**
  * Primary class of the engine.
@@ -143,7 +138,7 @@ public class GameEngine implements Runnable {
         gameHandler.update();
         gameHandler.getSceneManager().getCurrentScene().update(interval);
         game.update();
-        collide();
+//        collide();
     }
 
     /**
@@ -203,9 +198,7 @@ public class GameEngine implements Runnable {
      */
     protected void collide() {
         if(!(gameHandler.getCurrentScene() instanceof AbstractScene)) return;
-        for (Collidable gi : Objects.requireNonNull(gameHandler.getCurrentScene().getCollisionManager()).getCollidngItems(null)) {
-            gi.getCollider().update();
-        }
+
     }
 
     /**

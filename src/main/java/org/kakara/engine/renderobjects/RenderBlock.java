@@ -1,15 +1,14 @@
 package org.kakara.engine.renderobjects;
 
-import org.kakara.engine.collision.Collidable;
-import org.kakara.engine.collision.Collider;
-import org.kakara.engine.collision.ObjectBoxCollider;
+import org.kakara.engine.physics.collision.Collidable;
+import org.kakara.engine.physics.collision.Collider;
+import org.kakara.engine.physics.collision.ObjectBoxCollider;
 import org.kakara.engine.math.Vector3;
 import org.kakara.engine.renderobjects.renderlayouts.BlockLayout;
 import org.kakara.engine.renderobjects.renderlayouts.Face;
 import org.kakara.engine.renderobjects.renderlayouts.Layout;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 

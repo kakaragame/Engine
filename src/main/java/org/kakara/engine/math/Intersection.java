@@ -4,7 +4,7 @@ import org.joml.Intersectionf;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.kakara.engine.Camera;
-import org.kakara.engine.collision.Collidable;
+import org.kakara.engine.physics.collision.Collidable;
 
 /**
  * Handles the intersection of a ray and blocks.

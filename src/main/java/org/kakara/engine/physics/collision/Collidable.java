@@ -1,4 +1,4 @@
-package org.kakara.engine.collision;
+package org.kakara.engine.physics.collision;
 
 import org.kakara.engine.math.Vector3;
 

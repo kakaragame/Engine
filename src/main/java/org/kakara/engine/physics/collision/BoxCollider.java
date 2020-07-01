@@ -1,7 +1,6 @@
-package org.kakara.engine.collision;
+package org.kakara.engine.physics.collision;
 
 import org.kakara.engine.GameHandler;
-import org.kakara.engine.math.KMath;
 import org.kakara.engine.math.Vector3;
 import org.kakara.engine.utils.Time;
 
@@ -156,6 +155,63 @@ public class BoxCollider implements Collider {
         if(relative)
             return point2.add(offset).add(item.getColPosition());
         return point2.add(offset);
+    }
+
+    @Override
+    public void updateX() {
+        if(isTrigger) return;
+        this.deltaPosition = item.getColPosition().clone().subtract(this.lastPosition);
+        this.lastPosition = item.getColPosition().clone();
+
+        CollisionManager cm = handler.getCurrentScene().getCollisionManager();
+        assert cm != null;
+
+        for(Collidable gi : cm.getCollidngItems(item.getColPosition())){
+            if(gi == item) continue;
+            CollisionManager.Contact contact = cm.isCollidingX(gi.getCollider(), item.getCollider());
+            while (contact.isIntersecting()){
+                contact = cm.isCollidingX(gi.getCollider(), item.getCollider());
+                item.setColPosition(item.getColPosition().add(new Vector3(contact.getnEnter().mul(-1).mul(contact.getPenetration()))));
+            }
+        }
+    }
+
+    @Override
+    public void updateY() {
+        if(isTrigger) return;
+        this.deltaPosition = item.getColPosition().clone().subtract(this.lastPosition);
+        this.lastPosition = item.getColPosition().clone();
+
+        CollisionManager cm = handler.getCurrentScene().getCollisionManager();
+        assert cm != null;
+
+        for(Collidable gi : cm.getCollidngItems(item.getColPosition())){
+            if(gi == item) continue;
+            CollisionManager.Contact contact = cm.isCollidingY(gi.getCollider(), item.getCollider());
+            while (contact.isIntersecting()){
+                contact = cm.isCollidingY(gi.getCollider(), item.getCollider());
+                item.setColPosition(item.getColPosition().add(new Vector3(contact.getnEnter().mul(-1).mul(contact.getPenetration()))));
+            }
+        }
+    }
+
+    @Override
+    public void updateZ() {
+        if(isTrigger) return;
+        this.deltaPosition = item.getColPosition().clone().subtract(this.lastPosition);
+        this.lastPosition = item.getColPosition().clone();
+
+        CollisionManager cm = handler.getCurrentScene().getCollisionManager();
+        assert cm != null;
+
+        for(Collidable gi : cm.getCollidngItems(item.getColPosition())){
+            if(gi == item) continue;
+            CollisionManager.Contact contact = cm.isCollidingXZ(gi.getCollider(), item.getCollider());
+            while (contact.isIntersecting()){
+                contact = cm.isCollidingXZ(gi.getCollider(), item.getCollider());
+                item.setColPosition(item.getColPosition().add(new Vector3(contact.getnEnter().mul(-1).mul(contact.getPenetration()))));
+            }
+        }
     }
 
     /**

@@ -2,9 +2,8 @@ package org.kakara.engine.test;
 
 import org.joml.Vector3f;
 import org.kakara.engine.GameHandler;
-import org.kakara.engine.collision.BoxCollider;
-import org.kakara.engine.collision.Collidable;
-import org.kakara.engine.collision.ObjectBoxCollider;
+import org.kakara.engine.physics.collision.BoxCollider;
+import org.kakara.engine.physics.collision.Collidable;
 import org.kakara.engine.engine.CubeData;
 import org.kakara.engine.events.EventHandler;
 import org.kakara.engine.events.event.MouseClickEvent;
@@ -119,9 +118,10 @@ public class MainGameScene extends AbstractGameScene {
         MeshGameItem gi = new MeshGameItem(mesh);
 //        gi.getMesh().setWireframe(true);
         add(gi);
-        gi.setPosition(0, 16*2 + 5, 0);
-        gi.setCollider(new BoxCollider(new Vector3(0, 0, 0), new Vector3(1, 2, 1)));
+        gi.setPosition(3, 16*2 + 5, 3);
+        gi.setCollider(new BoxCollider(new Vector3(0, 0, 0), new Vector3(0.99, 2, 0.99)));
         gi.getCollider().setGravity(9.81f);
+        gi.setVelocity(new Vector3(0, -9.18f, 0));
         collider = gi;
 //        Texture skyb = Utils.inputStreamToTexture(Texture.class.getResourceAsStream("/skybox.png"));
 //        SkyBox skyBox = new SkyBox(skyb, true);
@@ -308,17 +308,19 @@ public class MainGameScene extends AbstractGameScene {
 
         Vector3 currentPos = collider.getPosition();
         MeshGameItem col = (MeshGameItem) collider;
+        col.setVelocityX(0);
+        col.setVelocityZ(0);
         if (ki.isKeyPressed(GLFW_KEY_RIGHT)) {
-            col.movePositionByCamera(10f * Time.deltaTime, 0, 0, getCamera());
+            col.setVelocityX(3f);
         }
         if (ki.isKeyPressed(GLFW_KEY_LEFT)) {
-            col.movePositionByCamera(-10f* Time.deltaTime, 0, 0, getCamera());
+            col.setVelocityX(-3f);
         }
         if (ki.isKeyPressed(GLFW_KEY_UP)) {
-            col.movePositionByCamera(0, 0, -10f* Time.deltaTime, getCamera());
+            col.setVelocityZ(-3f);
         }
         if (ki.isKeyPressed(GLFW_KEY_DOWN)) {
-            col.movePositionByCamera(0, 0, 10f* Time.deltaTime, getCamera());
+            col.setVelocityZ(3f);
         }
         if(ki.isKeyPressed(GLFW_KEY_N)){
             collider.translateBy(0, 0.1f,0);
@@ -328,10 +330,6 @@ public class MainGameScene extends AbstractGameScene {
         }
         if(ki.isKeyPressed(GLFW_KEY_G)){
             ((MeshGameItem) collider).getCollider().setUseGravity(true);
-        }
-
-        if(col.getCollider().usesGravity()){
-            getCamera().setPosition(collider.getPosition().add(0, 1, 0));
         }
 
 //        if (ki.isKeyPressed(GLFW_KEY_I)) {
