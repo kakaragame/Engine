@@ -102,7 +102,21 @@ public class CollisionManager {
 
         contact.setIntersecting(true);
         contact.setnEnter(mtvAxis.normalize());
-        contact.setPenetration((float) Math.sqrt(mtvDistance.getFloat()) * 1.001f);
+        contact.setPenetration((float) Math.sqrt(mtvDistance.getFloat()) * 1.005f);
+
+        return contact;
+    }
+
+    public Contact isCollidingY(Collider c1, Collider c2){
+        FloatContainer mtvDistance = new FloatContainer(Float.MAX_VALUE);
+        Vector3f mtvAxis = new Vector3f();
+        Contact contact = new Contact();
+        if(!testAxis(new Vector3f(0, 1, 0), c1.getAbsolutePoint1().y, c1.getAbsolutePoint2().y, c2.getAbsolutePoint1().y, c2.getAbsolutePoint2().y, mtvAxis, mtvDistance))
+            return contact;
+
+        contact.setIntersecting(true);
+        contact.setnEnter(mtvAxis.normalize());
+        contact.setPenetration((float) Math.sqrt(mtvDistance.getFloat()) * 1.005f);
 
         return contact;
     }

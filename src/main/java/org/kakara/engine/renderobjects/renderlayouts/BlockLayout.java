@@ -14,6 +14,9 @@ import java.util.List;
  */
 public class BlockLayout implements Layout {
 
+    private static float ONE_THIRD = 1f/3f;
+    private static float TWO_THIRD = 2f/3f;
+
     @Override
     public Vertex getVertex(final Vector3 pos) {
         return new Vertex() {
@@ -70,20 +73,20 @@ public class BlockLayout implements Layout {
             @Override
             public List<Float> getFront(float xOffset, float yOffset, int rows) {
                 return  Arrays.asList(
-                        0.25f/rows + xOffset, 0.33f/rows + yOffset,
-                        0.25f/rows + xOffset, 0.66f/rows + yOffset,
-                        0.5f/rows + xOffset, 0.66f/rows + yOffset,
-                        0.5f/rows + xOffset, 0.33f/rows + yOffset
+                        0.25f/rows + xOffset, ONE_THIRD/rows + yOffset,
+                        0.25f/rows + xOffset, TWO_THIRD/rows + yOffset,
+                        0.5f/rows + xOffset, TWO_THIRD/rows + yOffset,
+                        0.5f/rows + xOffset, ONE_THIRD/rows + yOffset
                 );
             }
 
             @Override
             public List<Float> getBack(float xOffset, float yOffset, int rows) {
                 return  Arrays.asList(
-                        1f/rows + xOffset, 0.33f/rows + yOffset,
-                        1f/rows + xOffset, 0.66f/rows + yOffset,
-                        0.75f/rows + xOffset, 0.66f/rows + yOffset,
-                        0.75f/rows + xOffset, 0.33f/rows + yOffset
+                        1f/rows + xOffset, ONE_THIRD/rows + yOffset,
+                        1f/rows + xOffset, TWO_THIRD/rows + yOffset,
+                        0.75f/rows + xOffset, TWO_THIRD/rows + yOffset,
+                        0.75f/rows + xOffset, ONE_THIRD/rows + yOffset
                 );
             }
 
@@ -91,8 +94,8 @@ public class BlockLayout implements Layout {
             public List<Float> getTop(float xOffset, float yOffset, int rows) {
                 return  Arrays.asList(
                         0.25f/rows + xOffset, 0 + yOffset,
-                        0.25f/rows + xOffset, 0.33f/rows + yOffset,
-                        0.5f/rows + xOffset, 0.33f/rows + yOffset,
+                        0.25f/rows + xOffset, ONE_THIRD/rows + yOffset,
+                        0.5f/rows + xOffset, ONE_THIRD/rows + yOffset,
                         0.5f/rows + xOffset, 0 + yOffset
                 );
             }
@@ -100,30 +103,30 @@ public class BlockLayout implements Layout {
             @Override
             public List<Float> getBottom(float xOffset, float yOffset, int rows) {
                 return  Arrays.asList(
-                        0.25f/rows + xOffset, 0.66f/rows + yOffset,
+                        0.25f/rows + xOffset, TWO_THIRD/rows + yOffset,
                         0.25f/rows + xOffset, 1f/rows + yOffset,
                         0.5f/rows + xOffset, 1f/rows + yOffset,
-                        0.5f/rows + xOffset, 0.66f/rows + yOffset
+                        0.5f/rows + xOffset, TWO_THIRD/rows + yOffset
                 );
             }
 
             @Override
             public List<Float> getRight(float xOffset, float yOffset, int rows) {
                 return  Arrays.asList(
-                        0.5f/rows + xOffset, 0.33f/rows + yOffset,
-                        0.5f/rows + xOffset, 0.66f/rows + yOffset,
-                        0.75f/rows + xOffset, 0.66f/rows + yOffset,
-                        0.75f/rows + xOffset, 0.33f/rows + yOffset
+                        0.5f/rows + xOffset, ONE_THIRD/rows + yOffset,
+                        0.5f/rows + xOffset, TWO_THIRD/rows + yOffset,
+                        0.75f/rows + xOffset, TWO_THIRD/rows + yOffset,
+                        0.75f/rows + xOffset, ONE_THIRD/rows + yOffset
                 );
             }
 
             @Override
             public List<Float> getLeft(float xOffset, float yOffset, int rows) {
                 return  Arrays.asList(
-                        0 + xOffset, 0.33f/rows + yOffset,
-                        0 + xOffset, 0.66f/rows + yOffset,
-                        0.25f/rows + xOffset, 0.66f/rows + yOffset,
-                        0.25f/rows + xOffset, 0.33f/rows + yOffset
+                        0 + xOffset, ONE_THIRD/rows + yOffset,
+                        0 + xOffset, TWO_THIRD/rows + yOffset,
+                        0.25f/rows + xOffset, TWO_THIRD/rows + yOffset,
+                        0.25f/rows + xOffset, ONE_THIRD/rows + yOffset
                 );
             }
         };

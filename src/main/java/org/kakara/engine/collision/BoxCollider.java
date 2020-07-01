@@ -197,18 +197,28 @@ public class BoxCollider implements Collider {
         this.deltaPosition = item.getColPosition().subtract(this.lastPosition);
         this.lastPosition = item.getColPosition();
 
-        // If gravity is enabled move it by the gravitational velocity.
-        if(useGravity){
-            item.colTranslateBy(new Vector3(0, -getGravityVelocity(), 0));
-        }
-
         CollisionManager cm = handler.getCurrentScene().getCollisionManager();
         assert cm != null;
+
         for(Collidable gi : cm.getCollidngItems(item.getColPosition())){
             if(gi == item) continue;
             CollisionManager.Contact contact = cm.isColliding(gi.getCollider(), item.getCollider());
-            if(contact.isIntersecting()){
+            while (contact.isIntersecting()){
+                contact = cm.isColliding(gi.getCollider(), item.getCollider());
                 item.setColPosition(item.getColPosition().add(new Vector3(contact.getnEnter().mul(-1).mul(contact.getPenetration()))));
+            }
+        }
+
+        if(useGravity){
+            item.colTranslateBy(new Vector3(0, -getGravityVelocity() * Time.deltaTime, 0));
+            for(Collidable gi : cm.getCollidngItems(item.getColPosition())){
+                if(gi == item) continue;
+                CollisionManager.Contact contact = cm.isColliding(gi.getCollider(), item.getCollider());
+                if(contact.isIntersecting()){
+                    if(contact.getPenetration() > (getGravityVelocity() * Time.deltaTime) + 0.01 || contact.getPenetration() < (getGravityVelocity() * Time.deltaTime) - 0.01) continue;
+                    item.setColPosition(item.getColPosition().add(new Vector3(contact.getnEnter().mul(-1).mul(contact.getPenetration()))));
+                    break;
+                }
             }
         }
     }

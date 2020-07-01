@@ -39,7 +39,7 @@ public class TextureAtlas {
      * @param currentScene The current scene
      */
     public TextureAtlas(List<RenderTexture> textures, String output, Scene currentScene){
-        this(textures, output, currentScene, 300, 255);
+        this(textures, output, currentScene, 400, 300);
     }
 
     /**
