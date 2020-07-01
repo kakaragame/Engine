@@ -120,7 +120,6 @@ public class MainGameScene extends AbstractGameScene {
         add(gi);
         gi.setPosition(3, 16*2 + 5, 3);
         gi.setCollider(new BoxCollider(new Vector3(0, 0, 0), new Vector3(0.99, 2, 0.99)));
-        gi.getCollider().setGravity(9.81f);
         gi.setVelocity(new Vector3(0, -9.18f, 0));
         collider = gi;
 //        Texture skyb = Utils.inputStreamToTexture(Texture.class.getResourceAsStream("/skybox.png"));
@@ -327,9 +326,6 @@ public class MainGameScene extends AbstractGameScene {
         }
         if(ki.isKeyPressed(GLFW_KEY_M)){
             collider.translateBy(0, -0.1f,0);
-        }
-        if(ki.isKeyPressed(GLFW_KEY_G)){
-            ((MeshGameItem) collider).getCollider().setUseGravity(true);
         }
 
 //        if (ki.isKeyPressed(GLFW_KEY_I)) {

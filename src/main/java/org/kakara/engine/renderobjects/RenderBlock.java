@@ -4,6 +4,7 @@ import org.kakara.engine.physics.collision.Collidable;
 import org.kakara.engine.physics.collision.Collider;
 import org.kakara.engine.physics.collision.ObjectBoxCollider;
 import org.kakara.engine.math.Vector3;
+import org.kakara.engine.renderobjects.mesh.MeshType;
 import org.kakara.engine.renderobjects.renderlayouts.BlockLayout;
 import org.kakara.engine.renderobjects.renderlayouts.Face;
 import org.kakara.engine.renderobjects.renderlayouts.Layout;
@@ -14,7 +15,7 @@ import java.util.List;
 
 /**
  * The individual blocks of the chunk.
- * <p>Any changes to the RenderBlock requires your to run {@link RenderChunk#regenerateChunk(TextureAtlas)} or {@link RenderChunk#regenerateChunkAsync(TextureAtlas)} in
+ * <p>Any changes to the RenderBlock requires your to run {@link RenderChunk#regenerateChunk(TextureAtlas, MeshType)} in
  * order for the changes to be shown.</p>
  * <p>This class <b>is</b> thread safe.</p>
  */
@@ -44,7 +45,7 @@ public class RenderBlock implements Collidable {
         this.position = position;
         this.visibleFaces = new ArrayList<>();
         this.selected = false;
-        collider = new ObjectBoxCollider(false, true);
+        collider = new ObjectBoxCollider(true);
         collider.onRegister(this);
     }
 

@@ -34,44 +34,6 @@ public interface Collider {
     boolean isTrigger();
 
     /**
-     * Set gravity velocity
-     * <p>Will be changed to acceleration in next update.</p>
-     *
-     * @param value The velocity
-     */
-    void setGravity(float value);
-
-    /**
-     * Get the acceleration for gravity.
-     * <p>Will be acceleration in next update.</p>
-     *
-     * @return The acceleration.
-     */
-    float getGravity();
-
-    /**
-     * Get the velocity for gravity at a given time.
-     *
-     * @return The velocity.
-     */
-    float getGravityVelocity();
-
-    /**
-     * If gravity is enabled on the object.
-     *
-     * @return If gravity is enabled.
-     */
-    boolean usesGravity();
-
-    /**
-     * Set if gravity is enabled.
-     *
-     * @param value If gravity is enabled.
-     * @return The collider.
-     */
-    Collider setUseGravity(boolean value);
-
-    /**
      * Get the first relative point for a collider.
      * <p>This point is relative to the (0,0,0) point of the object. (Usually the top corner)</p>
      *

@@ -12,17 +12,13 @@ import org.kakara.engine.utils.Time;
  */
 public class BoxCollider implements Collider {
 
-    private boolean useGravity;
-    private boolean isTrigger;
-    private float gravity;
-
     private Vector3 point1;
     private Vector3 point2;
     private Vector3 offset;
     private boolean relative;
+    private boolean isTrigger;
 
     private boolean isInAir = false;
-    private float timeInAir;
 
     private Vector3 lastPosition;
     private Vector3 deltaPosition;
@@ -33,61 +29,25 @@ public class BoxCollider implements Collider {
      * Create a box collider
      * @param point1 The first point
      * @param point2 The second point
-     * @param useGravity If the objects is to use gravity
-     * @param isTrigger If the object is a trigger
      * @param relative If the object is relative.
      */
-    public BoxCollider(Vector3 point1, Vector3 point2, boolean useGravity, boolean isTrigger, boolean relative){
-        this.useGravity = useGravity;
-        this.isTrigger = isTrigger;
+    public BoxCollider(Vector3 point1, Vector3 point2, boolean relative){
         this.handler = GameHandler.getInstance();
-        gravity = 0.07f;
         this.point1 = point1;
         this.point2 = point2;
         this.relative = relative;
         this.offset = new Vector3(0, 0, 0);
-        timeInAir = 0;
-    }
-
-    public BoxCollider(Vector3 point1, Vector3 point2, boolean relative){
-        this(point1, point2,false, false, relative);
+       this.isTrigger = false;
     }
 
     public BoxCollider(Vector3 point1, Vector3 point2){
-        this(point1, point2, false, false, true);
-    }
-
-    @Override
-    public boolean usesGravity(){
-        return useGravity;
-    }
-
-    @Override
-    public Collider setUseGravity(boolean value){
-        this.useGravity = value;
-        return this;
+        this(point1, point2, true);
     }
 
     @Override
     public Collider setTrigger(boolean value){
         this.isTrigger = value;
         return this;
-    }
-
-    @Override
-    public float getGravity(){
-        return gravity;
-    }
-
-    @Override
-    public float getGravityVelocity(){
-        if(timeInAir < 1f) return getGravity();
-        return getGravity() * timeInAir;
-    }
-
-    @Override
-    public void setGravity(float gravity){
-        this.gravity = gravity;
     }
 
     @Override
@@ -262,19 +222,6 @@ public class BoxCollider implements Collider {
             while (contact.isIntersecting()){
                 contact = cm.isColliding(gi.getCollider(), item.getCollider());
                 item.setColPosition(item.getColPosition().add(new Vector3(contact.getnEnter().mul(-1).mul(contact.getPenetration()))));
-            }
-        }
-
-        if(useGravity){
-            item.colTranslateBy(new Vector3(0, -getGravityVelocity() * Time.deltaTime, 0));
-            for(Collidable gi : cm.getCollidngItems(item.getColPosition())){
-                if(gi == item) continue;
-                CollisionManager.Contact contact = cm.isColliding(gi.getCollider(), item.getCollider());
-                if(contact.isIntersecting()){
-                    if(contact.getPenetration() > (getGravityVelocity() * Time.deltaTime) + 0.01 || contact.getPenetration() < (getGravityVelocity() * Time.deltaTime) - 0.01) continue;
-                    item.setColPosition(item.getColPosition().add(new Vector3(contact.getnEnter().mul(-1).mul(contact.getPenetration()))));
-                    break;
-                }
             }
         }
     }

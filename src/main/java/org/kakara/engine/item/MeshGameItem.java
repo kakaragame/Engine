@@ -438,6 +438,19 @@ public class MeshGameItem implements GameItem, Collidable, PhysicsItem {
     }
 
     @Override
+    public void setVelocityByCamera(Vector3 velocity, Camera camera) {
+        if (velocity.z != 0) {
+            this.velocity.x = (float) Math.sin(Math.toRadians(camera.getRotation().y)) * -1.0f * velocity.z;
+            this.velocity.z = (float) Math.cos(Math.toRadians(camera.getRotation().y)) * velocity.z;
+        }
+        if (velocity.x != 0) {
+            this.velocity.x = (float) Math.sin(Math.toRadians(camera.getRotation().y - 90)) * -1.0f * velocity.x;
+            this.velocity.z = (float) Math.cos(Math.toRadians(camera.getRotation().y - 90)) * velocity.x;
+        }
+        this.velocity.y = velocity.y;
+    }
+
+    @Override
     public Vector3 getVelocity() {
         return velocity.clone();
     }

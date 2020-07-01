@@ -12,9 +12,7 @@ import org.kakara.engine.utils.Time;
  */
 public class ObjectBoxCollider implements Collider {
 
-    boolean useGravity;
     boolean isTrigger;
-    float gravity;
 
     private boolean isInAir = false;
     private float timeInAir;
@@ -24,30 +22,13 @@ public class ObjectBoxCollider implements Collider {
     private Collidable item;
     private GameHandler handler;
 
-    public ObjectBoxCollider(boolean useGravity, boolean isTrigger, float gravity){
-        this.useGravity = useGravity;
+    public ObjectBoxCollider(boolean isTrigger){
         this.isTrigger = isTrigger;
         this.handler = GameHandler.getInstance();
-        this.gravity = gravity;
-    }
-
-    public ObjectBoxCollider(boolean useGravity, boolean isTrigger){
-        this(useGravity, isTrigger, 0.07f);
     }
 
     public ObjectBoxCollider(){
-        this(false, false, 0.07f);
-    }
-
-    public boolean usesGravity(){
-        return useGravity;
-    }
-
-    public Collider setUseGravity(boolean value){
-//        if(item instanceof MeshGameItem){
-//            ((MeshGameItem) item).applyAcceleration(new Vector3(0, -9.18, 0));
-//        }
-        return this;
+        this(false);
     }
 
     @Override
@@ -132,20 +113,6 @@ public class ObjectBoxCollider implements Collider {
         return this;
     }
 
-    public float getGravity(){
-        return gravity;
-    }
-
-    @Override
-    public float getGravityVelocity() {
-        if(timeInAir < 1f) return getGravity();
-        return getGravity() * timeInAir;
-    }
-
-    public void setGravity(float gravity){
-        this.gravity = gravity;
-    }
-
     public boolean isTrigger(){
         return isTrigger;
     }
@@ -165,19 +132,6 @@ public class ObjectBoxCollider implements Collider {
             while (contact.isIntersecting()){
                 contact = cm.isColliding(gi.getCollider(), item.getCollider());
                 item.setColPosition(item.getColPosition().add(new Vector3(contact.getnEnter().mul(-1).mul(contact.getPenetration()))));
-            }
-        }
-
-        if(useGravity){
-            item.colTranslateBy(new Vector3(0, -getGravityVelocity() * Time.deltaTime, 0));
-            for(Collidable gi : cm.getCollidngItems(item.getColPosition())){
-                if(gi == item) continue;
-                CollisionManager.Contact contact = cm.isColliding(gi.getCollider(), item.getCollider());
-                if(contact.isIntersecting()){
-                    if(contact.getPenetration() > (getGravityVelocity() * Time.deltaTime) + 0.01 || contact.getPenetration() < (getGravityVelocity() * Time.deltaTime) - 0.01) continue;
-                    item.setColPosition(item.getColPosition().add(new Vector3(contact.getnEnter().mul(-1).mul(contact.getPenetration()))));
-                    break;
-                }
             }
         }
     }
