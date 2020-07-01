@@ -106,7 +106,7 @@ public class Renderer {
      */
     public void renderHUD(Window window, List<UIObject> objects) {
         hudShaderProgram.bind();
-        Matrix4f orthoProjection = transformation.buildOrtho(0, window.getWidth(), window.getHeight(), 0);
+        Matrix4f orthoProjection = transformation.buildOrtho(0, window.initalWidth, window.initalHeight, 0);
         for (UIObject object : objects) {
             IMesh mesh = object.getMesh();
             hudShaderProgram.setUniform("ortho", orthoProjection);
