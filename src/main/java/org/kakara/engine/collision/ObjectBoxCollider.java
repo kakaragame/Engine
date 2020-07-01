@@ -97,56 +97,19 @@ public class ObjectBoxCollider implements Collider {
         this.deltaPosition = item.getColPosition().clone().subtract(this.lastPosition);
         this.lastPosition = item.getColPosition().clone();
 
-        CollisionManager cm = handler.getCurrentScene().getCollisionManager();
-        assert cm != null;
-        for(Collidable gi : cm.getCollidngItems(item.getColPosition())){
-            if(gi == item) continue;
-            if(cm.isColliding(gi, item)){
-                Vector3 currentPosition = item.getColPosition().subtract(deltaPosition);
-                this.lastPosition = currentPosition;
-                item.setColPosition(new Vector3(currentPosition.x, currentPosition.y, currentPosition.z));
-
-            }
-        }
-        // If gravity is enabled move it by the gravitational velocity.
         if(useGravity){
             item.colTranslateBy(new Vector3(0, -getGravityVelocity(), 0));
         }
 
-        boolean found = false;
-        // Handle collision for gravity.
+        CollisionManager cm = handler.getCurrentScene().getCollisionManager();
+        assert cm != null;
         for(Collidable gi : cm.getCollidngItems(item.getColPosition())){
-            // Prevent object from colliding with itself.
             if(gi == item) continue;
-            // If the object is not colliding, then prevent further calculations.
-            if(!cm.isColliding(gi, item)) continue;
-            // Check to see if it is possible for the object to collide. If not stop calculations.
-            if(KMath.distance(gi.getColPosition(), item.getColPosition()) > 20) continue;
-            //The bottom collision point of this object.
-            Vector3 point1 = KMath.distance(this.getAbsolutePoint1(), item.getColPosition()) > KMath.distance(this.getAbsolutePoint2(), item.getColPosition()) ? item.getCollider().getAbsolutePoint2() : item.getCollider().getAbsolutePoint1();
-            // The top collision point of the colliding object.
-            Vector3 point2 = KMath.distance(gi.getCollider().getAbsolutePoint1(), gi.getColPosition()) < KMath.distance(gi.getCollider().getAbsolutePoint2(), gi.getColPosition()) ? gi.getCollider().getAbsolutePoint2() : gi.getCollider().getAbsolutePoint1();
-
-            // Negate x and z.
-            point1.x = 0;
-            point1.z = 0;
-            point2.x = 0;
-            point2.z = 0;
-            if(KMath.distance(point1, point2) <= getGravityVelocity()){
-                isInAir = false;
-                found = true;
-                // Undo last gravitational action.
-                item.colTranslateBy(new Vector3(0, getGravityVelocity(), 0));
+            CollisionManager.Contact contact = cm.isColliding(gi.getCollider(), item.getCollider());
+            if(contact.isIntersecting()){
+                item.setColPosition(item.getColPosition().add(new Vector3(contact.getnEnter().mul(-1).mul(contact.getPenetration()))));
             }
         }
-        // If no collision actions are done then it is in the air.
-        if(!found)
-            isInAir = true;
-
-        if(isInAir)
-            timeInAir += Time.deltaTime;
-        else
-            timeInAir = 0;
     }
 
     @Override

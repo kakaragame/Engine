@@ -119,7 +119,7 @@ public class MainGameScene extends AbstractGameScene {
 //        gi.getMesh().setWireframe(true);
         add(gi);
         gi.setPosition(0, 20, 0);
-        gi.setCollider(new ObjectBoxCollider(false, false));
+        gi.setCollider(new ObjectBoxCollider(true, false));
         collider = gi;
 //        Texture skyb = Utils.inputStreamToTexture(Texture.class.getResourceAsStream("/skybox.png"));
 //        SkyBox skyBox = new SkyBox(skyb, true);

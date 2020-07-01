@@ -1,9 +1,12 @@
 package org.kakara.engine.collision;
 
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector3f;
 import org.kakara.engine.GameHandler;
 import org.kakara.engine.math.Vector3;
 import org.kakara.engine.scene.AbstractGameScene;
+import org.kakara.engine.ui.constraints.Constraint;
+import org.kakara.engine.utils.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,53 +76,139 @@ public class CollisionManager {
         return colliders;
     }
 
-    /**
-     * Detect collision between two items.
-     * @param item The first game item.
-     * @param other The second game item.
-     * @return If they are colliding.
+    /*
+           Thank you user1423893 for you assistance.
+           https://gamedev.stackexchange.com/questions/32807/collision-resolve-sphere-aabb-and-aabb-aabb
      */
-    public boolean isColliding(Collidable item, Collidable other){
-        boolean xCollision;
-        boolean yCollision;
-        boolean zCollision;
-        if(item.getCollider() instanceof BoxCollider && other.getCollider() instanceof ObjectBoxCollider){
-            xCollision = (item.getColPosition().x + item.getCollider().getRelativePoint1().x) + (((BoxCollider) item.getCollider()).getRelativePoint2().x) >= other.getColPosition().x && other.getColPosition().x + other.getColScale()
-                    >= item.getColPosition().x + ((BoxCollider) item.getCollider()).getRelativePoint1().x;
-            yCollision = (item.getColPosition().y + ((BoxCollider) item.getCollider()).getRelativePoint1().y) + (((BoxCollider) item.getCollider()).getRelativePoint2().y) >= other.getColPosition().y && other.getColPosition().y + other.getColScale()
-                    >= item.getColPosition().y + ((BoxCollider) item.getCollider()).getRelativePoint1().y;
-            zCollision = (item.getColPosition().z + ((BoxCollider) item.getCollider()).getRelativePoint1().z) + (((BoxCollider) item.getCollider()).getRelativePoint2().z) >= other.getColPosition().z && other.getColPosition().z + other.getColScale()
-                    >= item.getColPosition().z + ((BoxCollider) item.getCollider()).getRelativePoint1().z;
+
+    /**
+     * Check to see if two colliders are colliding.
+     * @param c1 The first collider
+     * @param c2 The second collider.
+     * @return The contact class.
+     */
+    public Contact isColliding(Collider c1, Collider c2){
+        FloatContainer mtvDistance = new FloatContainer(Float.MAX_VALUE);
+        Vector3f mtvAxis = new Vector3f();
+        Contact contact = new Contact();
+        if(!testAxis(new Vector3f(1, 0, 0), c1.getAbsolutePoint1().x, c1.getAbsolutePoint2().x, c2.getAbsolutePoint1().x, c2.getAbsolutePoint2().x, mtvAxis, mtvDistance))
+            return contact;
+
+        if(!testAxis(new Vector3f(0, 1, 0), c1.getAbsolutePoint1().y, c1.getAbsolutePoint2().y, c2.getAbsolutePoint1().y, c2.getAbsolutePoint2().y, mtvAxis, mtvDistance))
+            return contact;
+
+        if(!testAxis(new Vector3f(0, 0, 1), c1.getAbsolutePoint1().z, c1.getAbsolutePoint2().z, c2.getAbsolutePoint1().z, c2.getAbsolutePoint2().z, mtvAxis, mtvDistance))
+            return contact;
+
+        contact.setIntersecting(true);
+        contact.setnEnter(mtvAxis.normalize());
+        contact.setPenetration((float) Math.sqrt(mtvDistance.getFloat()) * 1.001f);
+
+        return contact;
+    }
+
+    /**
+     * Check to see if an axis is colliding.
+     * @param axis The axis to check on.
+     * @param minA The minimum point for collider A
+     * @param maxA The maximum point for collider A
+     * @param minB The minimum point for collider B
+     * @param maxB The maximum point for collider B
+     * @param mtvAxis The Minimum Translation Vector axis. (The axis to travel the minimum distance.
+     *                <p>The mtvAxis is mutated by this method.</p>
+     * @param mtvDistance The Minimum Translation Vector distance. (The distance to travel)
+     *                    <p>The mtvDistance is mutated by this method.</p>
+     * @return If the axis is colliding.
+     */
+    private boolean testAxis(Vector3f axis, float minA, float maxA, float minB, float maxB, Vector3f mtvAxis, FloatContainer mtvDistance){
+        float axisLengthSq = new Vector3f(axis).dot(new Vector3f(axis));
+        if(axisLengthSq < 1.0e-8f){
+            return true;
         }
-        else if(item.getCollider() instanceof BoxCollider && other.getCollider() instanceof BoxCollider){
-            xCollision = (item.getColPosition().x + ((BoxCollider) item.getCollider()).getRelativePoint1().x) + (((BoxCollider) item.getCollider()).getRelativePoint2().x) >= (other.getColPosition().x + ((BoxCollider) other.getCollider()).getRelativePoint1().x)
-                    && (other.getColPosition().x + other.getCollider().getRelativePoint1().x) + (((BoxCollider) other.getCollider()).getRelativePoint2().x)
-                    >= item.getColPosition().x + item.getCollider().getRelativePoint1().x;
-            yCollision = (item.getColPosition().y + ((BoxCollider) item.getCollider()).getRelativePoint1().y) + (((BoxCollider) item.getCollider()).getRelativePoint2().y) >= (other.getColPosition().y + ((BoxCollider) other.getCollider()).getRelativePoint1().y)
-                    && (other.getColPosition().y + ((BoxCollider) other.getCollider()).getRelativePoint1().y) + ( ((BoxCollider) other.getCollider()).getRelativePoint2().y)
-                    >= item.getColPosition().y + item.getCollider().getRelativePoint1().y;
-            zCollision = (item.getColPosition().z + ((BoxCollider) item.getCollider()).getRelativePoint1().z) + (((BoxCollider) item.getCollider()).getRelativePoint2().z) >= (other.getColPosition().z + ((BoxCollider) other.getCollider()).getRelativePoint1().z)
-                    && (other.getColPosition().z + other.getCollider().getRelativePoint1().z) + (((BoxCollider) other.getCollider()).getRelativePoint2().z)
-                    >= item.getColPosition().z + item.getCollider().getRelativePoint1().z;
-        }
-        else if(item.getCollider() instanceof  ObjectBoxCollider && other.getCollider() instanceof ObjectBoxCollider){
-            xCollision = item.getColPosition().x + item.getColScale() >= other.getColPosition().x && other.getColPosition().x + other.getColScale() >= item.getColPosition().x;
-            yCollision = item.getColPosition().y + item.getColScale() >= other.getColPosition().y && other.getColPosition().y + other.getColScale() >= item.getColPosition().y;
-            zCollision = item.getColPosition().z + item.getColScale() >= other.getColPosition().z && other.getColPosition().z + other.getColScale() >= item.getColPosition().z;
-        }
-        else if(item.getCollider() instanceof ObjectBoxCollider && other.getCollider() instanceof BoxCollider){
-            Collidable itemCopy = other;
-            Collidable otherCopy = item;
-            xCollision = (itemCopy.getColPosition().x + ((BoxCollider) itemCopy.getCollider()).getRelativePoint1().x) + (((BoxCollider) itemCopy.getCollider()).getRelativePoint2().x) >= otherCopy.getColPosition().x && otherCopy.getColPosition().x + otherCopy.getColScale()
-                    >= itemCopy.getColPosition().x + ((BoxCollider) itemCopy.getCollider()).getRelativePoint1().x;
-            yCollision = (itemCopy.getColPosition().y + ((BoxCollider) itemCopy.getCollider()).getRelativePoint1().y) + (((BoxCollider) itemCopy.getCollider()).getRelativePoint2().y) >= otherCopy.getColPosition().y && otherCopy.getColPosition().y + otherCopy.getColScale()
-                    >= itemCopy.getColPosition().y + ((BoxCollider) itemCopy.getCollider()).getRelativePoint1().y;
-            zCollision = (itemCopy.getColPosition().z + ((BoxCollider) itemCopy.getCollider()).getRelativePoint1().z) + (((BoxCollider) itemCopy.getCollider()).getRelativePoint2().z) >= otherCopy.getColPosition().z && otherCopy.getColPosition().z + otherCopy.getColScale()
-                    >= itemCopy.getColPosition().z + ((BoxCollider) itemCopy.getCollider()).getRelativePoint1().z;
-        }
-        else{
+
+        float d0 = (maxB-minA);
+        float d1 = (maxA-minB);
+        if(d0 <= 0.0f || d1 <= 0.0f)
             return false;
+        float overlap = (d0 < d1) ? d0 : -d1;
+        Vector3f sep = new Vector3f(axis).mul(overlap/axisLengthSq);
+
+        float sepLengthSquared = new Vector3f(sep).dot(sep);
+
+        if(sepLengthSquared < mtvDistance.getFloat()){
+            mtvDistance.setFloat(sepLengthSquared);
+            mtvAxis.set(sep);
         }
-        return xCollision && yCollision && zCollision;
+        return true;
+    }
+
+    /**
+     * Holds the contact information of a collision.
+     */
+    protected static class Contact{
+        private boolean isIntersecting;
+        private Vector3f nEnter;
+        private float penetration;
+
+        public Contact(){
+            isIntersecting = false;
+            nEnter = new Vector3f();
+            penetration = 0;
+        }
+
+        /**
+         * If there was a collision.
+         * @return If there was a collision.
+         */
+        public boolean isIntersecting(){
+            return isIntersecting;
+        }
+
+        public void setIntersecting(boolean value){
+            this.isIntersecting = value;
+        }
+
+        /**
+         * The normal vector.
+         * @return The normal vector.
+         */
+        public Vector3f getnEnter(){
+            return this.nEnter;
+        }
+
+        public void setnEnter(Vector3f nEnter){
+            this.nEnter = nEnter;
+        }
+
+        /**
+         * The distance into object.
+         * @return The distance into the object.
+         */
+        public float getPenetration(){
+            return penetration;
+        }
+
+        public void setPenetration(float penetration){
+            this.penetration = penetration;
+        }
+    }
+
+    /**
+     * Used to contain a float value that can be mutated.
+     */
+    private static class FloatContainer{
+        private float f;
+        public FloatContainer(float f){
+            this.f = f;
+        }
+
+        public void setFloat(float f) {
+            this.f = f;
+        }
+
+        public float getFloat(){
+            return f;
+        }
     }
 }
+
