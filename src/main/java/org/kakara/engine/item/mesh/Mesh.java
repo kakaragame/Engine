@@ -35,6 +35,8 @@ public class Mesh implements IMesh {
 
     private float boundingRadius;
 
+    private boolean wireframe = false;
+
     /**
      *
      * @param positions The vertex positions. See the code at {@link org.kakara.engine.engine.CubeData#vertex} for an example.
@@ -282,7 +284,13 @@ public class Mesh implements IMesh {
     public void render() {
         initRender();
 
+        if(isWireframe())
+            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
         glDrawElements(GL_TRIANGLES, getVertexCount(), GL_UNSIGNED_INT, 0);
+
+        if(isWireframe())
+            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
         endRender();
     }
@@ -346,6 +354,23 @@ public class Mesh implements IMesh {
         // Delete the VAO
         glBindVertexArray(0);
         glDeleteVertexArrays(vaoId);
+    }
+
+    /**
+     * If you want the mesh to be rendered as a wireframe.
+     * @since 1.0-Pre2
+     * @param value If the mesh is a wireframe.
+     */
+    public void setWireframe(boolean value){
+        this.wireframe = value;
+    }
+
+    /**
+     * If the mesh is a wire frame.
+     * @return If the mesh is a wireframe.
+     */
+    public boolean isWireframe(){
+        return this.wireframe;
     }
 
     protected static float[] createEmptyFloatArray(int length, float defaultValue) {

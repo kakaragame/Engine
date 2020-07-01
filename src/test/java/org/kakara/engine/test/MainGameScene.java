@@ -94,6 +94,7 @@ public class MainGameScene extends AbstractGameScene {
         MeshGameItem object = new MeshGameItem(mainPlayer);
         object.setPosition(0, 20, 0);
         object.setScale(0.3f);
+        object.getMesh().setWireframe(true);
 //        object.setCollider(new BoxCollider(new Vector3(0, 0, 0), new Vector3(1, 1.5f, 1)));
 //        object.getCollider().setUseGravity(true).setTrigger(false);
 //        ((BoxCollider) object.getCollider()).setOffset(new Vector3(0, 0.7f, 0));
@@ -115,9 +116,10 @@ public class MainGameScene extends AbstractGameScene {
         mesh.setMaterial(mt);
 
         MeshGameItem gi = new MeshGameItem(mesh);
-        gi.setCollider(new ObjectBoxCollider(true, false));
+//        gi.getMesh().setWireframe(true);
         add(gi);
-        gi.setPosition(13, 2, 13);
+        gi.setPosition(0, 20, 0);
+        gi.setCollider(new ObjectBoxCollider(false, false));
         collider = gi;
 //        Texture skyb = Utils.inputStreamToTexture(Texture.class.getResourceAsStream("/skybox.png"));
 //        SkyBox skyBox = new SkyBox(skyb, true);
@@ -159,9 +161,9 @@ public class MainGameScene extends AbstractGameScene {
 
 
         new Thread(() -> {
-            for(int cx = 0; cx < 5; cx++){
-                for(int cy = 0; cy < 5; cy++){
-                    for(int cz = 0; cz < 5; cz++){
+            for(int cx = 0; cx < 1; cx++){
+                for(int cy = 0; cy < 1; cy++){
+                    for(int cz = 0; cz < 1; cz++){
                         RenderChunk rc = new RenderChunk(new ArrayList<>(), getTextureAtlas());
                         rc.setPosition(cx * 16, cy*16, cz * 16);
                         for(int x = 0; x < 16; x++){
@@ -186,9 +188,9 @@ public class MainGameScene extends AbstractGameScene {
 //        System.out.println(getChunkHandler().getRenderChunkList());
 
 
-//        MeshGameItem sh = (MeshGameItem) gi.clone(false);
-//        sh.setPosition(-4, 3, -4);
-//        this.add(sh);
+        MeshGameItem sh = (MeshGameItem) gi.clone(false);
+        sh.setPosition(-4, 3, -4);
+        this.add(sh);
 
 
         PointLight pointLight = new PointLight(new LightColor(255, 255, 0), new Vector3(1, 1, 1), 1);
