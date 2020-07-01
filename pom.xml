@@ -6,7 +6,7 @@
 
     <groupId>org.kakara</groupId>
     <artifactId>engine</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0-Pre2-SNAPSHOT</version>
 
     <properties>
         <lwjgl.version>3.2.3</lwjgl.version>
@@ -184,16 +184,16 @@
 
     <repositories>
         <repository>
-            <id>jitpack.io</id>
-            <url>https://jitpack.io</url>
+            <id>thevideogamevillage.com</id>
+            <url>https://repo.thevideogamevillage.com/repository/maven-releases/</url>
         </repository>
     </repositories>
 
     <dependencies>
         <dependency>
-            <groupId>com.github.ryandw11</groupId>
+            <groupId>me.ryandw11</groupId>
             <artifactId>Octree</artifactId>
-            <version>master-104a60aa59-1</version>
+            <version>1.0</version>
         </dependency>
         <dependency>
             <groupId>org.jetbrains</groupId>

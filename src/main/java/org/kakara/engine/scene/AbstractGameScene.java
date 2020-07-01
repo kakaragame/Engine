@@ -4,13 +4,16 @@ import org.joml.Intersectionf;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.kakara.engine.GameHandler;
-import org.kakara.engine.collision.Collidable;
+import org.kakara.engine.item.MeshGameItem;
+import org.kakara.engine.physics.FixedPhysicsUpdater;
+import org.kakara.engine.physics.collision.Collidable;
 import org.kakara.engine.math.Vector3;
+import org.kakara.engine.physics.collision.CollisionManager;
 import org.kakara.engine.renderobjects.ChunkHandler;
 import org.kakara.engine.renderobjects.RenderChunk;
 import org.kakara.engine.renderobjects.TextureAtlas;
 
-import java.util.UUID;
+import java.util.*;
 
 /**
  * This scene is to be used for the game.
@@ -20,10 +23,14 @@ public abstract class AbstractGameScene extends AbstractScene {
 
     private ChunkHandler chunkHandler;
     private TextureAtlas textureAtlas;
+    Timer physicsUpdater;
 
     public AbstractGameScene(GameHandler gameHandler) {
         super(gameHandler);
         this.chunkHandler = new ChunkHandler();
+        this.physicsUpdater =  new Timer();
+        System.out.println("This is a test!");
+        this.physicsUpdater.schedule(new FixedPhysicsUpdater(this), 10, 20);
     }
 
     @Override
@@ -65,7 +72,7 @@ public abstract class AbstractGameScene extends AbstractScene {
      * <p>This method also works with RenderBlocks as well with instanced and non-instanced game items</p>
      * <p>The maximum distance is set to 20 for performance reasons.</p>
      * @param distance The maximum distance that a block can be selected for.
-     *                 <p>Note: This value is limited by the maximum distance set in {@link org.kakara.engine.collision.CollisionManager#getSelectionItems(Vector3)}</p>
+     *                 <p>Note: This value is limited by the maximum distance set in {@link CollisionManager#getSelectionItems(Vector3)}</p>
      * @return The collidable that was found.
      */
     public Collidable selectGameItems(float distance){
@@ -81,6 +88,42 @@ public abstract class AbstractGameScene extends AbstractScene {
         Vector2f nearFar = new Vector2f();
 
         for(Collidable collidable : getCollisionManager().getSelectionItems(getCamera().getPosition())){
+            collidable.setSelected(false);
+            min.set(collidable.getColPosition().toJoml());
+            max.set(collidable.getColPosition().toJoml());
+            min.add(-collidable.getColScale()/2, -collidable.getColScale()/2, -collidable.getColScale()/2);
+            max.add(collidable.getColScale()/2, collidable.getColScale()/2, collidable.getColScale()/2);
+            if (Intersectionf.intersectRayAab(getCamera().getPosition().toJoml(), dir, min, max, nearFar) && nearFar.x < closestDistance) {
+                closestDistance = nearFar.x;
+                selectedGameItem = collidable;
+            }
+        }
+
+        if(selectedGameItem != null){
+            selectedGameItem.setSelected(true);
+        }
+        return selectedGameItem;
+    }
+
+    public Collidable selectGameItems(float distance, UUID... ignoreIds){
+        List<UUID> ignore = new ArrayList<>(Arrays.asList(ignoreIds));
+        Collidable selectedGameItem = null;
+        float closestDistance = distance;
+
+        Vector3f dir = new Vector3f();
+
+        dir = getCamera().getViewMatrix().positiveZ(dir).negate();
+
+        Vector3f max = new Vector3f();
+        Vector3f min = new Vector3f();
+        Vector2f nearFar = new Vector2f();
+
+        for(Collidable collidable : getCollisionManager().getSelectionItems(getCamera().getPosition())){
+            if(collidable instanceof MeshGameItem){
+                MeshGameItem item = (MeshGameItem) collidable;
+                collidable.setSelected(false);
+                if(ignore.contains(item.getId())) continue;
+            }
             collidable.setSelected(false);
             min.set(collidable.getColPosition().toJoml());
             max.set(collidable.getColPosition().toJoml());
@@ -131,5 +174,6 @@ public abstract class AbstractGameScene extends AbstractScene {
     @Override
     public void unload() {
         getItemHandler().cleanup();
+        this.physicsUpdater.cancel();
     }
 }

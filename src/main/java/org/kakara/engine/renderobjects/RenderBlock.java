@@ -1,21 +1,21 @@
 package org.kakara.engine.renderobjects;
 
-import org.kakara.engine.collision.Collidable;
-import org.kakara.engine.collision.Collider;
-import org.kakara.engine.collision.ObjectBoxCollider;
+import org.kakara.engine.physics.collision.Collidable;
+import org.kakara.engine.physics.collision.Collider;
+import org.kakara.engine.physics.collision.ObjectBoxCollider;
 import org.kakara.engine.math.Vector3;
+import org.kakara.engine.renderobjects.mesh.MeshType;
 import org.kakara.engine.renderobjects.renderlayouts.BlockLayout;
 import org.kakara.engine.renderobjects.renderlayouts.Face;
 import org.kakara.engine.renderobjects.renderlayouts.Layout;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
 /**
  * The individual blocks of the chunk.
- * <p>Any changes to the RenderBlock requires your to run {@link RenderChunk#regenerateChunk(TextureAtlas)} or {@link RenderChunk#regenerateChunkAsync(TextureAtlas)} in
+ * <p>Any changes to the RenderBlock requires your to run {@link RenderChunk#regenerateChunk(TextureAtlas, MeshType)} in
  * order for the changes to be shown.</p>
  * <p>This class <b>is</b> thread safe.</p>
  */
@@ -45,7 +45,7 @@ public class RenderBlock implements Collidable {
         this.position = position;
         this.visibleFaces = new ArrayList<>();
         this.selected = false;
-        collider = new ObjectBoxCollider(false, true);
+        collider = new ObjectBoxCollider(true);
         collider.onRegister(this);
     }
 
@@ -128,7 +128,7 @@ public class RenderBlock implements Collidable {
      * Get the vertex array from the visible faces
      * @return The vertex array.
      */
-    protected void getVertexFromFaces(List<Float> vertex){
+    public void getVertexFromFaces(List<Float> vertex){
         for(Face f : this.visibleFaces){
             List<Float> temp;
             switch(f){
@@ -163,7 +163,7 @@ public class RenderBlock implements Collidable {
      * @param atlas The texture atlas
      * @return The texture coord array
      */
-    protected void getTextureFromFaces(List<Float> vertex, TextureAtlas atlas){
+    public void getTextureFromFaces(List<Float> vertex, TextureAtlas atlas){
         for(Face f : this.visibleFaces){
             List<Float> temp;
             switch(f){
@@ -197,7 +197,7 @@ public class RenderBlock implements Collidable {
      * Get the normal array from the visible faces
      * @return The normal array.
      */
-    protected void getNormalsFromFaces(List<Float> vertex){
+    public void getNormalsFromFaces(List<Float> vertex){
         for(Face f : this.visibleFaces){
             List<Float> temp;
             switch(f){
@@ -232,7 +232,7 @@ public class RenderBlock implements Collidable {
      * @param currentIndex The current index. (Starting number of the indices)
      * @return The indices array
      */
-    protected void getIndicesFromFaces(List<Integer> vertex, int currentIndex){
+    public void getIndicesFromFaces(List<Integer> vertex, int currentIndex){
         int index = currentIndex;
         for(Face f : this.visibleFaces){
             List<Integer> temp;

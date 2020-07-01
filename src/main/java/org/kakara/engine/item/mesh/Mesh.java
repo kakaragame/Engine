@@ -1,6 +1,8 @@
 package org.kakara.engine.item.mesh;
 
 import org.jetbrains.annotations.NotNull;
+import org.kakara.engine.GameEngine;
+import org.kakara.engine.exceptions.InvalidThreadException;
 import org.kakara.engine.item.GameItem;
 import org.kakara.engine.item.Material;
 import org.kakara.engine.item.Texture;
@@ -33,6 +35,8 @@ public class Mesh implements IMesh {
 
     private float boundingRadius;
 
+    private boolean wireframe = false;
+
     /**
      *
      * @param positions The vertex positions. See the code at {@link org.kakara.engine.engine.CubeData#vertex} for an example.
@@ -57,6 +61,9 @@ public class Mesh implements IMesh {
      * @param weights Not implemented
      */
     public Mesh(@NotNull float[] positions, @NotNull float[] textCoords, @NotNull float[] normals, @NotNull int[] indices, @NotNull int[] jointIndices, @NotNull float[] weights) {
+        if(Thread.currentThread() != GameEngine.currentThread)
+            throw new InvalidThreadException("This class can only be constructed on the main thread.");
+
         FloatBuffer posBuffer = null;
         FloatBuffer textCoordsBuffer = null;
         FloatBuffer vecNormalsBuffer = null;
@@ -277,7 +284,13 @@ public class Mesh implements IMesh {
     public void render() {
         initRender();
 
+        if(isWireframe())
+            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
         glDrawElements(GL_TRIANGLES, getVertexCount(), GL_UNSIGNED_INT, 0);
+
+        if(isWireframe())
+            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
         endRender();
     }
@@ -341,6 +354,23 @@ public class Mesh implements IMesh {
         // Delete the VAO
         glBindVertexArray(0);
         glDeleteVertexArrays(vaoId);
+    }
+
+    /**
+     * If you want the mesh to be rendered as a wireframe.
+     * @since 1.0-Pre2
+     * @param value If the mesh is a wireframe.
+     */
+    public void setWireframe(boolean value){
+        this.wireframe = value;
+    }
+
+    /**
+     * If the mesh is a wire frame.
+     * @return If the mesh is a wireframe.
+     */
+    public boolean isWireframe(){
+        return this.wireframe;
     }
 
     protected static float[] createEmptyFloatArray(int length, float defaultValue) {

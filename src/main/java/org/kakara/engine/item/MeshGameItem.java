@@ -4,8 +4,9 @@ import org.jetbrains.annotations.NotNull;
 import org.joml.Quaternionf;
 import org.kakara.engine.Camera;
 import org.kakara.engine.GameHandler;
-import org.kakara.engine.collision.Collidable;
-import org.kakara.engine.collision.Collider;
+import org.kakara.engine.physics.PhysicsItem;
+import org.kakara.engine.physics.collision.Collidable;
+import org.kakara.engine.physics.collision.Collider;
 import org.kakara.engine.item.mesh.Mesh;
 import org.kakara.engine.math.Vector3;
 
@@ -16,17 +17,24 @@ import java.util.UUID;
  * <p>
  * This is a Collidable GameItem. That uses meshes to create an item
  */
-public class MeshGameItem implements GameItem, Collidable {
+public class MeshGameItem implements GameItem, Collidable, PhysicsItem {
 
     private Mesh[] meshes;
     private float scale;
     private Quaternionf rotation;
-    private Vector3 position;
     private final UUID uuid;
-    private Collider collider;
     private int textPos;
     private boolean visible = true;
     private boolean selected;
+
+    /*
+        The physics section.
+     */
+    private Vector3 position;
+    private Vector3 velocity;
+    private Vector3 acceleration;
+
+    private Collider collider;
 
     public MeshGameItem() {
         this(new Mesh[0]);
@@ -43,6 +51,9 @@ public class MeshGameItem implements GameItem, Collidable {
         rotation = new Quaternionf();
         uuid = UUID.randomUUID();
         textPos = 0;
+
+        velocity = new Vector3(0, 0, 0);
+        acceleration = new Vector3(0, 0, 0);
     }
 
     /**
@@ -404,5 +415,58 @@ public class MeshGameItem implements GameItem, Collidable {
      */
     public void setVisible(boolean visible) {
         this.visible = visible;
+    }
+
+    @Override
+    public void setVelocity(Vector3 velocity) {
+        this.velocity = velocity;
+    }
+
+    @Override
+    public void setVelocityX(float x) {
+        this.velocity.setX(x);
+    }
+
+    @Override
+    public void setVelocityY(float y) {
+        this.velocity.setY(y);
+    }
+
+    @Override
+    public void setVelocityZ(float z) {
+        this.velocity.setZ(z);
+    }
+
+    @Override
+    public void setVelocityByCamera(Vector3 velocity, Camera camera) {
+        if (velocity.z != 0) {
+            this.velocity.x = (float) Math.sin(Math.toRadians(camera.getRotation().y)) * -1.0f * velocity.z;
+            this.velocity.z = (float) Math.cos(Math.toRadians(camera.getRotation().y)) * velocity.z;
+        }
+        if (velocity.x != 0) {
+            this.velocity.x = (float) Math.sin(Math.toRadians(camera.getRotation().y - 90)) * -1.0f * velocity.x;
+            this.velocity.z = (float) Math.cos(Math.toRadians(camera.getRotation().y - 90)) * velocity.x;
+        }
+        this.velocity.y = velocity.y;
+    }
+
+    @Override
+    public Vector3 getVelocity() {
+        return velocity.clone();
+    }
+
+    @Override
+    public void setAcceleration(Vector3 acceleration) {
+        this.acceleration = acceleration;
+    }
+
+    @Override
+    public void applyAcceleration(Vector3 acceleration) {
+        this.acceleration.add(acceleration);
+    }
+
+    @Override
+    public Vector3 getAcceleration() {
+        return acceleration.clone();
     }
 }

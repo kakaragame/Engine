@@ -5,7 +5,7 @@ import org.jetbrains.annotations.Nullable;
 import org.kakara.engine.Camera;
 import org.kakara.engine.GameEngine;
 import org.kakara.engine.GameHandler;
-import org.kakara.engine.collision.CollisionManager;
+import org.kakara.engine.physics.collision.CollisionManager;
 import org.kakara.engine.events.EventManager;
 import org.kakara.engine.item.GameItem;
 import org.kakara.engine.item.ItemHandler;
@@ -17,7 +17,6 @@ import org.kakara.engine.lighting.PointLight;
 import org.kakara.engine.lighting.SpotLight;
 import org.kakara.engine.renderobjects.RenderChunk;
 import org.kakara.engine.ui.HUD;
-import org.kakara.engine.ui.HUDImageCache;
 import org.kakara.engine.ui.HUDItem;
 import org.kakara.engine.weather.Fog;
 

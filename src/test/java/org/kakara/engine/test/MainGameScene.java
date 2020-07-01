@@ -2,8 +2,8 @@ package org.kakara.engine.test;
 
 import org.joml.Vector3f;
 import org.kakara.engine.GameHandler;
-import org.kakara.engine.collision.Collidable;
-import org.kakara.engine.collision.ObjectBoxCollider;
+import org.kakara.engine.physics.collision.BoxCollider;
+import org.kakara.engine.physics.collision.Collidable;
 import org.kakara.engine.engine.CubeData;
 import org.kakara.engine.events.EventHandler;
 import org.kakara.engine.events.event.MouseClickEvent;
@@ -25,6 +25,7 @@ import org.kakara.engine.renderobjects.RenderBlock;
 import org.kakara.engine.renderobjects.RenderChunk;
 import org.kakara.engine.renderobjects.RenderTexture;
 import org.kakara.engine.renderobjects.TextureAtlas;
+import org.kakara.engine.renderobjects.mesh.MeshType;
 import org.kakara.engine.renderobjects.renderlayouts.BlockLayout;
 import org.kakara.engine.scene.AbstractGameScene;
 import org.kakara.engine.ui.RGBA;
@@ -93,6 +94,7 @@ public class MainGameScene extends AbstractGameScene {
         MeshGameItem object = new MeshGameItem(mainPlayer);
         object.setPosition(0, 20, 0);
         object.setScale(0.3f);
+        object.getMesh().setWireframe(true);
 //        object.setCollider(new BoxCollider(new Vector3(0, 0, 0), new Vector3(1, 1.5f, 1)));
 //        object.getCollider().setUseGravity(true).setTrigger(false);
 //        ((BoxCollider) object.getCollider()).setOffset(new Vector3(0, 0.7f, 0));
@@ -114,9 +116,11 @@ public class MainGameScene extends AbstractGameScene {
         mesh.setMaterial(mt);
 
         MeshGameItem gi = new MeshGameItem(mesh);
-        gi.setCollider(new ObjectBoxCollider(true, false));
+//        gi.getMesh().setWireframe(true);
         add(gi);
-        gi.setPosition(13, 2, 13);
+        gi.setPosition(3, 16*2 + 5, 3);
+        gi.setCollider(new BoxCollider(new Vector3(0, 0, 0), new Vector3(0.99, 2, 0.99)));
+        gi.setVelocity(new Vector3(0, -9.18f, 0));
         collider = gi;
 //        Texture skyb = Utils.inputStreamToTexture(Texture.class.getResourceAsStream("/skybox.png"));
 //        SkyBox skyBox = new SkyBox(skyb, true);
@@ -131,8 +135,7 @@ public class MainGameScene extends AbstractGameScene {
          */
         RenderTexture txt1 = new RenderTexture(resourceManager.getResource("/example_texture.png"));
         RenderTexture txt2 = new RenderTexture(resourceManager.getResource("/oop.png"));
-        System.out.println(resourceManager.getResource("/m.png").getInputStream());
-        RenderTexture txt3 = new RenderTexture(resourceManager.getResource("/m.png"));
+        RenderTexture txt3 = new RenderTexture(resourceManager.getResource("/ExampleBlock.png"));
         TextureAtlas atlas = new TextureAtlas(Arrays.asList(txt1, txt2, txt3), Paths.get("").toAbsolutePath().toString(), this);
         setTextureAtlas(atlas);
 
@@ -157,32 +160,24 @@ public class MainGameScene extends AbstractGameScene {
 //        }
 
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                for(int cx = 0; cx < 1; cx++){
-                    for(int cy = 0; cy < 1; cy++){
-                        for(int cz = 0; cz < 1; cz++){
-                            RenderChunk rc = new RenderChunk(new ArrayList<>(), getTextureAtlas());
-                            rc.setPosition(cx * 16, cy*16, cz * 16);
-                            for(int x = 0; x < 16; x++){
-                                for(int y = 0; y < 16; y++){
-                                    for(int z = 0; z < 16; z++){
-                                        RenderBlock rb = new RenderBlock(new BlockLayout(), getTextureAtlas().getTextures().get(ThreadLocalRandom.current().nextInt(0, 3)), new Vector3(x, y, z));
-                                        rc.addBlock(rb);
-                                    }
+        new Thread(() -> {
+            for(int cx = 0; cx < 5; cx++){
+                for(int cy = 0; cy < 2; cy++){
+                    for(int cz = 0; cz < 5; cz++){
+                        RenderChunk rc = new RenderChunk(new ArrayList<>(), getTextureAtlas());
+                        rc.setPosition(cx * 16, cy*16, cz * 16);
+                        for(int x = 0; x < 16; x++){
+                            for(int y = 0; y < 16; y++){
+                                for(int z = 0; z < 16; z++){
+                                    RenderBlock rb = new RenderBlock(new BlockLayout(), getTextureAtlas().getTextures().get(ThreadLocalRandom.current().nextInt(0, 3)), new Vector3(x, y, z));
+                                    rc.addBlock(rb);
                                 }
                             }
-
-                            rc.regenerateChunkAsync(getTextureAtlas());
-
-                            getChunkHandler().addChunk(rc);
                         }
-//                        try {
-//                            Thread.sleep(500);
-//                        } catch (InterruptedException e) {
-//                            e.printStackTrace();
-//                        }
+
+                        rc.regenerateChunk(getTextureAtlas(), MeshType.MULTITHREAD);
+
+                        getChunkHandler().addChunk(rc);
                     }
                 }
             }
@@ -193,9 +188,9 @@ public class MainGameScene extends AbstractGameScene {
 //        System.out.println(getChunkHandler().getRenderChunkList());
 
 
-//        MeshGameItem sh = (MeshGameItem) gi.clone(false);
-//        sh.setPosition(-4, 3, -4);
-//        this.add(sh);
+        MeshGameItem sh = (MeshGameItem) gi.clone(false);
+        sh.setPosition(-4, 3, -4);
+        this.add(sh);
 
 
         PointLight pointLight = new PointLight(new LightColor(255, 255, 0), new Vector3(1, 1, 1), 1);
@@ -311,17 +306,20 @@ public class MainGameScene extends AbstractGameScene {
         }
 
         Vector3 currentPos = collider.getPosition();
-        if (ki.isKeyPressed(GLFW_KEY_UP)) {
-            collider.translateBy(0.1f, 0, 0);
-        }
-        if (ki.isKeyPressed(GLFW_KEY_DOWN)) {
-            collider.setPosition(currentPos.x - 0.1f, currentPos.y, currentPos.z);
+        MeshGameItem col = (MeshGameItem) collider;
+        col.setVelocityX(0);
+        col.setVelocityZ(0);
+        if (ki.isKeyPressed(GLFW_KEY_RIGHT)) {
+            col.setVelocityX(3f);
         }
         if (ki.isKeyPressed(GLFW_KEY_LEFT)) {
-            collider.setPosition(currentPos.x, currentPos.y, currentPos.z + 0.1f);
+            col.setVelocityX(-3f);
         }
-        if (ki.isKeyPressed(GLFW_KEY_RIGHT)) {
-            collider.setPosition(currentPos.x, currentPos.y, currentPos.z - 0.1f);
+        if (ki.isKeyPressed(GLFW_KEY_UP)) {
+            col.setVelocityZ(-3f);
+        }
+        if (ki.isKeyPressed(GLFW_KEY_DOWN)) {
+            col.setVelocityZ(3f);
         }
         if(ki.isKeyPressed(GLFW_KEY_N)){
             collider.translateBy(0, 0.1f,0);
@@ -379,7 +377,7 @@ public class MainGameScene extends AbstractGameScene {
                 RenderBlock block = (RenderBlock) selected;
                 RenderChunk parentChunk = block.getParentChunk();
                 parentChunk.removeBlock(block);
-                parentChunk.regenerateChunkAsync(getTextureAtlas());
+                parentChunk.regenerateChunk(getTextureAtlas(), MeshType.SYNC);
             }
         }
     }

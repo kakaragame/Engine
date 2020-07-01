@@ -1,6 +1,6 @@
 package org.kakara.engine.renderobjects;
 
-import org.kakara.engine.collision.Collidable;
+import org.kakara.engine.physics.collision.Collidable;
 import org.kakara.engine.math.KMath;
 import org.kakara.engine.math.Vector3;
 

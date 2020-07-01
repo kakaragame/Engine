@@ -35,6 +35,7 @@ public class ItemHandler {
             List<GameItem> list = nonInstancedMeshMap.computeIfAbsent(mesh, k -> new ArrayList<>());
             list.add(obj);
         }
+        items.add(obj);
     }
 
     /**
@@ -51,6 +52,7 @@ public class ItemHandler {
         else{
             nonInstancedMeshMap.remove(obj);
         }
+        items.remove(obj);
     }
 
     /**
