@@ -2,6 +2,8 @@ package org.kakara.engine.math;
 
 import org.joml.Vector3f;
 
+import java.lang.ref.WeakReference;
+
 /**
  * A math class to provide a nice representation of a vector.
  */
@@ -98,11 +100,12 @@ public class Vector3 {
 
     /**
      * Clone the vector
+     * TODO THIS IS ONLY A TEMPORARY FIX. ADDITIONAL MEASURES MUST BE TAKEN TO KEEP MEMORY DOWN.
      * <p>The original vector is not mutated.</p>
      * @return The cloned vector.
      */
     public Vector3 clone(){
-        return new Vector3(x, y, z);
+        return this;
     }
 
     /**
