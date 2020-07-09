@@ -2,6 +2,7 @@ package org.kakara.engine.gui;
 
 import org.kakara.engine.GameEngine;
 import org.lwjgl.glfw.GLFWErrorCallback;
+import org.lwjgl.glfw.GLFWImage;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GLUtil;
@@ -262,6 +263,27 @@ public class Window {
      */
     public WindowOptions getOptions() {
         return options;
+    }
+
+    /**
+     * Set the window icon.
+     * @since 1.0-Pre2
+     * @param icon The icon to set.
+     */
+    public void setIcon(WindowIcon icon){
+        GLFWImage iconImage = GLFWImage.malloc();
+        GLFWImage.Buffer iconBuffer = GLFWImage.malloc(1);
+        iconImage.set(icon.getWidth(), icon.getHeight(), icon.getImage());
+        iconBuffer.put(0, iconImage);
+        glfwSetWindowIcon(window, iconBuffer);
+    }
+
+    /**
+     * Set the window icon to the default.
+     * @since 1.0-Pre2
+     */
+    public void setIcon(){
+        glfwSetWindowIcon(window, null);
     }
 
     /**

@@ -2,6 +2,7 @@ package org.kakara.engine.test;
 
 import org.kakara.engine.GameHandler;
 import org.kakara.engine.engine.CubeData;
+import org.kakara.engine.gui.WindowIcon;
 import org.kakara.engine.input.MouseClickType;
 import org.kakara.engine.item.Material;
 import org.kakara.engine.item.mesh.Mesh;
@@ -44,10 +45,6 @@ public class TitleScreenScene extends AbstractMenuScene {
     public TitleScreenScene(GameHandler gameHandler, KakaraTest kakaraTest) throws Exception {
         super(gameHandler);
         this.kakaraTest = kakaraTest;
-
-
-
-
     }
 
     @Override
@@ -59,6 +56,8 @@ public class TitleScreenScene extends AbstractMenuScene {
     public void loadGraphics(GameHandler handler) throws IOException {
         // Get the resource manager to load in needed files.
         ResourceManager resourceManager = gameHandler.getResourceManager();
+
+        handler.getWindow().setIcon(new WindowIcon(resourceManager.getResource("oop.png")));
 
         // Make a new font. It is (fontName, the resource for the font)
         Font roboto = new Font("Roboto-Regular", resourceManager.getResource("Roboto-Regular.ttf"), this);
