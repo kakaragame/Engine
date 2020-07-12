@@ -3,6 +3,9 @@
 const int MAX_POINT_LIGHTS = 5;
 const int MAX_SPOT_LIGHTS = 5;
 
+in vec2 outOverlayCoord;
+in float[1] outHasTexture;
+
 in vec2 outTexCoord;
 in vec3 outVertexNormal;
 in vec3 outVertexPos;
@@ -80,8 +83,8 @@ vec4 specularC;
 
 void setupColors(Material material, vec2 textCoord){
         ambientC = texture(textureAtlas, textCoord);
-        diffuseC = ambientC;
-        specularC = ambientC;
+        diffuseC = texture(textureAtlas, textCoord);
+        specularC = texture(textureAtlas, textCoord);
 }
 
 
@@ -142,15 +145,14 @@ vec4 calcDirectionalLight(DirectionalLight light, vec3 position, vec3 normal)
     return calcLightColor(light.color, light.intensity, position, normalize(light.direction), normal);
 }
 
-//Calculate the overlay textures for each object.
+//Calculate the overlay textures for each block.
 void calculateOverlayTextures()
 {
     vec4 tempDiffuse = ambientC;
-    for(int i = 0; i < material.numberOfOverlays; i++){
-        vec4 overlay = texture(material.overlayTextures[i], outTexCoord);
+    if(outHasTexture[0] == 1){
+        vec4 overlay = texture(textureAtlas, outOverlayCoord);
         tempDiffuse = mix(tempDiffuse, overlay, overlay.a);
     }
-
     ambientC = tempDiffuse;
 }
 
@@ -186,7 +188,7 @@ void main()
 {
     setupColors(material, outTexCoord);
 
-    //calculateOverlayTextures();
+    calculateOverlayTextures();
 
     vec4 diffuseSpecularComp = calcDirectionalLight(directionalLight, outVertexPos, outVertexNormal);
 

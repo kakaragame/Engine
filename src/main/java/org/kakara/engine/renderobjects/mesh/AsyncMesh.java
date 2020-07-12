@@ -7,14 +7,10 @@ import org.kakara.engine.renderobjects.ChunkHandler;
 import org.kakara.engine.renderobjects.RenderBlock;
 import org.kakara.engine.renderobjects.RenderChunk;
 import org.kakara.engine.renderobjects.TextureAtlas;
-import org.kakara.engine.renderobjects.renderlayouts.BasicMeshLayout;
 import org.kakara.engine.renderobjects.renderlayouts.MeshLayout;
 import org.lwjgl.system.MemoryUtil;
 
-import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -24,6 +20,7 @@ import static org.lwjgl.opengl.GL30.*;
 
 /**
  * This calculates the data for the Mesh on a different thread.
+ * @since 1.0-Pre2
  */
 public class AsyncMesh implements RenderMesh {
 
@@ -50,7 +47,7 @@ public class AsyncMesh implements RenderMesh {
             List<RenderBlock> renderBlocks = renderChunk.calculateVisibleBlocks(blocks);
             MeshLayout layout = null;
             try {
-                layout = setupLayout(renderBlocks, textureAtlas);
+                layout = MeshUtils.setupLayout(renderBlocks, textureAtlas);
                 vertexCount = layout.getVertexLength();
             } catch (Exception e) {
                 GameEngine.LOGGER.error("Error While Building RenderChunk", e);
@@ -90,6 +87,20 @@ public class AsyncMesh implements RenderMesh {
                         glBufferData(GL_ARRAY_BUFFER, finalLayout.getNormals(), GL_STATIC_DRAW);
                         glVertexAttribPointer(2, 3, GL_FLOAT, false, 0, 0);
 
+                        //Overlay Texture VBO
+                        vboId = glGenBuffers();
+                        vboIdList.add(vboId);
+                        glBindBuffer(GL_ARRAY_BUFFER, vboId);
+                        glBufferData(GL_ARRAY_BUFFER, finalLayout.getOverlayCoords(), GL_STATIC_DRAW);
+                        glVertexAttribPointer(3, 2, GL_FLOAT, false, 0, 0);
+
+                        //Has Overlay Texture VBO
+                        vboId = glGenBuffers();
+                        vboIdList.add(vboId);
+                        glBindBuffer(GL_ARRAY_BUFFER, vboId);
+                        glBufferData(GL_ARRAY_BUFFER, finalLayout.getHasOverlay(), GL_STATIC_DRAW);
+                        glVertexAttribPointer(4, 1, GL_INT, false, 0, 0);
+
                         // Indices VBO
                         vboId = glGenBuffers();
                         vboIdList.add(vboId);
@@ -111,6 +122,10 @@ public class AsyncMesh implements RenderMesh {
                             MemoryUtil.memFree(finalLayout.getNormals());
                         if (finalLayout.getIndices() != null)
                             MemoryUtil.memFree(finalLayout.getIndices());
+                        if(finalLayout.getOverlayCoords() != null)
+                            MemoryUtil.memFree(finalLayout.getOverlayCoords());
+                        if(finalLayout.getHasOverlay() != null)
+                            MemoryUtil.memFree(finalLayout.getHasOverlay());
                     }
                     if (future != null)
                         future.complete(instance);
@@ -134,6 +149,8 @@ public class AsyncMesh implements RenderMesh {
         glEnableVertexAttribArray(0);
         glEnableVertexAttribArray(1);
         glEnableVertexAttribArray(2);
+        glEnableVertexAttribArray(3);
+        glEnableVertexAttribArray(4);
     }
 
     /**
@@ -151,6 +168,8 @@ public class AsyncMesh implements RenderMesh {
         glDisableVertexAttribArray(0);
         glDisableVertexAttribArray(1);
         glDisableVertexAttribArray(2);
+        glDisableVertexAttribArray(3);
+        glDisableVertexAttribArray(4);
         glBindVertexArray(0);
     }
 
@@ -167,112 +186,6 @@ public class AsyncMesh implements RenderMesh {
 
         glBindVertexArray(0);
         glDeleteVertexArrays(vaoId);
-    }
-
-    /**
-     * Combine all of the meshes
-     *
-     * @param renderBlocks The blocks to be rendered.
-     * @return The layout.
-     */
-//    private MeshLayout setupLayout(List<RenderBlock> renderBlocks, TextureAtlas textureAtlas) {
-//        float[] positions = {};
-//        float[] texCoords = {};
-//        float[] normals = {};
-//
-//        float[] copy;
-//        float[] both;
-//
-//        int[] indicies = {};
-//        int count = 0;
-//        for (RenderBlock rb : renderBlocks) {
-//            copy = rb.getVertexFromFaces();
-//            both = Arrays.copyOf(positions, positions.length + copy.length);
-//            System.arraycopy(copy, 0, both, positions.length, copy.length);
-//            positions = both;
-//
-//            copy = rb.getTextureFromFaces(textureAtlas);
-//            both = Arrays.copyOf(texCoords, texCoords.length + copy.length);
-//            System.arraycopy(copy, 0, both, texCoords.length, copy.length);
-//            texCoords = both;
-//
-//            copy = rb.getNormalsFromFaces();
-//            both = Arrays.copyOf(normals, normals.length + copy.length);
-//            System.arraycopy(copy, 0, both, normals.length, copy.length);
-//            normals = both;
-//
-//            int[] indCopy = rb.getIndicesFromFaces(count);
-//            int[] indBoth = Arrays.copyOf(indicies, indicies.length + indCopy.length);
-//            System.arraycopy(indCopy, 0, indBoth, indicies.length, indCopy.length);
-//            indicies = indBoth;
-//            count += rb.getVisibleFaces().size() * 4;
-//        }
-//
-//        final float[] finalPos = positions;
-//        final float[] finalTexCord = texCoords;
-//        final float[] finalNormals = normals;
-//        final int[] finalIndices = indicies;
-//        return new MeshLayout() {
-//            @Override
-//            public float[] getVertex() {
-//                return finalPos;
-//            }
-//
-//            @Override
-//            public float[] getTextCoords() {
-//                return finalTexCord;
-//            }
-//
-//            @Override
-//            public float[] getNormals() {
-//                return finalNormals;
-//            }
-//
-//            @Override
-//            public int[] getIndices() {
-//                return finalIndices;
-//            }
-//        };
-//    }
-    private MeshLayout setupLayout(List<RenderBlock> renderBlocks, TextureAtlas textureAtlas) {
-        List<Float> positions = new LinkedList<>();
-        List<Float> texCoords = new LinkedList<>();
-        List<Float> normals = new LinkedList<>();
-        List<Integer> indicies = new LinkedList<>();
-        int count = 0;
-        for (RenderBlock rb : renderBlocks) {
-            rb.getVertexFromFaces(positions);
-            rb.getTextureFromFaces(texCoords, textureAtlas);
-            rb.getNormalsFromFaces(normals);
-            rb.getIndicesFromFaces(indicies, count);
-            count += rb.getVisibleFaces().size() * 4;
-        }
-
-        final FloatBuffer posBuffer;
-        final FloatBuffer texCoordsBuffer;
-        final FloatBuffer vecNormalsBuffer;
-        final IntBuffer indicesBuffer;
-
-        posBuffer = MemoryUtil.memAllocFloat(positions.size());
-        for (Float f : positions)
-            posBuffer.put(f);
-        posBuffer.flip();
-
-        texCoordsBuffer = MemoryUtil.memAllocFloat(texCoords.size());
-        for (Float f : texCoords)
-            texCoordsBuffer.put(f);
-        texCoordsBuffer.flip();
-
-        vecNormalsBuffer = MemoryUtil.memAllocFloat(normals.size());
-        for (Float f : normals)
-            vecNormalsBuffer.put(f);
-        vecNormalsBuffer.flip();
-
-        indicesBuffer = MemoryUtil.memAllocInt(indicies.size());
-        for (Integer f : indicies)
-            indicesBuffer.put(f);
-        indicesBuffer.flip();
-        return new BasicMeshLayout(indicies.size(), posBuffer, texCoordsBuffer, vecNormalsBuffer, indicesBuffer);
     }
 
 }

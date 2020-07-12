@@ -1,5 +1,6 @@
 package org.kakara.engine.renderobjects;
 
+import org.jetbrains.annotations.Nullable;
 import org.kakara.engine.physics.collision.Collidable;
 import org.kakara.engine.physics.collision.Collider;
 import org.kakara.engine.physics.collision.ObjectBoxCollider;
@@ -9,9 +10,7 @@ import org.kakara.engine.renderobjects.renderlayouts.BlockLayout;
 import org.kakara.engine.renderobjects.renderlayouts.Face;
 import org.kakara.engine.renderobjects.renderlayouts.Layout;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * The individual blocks of the chunk.
@@ -23,11 +22,11 @@ public class RenderBlock implements Collidable {
 
     private Layout layout;
     private RenderTexture texture;
+    private RenderTexture overlay;
 
     private Vector3 position;
 
     private RenderChunk parentChunk;
-    private Vector3 relativePosition;
     private List<Face> visibleFaces;
     private boolean selected;
 
@@ -125,8 +124,26 @@ public class RenderBlock implements Collidable {
     }
 
     /**
+     * Add an overlay render texture.
+     * @since 1.0-Pre2
+     * @param texture The overlay render texture.
+     */
+    public void setOverlay(@Nullable RenderTexture texture){
+        this.overlay = texture;
+    }
+
+    /**
+     * Get the overlay render texture.
+     * @since 1.0-Pre2
+     * @return The overlay render texture.
+     */
+    public RenderTexture getOverlay(){
+        return this.overlay;
+    }
+
+    /**
      * Get the vertex array from the visible faces
-     * @return The vertex array.
+     * @param vertex The list to append the vertexes to.
      */
     public void getVertexFromFaces(List<Float> vertex){
         for(Face f : this.visibleFaces){
@@ -160,8 +177,8 @@ public class RenderBlock implements Collidable {
 
     /**
      * Get the texture coord array from the visible faces
+     * @param vertex The list to append the textures to.
      * @param atlas The texture atlas
-     * @return The texture coord array
      */
     public void getTextureFromFaces(List<Float> vertex, TextureAtlas atlas){
         for(Face f : this.visibleFaces){
@@ -194,8 +211,51 @@ public class RenderBlock implements Collidable {
     }
 
     /**
+     * Get the overlay texture coordinates of the render blocks.
+     * @param vertex The list of overlay textures to append to.
+     * @param atlas The texture atlas.
+     */
+    public void getOverlayFromFaces(List<Float> vertex, TextureAtlas atlas){
+        if(getOverlay() == null){
+            vertex.addAll(Collections.nCopies(4 * 2 * this.visibleFaces.size(), 0f));
+            return;
+        }
+        for(Face f : this.visibleFaces){
+            if(getOverlay() == null){
+                vertex.addAll(Arrays.asList(0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
+                continue;
+            }
+            List<Float> temp;
+            switch(f){
+                case FRONT:
+                    temp = layout.getTextureCords().getFront(getOverlay().getXOffset(), getOverlay().getYOffset(), atlas.getNumberOfRows());
+                    break;
+                case BACK:
+                    temp = layout.getTextureCords().getBack(getOverlay().getXOffset(), getOverlay().getYOffset(), atlas.getNumberOfRows());
+                    break;
+                case TOP:
+                    temp = layout.getTextureCords().getTop(getOverlay().getXOffset(), getOverlay().getYOffset(), atlas.getNumberOfRows());
+                    break;
+                case BOTTOM:
+                    temp = layout.getTextureCords().getBottom(getOverlay().getXOffset(), getOverlay().getYOffset(), atlas.getNumberOfRows());
+                    break;
+                case LEFT:
+                    temp = layout.getTextureCords().getLeft(getOverlay().getXOffset(), getOverlay().getYOffset(), atlas.getNumberOfRows());
+                    break;
+                case RIGHT:
+                    temp = layout.getTextureCords().getRight(getOverlay().getXOffset(), getOverlay().getYOffset(), atlas.getNumberOfRows());
+                    break;
+                default:
+                    temp = new LinkedList<>();
+                    break;
+            }
+            vertex.addAll(temp);
+        }
+    }
+
+    /**
      * Get the normal array from the visible faces
-     * @return The normal array.
+     * @param vertex This list to append the normals to.
      */
     public void getNormalsFromFaces(List<Float> vertex){
         for(Face f : this.visibleFaces){
@@ -230,7 +290,7 @@ public class RenderBlock implements Collidable {
     /**
      * Get the indices array from the visible faces.
      * @param currentIndex The current index. (Starting number of the indices)
-     * @return The indices array
+     * @param vertex The list to append the indices to.
      */
     public void getIndicesFromFaces(List<Integer> vertex, int currentIndex){
         int index = currentIndex;
