@@ -3,13 +3,15 @@ package org.kakara.engine.item;
 import org.joml.Quaternionf;
 import org.kakara.engine.item.mesh.Mesh;
 import org.kakara.engine.math.Vector3;
+import org.kakara.engine.physics.PhysicsItem;
+import org.kakara.engine.physics.collision.Collidable;
 
 import java.util.UUID;
 
 /**
  * The main game item interface.
  */
-public interface GameItem {
+public interface GameItem extends Tagable, Collidable, PhysicsItem {
 
     /**
      * Get the current position.

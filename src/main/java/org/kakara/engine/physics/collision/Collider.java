@@ -1,11 +1,12 @@
 package org.kakara.engine.physics.collision;
 
 import org.kakara.engine.math.Vector3;
+import org.kakara.engine.physics.OnTriggerEnter;
 
 public interface Collider {
 
     /**
-     * Every frame update.
+     * This will fire the colliding events.
      */
     void update();
 
@@ -18,8 +19,8 @@ public interface Collider {
 
     /**
      * Set if the collider is a trigger.
-     * <p>A trigger means the other objects can collide with it but the trigger will never collide with anything.</p>
-     * <p>TL;DR use this if the object will never move to save resources.</p>
+     * <p>A trigger means that other objects will not collide with it but it will still call {@link OnTriggerEnter}.</p>
+     * <p>As of 1.0-Pre2 the old functionality has been replaced by {@link #setResolvable(boolean)}</p>
      *
      * @param value If it is a trigger.
      * @return The collider.
@@ -32,6 +33,19 @@ public interface Collider {
      * @return If the collider is a trigger.
      */
     boolean isTrigger();
+
+    /**
+     * If the engine it to attempt and move this object to fix collisions.
+     * <p>As of 1.0-Pre2, this replaces the old functionality of {@link #setTrigger(boolean)}</p>
+     * @param value If the engine is to move this object to fix collisions.
+     */
+    void setResolvable(boolean value);
+
+    /**
+     * Get if the engine should attempt to move this object to fix collisions.
+     * @return If the engine should attempt to move this object to fix collisions.
+     */
+    boolean isResolvable();
 
     /**
      * Get the first relative point for a collider.
@@ -68,5 +82,12 @@ public interface Collider {
     void updateX();
     void updateY();
     void updateZ();
+
+    /**
+     * Add an event to be triggered when this collidable comes in contact with a trigger.
+     * <p>Important note: This triggers every physics update that the object is colliding with a trigger.</p>
+     * @param enter The event to be triggered.
+     */
+    void addOnTriggerEnter(OnTriggerEnter enter);
 
 }

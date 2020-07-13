@@ -3,7 +3,11 @@ package org.kakara.engine.physics.collision;
 import org.kakara.engine.GameHandler;
 import org.kakara.engine.item.MeshGameItem;
 import org.kakara.engine.math.Vector3;
+import org.kakara.engine.physics.OnTriggerEnter;
 import org.kakara.engine.utils.Time;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Gives an objects a cube collision box that is automatically scaled around the object.
@@ -12,7 +16,8 @@ import org.kakara.engine.utils.Time;
  */
 public class ObjectBoxCollider implements Collider {
 
-    boolean isTrigger;
+    private boolean isTrigger;
+    private boolean resolveable;
 
     private boolean isInAir = false;
     private float timeInAir;
@@ -22,13 +27,17 @@ public class ObjectBoxCollider implements Collider {
     private Collidable item;
     private GameHandler handler;
 
-    public ObjectBoxCollider(boolean isTrigger){
+    private List<OnTriggerEnter> triggerEvents;
+
+    public ObjectBoxCollider(boolean isTrigger, boolean resolveable){
         this.isTrigger = isTrigger;
+        this.resolveable = resolveable;
         this.handler = GameHandler.getInstance();
+        this.triggerEvents = new ArrayList<>();
     }
 
     public ObjectBoxCollider(){
-        this(false);
+        this(false, true);
     }
 
     @Override
@@ -53,7 +62,7 @@ public class ObjectBoxCollider implements Collider {
 
     @Override
     public void updateX() {
-        if(isTrigger) return;
+        if(isTrigger || !resolveable) return;
         this.deltaPosition = item.getColPosition().clone().subtract(this.lastPosition);
         this.lastPosition = item.getColPosition().clone();
 
@@ -62,6 +71,7 @@ public class ObjectBoxCollider implements Collider {
 
         for(Collidable gi : cm.getCollidngItems(item.getColPosition())){
             if(gi == item) continue;
+            if(gi.getCollider().isTrigger()) continue;
             CollisionManager.Contact contact = cm.isCollidingX(gi.getCollider(), item.getCollider());
             while (contact.isIntersecting()){
                 contact = cm.isCollidingX(gi.getCollider(), item.getCollider());
@@ -72,7 +82,7 @@ public class ObjectBoxCollider implements Collider {
 
     @Override
     public void updateY() {
-        if(isTrigger) return;
+        if(isTrigger || !resolveable) return;
         this.deltaPosition = item.getColPosition().clone().subtract(this.lastPosition);
         this.lastPosition = item.getColPosition().clone();
 
@@ -81,6 +91,7 @@ public class ObjectBoxCollider implements Collider {
 
         for(Collidable gi : cm.getCollidngItems(item.getColPosition())){
             if(gi == item) continue;
+            if(gi.getCollider().isTrigger()) continue;
             CollisionManager.Contact contact = cm.isCollidingY(gi.getCollider(), item.getCollider());
             while (contact.isIntersecting()){
                 contact = cm.isCollidingY(gi.getCollider(), item.getCollider());
@@ -91,7 +102,7 @@ public class ObjectBoxCollider implements Collider {
 
     @Override
     public void updateZ() {
-        if(isTrigger) return;
+        if(isTrigger || !resolveable) return;
         this.deltaPosition = item.getColPosition().clone().subtract(this.lastPosition);
         this.lastPosition = item.getColPosition().clone();
 
@@ -100,12 +111,18 @@ public class ObjectBoxCollider implements Collider {
 
         for(Collidable gi : cm.getCollidngItems(item.getColPosition())){
             if(gi == item) continue;
+            if(gi.getCollider().isTrigger()) continue;
             CollisionManager.Contact contact = cm.isCollidingZ(gi.getCollider(), item.getCollider());
             while (contact.isIntersecting()){
                 contact = cm.isCollidingZ(gi.getCollider(), item.getCollider());
                 item.setColPosition(item.getColPosition().add(new Vector3(contact.getnEnter().mul(-1).mul(contact.getPenetration()))));
             }
         }
+    }
+
+    @Override
+    public void addOnTriggerEnter(OnTriggerEnter enter) {
+        this.triggerEvents.add(enter);
     }
 
     public Collider setTrigger(boolean value){
@@ -118,9 +135,18 @@ public class ObjectBoxCollider implements Collider {
     }
 
     @Override
+    public void setResolvable(boolean value) {
+        this.resolveable = value;
+    }
+
+    @Override
+    public boolean isResolvable() {
+        return resolveable;
+    }
+
+    @Override
     public void update() {
-        if(isTrigger) return;
-        this.deltaPosition = item.getColPosition().clone().subtract(this.lastPosition);
+        if(isTrigger || !resolveable) return;
         this.lastPosition = item.getColPosition().clone();
 
         CollisionManager cm = handler.getCurrentScene().getCollisionManager();
@@ -128,10 +154,11 @@ public class ObjectBoxCollider implements Collider {
 
         for(Collidable gi : cm.getCollidngItems(item.getColPosition())){
             if(gi == item) continue;
-            CollisionManager.Contact contact = cm.isColliding(gi.getCollider(), item.getCollider());
-            while (contact.isIntersecting()){
-                contact = cm.isColliding(gi.getCollider(), item.getCollider());
-                item.setColPosition(item.getColPosition().add(new Vector3(contact.getnEnter().mul(-1).mul(contact.getPenetration()))));
+            if(cm.isColliding(gi.getCollider(), item.getCollider()).isIntersecting()){
+                // Fire the trigger event.
+                for(OnTriggerEnter evt : triggerEvents){
+                    evt.onTriggerEnter(gi);
+                }
             }
         }
     }

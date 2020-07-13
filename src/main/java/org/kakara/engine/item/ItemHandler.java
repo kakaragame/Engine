@@ -4,6 +4,7 @@ import org.kakara.engine.item.mesh.InstancedMesh;
 import org.kakara.engine.item.mesh.Mesh;
 
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Handles all of the items.
@@ -16,7 +17,7 @@ public class ItemHandler {
     private Map<InstancedMesh, List<GameItem>> instancedMeshMap;
 
     public ItemHandler() {
-        items = new ArrayList<>();
+        items = new CopyOnWriteArrayList<>();
         nonInstancedMeshMap = new HashMap<>();
         instancedMeshMap = new HashMap<>();
     }
@@ -47,10 +48,10 @@ public class ItemHandler {
     public void removeItem(GameItem obj){
         Mesh mesh = obj.getMesh();
         if(mesh instanceof InstancedMesh){
-            instancedMeshMap.remove(mesh);
+            instancedMeshMap.get(mesh).remove(obj);
         }
         else{
-            nonInstancedMeshMap.remove(obj);
+            nonInstancedMeshMap.get(mesh).remove(obj);
         }
         items.remove(obj);
     }

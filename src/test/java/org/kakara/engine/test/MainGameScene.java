@@ -122,6 +122,24 @@ public class MainGameScene extends AbstractGameScene {
         gi.setCollider(new BoxCollider(new Vector3(0, 0, 0), new Vector3(0.99, 2, 0.99)));
         gi.setVelocity(new Vector3(0, -9.18f, 0));
         collider = gi;
+
+        MeshGameItem gi2 = new MeshGameItem(mesh);
+        add(gi2);
+        gi2.setPosition(6, 16*2, 6);
+        gi2.setCollider(new BoxCollider(new Vector3(0, 0, 0), new Vector3(0.99, 2, 0.99)));
+        gi2.getCollider().setResolvable(false);
+        gi2.getCollider().setTrigger(true);
+
+        gi2.setTag("Test");
+
+        gi.getCollider().addOnTriggerEnter((Collidable other) -> {
+            if(other instanceof GameItem){
+                if(((GameItem) other).getTag().equals("Test")){
+                    remove(gi2);
+                }
+            }
+        });
+
 //        Texture skyb = Utils.inputStreamToTexture(Texture.class.getResourceAsStream("/skybox.png"));
 //        SkyBox skyBox = new SkyBox(skyb, true);
 //        setSkyBox(skyBox);
@@ -281,6 +299,8 @@ public class MainGameScene extends AbstractGameScene {
     @Override
     public void update(float interval) {
         KeyInput ki = handler.getKeyInput();
+
+        System.out.println(collider.getPosition());
 
         fps.setText("FPS: " + Math.round(1/ Time.deltaTime));
 

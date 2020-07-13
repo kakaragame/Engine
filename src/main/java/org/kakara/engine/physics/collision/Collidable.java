@@ -1,6 +1,9 @@
 package org.kakara.engine.physics.collision;
 
 import org.kakara.engine.math.Vector3;
+import org.kakara.engine.physics.OnTriggerEnter;
+
+import java.util.UUID;
 
 /**
  * Handles collision for the entire game.
@@ -59,4 +62,11 @@ public interface Collidable {
      * @param selected If the collidable is selected.
      */
     void setSelected(boolean selected);
+
+    /**
+     * Get the UUID of the collidable.
+     * TODO make this class extend a new identable interface.
+     * @return The UUID.
+     */
+    UUID getColUUID();
 }

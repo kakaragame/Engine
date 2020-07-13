@@ -32,6 +32,9 @@ public class FixedPhysicsUpdater extends TimerTask {
 
                 meshItem.setVelocity(meshItem.getVelocity().add(meshItem.getAcceleration().getX() * 0.020f, meshItem.getAcceleration().getY() * 0.020f, meshItem.getAcceleration().getZ() * 0.20f));
                 meshItem.translateBy(meshItem.getVelocity().getX() * 0.020f, 0, 0);
+                // Handles Triggers
+                collider.update();
+
                 collider.updateZ();
                 meshItem.translateBy(0, 0, meshItem.getVelocity().getZ() * 0.020f);
                 collider.updateZ();

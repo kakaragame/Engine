@@ -32,6 +32,12 @@ public abstract class GeneralComponent implements Component {
 
     private boolean isVisible;
 
+    /*
+     * Tagable data
+     */
+    private List<Object> data;
+    private String tag;
+
     public GeneralComponent(){
         events = new HashMap<>();
         components = new ArrayList<>();
@@ -238,6 +244,26 @@ public abstract class GeneralComponent implements Component {
             prop.onRemove(this);
             constraints.remove(prop);
         }
+    }
+
+    @Override
+    public void setData(List<Object> data) {
+        this.data = data;
+    }
+
+    @Override
+    public List<Object> getData() {
+        return data;
+    }
+
+    @Override
+    public void setTag(String tag) {
+        this.tag = tag;
+    }
+
+    @Override
+    public String getTag() {
+        return tag;
     }
 
 }

@@ -10,6 +10,8 @@ import org.kakara.engine.physics.collision.Collider;
 import org.kakara.engine.item.mesh.Mesh;
 import org.kakara.engine.math.Vector3;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -17,7 +19,7 @@ import java.util.UUID;
  * <p>
  * This is a Collidable GameItem. That uses meshes to create an item
  */
-public class MeshGameItem implements GameItem, Collidable, PhysicsItem {
+public class MeshGameItem implements GameItem {
 
     private Mesh[] meshes;
     private float scale;
@@ -33,8 +35,13 @@ public class MeshGameItem implements GameItem, Collidable, PhysicsItem {
     private Vector3 position;
     private Vector3 velocity;
     private Vector3 acceleration;
-
     private Collider collider;
+
+    /*
+        The tagable section
+     */
+    private String tag;
+    private List<Object> data;
 
     public MeshGameItem() {
         this(new Mesh[0]);
@@ -54,6 +61,9 @@ public class MeshGameItem implements GameItem, Collidable, PhysicsItem {
 
         velocity = new Vector3(0, 0, 0);
         acceleration = new Vector3(0, 0, 0);
+
+        tag = "";
+        data = new ArrayList<>();
     }
 
     /**
@@ -296,6 +306,11 @@ public class MeshGameItem implements GameItem, Collidable, PhysicsItem {
         this.selected = selected;
     }
 
+    @Override
+    public UUID getColUUID() {
+        return uuid;
+    }
+
     /**
      * Render the item.
      * <p>Internal Use Only</p>
@@ -468,5 +483,25 @@ public class MeshGameItem implements GameItem, Collidable, PhysicsItem {
     @Override
     public Vector3 getAcceleration() {
         return acceleration.clone();
+    }
+
+    @Override
+    public void setData(List<Object> data) {
+        this.data = data;
+    }
+
+    @Override
+    public List<Object> getData() {
+        return data;
+    }
+
+    @Override
+    public void setTag(String tag) {
+        this.tag = tag;
+    }
+
+    @Override
+    public String getTag() {
+        return tag;
     }
 }

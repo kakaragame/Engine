@@ -1,6 +1,7 @@
 package org.kakara.engine.renderobjects;
 
 import org.jetbrains.annotations.Nullable;
+import org.kakara.engine.item.Tagable;
 import org.kakara.engine.physics.collision.Collidable;
 import org.kakara.engine.physics.collision.Collider;
 import org.kakara.engine.physics.collision.ObjectBoxCollider;
@@ -18,7 +19,7 @@ import java.util.*;
  * order for the changes to be shown.</p>
  * <p>This class <b>is</b> thread safe.</p>
  */
-public class RenderBlock implements Collidable {
+public class RenderBlock implements Collidable, Tagable {
 
     private Layout layout;
     private RenderTexture texture;
@@ -32,6 +33,14 @@ public class RenderBlock implements Collidable {
 
     private Collider collider;
 
+    private UUID uuid;
+
+    /*
+        Tagable data
+     */
+    private List<Object> data;
+    private String tag;
+
     /**
      * Create a render block.
      * @param layout The layout to use
@@ -44,8 +53,11 @@ public class RenderBlock implements Collidable {
         this.position = position;
         this.visibleFaces = new ArrayList<>();
         this.selected = false;
-        collider = new ObjectBoxCollider(true);
+        collider = new ObjectBoxCollider(false, false);
         collider.onRegister(this);
+        this.data = new ArrayList<>();
+        this.tag = "";
+        this.uuid = UUID.randomUUID();
     }
 
     public RenderBlock(RenderTexture texture, Vector3 position){
@@ -375,5 +387,30 @@ public class RenderBlock implements Collidable {
     @Override
     public void setSelected(boolean selected) {
         this.selected = selected;
+    }
+
+    @Override
+    public UUID getColUUID() {
+        return uuid;
+    }
+
+    @Override
+    public void setData(List<Object> data) {
+        this.data = data;
+    }
+
+    @Override
+    public List<Object> getData() {
+        return data;
+    }
+
+    @Override
+    public void setTag(String tag) {
+        this.tag = tag;
+    }
+
+    @Override
+    public String getTag() {
+        return tag;
     }
 }
