@@ -151,9 +151,11 @@ void calculateOverlayTextures()
     vec4 tempDiffuse = ambientC;
     if(outHasTexture[0] == 1){
         vec4 overlay = texture(textureAtlas, outOverlayCoord);
-        tempDiffuse = mix(tempDiffuse, overlay, overlay.a);
+        tempDiffuse = vec4(mix(tempDiffuse, overlay, overlay.a).xyz, 1.0);
     }
     ambientC = tempDiffuse;
+    specularC = tempDiffuse;
+    diffuseC = tempDiffuse;
 }
 
 float calcShadow(vec4 position)
