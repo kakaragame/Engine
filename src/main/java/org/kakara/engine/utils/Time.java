@@ -9,6 +9,8 @@ public class Time {
 
     /**
      * The change in time between frames (In milliseconds).
+     * TODO Remove this field.
+     * @deprecated It is a bad idea to use this field. This field will be removed in Engine 1.0-Pre3.
      */
     public static float deltaTime;
 
@@ -26,7 +28,7 @@ public class Time {
 
     /**
      * the change in time between frames. (In milliseconds).
-     * @return
+     * @return The time between frames (delta time).
      */
     public float getElapsedTime(){
         double time = getTime();
@@ -37,5 +39,13 @@ public class Time {
 
     public double getLastLoopTime(){
         return lastLoopTime;
+    }
+
+    /**
+     * The time in between frames. (In milliseconds).
+     * @return The time between frames. (In milliseconds).
+     */
+    public static float getDeltaTime(){
+        return Time.deltaTime;
     }
 }
