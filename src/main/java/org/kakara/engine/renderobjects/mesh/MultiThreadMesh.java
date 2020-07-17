@@ -10,7 +10,10 @@ import org.kakara.engine.renderobjects.TextureAtlas;
 import org.kakara.engine.renderobjects.renderlayouts.MeshLayout;
 import org.lwjgl.system.MemoryUtil;
 
+import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -181,6 +184,70 @@ public class MultiThreadMesh implements RenderMesh {
 
         glBindVertexArray(0);
         glDeleteVertexArrays(vaoId);
+    }
+
+    @Override
+    public void updateOverlay(List<RenderBlock> blocks, TextureAtlas textureAtlas) {
+        List<Float> overlayCoords = new ArrayList<>();
+        List<Integer> hasOverlay = new ArrayList<>();
+
+        for (RenderBlock rb : blocks) {
+            int initial = overlayCoords.size()/2;
+            rb.getOverlayFromFaces(overlayCoords, textureAtlas);
+            hasOverlay.addAll(Collections.nCopies((overlayCoords.size()/2 - initial), rb.getOverlay() == null ? 0 : 1));
+        }
+
+        FloatBuffer overlayCoordsBuffer = MemoryUtil.memAllocFloat(overlayCoords.size());
+        for (Float f : overlayCoords)
+            overlayCoordsBuffer.put(f);
+        overlayCoordsBuffer.flip();
+
+        IntBuffer hasOverlayBuffer = MemoryUtil.memAllocInt(hasOverlay.size());
+        for (Integer f : hasOverlay)
+            hasOverlayBuffer.put(f);
+        hasOverlayBuffer.flip();
+
+        if(Thread.currentThread() == GameEngine.currentThread){
+            try{
+                glBindVertexArray(vaoId);
+                int pid = vboIdList.get(3);
+                glBindBuffer(GL_ARRAY_BUFFER, pid);
+                glBufferData(GL_ARRAY_BUFFER, overlayCoordsBuffer, GL_STATIC_DRAW);
+                glVertexAttribPointer(3, 2, GL_FLOAT, false, 0, 0);
+
+                pid = vboIdList.get(4);
+                glBindBuffer(GL_ARRAY_BUFFER, pid);
+                glBufferData(GL_ARRAY_BUFFER, hasOverlayBuffer, GL_STATIC_DRAW);
+                glVertexAttribPointer(4, 1, GL_INT, false, 0, 0);
+
+                glBindBuffer(GL_ARRAY_BUFFER, 0);
+                glBindVertexArray(0);
+            }finally {
+                MemoryUtil.memFree(overlayCoordsBuffer);
+                MemoryUtil.memFree(hasOverlayBuffer);
+            }
+        }else{
+            GameHandler.getInstance().getGameEngine().addQueueItem(() -> {
+                try{
+                    glBindVertexArray(vaoId);
+                    int pid = vboIdList.get(3);
+                    glBindBuffer(GL_ARRAY_BUFFER, pid);
+                    glBufferData(GL_ARRAY_BUFFER, overlayCoordsBuffer, GL_STATIC_DRAW);
+                    glVertexAttribPointer(3, 2, GL_FLOAT, false, 0, 0);
+
+                    pid = vboIdList.get(4);
+                    glBindBuffer(GL_ARRAY_BUFFER, pid);
+                    glBufferData(GL_ARRAY_BUFFER, hasOverlayBuffer, GL_STATIC_DRAW);
+                    glVertexAttribPointer(4, 1, GL_INT, false, 0, 0);
+
+                    glBindBuffer(GL_ARRAY_BUFFER, 0);
+                    glBindVertexArray(0);
+                }finally {
+                    MemoryUtil.memFree(overlayCoordsBuffer);
+                    MemoryUtil.memFree(hasOverlayBuffer);
+                }
+            });
+        }
     }
 
 }

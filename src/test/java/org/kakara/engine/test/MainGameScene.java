@@ -300,8 +300,6 @@ public class MainGameScene extends AbstractGameScene {
     public void update(float interval) {
         KeyInput ki = handler.getKeyInput();
 
-        System.out.println(collider.getPosition());
-
         fps.setText("FPS: " + Math.round(1/ Time.deltaTime));
 
         if (ki.isKeyPressed(GLFW_KEY_W)) {
@@ -400,8 +398,14 @@ public class MainGameScene extends AbstractGameScene {
             if(selected instanceof RenderBlock){
                 RenderBlock block = (RenderBlock) selected;
                 RenderChunk parentChunk = block.getParentChunk();
-                parentChunk.removeBlock(block);
+//                parentChunk.removeBlock(block);
+                block.setOverlay(getTextureAtlas().getTextures().get(ThreadLocalRandom.current().nextInt(0, 3)));
+                long curTime = System.currentTimeMillis();
                 parentChunk.regenerateChunk(getTextureAtlas(), MeshType.SYNC);
+                System.out.println("It took " + (System.currentTimeMillis() - curTime) + "ms to regenerate the entire chunk.");
+                curTime = System.currentTimeMillis();
+                parentChunk.regenerateOverlayTextures(getTextureAtlas());
+                System.out.println("It took " + (System.currentTimeMillis() - curTime) + "ms to regenerate the overlay textures for the chunk.");
             }
         }
     }

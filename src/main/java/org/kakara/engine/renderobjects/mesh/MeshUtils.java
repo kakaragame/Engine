@@ -8,8 +8,8 @@ import org.lwjgl.system.MemoryUtil;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -25,12 +25,12 @@ public class MeshUtils {
      * @return The layout.
      */
     protected static MeshLayout setupLayout(List<RenderBlock> renderBlocks, TextureAtlas textureAtlas) {
-        List<Float> positions = new LinkedList<>();
-        List<Float> texCoords = new LinkedList<>();
-        List<Float> normals = new LinkedList<>();
-        List<Integer> indicies = new LinkedList<>();
-        List<Float> overlayCoords = new LinkedList<>();
-        List<Integer> hasOverlay = new LinkedList<>();
+        List<Float> positions = new ArrayList<>();
+        List<Float> texCoords = new ArrayList<>();
+        List<Float> normals = new ArrayList<>();
+        List<Integer> indicies = new ArrayList<>();
+        List<Float> overlayCoords = new ArrayList<>();
+        List<Integer> hasOverlay = new ArrayList<>();
         int count = 0;
         for (RenderBlock rb : renderBlocks) {
             int initial = positions.size()/3;

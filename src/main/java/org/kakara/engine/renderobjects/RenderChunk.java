@@ -185,6 +185,15 @@ public class RenderChunk extends MeshGameItem {
         return null;
     }
 
+    /**
+     * Regenerate the overlay textures.
+     * <p>The method is thread safe.</p>
+     * @param atlas The texture atlas.
+     */
+    public void regenerateOverlayTextures(TextureAtlas atlas){
+        mesh.updateOverlay(calculateVisibleBlocks(blocks), atlas);
+    }
+
 
     @Override
     public void render(){
