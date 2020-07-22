@@ -11,6 +11,7 @@ import org.kakara.engine.physics.collision.Collidable;
 import org.kakara.engine.physics.collision.Collider;
 import org.kakara.engine.item.mesh.Mesh;
 import org.kakara.engine.math.Vector3;
+import org.lwjgl.system.CallbackI;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -101,6 +102,7 @@ public class MeshGameItem implements GameItem {
      */
     public GameItem setPosition(Vector3 position) {
         this.position = position;
+        //features.forEach(feature -> feature.updateValues(this));
         return this;
     }
 
@@ -236,6 +238,7 @@ public class MeshGameItem implements GameItem {
     @Override
     public void addFeature(Feature feature) {
         features.add(feature);
+        feature.updateValues(this);
     }
 
     /**
