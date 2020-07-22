@@ -1,5 +1,6 @@
 package org.kakara.engine.item;
 
+import org.kakara.engine.item.mesh.IMesh;
 import org.kakara.engine.item.mesh.InstancedMesh;
 import org.kakara.engine.item.mesh.Mesh;
 
@@ -13,7 +14,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class ItemHandler {
     private List<GameItem> items;
 
-    private Map<Mesh, List<GameItem>> nonInstancedMeshMap;
+    private Map<IMesh, List<GameItem>> nonInstancedMeshMap;
     private Map<InstancedMesh, List<GameItem>> instancedMeshMap;
 
     public ItemHandler() {
@@ -28,7 +29,7 @@ public class ItemHandler {
      * @param obj The object to be added.
      */
     public void addItem(GameItem obj) {
-        Mesh mesh = obj.getMesh();
+        IMesh mesh = obj.getMesh();
         if(mesh instanceof InstancedMesh){
             List<GameItem> list = instancedMeshMap.computeIfAbsent((InstancedMesh) mesh, k -> new ArrayList<>());
             list.add(obj);
@@ -46,7 +47,7 @@ public class ItemHandler {
      * @param obj The object to be removed
      */
     public void removeItem(GameItem obj){
-        Mesh mesh = obj.getMesh();
+        IMesh mesh = obj.getMesh();
         if(mesh instanceof InstancedMesh){
             instancedMeshMap.get(mesh).remove(obj);
         }
@@ -60,7 +61,7 @@ public class ItemHandler {
      * Get the map of non instanced meshes
      * @return The map of non instanced meshes
      */
-    public Map<Mesh, List<GameItem>> getNonInstancedMeshMap(){
+    public Map<IMesh, List<GameItem>> getNonInstancedMeshMap(){
         return nonInstancedMeshMap;
     }
 
@@ -104,7 +105,7 @@ public class ItemHandler {
             }
         }
 
-        for(Mesh m : nonInstancedMeshMap.keySet()){
+        for(IMesh m : nonInstancedMeshMap.keySet()){
             for(GameItem gi : nonInstancedMeshMap.get(m)){
                 gi.cleanup();
             }

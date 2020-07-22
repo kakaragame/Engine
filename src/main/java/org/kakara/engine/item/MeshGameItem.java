@@ -4,6 +4,7 @@ import org.jetbrains.annotations.NotNull;
 import org.joml.Quaternionf;
 import org.kakara.engine.Camera;
 import org.kakara.engine.GameHandler;
+import org.kakara.engine.item.mesh.IMesh;
 import org.kakara.engine.physics.PhysicsItem;
 import org.kakara.engine.physics.collision.Collidable;
 import org.kakara.engine.physics.collision.Collider;
@@ -21,7 +22,7 @@ import java.util.UUID;
  */
 public class MeshGameItem implements GameItem {
 
-    private Mesh[] meshes;
+    private IMesh[] meshes;
     private float scale;
     private Quaternionf rotation;
     private final UUID uuid;
@@ -47,11 +48,11 @@ public class MeshGameItem implements GameItem {
         this(new Mesh[0]);
     }
 
-    public MeshGameItem(Mesh mesh) {
-        this(new Mesh[]{mesh});
+    public MeshGameItem(IMesh mesh) {
+        this(new IMesh[]{mesh});
     }
 
-    public MeshGameItem(Mesh[] meshes) {
+    public MeshGameItem(IMesh[] meshes) {
         this.meshes = meshes;
         position = new Vector3(0, 0, 0);
         scale = 1;
@@ -210,7 +211,8 @@ public class MeshGameItem implements GameItem {
      *
      * @return The mesh
      */
-    public Mesh getMesh() {
+    @Override
+    public IMesh getMesh() {
         if (meshes.length == 0) return null;
         return meshes[0];
     }
@@ -230,7 +232,7 @@ public class MeshGameItem implements GameItem {
      *
      * @return The array of meshes.
      */
-    public Mesh[] getMeshes() {
+    public IMesh[] getMeshes() {
         return meshes;
     }
 
@@ -317,7 +319,7 @@ public class MeshGameItem implements GameItem {
      */
     public void render() {
         if (isVisible()) {
-            for (Mesh mesh : meshes) {
+            for (IMesh mesh : meshes) {
                 mesh.render();
             }
         }else{

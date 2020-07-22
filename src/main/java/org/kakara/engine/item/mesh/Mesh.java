@@ -13,6 +13,7 @@ import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 import static org.lwjgl.opengl.GL30.*;
@@ -175,8 +176,8 @@ public class Mesh implements IMesh {
      * Get the material of the mesh
      * @return The material
      */
-    public Material getMaterial() {
-        return material;
+    public Optional<Material> getMaterial() {
+        return Optional.of(material);
     }
 
     /**
@@ -301,6 +302,7 @@ public class Mesh implements IMesh {
      * @param gameItems The game items to render
      * @param consumer The consumer
      */
+    @Override
     public void renderList(List<GameItem> gameItems, Consumer<GameItem> consumer){
         initRender();
         for(GameItem gameItem : gameItems){
@@ -361,6 +363,7 @@ public class Mesh implements IMesh {
      * @since 1.0-Pre2
      * @param value If the mesh is a wireframe.
      */
+    @Override
     public void setWireframe(boolean value){
         this.wireframe = value;
     }
@@ -369,6 +372,7 @@ public class Mesh implements IMesh {
      * If the mesh is a wire frame.
      * @return If the mesh is a wireframe.
      */
+    @Override
     public boolean isWireframe(){
         return this.wireframe;
     }

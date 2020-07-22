@@ -1,6 +1,7 @@
 package org.kakara.engine.item;
 
 import org.joml.Quaternionf;
+import org.kakara.engine.item.mesh.IMesh;
 import org.kakara.engine.item.mesh.Mesh;
 import org.kakara.engine.math.Vector3;
 import org.kakara.engine.physics.PhysicsItem;
@@ -127,7 +128,7 @@ public interface GameItem extends Tagable, Collidable, PhysicsItem {
      * Get the mesh of the game item.
      * @return The mesh
      */
-    Mesh getMesh();
+    IMesh getMesh();
 
     /**
      * Get the texture position

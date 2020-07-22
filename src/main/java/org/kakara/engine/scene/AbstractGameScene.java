@@ -29,7 +29,7 @@ public abstract class AbstractGameScene extends AbstractScene {
         super(gameHandler);
         this.chunkHandler = new ChunkHandler();
         this.physicsUpdater =  new Timer("Fixed Physics Update Timer");
-        this.physicsUpdater.schedule(new FixedPhysicsUpdater(this), 10, 20);
+        this.physicsUpdater.schedule(new FixedPhysicsUpdater(this), 10, 10);
     }
 
     @Override

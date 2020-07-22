@@ -4,6 +4,7 @@ import org.kakara.engine.GameEngine;
 import org.kakara.engine.engine.CubeData;
 import org.kakara.engine.exceptions.InvalidThreadException;
 import org.kakara.engine.item.GameItem;
+import org.kakara.engine.item.Material;
 import org.kakara.engine.renderobjects.RenderTexture;
 import org.kakara.engine.renderobjects.TextureAtlas;
 import org.kakara.engine.renderobjects.renderlayouts.Layout;
@@ -13,6 +14,7 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 import static org.lwjgl.opengl.GL30.*;
@@ -32,6 +34,8 @@ public class AtlasMesh implements IMesh {
     private final int vertexCount;
 
     private TextureAtlas atlas;
+
+    private boolean wireframe;
 
     /**
      * Create a new AtlasMesh
@@ -179,7 +183,13 @@ public class AtlasMesh implements IMesh {
     public void render() {
         initRender();
 
+        if(isWireframe())
+            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
         glDrawElements(GL_TRIANGLES, getVertexCount(), GL_UNSIGNED_INT, 0);
+
+        if(isWireframe())
+            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
         endRender();
     }
@@ -190,6 +200,7 @@ public class AtlasMesh implements IMesh {
      * @param gameItems The game items to render
      * @param consumer The consumer
      */
+    @Override
     public void renderList(List<GameItem> gameItems, Consumer<GameItem> consumer){
         initRender();
         for(GameItem gameItem : gameItems){
@@ -197,6 +208,30 @@ public class AtlasMesh implements IMesh {
             glDrawElements(GL_TRIANGLES, getVertexCount(), GL_UNSIGNED_INT, 0);
         }
         endRender();
+    }
+
+    @Override
+    public Optional<Material> getMaterial(){
+        return Optional.empty();
+    }
+
+    /**
+     * If you want the mesh to be rendered as a wireframe.
+     * @since 1.0-Pre2
+     * @param value If the mesh is a wireframe.
+     */
+    @Override
+    public void setWireframe(boolean value){
+        this.wireframe = value;
+    }
+
+    /**
+     * If the mesh is a wire frame.
+     * @return If the mesh is a wireframe.
+     */
+    @Override
+    public boolean isWireframe(){
+        return this.wireframe;
     }
 
 

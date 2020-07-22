@@ -17,12 +17,18 @@ import java.util.TimerTask;
  */
 public class FixedPhysicsUpdater extends TimerTask {
     private Scene scene;
+    private long oldTime;
+    private long currentTime;
     public FixedPhysicsUpdater(Scene currentScene){
         this.scene = currentScene;
+        this.oldTime = System.currentTimeMillis();
     }
 
     @Override
     public void run() {
+        oldTime = currentTime;
+        currentTime = System.currentTimeMillis();
+        float deltaTime = ((float) (currentTime - oldTime)) * 0.001f;
         for(GameItem item : Objects.requireNonNull(scene.getItemHandler()).getItems()){
             try{
                 if(!(item instanceof MeshGameItem)) continue;
@@ -30,15 +36,15 @@ public class FixedPhysicsUpdater extends TimerTask {
                 if(meshItem.getCollider() == null) continue;
                 Collider collider = meshItem.getCollider();
 
-                meshItem.setVelocity(meshItem.getVelocity().add(meshItem.getAcceleration().getX() * 0.020f, meshItem.getAcceleration().getY() * 0.020f, meshItem.getAcceleration().getZ() * 0.20f));
-                meshItem.translateBy(meshItem.getVelocity().getX() * 0.020f, 0, 0);
+                meshItem.setVelocity(meshItem.getVelocity().add(meshItem.getAcceleration().getX() * deltaTime, meshItem.getAcceleration().getY() * deltaTime, meshItem.getAcceleration().getZ() * deltaTime));
+                meshItem.translateBy(meshItem.getVelocity().getX() * deltaTime, 0, 0);
                 // Handles Triggers
                 collider.update();
 
                 collider.updateZ();
-                meshItem.translateBy(0, 0, meshItem.getVelocity().getZ() * 0.020f);
+                meshItem.translateBy(0, 0, meshItem.getVelocity().getZ() * deltaTime);
                 collider.updateZ();
-                meshItem.translateBy(0, meshItem.getVelocity().getY() * 0.020f, 0);
+                meshItem.translateBy(0, meshItem.getVelocity().getY() * deltaTime, 0);
                 collider.updateY();
             }catch(NullPointerException ex){
                 // Ignore.
