@@ -1,6 +1,7 @@
 package org.kakara.engine.physics.collision;
 
 import org.kakara.engine.GameHandler;
+import org.kakara.engine.item.GameItem;
 import org.kakara.engine.item.MeshGameItem;
 import org.kakara.engine.math.Vector3;
 import org.kakara.engine.physics.OnTriggerEnter;
@@ -8,6 +9,7 @@ import org.kakara.engine.utils.Time;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 
 /**
  * Gives an objects a cube collision box that is automatically scaled around the object.
@@ -26,17 +28,17 @@ public class ObjectBoxCollider implements Collider {
     private Vector3 deltaPosition;
     private Collidable item;
     private GameHandler handler;
-
+    private Predicate<GameItem> predicate = gameItem -> false;
     private List<OnTriggerEnter> triggerEvents;
 
-    public ObjectBoxCollider(boolean isTrigger, boolean resolveable){
+    public ObjectBoxCollider(boolean isTrigger, boolean resolveable) {
         this.isTrigger = isTrigger;
         this.resolveable = resolveable;
         this.handler = GameHandler.getInstance();
         this.triggerEvents = new ArrayList<>();
     }
 
-    public ObjectBoxCollider(){
+    public ObjectBoxCollider() {
         this(false, true);
     }
 
@@ -62,18 +64,18 @@ public class ObjectBoxCollider implements Collider {
 
     @Override
     public void updateX() {
-        if(isTrigger || !resolveable) return;
+        if (isTrigger || !resolveable) return;
         this.deltaPosition = item.getColPosition().clone().subtract(this.lastPosition);
         this.lastPosition = item.getColPosition().clone();
 
         CollisionManager cm = handler.getCurrentScene().getCollisionManager();
         assert cm != null;
 
-        for(Collidable gi : cm.getCollidngItems(item.getColPosition())){
-            if(gi == item) continue;
-            if(gi.getCollider().isTrigger()) continue;
+        for (Collidable gi : cm.getCollidngItems(item.getColPosition())) {
+            if (gi == item) continue;
+            if (gi.getCollider().isTrigger()) continue;
             CollisionManager.Contact contact = cm.isCollidingX(gi.getCollider(), item.getCollider());
-            while (contact.isIntersecting()){
+            while (contact.isIntersecting()) {
                 contact = cm.isCollidingX(gi.getCollider(), item.getCollider());
                 item.setColPosition(item.getColPosition().add(new Vector3(contact.getnEnter().mul(-1).mul(contact.getPenetration()))));
             }
@@ -82,18 +84,18 @@ public class ObjectBoxCollider implements Collider {
 
     @Override
     public void updateY() {
-        if(isTrigger || !resolveable) return;
+        if (isTrigger || !resolveable) return;
         this.deltaPosition = item.getColPosition().clone().subtract(this.lastPosition);
         this.lastPosition = item.getColPosition().clone();
 
         CollisionManager cm = handler.getCurrentScene().getCollisionManager();
         assert cm != null;
 
-        for(Collidable gi : cm.getCollidngItems(item.getColPosition())){
-            if(gi == item) continue;
-            if(gi.getCollider().isTrigger()) continue;
+        for (Collidable gi : cm.getCollidngItems(item.getColPosition())) {
+            if (gi == item) continue;
+            if (gi.getCollider().isTrigger()) continue;
             CollisionManager.Contact contact = cm.isCollidingY(gi.getCollider(), item.getCollider());
-            while (contact.isIntersecting()){
+            while (contact.isIntersecting()) {
                 contact = cm.isCollidingY(gi.getCollider(), item.getCollider());
                 item.setColPosition(item.getColPosition().add(new Vector3(contact.getnEnter().mul(-1).mul(contact.getPenetration()))));
             }
@@ -102,18 +104,18 @@ public class ObjectBoxCollider implements Collider {
 
     @Override
     public void updateZ() {
-        if(isTrigger || !resolveable) return;
+        if (isTrigger || !resolveable) return;
         this.deltaPosition = item.getColPosition().clone().subtract(this.lastPosition);
         this.lastPosition = item.getColPosition().clone();
 
         CollisionManager cm = handler.getCurrentScene().getCollisionManager();
         assert cm != null;
 
-        for(Collidable gi : cm.getCollidngItems(item.getColPosition())){
-            if(gi == item) continue;
-            if(gi.getCollider().isTrigger()) continue;
+        for (Collidable gi : cm.getCollidngItems(item.getColPosition())) {
+            if (gi == item) continue;
+            if (gi.getCollider().isTrigger()) continue;
             CollisionManager.Contact contact = cm.isCollidingZ(gi.getCollider(), item.getCollider());
-            while (contact.isIntersecting()){
+            while (contact.isIntersecting()) {
                 contact = cm.isCollidingZ(gi.getCollider(), item.getCollider());
                 item.setColPosition(item.getColPosition().add(new Vector3(contact.getnEnter().mul(-1).mul(contact.getPenetration()))));
             }
@@ -125,12 +127,26 @@ public class ObjectBoxCollider implements Collider {
         this.triggerEvents.add(enter);
     }
 
-    public Collider setTrigger(boolean value){
+    @Override
+    public void setPredicate(Predicate<GameItem> gameItemPredicate) {
+        if (gameItemPredicate == null) {
+            predicate = gameItem -> false;
+            return;
+        }
+        predicate = gameItemPredicate;
+    }
+
+    @Override
+    public Predicate<GameItem> getPredicate() {
+        return predicate;
+    }
+
+    public Collider setTrigger(boolean value) {
         this.isTrigger = value;
         return this;
     }
 
-    public boolean isTrigger(){
+    public boolean isTrigger() {
         return isTrigger;
     }
 
@@ -146,17 +162,17 @@ public class ObjectBoxCollider implements Collider {
 
     @Override
     public void update() {
-        if(isTrigger || !resolveable) return;
+        if (isTrigger || !resolveable) return;
         this.lastPosition = item.getColPosition().clone();
 
         CollisionManager cm = handler.getCurrentScene().getCollisionManager();
         assert cm != null;
 
-        for(Collidable gi : cm.getCollidngItems(item.getColPosition())){
-            if(gi == item) continue;
-            if(cm.isColliding(gi.getCollider(), item.getCollider()).isIntersecting()){
+        for (Collidable gi : cm.getCollidngItems(item.getColPosition())) {
+            if (gi == item) continue;
+            if (cm.isColliding(gi.getCollider(), item.getCollider()).isIntersecting()) {
                 // Fire the trigger event.
-                for(OnTriggerEnter evt : triggerEvents){
+                for (OnTriggerEnter evt : triggerEvents) {
                     evt.onTriggerEnter(gi);
                 }
             }
