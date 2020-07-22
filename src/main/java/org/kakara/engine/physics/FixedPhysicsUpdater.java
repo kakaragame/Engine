@@ -40,7 +40,6 @@ public class FixedPhysicsUpdater extends TimerTask {
                 meshItem.setVelocity(meshItem.getVelocity().add(meshItem.getAcceleration().getX() * deltaTime, meshItem.getAcceleration().getY() * deltaTime, meshItem.getAcceleration().getZ() * deltaTime));
                 meshItem.translateBy(meshItem.getVelocity().getX() * deltaTime, 0, 0);
                 if (collider.getPredicate().test(item)) {
-                    System.out.println("HEY");
                     continue;
                 }
                 // Handles Triggers
