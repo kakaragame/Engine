@@ -4,12 +4,14 @@ import org.jetbrains.annotations.NotNull;
 import org.joml.Quaternionf;
 import org.kakara.engine.Camera;
 import org.kakara.engine.GameHandler;
+import org.kakara.engine.item.features.Feature;
 import org.kakara.engine.item.mesh.IMesh;
 import org.kakara.engine.physics.PhysicsItem;
 import org.kakara.engine.physics.collision.Collidable;
 import org.kakara.engine.physics.collision.Collider;
 import org.kakara.engine.item.mesh.Mesh;
 import org.kakara.engine.math.Vector3;
+import org.lwjgl.system.CallbackI;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +23,7 @@ import java.util.UUID;
  * This is a Collidable GameItem. That uses meshes to create an item
  */
 public class MeshGameItem implements GameItem {
-
+    private List<Feature> features = new ArrayList<>();
     private IMesh[] meshes;
     private float scale;
     private Quaternionf rotation;
@@ -100,6 +102,7 @@ public class MeshGameItem implements GameItem {
      */
     public GameItem setPosition(Vector3 position) {
         this.position = position;
+        //features.forEach(feature -> feature.updateValues(this));
         return this;
     }
 
@@ -227,6 +230,17 @@ public class MeshGameItem implements GameItem {
         this.textPos = pos;
     }
 
+    @Override
+    public List<Feature> getFeatures() {
+        return features;
+    }
+
+    @Override
+    public void addFeature(Feature feature) {
+        features.add(feature);
+        feature.updateValues(this);
+    }
+
     /**
      * Get all of the meshes of the object.
      *
@@ -322,7 +336,7 @@ public class MeshGameItem implements GameItem {
             for (IMesh mesh : meshes) {
                 mesh.render();
             }
-        }else{
+        } else {
             System.out.println("Invisible");
         }
     }
