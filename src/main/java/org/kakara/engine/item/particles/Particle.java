@@ -28,7 +28,7 @@ public class Particle extends MeshGameItem {
         this.ttl = ttl;
         this.updateTextureMillis = updateTextureMillis;
         this.currentAnimTimeMillis = 0;
-        Texture texture = this.getMesh().getMaterial().getTexture();
+        Texture texture = this.getMesh().getMaterial().get().getTexture();
         this.animFrames = texture.getNumCols() * texture.getNumRows();
     }
 

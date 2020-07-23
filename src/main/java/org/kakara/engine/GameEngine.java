@@ -4,6 +4,7 @@ import org.kakara.engine.physics.collision.Collidable;
 import org.kakara.engine.gui.Window;
 import org.kakara.engine.render.Renderer;
 import org.kakara.engine.renderobjects.ChunkHandler;
+import org.kakara.engine.scene.AbstractGameScene;
 import org.kakara.engine.scene.AbstractMenuScene;
 import org.kakara.engine.scene.AbstractScene;
 import org.kakara.engine.utils.Time;
@@ -136,6 +137,8 @@ public class GameEngine implements Runnable {
      */
     protected void update(float interval) {
         gameHandler.update();
+        if (gameHandler.getSceneManager().getCurrentScene() instanceof AbstractGameScene)
+            gameHandler.getSceneManager().getCurrentScene().getItemHandler().update();
         gameHandler.getSceneManager().getCurrentScene().update(interval);
         game.update();
 //        collide();
@@ -152,7 +155,7 @@ public class GameEngine implements Runnable {
             TODO Find a better way to do this.
          */
         if (!mainThreadQueue.isEmpty()) {
-            synchronized (mainThreadQueue){
+            synchronized (mainThreadQueue) {
                 Runnable runnable = mainThreadQueue.remove();
                 if (runnable == null) {
                     return;
@@ -171,7 +174,7 @@ public class GameEngine implements Runnable {
             }
         }
         if (!mainThreadQueue.isEmpty()) {
-            synchronized (mainThreadQueue){
+            synchronized (mainThreadQueue) {
                 Runnable runnable = mainThreadQueue.remove();
                 if (runnable == null) {
                     return;
@@ -197,7 +200,7 @@ public class GameEngine implements Runnable {
      * Handles collision updates.
      */
     protected void collide() {
-        if(!(gameHandler.getCurrentScene() instanceof AbstractScene)) return;
+        if (!(gameHandler.getCurrentScene() instanceof AbstractScene)) return;
 
     }
 
@@ -245,12 +248,12 @@ public class GameEngine implements Runnable {
      * @param run The runnable to be executed.
      */
     public void addQueueItem(Runnable run) {
-        if(run == null)
+        if (run == null)
             throw new RuntimeException("NULL!!");
         mainThreadQueue.add(run);
     }
 
-    protected void exit(){
+    protected void exit() {
         running = false;
     }
 

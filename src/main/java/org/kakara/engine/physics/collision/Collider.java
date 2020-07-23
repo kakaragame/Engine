@@ -1,7 +1,11 @@
 package org.kakara.engine.physics.collision;
 
+import org.kakara.engine.item.GameItem;
 import org.kakara.engine.math.Vector3;
 import org.kakara.engine.physics.OnTriggerEnter;
+import org.kakara.engine.utils.Pair;
+
+import java.util.function.Predicate;
 
 public interface Collider {
 
@@ -37,12 +41,14 @@ public interface Collider {
     /**
      * If the engine it to attempt and move this object to fix collisions.
      * <p>As of 1.0-Pre2, this replaces the old functionality of {@link #setTrigger(boolean)}</p>
+     *
      * @param value If the engine is to move this object to fix collisions.
      */
     void setResolvable(boolean value);
 
     /**
      * Get if the engine should attempt to move this object to fix collisions.
+     *
      * @return If the engine should attempt to move this object to fix collisions.
      */
     boolean isResolvable();
@@ -80,14 +86,20 @@ public interface Collider {
     Vector3 getAbsolutePoint2();
 
     void updateX();
+
     void updateY();
+
     void updateZ();
 
     /**
      * Add an event to be triggered when this collidable comes in contact with a trigger.
      * <p>Important note: This triggers every physics update that the object is colliding with a trigger.</p>
+     *
      * @param enter The event to be triggered.
      */
     void addOnTriggerEnter(OnTriggerEnter enter);
 
+    void setPredicate(Predicate<Collidable> gameItemPredicate);
+
+    Predicate<Collidable> getPredicate();
 }

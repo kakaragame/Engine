@@ -218,10 +218,11 @@ public class Renderer {
         shaderProgram.setUniform("isInstanced", 0);
 
         // Render each mesh with the associated game Items
-        Map<Mesh, List<GameItem>> mapMeshes = scene.getItemHandler().getNonInstancedMeshMap();
-        for (Mesh mesh : mapMeshes.keySet()) {
+        Map<IMesh, List<GameItem>> mapMeshes = scene.getItemHandler().getNonInstancedMeshMap();
+        for (IMesh mesh : mapMeshes.keySet()) {
             if (!depthMap) {
-                shader.setUniform("material", mesh.getMaterial());
+                if(mesh.getMaterial().isPresent())
+                    shader.setUniform("material", mesh.getMaterial().get());
                 glActiveTexture(GL_TEXTURE2);
                 glBindTexture(GL_TEXTURE_2D, shadowMap.getDepthMapTexture().getId());
             }
@@ -229,7 +230,6 @@ public class Renderer {
             mesh.renderList(mapMeshes.get(mesh), (GameItem gameItem) -> {
                         MeshGameItem meshGameItem = ((MeshGameItem) gameItem);
                         if (meshGameItem.isVisible()) {
-                            shaderProgram.setUniform("selectedNonInstanced", ((MeshGameItem) gameItem).isSelected() ? 1f : 0f);
                             Matrix4f modelMatrix = transformation.buildModelMatrix(gameItem);
                             if (!depthMap) {
                                 Matrix4f modelViewMatrix = transformation.buildModelViewMatrix(modelMatrix, viewMatrix);
@@ -238,7 +238,7 @@ public class Renderer {
                             Matrix4f modelLightViewMatrix = transformation.buildModelLightViewMatrix(modelMatrix, lightViewMatrix);
                             shaderProgram.setUniform("modelLightViewNonInstancedMatrix", modelLightViewMatrix);
                             // Render every mesh (some game items can have more than one)
-                            for (Mesh m : meshGameItem.getMeshes()) {
+                            for (IMesh m : meshGameItem.getMeshes()) {
                                 m.render();
                             }
                         }
@@ -263,7 +263,7 @@ public class Renderer {
         Map<InstancedMesh, List<GameItem>> mapMeshes = scene.getItemHandler().getInstancedMeshMap();
         for (InstancedMesh mesh : mapMeshes.keySet()) {
             if (!depthMap) {
-                shaderProgram.setUniform("material", mesh.getMaterial());
+                shaderProgram.setUniform("material", mesh.getMaterial().get());
                 glActiveTexture(GL_TEXTURE2);
                 glBindTexture(GL_TEXTURE_2D, shadowMap.getDepthMapTexture().getId());
             }
@@ -407,9 +407,9 @@ public class Renderer {
 
         for (int i = 0; i < numEmitters; i++) {
             ParticleEmitter emitter = emitters.get(i);
-            Mesh mesh = emitter.getBaseParticle().getMesh();
+            Mesh mesh = (Mesh) emitter.getBaseParticle().getMesh();
 
-            Texture text = mesh.getMaterial().getTexture();
+            Texture text = mesh.getMaterial().get().getTexture();
             particleShaderProgram.setUniform("numCols", text.getNumCols());
             particleShaderProgram.setUniform("numRows", text.getNumRows());
 
@@ -515,7 +515,6 @@ public class Renderer {
 
         shaderProgram.createUniform("shadowMap");
         shaderProgram.createUniform("orthoProjectionMatrix");
-        shaderProgram.createUniform("selectedNonInstanced");
 
         shaderProgram.createUniform("isInstanced");
     }
