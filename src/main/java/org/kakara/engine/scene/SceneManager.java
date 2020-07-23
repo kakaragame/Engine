@@ -36,8 +36,6 @@ public class SceneManager {
         }
         // Continue loading the next scene.
         scene.work();
-        // TODO I don't this that this is suppose to be here???
-        scene.unload();
         try {
             handler.getGameEngine().resetRender();
             scene.loadGraphics(handler);
@@ -69,6 +67,6 @@ public class SceneManager {
         currentScene.getHUD().cleanup();
         TextureCache.getInstance(handler.getResourceManager()).cleanup(currentScene);
         if(getCurrentScene() instanceof AbstractMenuScene) return;
-        currentScene.getItemHandler().cleanup();
+        currentScene.unload();
     }
 }

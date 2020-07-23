@@ -42,8 +42,8 @@ public class SkyBox extends MeshGameItem {
      * @param tx The texture to change to.
      */
     public void setTexture(Texture tx){
-        this.getMesh().getMaterial().getTexture().cleanup();
-        this.getMesh().setMaterial(new Material(tx, 0f));
+        this.getMesh().getMaterial().ifPresent(mat -> mat.getTexture().cleanup());
+        ((Mesh)this.getMesh()).setMaterial(new Material(tx, 0f));
     }
 
 }

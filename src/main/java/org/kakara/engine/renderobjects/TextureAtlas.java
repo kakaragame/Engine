@@ -1,7 +1,6 @@
 package org.kakara.engine.renderobjects;
 
 import org.kakara.engine.GameEngine;
-import org.kakara.engine.GameHandler;
 import org.kakara.engine.item.Texture;
 import org.kakara.engine.resources.ResourceManager;
 import org.kakara.engine.scene.Scene;
@@ -12,6 +11,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,7 +39,7 @@ public class TextureAtlas {
      * @param currentScene The current scene
      */
     public TextureAtlas(List<RenderTexture> textures, String output, Scene currentScene){
-        this(textures, output, currentScene, 300, 255);
+        this(textures, output, currentScene, 400, 300);
     }
 
     /**

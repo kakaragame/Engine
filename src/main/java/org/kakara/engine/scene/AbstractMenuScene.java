@@ -3,7 +3,7 @@ package org.kakara.engine.scene;
 import org.kakara.engine.Camera;
 import org.kakara.engine.GameEngine;
 import org.kakara.engine.GameHandler;
-import org.kakara.engine.collision.CollisionManager;
+import org.kakara.engine.physics.collision.CollisionManager;
 import org.kakara.engine.events.EventManager;
 import org.kakara.engine.item.ItemHandler;
 import org.kakara.engine.item.particles.ParticleHandler;

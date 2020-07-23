@@ -1,6 +1,8 @@
 package org.kakara.engine.item.mesh;
 
 import org.jetbrains.annotations.NotNull;
+import org.kakara.engine.GameEngine;
+import org.kakara.engine.exceptions.InvalidThreadException;
 import org.kakara.engine.item.GameItem;
 import org.kakara.engine.item.Material;
 import org.kakara.engine.item.Texture;
@@ -11,6 +13,7 @@ import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 import static org.lwjgl.opengl.GL30.*;
@@ -32,6 +35,8 @@ public class Mesh implements IMesh {
     private Material material;
 
     private float boundingRadius;
+
+    private boolean wireframe = false;
 
     /**
      *
@@ -57,6 +62,9 @@ public class Mesh implements IMesh {
      * @param weights Not implemented
      */
     public Mesh(@NotNull float[] positions, @NotNull float[] textCoords, @NotNull float[] normals, @NotNull int[] indices, @NotNull int[] jointIndices, @NotNull float[] weights) {
+        if(Thread.currentThread() != GameEngine.currentThread)
+            throw new InvalidThreadException("This class can only be constructed on the main thread.");
+
         FloatBuffer posBuffer = null;
         FloatBuffer textCoordsBuffer = null;
         FloatBuffer vecNormalsBuffer = null;
@@ -168,8 +176,8 @@ public class Mesh implements IMesh {
      * Get the material of the mesh
      * @return The material
      */
-    public Material getMaterial() {
-        return material;
+    public Optional<Material> getMaterial() {
+        return Optional.of(material);
     }
 
     /**
@@ -277,7 +285,13 @@ public class Mesh implements IMesh {
     public void render() {
         initRender();
 
+        if(isWireframe())
+            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
         glDrawElements(GL_TRIANGLES, getVertexCount(), GL_UNSIGNED_INT, 0);
+
+        if(isWireframe())
+            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
         endRender();
     }
@@ -288,6 +302,7 @@ public class Mesh implements IMesh {
      * @param gameItems The game items to render
      * @param consumer The consumer
      */
+    @Override
     public void renderList(List<GameItem> gameItems, Consumer<GameItem> consumer){
         initRender();
         for(GameItem gameItem : gameItems){
@@ -341,6 +356,25 @@ public class Mesh implements IMesh {
         // Delete the VAO
         glBindVertexArray(0);
         glDeleteVertexArrays(vaoId);
+    }
+
+    /**
+     * If you want the mesh to be rendered as a wireframe.
+     * @since 1.0-Pre2
+     * @param value If the mesh is a wireframe.
+     */
+    @Override
+    public void setWireframe(boolean value){
+        this.wireframe = value;
+    }
+
+    /**
+     * If the mesh is a wire frame.
+     * @return If the mesh is a wireframe.
+     */
+    @Override
+    public boolean isWireframe(){
+        return this.wireframe;
     }
 
     protected static float[] createEmptyFloatArray(int length, float defaultValue) {

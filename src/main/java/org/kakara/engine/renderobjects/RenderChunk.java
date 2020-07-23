@@ -3,6 +3,7 @@ package org.kakara.engine.renderobjects;
 import me.ryandw11.octree.Octree;
 import org.kakara.engine.item.MeshGameItem;
 import org.kakara.engine.math.Vector3;
+import org.kakara.engine.renderobjects.mesh.*;
 import org.kakara.engine.renderobjects.renderlayouts.Face;
 
 import java.util.ArrayList;
@@ -23,8 +24,8 @@ public class RenderChunk extends MeshGameItem {
 
     /**
      * Creates a new render chunk.
-     * <p><b>Note: </b> The chunk is not automatically generated. You must call {@link #regenerateChunk(TextureAtlas)} or
-     * {@link #regenerateChunkAsync(TextureAtlas)} for the chunk to be generated.</p>
+     * <p><b>Note: </b> The chunk is not automatically generated. You must call {@link #regenerateChunk(TextureAtlas, MeshType)}
+     * for the chunk to be generated.</p>
      * @param blocks The list of blocks
      * @param atlas The texture atlas to use.
      */
@@ -142,39 +143,55 @@ public class RenderChunk extends MeshGameItem {
     }
 
     /**
-     * Generate the mesh of a chunk. This method must be called every time something in the chunk
-     * is updated.
-     * <p>For the asynchronous version of this method see {@link #regenerateChunkAsync(TextureAtlas)}</p>
-     * <p>This method is <b>not</b> thread safe.</p>
-     * @param atlas
+     * Regenerate a Render Chunk.
+     * <p>Be sure to check the documentation for {@link SyncMesh}, {@link AsyncMesh}, {@link MultiThreadMesh}, and {@link ModifiedAsyncMesh}
+     * to see what thread this method should be called on.</p>
+     * @param atlas The texture atlas to use.
+     * @param type The type of mesh you want to use. (Check the documentation for more details).
+     * @return The completable future of the mesh. ({@link SyncMesh} does not support this and will return null).
      */
-    public void regenerateChunk(TextureAtlas atlas){
-        if(mesh != null){
-            mesh.cleanUp();
+    public CompletableFuture<? extends RenderMesh> regenerateChunk(TextureAtlas atlas, MeshType type){
+        switch(type){
+            case SYNC:
+                if(mesh != null)
+                    mesh.cleanUp();
+                this.mesh = new SyncMesh(blocks, this, atlas);
+                break;
+            case ASYNC:
+                CompletableFuture<AsyncMesh> asyncFuture = new CompletableFuture<>();
+                AsyncMesh m = new AsyncMesh(blocks, this, atlas, asyncFuture);
+                asyncFuture.thenAccept(newmesh -> {
+                    if(mesh != null)
+                        mesh.cleanUp();
+                    mesh = newmesh;
+                });
+                return asyncFuture;
+            case MULTITHREAD:
+                CompletableFuture<MultiThreadMesh> multiFuture = new CompletableFuture<>();
+                MultiThreadMesh ma = new MultiThreadMesh(blocks, this, atlas, multiFuture);
+                multiFuture.thenAccept(newmesh -> {
+                    if(mesh != null)
+                        mesh.cleanUp();
+                    mesh = newmesh;
+                });
+                return multiFuture;
+            case MODIFEDASYNC:
+                CompletableFuture<ModifiedAsyncMesh> modifedFuture = new CompletableFuture<>();
+                if(mesh != null)
+                    mesh.cleanUp();
+                this.mesh = new ModifiedAsyncMesh(blocks, this, atlas, modifedFuture);
+                return modifedFuture;
         }
-        //List<RenderBlock> visBlocks = calculateVisibleBlocks(blocks);
-        this.mesh = new RenderMesh(blocks, this,atlas, false);
+        return null;
     }
 
     /**
-     * Generate the mesh of a chunk. This method must be called every time something in the chunk
-     * is updated.
-     * <p>The old mesh will not be deleted and cleaned up until the rendering of the mesh is completed. (Can take several frames).</p>
-     * <p>For the synchronous version of this method see {@link #regenerateChunk(TextureAtlas)}</p>
-     * <p>This method <b>is</b> thread safe.</p>
-     * @param atlas The texture atlas
-     * @return The completable future that can be used to run code after a render mesh is done generating.
+     * Regenerate the overlay textures.
+     * <p>The method is thread safe.</p>
+     * @param atlas The texture atlas.
      */
-    public CompletableFuture<RenderMesh> regenerateChunkAsync(TextureAtlas atlas){
-        CompletableFuture<RenderMesh> completableFuture = new CompletableFuture<>();
-       // List<RenderBlock> visBlocks = calculateVisibleBlocks(blocks);
-        new RenderMesh(blocks, this,atlas, true, completableFuture);
-        completableFuture.thenAccept(newmesh -> {
-            if(mesh != null)
-                mesh.cleanUp();
-            mesh = newmesh;
-        });
-        return completableFuture;
+    public void regenerateOverlayTextures(TextureAtlas atlas){
+        mesh.updateOverlay(calculateVisibleBlocks(blocks), atlas);
     }
 
 

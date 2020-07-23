@@ -1,23 +1,19 @@
 package org.kakara.engine;
 
-import org.kakara.engine.collision.Collidable;
+import org.kakara.engine.physics.collision.Collidable;
 import org.kakara.engine.gui.Window;
 import org.kakara.engine.render.Renderer;
 import org.kakara.engine.renderobjects.ChunkHandler;
+import org.kakara.engine.scene.AbstractGameScene;
 import org.kakara.engine.scene.AbstractMenuScene;
 import org.kakara.engine.scene.AbstractScene;
 import org.kakara.engine.utils.Time;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.LinkedList;
 import java.util.Objects;
-import java.util.PriorityQueue;
 import java.util.Queue;
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.PriorityBlockingQueue;
-import java.util.concurrent.SynchronousQueue;
 
 /**
  * Primary class of the engine.
@@ -37,6 +33,8 @@ public class GameEngine implements Runnable {
     protected boolean running = true;
 
     private final Queue<Runnable> mainThreadQueue = new LinkedBlockingQueue<>();
+
+    public static final Thread currentThread = Thread.currentThread();
 
     /**
      * Create a new game.
@@ -139,9 +137,11 @@ public class GameEngine implements Runnable {
      */
     protected void update(float interval) {
         gameHandler.update();
+        if (gameHandler.getSceneManager().getCurrentScene() instanceof AbstractGameScene)
+            gameHandler.getSceneManager().getCurrentScene().getItemHandler().update();
         gameHandler.getSceneManager().getCurrentScene().update(interval);
         game.update();
-        collide();
+//        collide();
     }
 
     /**
@@ -155,7 +155,7 @@ public class GameEngine implements Runnable {
             TODO Find a better way to do this.
          */
         if (!mainThreadQueue.isEmpty()) {
-            synchronized (mainThreadQueue){
+            synchronized (mainThreadQueue) {
                 Runnable runnable = mainThreadQueue.remove();
                 if (runnable == null) {
                     return;
@@ -174,7 +174,7 @@ public class GameEngine implements Runnable {
             }
         }
         if (!mainThreadQueue.isEmpty()) {
-            synchronized (mainThreadQueue){
+            synchronized (mainThreadQueue) {
                 Runnable runnable = mainThreadQueue.remove();
                 if (runnable == null) {
                     return;
@@ -200,10 +200,8 @@ public class GameEngine implements Runnable {
      * Handles collision updates.
      */
     protected void collide() {
-        if(!(gameHandler.getCurrentScene() instanceof AbstractScene)) return;
-        for (Collidable gi : Objects.requireNonNull(gameHandler.getCurrentScene().getCollisionManager()).getCollidngItems(null)) {
-            gi.getCollider().update();
-        }
+        if (!(gameHandler.getCurrentScene() instanceof AbstractScene)) return;
+
     }
 
     /**
@@ -250,12 +248,12 @@ public class GameEngine implements Runnable {
      * @param run The runnable to be executed.
      */
     public void addQueueItem(Runnable run) {
-        if(run == null)
+        if (run == null)
             throw new RuntimeException("NULL!!");
         mainThreadQueue.add(run);
     }
 
-    protected void exit(){
+    protected void exit() {
         running = false;
     }
 

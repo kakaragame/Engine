@@ -1,19 +1,28 @@
 package org.kakara.engine.ui.objectcanvas;
 
 import org.joml.Quaternionf;
+import org.kakara.engine.item.Tagable;
 import org.kakara.engine.item.mesh.IMesh;
 import org.kakara.engine.math.Vector2;
+
+import java.util.List;
 
 /**
  * This is an object that is to be displayed on the UI.
  * <p>This is to be used with {@link org.kakara.engine.ui.items.ObjectCanvas}</p>
  * @since 1.0-Pre1
  */
-public class UIObject {
+public class UIObject implements Tagable {
     private IMesh mesh;
     private final Vector2 position;
     private final Quaternionf rotation;
     private float scale;
+
+    /*
+     * Tagable data
+     */
+    private List<Object> data;
+    private String tag;
 
     /**
      * Create a new UIObject.
@@ -124,5 +133,25 @@ public class UIObject {
      */
     public IMesh getMesh(){
         return mesh;
+    }
+
+    @Override
+    public void setData(List<Object> data) {
+        this.data = data;
+    }
+
+    @Override
+    public List<Object> getData() {
+        return data;
+    }
+
+    @Override
+    public void setTag(String tag) {
+        this.tag = tag;
+    }
+
+    @Override
+    public String getTag() {
+        return tag;
     }
 }

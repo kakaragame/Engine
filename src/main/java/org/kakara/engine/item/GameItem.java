@@ -1,22 +1,27 @@
 package org.kakara.engine.item;
 
 import org.joml.Quaternionf;
+import org.kakara.engine.item.features.Feature;
+import org.kakara.engine.item.mesh.IMesh;
 import org.kakara.engine.item.mesh.Mesh;
 import org.kakara.engine.math.Vector3;
+import org.kakara.engine.physics.PhysicsItem;
+import org.kakara.engine.physics.collision.Collidable;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
  * The main game item interface.
  */
-public interface GameItem {
+public interface GameItem extends Tagable, Collidable, PhysicsItem {
 
     /**
      * Get the current position.
      *
      * @return The current position.
      */
-     Vector3 getPosition();
+    Vector3 getPosition();
 
 
     /**
@@ -27,7 +32,7 @@ public interface GameItem {
      * @param z z value
      * @return The instance of the game item.
      */
-     GameItem setPosition(float x, float y, float z);
+    GameItem setPosition(float x, float y, float z);
 
     /**
      * Set the position of the item
@@ -53,14 +58,14 @@ public interface GameItem {
      * @param position The vector to change by.
      * @return The instance of the game item.
      */
-     GameItem translateBy(Vector3 position);
+    GameItem translateBy(Vector3 position);
 
     /**
      * Get the scale of the item.
      *
      * @return The scale
      */
-     float getScale();
+    float getScale();
 
     /**
      * Set the scale of the Game Item
@@ -68,7 +73,7 @@ public interface GameItem {
      * @param scale The scale value
      * @return The instance of the game item.
      */
-     GameItem setScale(float scale);
+    GameItem setScale(float scale);
 
     /**
      * Get the ID of the game item.
@@ -76,9 +81,9 @@ public interface GameItem {
      *
      * @return The ID.
      */
-     UUID getId();
+    UUID getId();
 
-     Quaternionf getRotation();
+    Quaternionf getRotation();
 
     /**
      * Set the rotation of the Object
@@ -86,7 +91,7 @@ public interface GameItem {
      * @param q The quaternion
      * @return The instance of the game item.
      */
-     GameItem setRotation(Quaternionf q);
+    GameItem setRotation(Quaternionf q);
 
     /**
      * Change the rotation by the angle on the axis.
@@ -95,7 +100,7 @@ public interface GameItem {
      * @param axis  The vector of the axis (without magnitude)
      * @return The instance of the game item.
      */
-     GameItem rotateAboutAxis(float angle, Vector3 axis);
+    GameItem rotateAboutAxis(float angle, Vector3 axis);
 
     /**
      * Set the rotation to the angle on the axis.
@@ -112,7 +117,6 @@ public interface GameItem {
     void cleanup();
 
 
-
     /**
      * A safe way to clone a gameobject.
      *
@@ -123,13 +127,15 @@ public interface GameItem {
 
     /**
      * Get the mesh of the game item.
+     *
      * @return The mesh
      */
-    Mesh getMesh();
+    IMesh getMesh();
 
     /**
      * Get the texture position
      * <p>Mainly used by the particle system</p>
+     *
      * @return The texture position
      */
     int getTextPos();
@@ -137,9 +143,24 @@ public interface GameItem {
     /**
      * Set the texture position
      * <p>Mainly used by the particle system</p>
+     *
      * @param pos The position
      */
     void setTextPos(int pos);
 
+    /**
+     * Get the features on this GameItem.
+     *
+     * @since 1.0-Pre2
+     * @return The list of features.
+     */
+    List<Feature> getFeatures();
 
+    /**
+     * Add a feature to this GameItem.
+     *
+     * @since 1.0-Pre2
+     * @param feature The feature to add.
+     */
+    void addFeature(Feature feature);
 }

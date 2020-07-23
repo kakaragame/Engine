@@ -1,6 +1,6 @@
 package org.kakara.engine.renderobjects;
 
-import org.kakara.engine.collision.Collidable;
+import org.kakara.engine.physics.collision.Collidable;
 import org.kakara.engine.math.KMath;
 import org.kakara.engine.math.Vector3;
 
@@ -15,8 +15,6 @@ import java.util.concurrent.Executors;
  */
 public class ChunkHandler {
     private List<RenderChunk> renderChunkList;
-    //WARNING THIS IS JUST FOR TESTING.
-    private final static int NUM_CORES = Runtime.getRuntime().availableProcessors() + 1;
     public static final ExecutorService EXECUTORS = Executors.newFixedThreadPool(2);
 
     public ChunkHandler() {

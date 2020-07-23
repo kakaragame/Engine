@@ -4,11 +4,17 @@ import org.jetbrains.annotations.NotNull;
 import org.joml.Quaternionf;
 import org.kakara.engine.Camera;
 import org.kakara.engine.GameHandler;
-import org.kakara.engine.collision.Collidable;
-import org.kakara.engine.collision.Collider;
+import org.kakara.engine.item.features.Feature;
+import org.kakara.engine.item.mesh.IMesh;
+import org.kakara.engine.physics.PhysicsItem;
+import org.kakara.engine.physics.collision.Collidable;
+import org.kakara.engine.physics.collision.Collider;
 import org.kakara.engine.item.mesh.Mesh;
 import org.kakara.engine.math.Vector3;
+import org.lwjgl.system.CallbackI;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -16,33 +22,51 @@ import java.util.UUID;
  * <p>
  * This is a Collidable GameItem. That uses meshes to create an item
  */
-public class MeshGameItem implements GameItem, Collidable {
-
-    private Mesh[] meshes;
+public class MeshGameItem implements GameItem {
+    private List<Feature> features = new ArrayList<>();
+    private IMesh[] meshes;
     private float scale;
     private Quaternionf rotation;
-    private Vector3 position;
     private final UUID uuid;
-    private Collider collider;
     private int textPos;
     private boolean visible = true;
     private boolean selected;
+
+    /*
+        The physics section.
+     */
+    private Vector3 position;
+    private Vector3 velocity;
+    private Vector3 acceleration;
+    private Collider collider;
+
+    /*
+        The tagable section
+     */
+    private String tag;
+    private List<Object> data;
 
     public MeshGameItem() {
         this(new Mesh[0]);
     }
 
-    public MeshGameItem(Mesh mesh) {
-        this(new Mesh[]{mesh});
+    public MeshGameItem(IMesh mesh) {
+        this(new IMesh[]{mesh});
     }
 
-    public MeshGameItem(Mesh[] meshes) {
+    public MeshGameItem(IMesh[] meshes) {
         this.meshes = meshes;
         position = new Vector3(0, 0, 0);
         scale = 1;
         rotation = new Quaternionf();
         uuid = UUID.randomUUID();
         textPos = 0;
+
+        velocity = new Vector3(0, 0, 0);
+        acceleration = new Vector3(0, 0, 0);
+
+        tag = "";
+        data = new ArrayList<>();
     }
 
     /**
@@ -78,6 +102,7 @@ public class MeshGameItem implements GameItem, Collidable {
      */
     public GameItem setPosition(Vector3 position) {
         this.position = position;
+        //features.forEach(feature -> feature.updateValues(this));
         return this;
     }
 
@@ -189,7 +214,8 @@ public class MeshGameItem implements GameItem, Collidable {
      *
      * @return The mesh
      */
-    public Mesh getMesh() {
+    @Override
+    public IMesh getMesh() {
         if (meshes.length == 0) return null;
         return meshes[0];
     }
@@ -204,12 +230,23 @@ public class MeshGameItem implements GameItem, Collidable {
         this.textPos = pos;
     }
 
+    @Override
+    public List<Feature> getFeatures() {
+        return features;
+    }
+
+    @Override
+    public void addFeature(Feature feature) {
+        features.add(feature);
+        feature.updateValues(this);
+    }
+
     /**
      * Get all of the meshes of the object.
      *
      * @return The array of meshes.
      */
-    public Mesh[] getMeshes() {
+    public IMesh[] getMeshes() {
         return meshes;
     }
 
@@ -285,16 +322,21 @@ public class MeshGameItem implements GameItem, Collidable {
         this.selected = selected;
     }
 
+    @Override
+    public UUID getColUUID() {
+        return uuid;
+    }
+
     /**
      * Render the item.
      * <p>Internal Use Only</p>
      */
     public void render() {
         if (isVisible()) {
-            for (Mesh mesh : meshes) {
+            for (IMesh mesh : meshes) {
                 mesh.render();
             }
-        }else{
+        } else {
             System.out.println("Invisible");
         }
     }
@@ -404,5 +446,78 @@ public class MeshGameItem implements GameItem, Collidable {
      */
     public void setVisible(boolean visible) {
         this.visible = visible;
+    }
+
+    @Override
+    public void setVelocity(Vector3 velocity) {
+        this.velocity = velocity;
+    }
+
+    @Override
+    public void setVelocityX(float x) {
+        this.velocity.setX(x);
+    }
+
+    @Override
+    public void setVelocityY(float y) {
+        this.velocity.setY(y);
+    }
+
+    @Override
+    public void setVelocityZ(float z) {
+        this.velocity.setZ(z);
+    }
+
+    @Override
+    public void setVelocityByCamera(Vector3 velocity, Camera camera) {
+        if (velocity.z != 0) {
+            this.velocity.x = (float) Math.sin(Math.toRadians(camera.getRotation().y)) * -1.0f * velocity.z;
+            this.velocity.z = (float) Math.cos(Math.toRadians(camera.getRotation().y)) * velocity.z;
+        }
+        if (velocity.x != 0) {
+            this.velocity.x = (float) Math.sin(Math.toRadians(camera.getRotation().y - 90)) * -1.0f * velocity.x;
+            this.velocity.z = (float) Math.cos(Math.toRadians(camera.getRotation().y - 90)) * velocity.x;
+        }
+        this.velocity.y = velocity.y;
+    }
+
+    @Override
+    public Vector3 getVelocity() {
+        return velocity.clone();
+    }
+
+    @Override
+    public void setAcceleration(Vector3 acceleration) {
+        this.acceleration = acceleration;
+    }
+
+    @Override
+    public void applyAcceleration(Vector3 acceleration) {
+        this.acceleration.add(acceleration);
+    }
+
+    @Override
+    public Vector3 getAcceleration() {
+        return acceleration.clone();
+    }
+
+    @Override
+    public void setData(List<Object> data) {
+        this.data = data;
+    }
+
+    @Override
+    public List<Object> getData() {
+        return data;
+    }
+
+    @Override
+    public void setTag(String tag) {
+        this.tag = tag;
+    }
+
+    @Override
+    public String getTag() {
+        return tag;
     }
 }

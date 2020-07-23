@@ -16,8 +16,7 @@ import java.nio.IntBuffer;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL12.GL_CLAMP_TO_EDGE;
 import static org.lwjgl.opengl.GL30.glGenerateMipmap;
-import static org.lwjgl.stb.STBImage.stbi_load;
-import static org.lwjgl.stb.STBImage.stbi_load_from_memory;
+import static org.lwjgl.stb.STBImage.*;
 import static org.lwjgl.system.MemoryStack.stackPush;
 
 /**
@@ -93,6 +92,9 @@ public class Texture {
             }else{
                 decodedImage = stbi_load(resource.getPath(), w, h, avChannels, 4);
 
+            }
+            if(decodedImage == null){
+                throw new RuntimeException("Error: Cannot load specified image. " + stbi_failure_reason());
             }
             this.width = w.get();
             this.height = h.get();

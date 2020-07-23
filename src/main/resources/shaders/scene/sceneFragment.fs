@@ -8,7 +8,6 @@ in vec3 mvVertexNormal;
 in vec3 mvVertexPos;
 in vec4 mlightviewVertexPos;
 in mat4 outModelViewMatrix;
-in float outSelected;
 
 out vec4 fragColor;
 
@@ -218,10 +217,6 @@ void main()
     if ( fog.activeFog == 1 )
     {
         fragColor = calcFog(mvVertexPos, fragColor, fog, ambientLight, directionalLight);
-    }
-
-    if(outSelected > 0){
-        fragColor = vec4(fragColor.x, fragColor.y, 1, 1);
     }
 
 }
