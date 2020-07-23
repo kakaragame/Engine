@@ -28,7 +28,7 @@ public class ObjectBoxCollider implements Collider {
     private Vector3 deltaPosition;
     private Collidable item;
     private GameHandler handler;
-    private Predicate<GameItem> predicate = gameItem -> false;
+    private Predicate<Collidable> predicate = gameItem -> false;
     private List<OnTriggerEnter> triggerEvents;
 
     public ObjectBoxCollider(boolean isTrigger, boolean resolveable) {
@@ -74,6 +74,7 @@ public class ObjectBoxCollider implements Collider {
         for (Collidable gi : cm.getCollidngItems(item.getColPosition())) {
             if (gi == item) continue;
             if (gi.getCollider().isTrigger()) continue;
+            if (getPredicate().test(gi)) continue;
             CollisionManager.Contact contact = cm.isCollidingX(gi.getCollider(), item.getCollider());
             while (contact.isIntersecting()) {
                 contact = cm.isCollidingX(gi.getCollider(), item.getCollider());
@@ -94,6 +95,7 @@ public class ObjectBoxCollider implements Collider {
         for (Collidable gi : cm.getCollidngItems(item.getColPosition())) {
             if (gi == item) continue;
             if (gi.getCollider().isTrigger()) continue;
+            if (getPredicate().test(gi)) continue;
             CollisionManager.Contact contact = cm.isCollidingY(gi.getCollider(), item.getCollider());
             while (contact.isIntersecting()) {
                 contact = cm.isCollidingY(gi.getCollider(), item.getCollider());
@@ -114,6 +116,7 @@ public class ObjectBoxCollider implements Collider {
         for (Collidable gi : cm.getCollidngItems(item.getColPosition())) {
             if (gi == item) continue;
             if (gi.getCollider().isTrigger()) continue;
+            if (getPredicate().test(gi)) continue;
             CollisionManager.Contact contact = cm.isCollidingZ(gi.getCollider(), item.getCollider());
             while (contact.isIntersecting()) {
                 contact = cm.isCollidingZ(gi.getCollider(), item.getCollider());
@@ -128,7 +131,7 @@ public class ObjectBoxCollider implements Collider {
     }
 
     @Override
-    public void setPredicate(Predicate<GameItem> gameItemPredicate) {
+    public void setPredicate(Predicate<Collidable> gameItemPredicate) {
         if (gameItemPredicate == null) {
             predicate = gameItem -> false;
             return;
@@ -137,7 +140,7 @@ public class ObjectBoxCollider implements Collider {
     }
 
     @Override
-    public Predicate<GameItem> getPredicate() {
+    public Predicate<Collidable> getPredicate() {
         return predicate;
     }
 
@@ -170,6 +173,9 @@ public class ObjectBoxCollider implements Collider {
 
         for (Collidable gi : cm.getCollidngItems(item.getColPosition())) {
             if (gi == item) continue;
+            if (getPredicate().test(gi)) {
+                continue;
+            }
             if (cm.isColliding(gi.getCollider(), item.getCollider()).isIntersecting()) {
                 // Fire the trigger event.
                 for (OnTriggerEnter evt : triggerEvents) {
