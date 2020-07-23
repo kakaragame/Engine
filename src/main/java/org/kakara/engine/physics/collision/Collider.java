@@ -99,7 +99,7 @@ public interface Collider {
      */
     void addOnTriggerEnter(OnTriggerEnter enter);
 
-    void setPredicate(Predicate<GameItem> gameItemPredicate);
+    void setPredicate(Predicate<Collidable> gameItemPredicate);
 
-    Predicate<GameItem> getPredicate();
+    Predicate<Collidable> getPredicate();
 }
