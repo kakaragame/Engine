@@ -6,7 +6,7 @@
 
     <groupId>org.kakara</groupId>
     <artifactId>engine</artifactId>
-    <version>1.0-Pre2-API-SNAPSHOT</version>
+    <version>1.0-Pre2-SNAPSHOT</version>
 
     <properties>
         <lwjgl.version>3.2.3</lwjgl.version>
