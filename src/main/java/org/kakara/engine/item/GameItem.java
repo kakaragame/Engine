@@ -148,7 +148,19 @@ public interface GameItem extends Tagable, Collidable, PhysicsItem {
      */
     void setTextPos(int pos);
 
+    /**
+     * Get the features on this GameItem.
+     *
+     * @since 1.0-Pre2
+     * @return The list of features.
+     */
     List<Feature> getFeatures();
 
+    /**
+     * Add a feature to this GameItem.
+     *
+     * @since 1.0-Pre2
+     * @param feature The feature to add.
+     */
     void addFeature(Feature feature);
 }

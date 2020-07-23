@@ -1,7 +1,6 @@
 package org.kakara.engine.physics.collision;
 
 import org.kakara.engine.math.Vector3;
-import org.kakara.engine.physics.OnTriggerEnter;
 
 import java.util.UUID;
 

@@ -85,21 +85,43 @@ public interface Collider {
      */
     Vector3 getAbsolutePoint2();
 
+    /**
+     * @deprecated Currently unused
+     */
     void updateX();
 
+    /**
+     * Handle the collision correction for the y axis.
+     * @since 1.0-Pre2
+     */
     void updateY();
 
+    /**
+     * Handle the collision for the x and z axis.
+     * @since 1.0-Pre2
+     */
     void updateZ();
 
     /**
      * Add an event to be triggered when this collidable comes in contact with a trigger.
      * <p>Important note: This triggers every physics update that the object is colliding with a trigger.</p>
-     *
+     * @since 1.0-Pre2
      * @param enter The event to be triggered.
      */
     void addOnTriggerEnter(OnTriggerEnter enter);
 
+    /**
+     * Add a condition for collision.
+     * <p>This can be used to prevent a collision; for example, if a gameitem has a certain tag.</p>
+     * @since 1.0-Pre2
+     * @param gameItemPredicate The predicate to use.
+     */
     void setPredicate(Predicate<Collidable> gameItemPredicate);
 
+    /**
+     * Get this collider's predicate.
+     * @since 1.0-Pre2
+     * @return The predicate.
+     */
     Predicate<Collidable> getPredicate();
 }
