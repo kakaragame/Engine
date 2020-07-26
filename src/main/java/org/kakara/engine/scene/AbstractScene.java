@@ -7,17 +7,18 @@ import org.kakara.engine.GameEngine;
 import org.kakara.engine.GameHandler;
 import org.kakara.engine.physics.collision.CollisionManager;
 import org.kakara.engine.events.EventManager;
-import org.kakara.engine.item.GameItem;
-import org.kakara.engine.item.ItemHandler;
-import org.kakara.engine.item.particles.ParticleEmitter;
-import org.kakara.engine.item.particles.ParticleHandler;
-import org.kakara.engine.item.SkyBox;
+import org.kakara.engine.gameitems.GameItem;
+import org.kakara.engine.gameitems.ItemHandler;
+import org.kakara.engine.gameitems.particles.ParticleEmitter;
+import org.kakara.engine.gameitems.particles.ParticleHandler;
+import org.kakara.engine.gameitems.SkyBox;
 import org.kakara.engine.lighting.LightHandler;
 import org.kakara.engine.lighting.PointLight;
 import org.kakara.engine.lighting.SpotLight;
 import org.kakara.engine.renderobjects.RenderChunk;
 import org.kakara.engine.ui.HUD;
 import org.kakara.engine.ui.HUDItem;
+import org.kakara.engine.utils.Time;
 import org.kakara.engine.weather.Fog;
 
 /**
@@ -98,6 +99,11 @@ public abstract class AbstractScene implements Scene {
         return collisionManager;
     }
 
+    @Override
+    public float getDeltaTime(){
+        return Time.getDeltaTime();
+    }
+
     /**
      * Register an object to the scene event manager.
      * <p>Scenes are automatically added. Do not add the scene to this list.</p>
@@ -115,7 +121,7 @@ public abstract class AbstractScene implements Scene {
     /**
      * Add a game item to the scene.
      * <p>This does not work for RenderChunks. See {@link AbstractGameScene#add(RenderChunk)}</p>
-     * <p>This functionality works the same as {@link org.kakara.engine.item.ItemHandler#addItem(GameItem)}</p>
+     * <p>This functionality works the same as {@link org.kakara.engine.gameitems.ItemHandler#addItem(GameItem)}</p>
      * @param gameItem The game item to add
      */
     public void add(GameItem gameItem){
@@ -151,7 +157,7 @@ public abstract class AbstractScene implements Scene {
 
     /**
      * Add a particle to the scene.
-     * <p>This functionality works the same as {@link org.kakara.engine.item.particles.ParticleHandler#addParticleEmitter(ParticleEmitter)}</p>
+     * <p>This functionality works the same as {@link org.kakara.engine.gameitems.particles.ParticleHandler#addParticleEmitter(ParticleEmitter)}</p>
      * @param emitter The particle emitter to add.
      */
     public void add(ParticleEmitter emitter){
@@ -161,7 +167,7 @@ public abstract class AbstractScene implements Scene {
     /**
      * Remove an item from the scene
      * <p>This does not work for RenderChunks. See {@link AbstractGameScene#add(RenderChunk)}</p>
-     * <p>This functionality works the same as {@link org.kakara.engine.item.ItemHandler#removeItem(GameItem)}</p>
+     * <p>This functionality works the same as {@link org.kakara.engine.gameitems.ItemHandler#removeItem(GameItem)}</p>
      * @since 1.0-Pre1
      * @param item The item to remove.
      */
@@ -201,7 +207,7 @@ public abstract class AbstractScene implements Scene {
 
     /**
      * Remove a particle emitter from the scene
-     * <p>This functionality works the same as {@link org.kakara.engine.item.particles.ParticleHandler#removeParticleEmitter(ParticleEmitter)}</p>
+     * <p>This functionality works the same as {@link org.kakara.engine.gameitems.particles.ParticleHandler#removeParticleEmitter(ParticleEmitter)}</p>
      * @since 1.0-Pre1
      * @param particleEmitter The particle emitter to remove.
      */

@@ -1,4 +1,4 @@
-package org.kakara.engine.item;
+package org.kakara.engine.gameitems;
 
 
 import org.jetbrains.annotations.NotNull;
@@ -7,7 +7,6 @@ import org.kakara.engine.resources.Resource;
 import org.kakara.engine.scene.Scene;
 import org.kakara.engine.utils.Utils;
 import org.lwjgl.system.MemoryStack;
-import org.lwjgl.system.MemoryUtil;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;

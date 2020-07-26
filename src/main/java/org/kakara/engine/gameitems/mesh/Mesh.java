@@ -1,11 +1,11 @@
-package org.kakara.engine.item.mesh;
+package org.kakara.engine.gameitems.mesh;
 
 import org.jetbrains.annotations.NotNull;
 import org.kakara.engine.GameEngine;
 import org.kakara.engine.exceptions.InvalidThreadException;
-import org.kakara.engine.item.GameItem;
-import org.kakara.engine.item.Material;
-import org.kakara.engine.item.Texture;
+import org.kakara.engine.gameitems.GameItem;
+import org.kakara.engine.gameitems.Material;
+import org.kakara.engine.gameitems.Texture;
 import org.lwjgl.system.MemoryUtil;
 
 import java.nio.FloatBuffer;

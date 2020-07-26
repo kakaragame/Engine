@@ -1,4 +1,4 @@
-package org.kakara.engine.gui;
+package org.kakara.engine.window;
 
 import org.kakara.engine.resources.JarResource;
 import org.kakara.engine.resources.Resource;

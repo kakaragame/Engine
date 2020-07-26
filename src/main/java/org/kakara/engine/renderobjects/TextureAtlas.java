@@ -1,8 +1,7 @@
 package org.kakara.engine.renderobjects;
 
 import org.kakara.engine.GameEngine;
-import org.kakara.engine.item.Texture;
-import org.kakara.engine.resources.ResourceManager;
+import org.kakara.engine.gameitems.Texture;
 import org.kakara.engine.scene.Scene;
 
 import javax.imageio.ImageIO;
@@ -11,7 +10,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 

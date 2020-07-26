@@ -1,9 +1,9 @@
-package org.kakara.engine.item;
+package org.kakara.engine.gameitems;
 
-import org.kakara.engine.item.features.Feature;
-import org.kakara.engine.item.mesh.IMesh;
-import org.kakara.engine.item.mesh.InstancedMesh;
-import org.kakara.engine.item.mesh.Mesh;
+import org.kakara.engine.gameitems.features.Feature;
+import org.kakara.engine.gameitems.mesh.IMesh;
+import org.kakara.engine.gameitems.mesh.InstancedMesh;
+import org.kakara.engine.gameitems.mesh.Mesh;
 
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -85,7 +85,7 @@ public class ItemHandler {
      */
     public GameItem getItemWithId(UUID id) {
         for (GameItem obj : items) {
-            if (obj.getId() == id) return obj;
+            if (obj.getUUID() == id) return obj;
         }
         return null;
     }

@@ -3,7 +3,7 @@ package org.kakara.engine.render;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
-import org.kakara.engine.item.GameItem;
+import org.kakara.engine.gameitems.GameItem;
 import org.kakara.engine.ui.objectcanvas.UIObject;
 
 /**

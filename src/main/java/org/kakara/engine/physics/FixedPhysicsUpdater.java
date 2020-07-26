@@ -1,7 +1,7 @@
 package org.kakara.engine.physics;
 
-import org.kakara.engine.item.GameItem;
-import org.kakara.engine.item.MeshGameItem;
+import org.kakara.engine.gameitems.GameItem;
+import org.kakara.engine.gameitems.MeshGameItem;
 import org.kakara.engine.physics.collision.Collider;
 import org.kakara.engine.scene.Scene;
 

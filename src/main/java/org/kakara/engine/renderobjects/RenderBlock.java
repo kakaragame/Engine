@@ -1,7 +1,7 @@
 package org.kakara.engine.renderobjects;
 
 import org.jetbrains.annotations.Nullable;
-import org.kakara.engine.item.Tagable;
+import org.kakara.engine.properties.Tagable;
 import org.kakara.engine.physics.collision.Collidable;
 import org.kakara.engine.physics.collision.Collider;
 import org.kakara.engine.physics.collision.ObjectBoxCollider;
@@ -390,7 +390,7 @@ public class RenderBlock implements Collidable, Tagable {
     }
 
     @Override
-    public UUID getColUUID() {
+    public UUID getUUID() {
         return uuid;
     }
 

@@ -1,14 +1,13 @@
 package org.kakara.engine.physics.collision;
 
 import org.kakara.engine.math.Vector3;
-
-import java.util.UUID;
+import org.kakara.engine.properties.Identifiable;
 
 /**
  * Handles collision for the entire game.
  * Implemented by RenderBlock and MeshGameItem
  */
-public interface Collidable {
+public interface Collidable extends Identifiable {
     /**
      * Get the position of the collidable
      * @return The position
@@ -61,11 +60,4 @@ public interface Collidable {
      * @param selected If the collidable is selected.
      */
     void setSelected(boolean selected);
-
-    /**
-     * Get the UUID of the collidable.
-     * TODO make this class extend a new identable interface.
-     * @return The UUID.
-     */
-    UUID getColUUID();
 }

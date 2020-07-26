@@ -1,6 +1,6 @@
-package org.kakara.engine.item.features;
+package org.kakara.engine.gameitems.features;
 
-import org.kakara.engine.item.GameItem;
+import org.kakara.engine.gameitems.GameItem;
 
 /**
  * Features are a way to control game items every update.

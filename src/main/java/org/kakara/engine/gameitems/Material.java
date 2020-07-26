@@ -1,4 +1,4 @@
-package org.kakara.engine.item;
+package org.kakara.engine.gameitems;
 
 import org.joml.Vector4f;
 

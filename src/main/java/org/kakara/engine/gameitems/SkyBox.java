@@ -1,8 +1,8 @@
-package org.kakara.engine.item;
+package org.kakara.engine.gameitems;
 
 import org.kakara.engine.GameHandler;
 import org.kakara.engine.engine.CubeData;
-import org.kakara.engine.item.mesh.Mesh;
+import org.kakara.engine.gameitems.mesh.Mesh;
 import org.kakara.engine.models.StaticModelLoader;
 
 /**

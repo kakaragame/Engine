@@ -1,7 +1,7 @@
 package org.kakara.engine;
 
 import org.jetbrains.annotations.NotNull;
-import org.kakara.engine.gui.Window;
+import org.kakara.engine.window.Window;
 import org.kakara.engine.input.KeyInput;
 import org.kakara.engine.input.MouseInput;
 import org.kakara.engine.resources.ResourceManager;

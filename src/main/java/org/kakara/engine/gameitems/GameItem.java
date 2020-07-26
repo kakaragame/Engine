@@ -1,15 +1,14 @@
-package org.kakara.engine.item;
+package org.kakara.engine.gameitems;
 
 import org.joml.Quaternionf;
-import org.kakara.engine.item.features.Feature;
-import org.kakara.engine.item.mesh.IMesh;
-import org.kakara.engine.item.mesh.Mesh;
+import org.kakara.engine.gameitems.features.Feature;
+import org.kakara.engine.gameitems.mesh.IMesh;
 import org.kakara.engine.math.Vector3;
 import org.kakara.engine.physics.PhysicsItem;
 import org.kakara.engine.physics.collision.Collidable;
+import org.kakara.engine.properties.Tagable;
 
 import java.util.List;
-import java.util.UUID;
 
 /**
  * The main game item interface.
@@ -74,14 +73,6 @@ public interface GameItem extends Tagable, Collidable, PhysicsItem {
      * @return The instance of the game item.
      */
     GameItem setScale(float scale);
-
-    /**
-     * Get the ID of the game item.
-     * <p>This method is the same as getUUID()</p>
-     *
-     * @return The ID.
-     */
-    UUID getId();
 
     Quaternionf getRotation();
 

@@ -3,7 +3,7 @@ package org.kakara.engine.render;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
-import org.kakara.engine.item.Material;
+import org.kakara.engine.gameitems.Material;
 import org.kakara.engine.lighting.DirectionalLight;
 import org.kakara.engine.lighting.PointLight;
 import org.kakara.engine.lighting.SpotLight;

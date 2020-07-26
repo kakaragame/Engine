@@ -1,12 +1,10 @@
-package org.kakara.engine.gui;
+package org.kakara.engine.window;
 
 import org.kakara.engine.GameEngine;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWImage;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
-import org.lwjgl.opengl.GLUtil;
-import org.lwjgl.system.Callback;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
@@ -258,7 +256,6 @@ public class Window {
 
     /**
      * Get all of the options for the window
-     * TODO Make this actually do something.
      * @return The options for the render.
      */
     public WindowOptions getOptions() {
@@ -296,8 +293,6 @@ public class Window {
         glEnable(GL_STENCIL_TEST);
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        glEnable(GL_CULL_FACE);
-        glCullFace(GL_BACK);
         if (options.cullFace) {
             glEnable(GL_CULL_FACE);
             glCullFace(GL_BACK);

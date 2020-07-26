@@ -3,7 +3,7 @@ package org.kakara.engine.input;
 import org.joml.Vector2d;
 import org.kakara.engine.GameHandler;
 import org.kakara.engine.events.event.MouseClickEvent;
-import org.kakara.engine.gui.Window;
+import org.kakara.engine.window.Window;
 import org.kakara.engine.math.Vector2;
 import org.lwjgl.system.MemoryStack;
 

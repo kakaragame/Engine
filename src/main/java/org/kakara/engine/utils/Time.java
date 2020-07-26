@@ -7,12 +7,7 @@ public class Time {
 
     private double lastLoopTime;
 
-    /**
-     * The change in time between frames (In milliseconds).
-     * TODO Remove this field.
-     * @deprecated It is a bad idea to use this field. This field will be removed in Engine 1.0-Pre3.
-     */
-    public static float deltaTime;
+    private static float deltaTime;
 
     public void init(){
         lastLoopTime = getTime();
@@ -34,6 +29,7 @@ public class Time {
         double time = getTime();
         float elapsedTime = (float) (time - lastLoopTime);
         lastLoopTime = time;
+        Time.deltaTime = elapsedTime;
         return elapsedTime;
     }
 

@@ -1,17 +1,14 @@
-package org.kakara.engine.item;
+package org.kakara.engine.gameitems;
 
 import org.jetbrains.annotations.NotNull;
 import org.joml.Quaternionf;
 import org.kakara.engine.Camera;
 import org.kakara.engine.GameHandler;
-import org.kakara.engine.item.features.Feature;
-import org.kakara.engine.item.mesh.IMesh;
-import org.kakara.engine.physics.PhysicsItem;
-import org.kakara.engine.physics.collision.Collidable;
+import org.kakara.engine.gameitems.features.Feature;
+import org.kakara.engine.gameitems.mesh.IMesh;
 import org.kakara.engine.physics.collision.Collider;
-import org.kakara.engine.item.mesh.Mesh;
+import org.kakara.engine.gameitems.mesh.Mesh;
 import org.kakara.engine.math.Vector3;
-import org.lwjgl.system.CallbackI;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -155,16 +152,6 @@ public class MeshGameItem implements GameItem {
     }
 
     /**
-     * Get the ID of the game item.
-     * <p>This method is the same as getUUID()</p>
-     *
-     * @return The ID.
-     */
-    public UUID getId() {
-        return uuid;
-    }
-
-    /**
      * Get the rotation of the game item
      *
      * @return The rotation
@@ -303,11 +290,7 @@ public class MeshGameItem implements GameItem {
         setPosition(vec.clone());
     }
 
-    /**
-     * Get the currently active collider
-     *
-     * @return The collider. (Null if none applied)
-     */
+    @Override
     public Collider getCollider() {
         return this.collider;
     }
@@ -323,7 +306,7 @@ public class MeshGameItem implements GameItem {
     }
 
     @Override
-    public UUID getColUUID() {
+    public UUID getUUID() {
         return uuid;
     }
 

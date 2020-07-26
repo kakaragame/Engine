@@ -1,7 +1,7 @@
 package org.kakara.engine.ui.items;
 
 import org.kakara.engine.GameHandler;
-import org.kakara.engine.gui.Window;
+import org.kakara.engine.window.Window;
 import org.kakara.engine.scene.Scene;
 import org.kakara.engine.ui.HUD;
 import org.kakara.engine.ui.HUDItem;

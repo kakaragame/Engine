@@ -1,14 +1,11 @@
 package org.kakara.engine.physics.collision;
 
 import org.kakara.engine.GameHandler;
-import org.kakara.engine.item.GameItem;
 import org.kakara.engine.math.Vector3;
 import org.kakara.engine.physics.OnTriggerEnter;
-import org.kakara.engine.utils.Time;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 import java.util.function.Predicate;
 
 /**

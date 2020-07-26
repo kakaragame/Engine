@@ -4,7 +4,7 @@ import org.joml.Intersectionf;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.kakara.engine.GameHandler;
-import org.kakara.engine.item.MeshGameItem;
+import org.kakara.engine.gameitems.MeshGameItem;
 import org.kakara.engine.physics.FixedPhysicsUpdater;
 import org.kakara.engine.physics.collision.Collidable;
 import org.kakara.engine.math.Vector3;
@@ -121,7 +121,7 @@ public abstract class AbstractGameScene extends AbstractScene {
             if(collidable instanceof MeshGameItem){
                 MeshGameItem item = (MeshGameItem) collidable;
                 collidable.setSelected(false);
-                if(ignore.contains(item.getId())) continue;
+                if(ignore.contains(item.getUUID())) continue;
             }
             collidable.setSelected(false);
             min.set(collidable.getColPosition().toJoml());

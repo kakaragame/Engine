@@ -3,7 +3,7 @@ package org.kakara.engine.ui.components;
 import org.kakara.engine.GameHandler;
 import org.kakara.engine.events.EventHandler;
 import org.kakara.engine.events.event.MouseClickEvent;
-import org.kakara.engine.item.Texture;
+import org.kakara.engine.gameitems.Texture;
 import org.kakara.engine.math.Vector2;
 import org.kakara.engine.ui.HUD;
 import org.kakara.engine.ui.events.HUDClickEvent;

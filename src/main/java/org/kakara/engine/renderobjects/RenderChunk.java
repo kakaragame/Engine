@@ -1,7 +1,7 @@
 package org.kakara.engine.renderobjects;
 
 import me.ryandw11.octree.Octree;
-import org.kakara.engine.item.MeshGameItem;
+import org.kakara.engine.gameitems.MeshGameItem;
 import org.kakara.engine.math.Vector3;
 import org.kakara.engine.renderobjects.mesh.*;
 import org.kakara.engine.renderobjects.renderlayouts.Face;

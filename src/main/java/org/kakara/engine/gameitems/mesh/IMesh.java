@@ -1,7 +1,7 @@
-package org.kakara.engine.item.mesh;
+package org.kakara.engine.gameitems.mesh;
 
-import org.kakara.engine.item.GameItem;
-import org.kakara.engine.item.Material;
+import org.kakara.engine.gameitems.GameItem;
+import org.kakara.engine.gameitems.Material;
 
 import java.util.List;
 import java.util.Optional;

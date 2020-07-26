@@ -1,6 +1,6 @@
 package org.kakara.engine.utils;
 
-import org.kakara.engine.item.Texture;
+import org.kakara.engine.gameitems.Texture;
 import org.lwjgl.system.MemoryUtil;
 
 import java.io.File;

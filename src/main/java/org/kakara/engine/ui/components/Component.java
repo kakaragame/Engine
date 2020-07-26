@@ -2,7 +2,7 @@ package org.kakara.engine.ui.components;
 
 import org.jetbrains.annotations.Nullable;
 import org.kakara.engine.GameHandler;
-import org.kakara.engine.item.Tagable;
+import org.kakara.engine.properties.Tagable;
 import org.kakara.engine.math.Vector2;
 import org.kakara.engine.ui.HUD;
 import org.kakara.engine.ui.events.UActionEvent;

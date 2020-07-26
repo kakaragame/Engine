@@ -2,11 +2,11 @@ package org.kakara.engine.test;
 
 import org.kakara.engine.GameHandler;
 import org.kakara.engine.engine.CubeData;
-import org.kakara.engine.gui.WindowIcon;
+import org.kakara.engine.window.WindowIcon;
 import org.kakara.engine.input.MouseClickType;
-import org.kakara.engine.item.Material;
-import org.kakara.engine.item.mesh.Mesh;
-import org.kakara.engine.item.Texture;
+import org.kakara.engine.gameitems.Material;
+import org.kakara.engine.gameitems.mesh.Mesh;
+import org.kakara.engine.gameitems.Texture;
 import org.kakara.engine.math.Vector2;
 import org.kakara.engine.resources.ResourceManager;
 import org.kakara.engine.scene.AbstractMenuScene;
@@ -263,9 +263,9 @@ public class TitleScreenScene extends AbstractMenuScene {
 
     @Override
     public void update(float interval) {
-        fps.setText("FPS: " + Math.round(1/Time.deltaTime));
+        fps.setText("FPS: " + Math.round(1/Time.getDeltaTime()));
 
-        lb.setPercent(lb.getPercent() + Time.deltaTime);
+        lb.setPercent(lb.getPercent() + Time.getDeltaTime());
 
         obj.setPosition(gameHandler.getMouseInput().getCurrentPosition().x, gameHandler.getMouseInput().getCurrentPosition().y);
 

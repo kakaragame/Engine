@@ -1,11 +1,10 @@
 package org.kakara.engine.ui;
 
 import org.kakara.engine.GameHandler;
-import org.kakara.engine.gui.Window;
+import org.kakara.engine.window.Window;
 import org.kakara.engine.math.Vector2;
 import org.kakara.engine.scene.Scene;
 import org.kakara.engine.ui.components.Component;
-import org.kakara.engine.ui.items.ObjectCanvas;
 import org.kakara.engine.ui.text.Font;
 
 import java.util.ArrayList;
@@ -41,7 +40,7 @@ public class HUD {
      * Internal Use Only
      */
     public void init(Window window) throws Exception{
-        this.vg = window.getOptions().antialiasing ? nvgCreate(NVG_ANTIALIAS | NVG_STENCIL_STROKES) : nvgCreate(NVG_STENCIL_STROKES);
+        this.vg = window.getOptions().isAntialiasing() ? nvgCreate(NVG_ANTIALIAS | NVG_STENCIL_STROKES) : nvgCreate(NVG_STENCIL_STROKES);
 
         if(this.vg == NULL){
             throw new Exception("Could not init hud");

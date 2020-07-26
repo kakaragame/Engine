@@ -1,9 +1,7 @@
 package org.kakara.engine.physics.collision;
 
-import org.kakara.engine.item.GameItem;
 import org.kakara.engine.math.Vector3;
 import org.kakara.engine.physics.OnTriggerEnter;
-import org.kakara.engine.utils.Pair;
 
 import java.util.function.Predicate;
 

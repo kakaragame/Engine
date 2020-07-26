@@ -1,6 +1,6 @@
 package org.kakara.engine.lighting;
 
-import org.kakara.engine.item.Texture;
+import org.kakara.engine.gameitems.Texture;
 
 import static org.lwjgl.opengl.GL30.*;
 

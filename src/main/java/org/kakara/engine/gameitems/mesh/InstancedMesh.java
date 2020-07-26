@@ -1,8 +1,8 @@
-package org.kakara.engine.item.mesh;
+package org.kakara.engine.gameitems.mesh;
 
 import org.joml.Matrix4f;
 import org.kakara.engine.GameHandler;
-import org.kakara.engine.item.GameItem;
+import org.kakara.engine.gameitems.GameItem;
 import org.kakara.engine.math.KMath;
 import org.kakara.engine.render.Transformation;
 import org.lwjgl.system.MemoryUtil;

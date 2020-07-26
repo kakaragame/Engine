@@ -1,4 +1,4 @@
-package org.kakara.engine.item;
+package org.kakara.engine.properties;
 
 import java.util.List;
 

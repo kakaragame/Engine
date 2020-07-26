@@ -5,9 +5,9 @@ import org.kakara.engine.Camera;
 import org.kakara.engine.GameHandler;
 import org.kakara.engine.physics.collision.CollisionManager;
 import org.kakara.engine.events.EventManager;
-import org.kakara.engine.item.ItemHandler;
-import org.kakara.engine.item.particles.ParticleHandler;
-import org.kakara.engine.item.SkyBox;
+import org.kakara.engine.gameitems.ItemHandler;
+import org.kakara.engine.gameitems.particles.ParticleHandler;
+import org.kakara.engine.gameitems.SkyBox;
 import org.kakara.engine.lighting.LightHandler;
 import org.kakara.engine.ui.HUD;
 import org.kakara.engine.weather.Fog;
@@ -123,4 +123,11 @@ public interface Scene {
      * @return The collision manager.
      */
     @Nullable CollisionManager getCollisionManager();
+
+    /**
+     * Get the delta time.
+     * @since 1.0-Pre3
+     * @return The delta time.
+     */
+    float getDeltaTime();
 }

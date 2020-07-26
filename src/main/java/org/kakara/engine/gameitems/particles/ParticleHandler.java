@@ -1,4 +1,4 @@
-package org.kakara.engine.item.particles;
+package org.kakara.engine.gameitems.particles;
 
 import java.util.ArrayList;
 import java.util.List;

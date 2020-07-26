@@ -1,7 +1,7 @@
 package org.kakara.engine.ui.constraints;
 
 import org.kakara.engine.GameHandler;
-import org.kakara.engine.gui.Window;
+import org.kakara.engine.window.Window;
 import org.kakara.engine.math.Vector2;
 import org.kakara.engine.ui.components.Component;
 

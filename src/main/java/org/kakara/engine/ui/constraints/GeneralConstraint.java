@@ -2,7 +2,7 @@ package org.kakara.engine.ui.constraints;
 
 import org.jetbrains.annotations.Nullable;
 import org.kakara.engine.GameHandler;
-import org.kakara.engine.gui.Window;
+import org.kakara.engine.window.Window;
 import org.kakara.engine.ui.components.Component;
 
 /**

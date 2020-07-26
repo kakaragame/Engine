@@ -1,8 +1,8 @@
 package org.kakara.engine.ui.objectcanvas;
 
 import org.joml.Quaternionf;
-import org.kakara.engine.item.Tagable;
-import org.kakara.engine.item.mesh.IMesh;
+import org.kakara.engine.properties.Tagable;
+import org.kakara.engine.gameitems.mesh.IMesh;
 import org.kakara.engine.math.Vector2;
 
 import java.util.List;

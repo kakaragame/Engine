@@ -1,6 +1,6 @@
-package org.kakara.engine.item.particles;
+package org.kakara.engine.gameitems.particles;
 
-import org.kakara.engine.item.GameItem;
+import org.kakara.engine.gameitems.GameItem;
 
 import java.util.List;
 

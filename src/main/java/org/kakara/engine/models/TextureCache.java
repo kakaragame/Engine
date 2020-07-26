@@ -1,6 +1,6 @@
 package org.kakara.engine.models;
 
-import org.kakara.engine.item.Texture;
+import org.kakara.engine.gameitems.Texture;
 import org.kakara.engine.resources.Resource;
 import org.kakara.engine.resources.ResourceManager;
 import org.kakara.engine.scene.Scene;

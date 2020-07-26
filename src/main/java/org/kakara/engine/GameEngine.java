@@ -1,7 +1,6 @@
 package org.kakara.engine;
 
-import org.kakara.engine.physics.collision.Collidable;
-import org.kakara.engine.gui.Window;
+import org.kakara.engine.window.Window;
 import org.kakara.engine.render.Renderer;
 import org.kakara.engine.renderobjects.ChunkHandler;
 import org.kakara.engine.scene.AbstractGameScene;
@@ -11,7 +10,6 @@ import org.kakara.engine.utils.Time;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Objects;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -94,7 +92,6 @@ public class GameEngine implements Runnable {
 
         while (running && !window.windowShouldClose()) {
             elapsedTime = time.getElapsedTime();
-            Time.deltaTime = elapsedTime;
             accumulator += elapsedTime;
 
             input();
