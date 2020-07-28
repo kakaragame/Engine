@@ -5,10 +5,12 @@ import org.kakara.engine.window.Window;
 import org.kakara.engine.math.Vector2;
 import org.kakara.engine.scene.Scene;
 import org.kakara.engine.ui.components.Component;
-import org.kakara.engine.ui.text.Font;
+import org.kakara.engine.ui.font.Font;
+import org.lwjgl.system.MemoryUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.lwjgl.nanovg.NanoVG.nvgBeginFrame;
 import static org.lwjgl.nanovg.NanoVG.nvgEndFrame;
@@ -16,23 +18,21 @@ import static org.lwjgl.nanovg.NanoVGGL3.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
 /**
- * Handles the HUD.
+ * Handles the UI.
+ * TODO This class might need to be renamed to something better.
  * This class is per scene.
  */
-public class HUD {
+public class UserInterface {
 
     private long vg;
 
-    private List<HUDItem> hudItems;
+    private List<UICanvas> uiCanvas;
     private List<Font> fonts;
-
-    private HUDImageCache imageCache;
     private Scene scene;
 
-    public HUD(Scene scene){
-        hudItems = new ArrayList<>();
+    public UserInterface(Scene scene){
+        uiCanvas = new ArrayList<>();
         fonts = new ArrayList<>();
-        imageCache = new HUDImageCache(this);
         this.scene = scene;
     }
 
@@ -46,7 +46,7 @@ public class HUD {
             throw new Exception("Could not init hud");
         }
 
-        for(HUDItem it : hudItems){
+        for(UICanvas it : uiCanvas){
             it.init(this, GameHandler.getInstance());
         }
         for(Font ft : fonts){
@@ -59,7 +59,7 @@ public class HUD {
      */
     public void render(Window window){
         nvgBeginFrame(vg, window.getWidth(), window.getHeight(), 1);
-        for(HUDItem it : hudItems){
+        for(UICanvas it : uiCanvas){
             it.render(this, GameHandler.getInstance());
         }
         nvgEndFrame(vg);
@@ -70,7 +70,7 @@ public class HUD {
      * Internal Use Only.
      */
     public void cleanup(){
-        for(HUDItem item : hudItems){
+        for(UICanvas item : uiCanvas){
             item.cleanup(GameHandler.getInstance());
         }
     }
@@ -89,12 +89,12 @@ public class HUD {
      * <p>Components <b>do not</b> go here! They must go inside of a ComponentCanvas! See {@link org.kakara.engine.ui.items.ComponentCanvas#add(Component)}</p>
      * @param item The item to add.
      */
-    public void addItem(HUDItem item){
+    public void addItem(UICanvas item){
         Long check = this.vg;
         if(check != null){
             item.init(this, GameHandler.getInstance());
         }
-        hudItems.add(item);
+        uiCanvas.add(item);
     }
 
     /**
@@ -102,8 +102,8 @@ public class HUD {
      * @since 1.0-Pre1
      * @param item The item to remove.
      */
-    public void removeItem(HUDItem item){
-        hudItems.remove(item);
+    public void removeItem(UICanvas item){
+        uiCanvas.remove(item);
     }
 
     /**
@@ -120,13 +120,27 @@ public class HUD {
     }
 
     /**
-     * Get the Image Cache.
-     * <p>Primarily Internal Use Only</p>
-     * @deprecated Replaced by internal cleanup calls.
-     * @return The image cache.
+     * Get the Font via its name.
+     * @param name The name of the desired font.
+     * @since 1.0-Pre3
+     * @return The font.
      */
-    public HUDImageCache getImageCache(){
-        return imageCache;
+    public Font getFont(String name){
+        for(Font font : fonts){
+            if(font.getName().equals(name))
+                return font;
+        }
+        return null;
+    }
+
+    /**
+     * Get a font vis its name.
+     * @param name The name of the font.
+     * @since 1.0-Pre3
+     * @return The font optional.
+     */
+    public Optional<Font> getOptionalFont(String name){
+        return Optional.ofNullable(getFont(name));
     }
 
     /**

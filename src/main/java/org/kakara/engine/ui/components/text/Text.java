@@ -2,10 +2,10 @@ package org.kakara.engine.ui.components.text;
 
 import org.kakara.engine.GameHandler;
 import org.kakara.engine.math.Vector2;
-import org.kakara.engine.ui.HUD;
+import org.kakara.engine.ui.UserInterface;
 import org.kakara.engine.ui.RGBA;
 import org.kakara.engine.ui.components.GeneralComponent;
-import org.kakara.engine.ui.text.Font;
+import org.kakara.engine.ui.font.Font;
 import org.lwjgl.nanovg.NVGColor;
 
 import static org.lwjgl.nanovg.NanoVG.*;
@@ -30,7 +30,7 @@ public class Text extends GeneralComponent {
 
     /**
      * Create some text.
-     * <p>If the text is not displaying, then ensure that the Font is added to the HUD. See {@link HUD#addFont(Font)}</p>
+     * <p>If the text is not displaying, then ensure that the Font is added to the HUD. See {@link UserInterface#addFont(Font)}</p>
      * <p><b>The scale of this component should never be changed.</b></p>
      * @param text The text
      * @param font The font of the text.
@@ -50,28 +50,28 @@ public class Text extends GeneralComponent {
     }
 
     @Override
-    public void init(HUD hud, GameHandler handler) {
-        pollInit(hud, handler);
+    public void init(UserInterface userInterface, GameHandler handler) {
+        pollInit(userInterface, handler);
     }
 
     @Override
-    public void render(Vector2 relative, HUD hud, GameHandler handler) {
+    public void render(Vector2 relative, UserInterface userInterface, GameHandler handler) {
         if(!isVisible()) return;
 
-        pollRender(relative, hud, handler);
+        pollRender(relative, userInterface, handler);
 
-        nvgBeginPath(hud.getVG());
-        nvgFontSize(hud.getVG(), calculateSize(handler));
-        nvgFontFaceId(hud.getVG(), font.getFont());
-        nvgTextAlign(hud.getVG(), textAlign);
-        nvgFontBlur(hud.getVG(), blur);
-        nvgTextLetterSpacing(hud.getVG(), letterSpacing);
-        nvgTextLineHeight(hud.getVG(), lineHeight);
+        nvgBeginPath(userInterface.getVG());
+        nvgFontSize(userInterface.getVG(), calculateSize(handler));
+        nvgFontFaceId(userInterface.getVG(), font.getFont());
+        nvgTextAlign(userInterface.getVG(), textAlign);
+        nvgFontBlur(userInterface.getVG(), blur);
+        nvgTextLetterSpacing(userInterface.getVG(), letterSpacing);
+        nvgTextLineHeight(userInterface.getVG(), lineHeight);
 
         nvgRGBA((byte) color.r, (byte) color.g, (byte) color.b, (byte) color.aToNano(), nvgColor);
-        nvgFillColor(hud.getVG(), nvgColor);
+        nvgFillColor(userInterface.getVG(), nvgColor);
 
-        nvgTextBox(hud.getVG(), getTruePosition().x, getTruePosition().y, this.calculateLineWidth(handler),  text);
+        nvgTextBox(userInterface.getVG(), getTruePosition().x, getTruePosition().y, this.calculateLineWidth(handler),  text);
     }
 
     /**
@@ -99,6 +99,15 @@ public class Text extends GeneralComponent {
      */
     public void setFont(Font font){
         this.font = font;
+    }
+
+    /**
+     * Get the font of the text.
+     * @since 1.0-Pre3
+     * @return The font.
+     */
+    public Font getFont(){
+        return font;
     }
 
     /**
@@ -225,4 +234,5 @@ public class Text extends GeneralComponent {
     public float getBlur(){
         return blur;
     }
+
 }

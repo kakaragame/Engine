@@ -11,8 +11,8 @@ import org.kakara.engine.gameitems.SkyBox;
 import org.kakara.engine.gameitems.Texture;
 import org.kakara.engine.lighting.LightHandler;
 import org.kakara.engine.math.Vector2;
-import org.kakara.engine.ui.HUD;
-import org.kakara.engine.ui.HUDItem;
+import org.kakara.engine.ui.UserInterface;
+import org.kakara.engine.ui.UICanvas;
 import org.kakara.engine.ui.components.GeneralComponent;
 import org.kakara.engine.ui.components.Sprite;
 import org.kakara.engine.ui.items.ComponentCanvas;
@@ -27,7 +27,7 @@ import static org.lwjgl.opengl.GL11.glViewport;
  */
 public abstract class AbstractMenuScene implements Scene {
 
-    protected final HUD hud = new HUD(this);
+    protected final UserInterface userInterface = new UserInterface(this);
     private final EventManager eventManager = new EventManager();
     private final Camera camera = new Camera();
 
@@ -39,9 +39,9 @@ public abstract class AbstractMenuScene implements Scene {
         this.gameHandler = gameHandler;
         this.eventManager.registerHandler(this);
         try{
-            hud.init(gameHandler.getWindow());
+            userInterface.init(gameHandler.getWindow());
             cc = new ComponentCanvas(this);
-            hud.addItem(cc);
+            userInterface.addItem(cc);
         }catch(Exception ex){
             GameEngine.LOGGER.error("Unable to load HUD", ex);
         }
@@ -54,7 +54,7 @@ public abstract class AbstractMenuScene implements Scene {
             glViewport(0, 0, gameHandler.getWindow().getWidth(), gameHandler.getWindow().getHeight());
             gameHandler.getWindow().setResized(false);
         }
-        hud.render(gameHandler.getWindow());
+        userInterface.render(gameHandler.getWindow());
     }
 
     @Override
@@ -81,13 +81,13 @@ public abstract class AbstractMenuScene implements Scene {
     }
 
     @Override
-    public HUD getHUD() {
-        return hud;
+    public UserInterface getHUD() {
+        return userInterface;
     }
 
     @Override
     public void unload() {
-        hud.cleanup();
+        userInterface.cleanup();
     }
 
     @Override
@@ -128,10 +128,10 @@ public abstract class AbstractMenuScene implements Scene {
 
     /**
      * Add a hud item to the scene.
-     * @param hudItem The hud item to add.
+     * @param UICanvas The hud item to add.
      */
-    public void add(HUDItem hudItem){
-        hud.addItem(hudItem);
+    public void add(UICanvas UICanvas){
+        userInterface.addItem(UICanvas);
     }
 
     /**
@@ -187,13 +187,13 @@ class BackgroundImage extends GeneralComponent{
     }
 
     @Override
-    public void init(HUD hud, GameHandler handler) {
-        pollInit(hud, handler);
+    public void init(UserInterface userInterface, GameHandler handler) {
+        pollInit(userInterface, handler);
     }
 
     @Override
-    public void render(Vector2 relative, HUD hud, GameHandler handler){
-        pollRender(relative, hud, handler);
+    public void render(Vector2 relative, UserInterface userInterface, GameHandler handler){
+        pollRender(relative, userInterface, handler);
     }
 
     @Override

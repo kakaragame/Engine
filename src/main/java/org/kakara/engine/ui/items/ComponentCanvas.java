@@ -3,8 +3,8 @@ package org.kakara.engine.ui.items;
 import org.kakara.engine.GameHandler;
 import org.kakara.engine.math.Vector2;
 import org.kakara.engine.scene.Scene;
-import org.kakara.engine.ui.HUD;
-import org.kakara.engine.ui.HUDItem;
+import org.kakara.engine.ui.UserInterface;
+import org.kakara.engine.ui.UICanvas;
 import org.kakara.engine.ui.components.Component;
 
 import java.util.ArrayList;
@@ -14,7 +14,7 @@ import java.util.List;
  * Holds all of the components.
  * <p>This is what is added directly to the hud.</p>
  */
-public class ComponentCanvas implements HUDItem {
+public class ComponentCanvas implements UICanvas {
     private List<Component> components;
     boolean init = false;
 
@@ -43,17 +43,17 @@ public class ComponentCanvas implements HUDItem {
     }
 
     @Override
-    public void init(HUD hud, GameHandler handler) {
+    public void init(UserInterface userInterface, GameHandler handler) {
         init = true;
         for(Component c : components){
-            c.init(hud, handler);
+            c.init(userInterface, handler);
         }
     }
 
     @Override
-    public void render(HUD hud, GameHandler handler) {
+    public void render(UserInterface userInterface, GameHandler handler) {
         for(Component component : components){
-            component.render(new Vector2(0, 0), hud, handler);
+            component.render(new Vector2(0, 0), userInterface, handler);
         }
     }
 

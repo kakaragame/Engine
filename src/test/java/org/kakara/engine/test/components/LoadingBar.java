@@ -2,12 +2,12 @@ package org.kakara.engine.test.components;
 
 import org.kakara.engine.GameHandler;
 import org.kakara.engine.math.Vector2;
-import org.kakara.engine.ui.HUD;
+import org.kakara.engine.ui.UserInterface;
 import org.kakara.engine.ui.RGBA;
 import org.kakara.engine.ui.components.GeneralComponent;
 import org.kakara.engine.ui.components.shapes.Rectangle;
 import org.kakara.engine.ui.components.text.Text;
-import org.kakara.engine.ui.text.Font;
+import org.kakara.engine.ui.font.Font;
 
 /**
  * This is an example component. All components must extend GeneralComponent.
@@ -75,8 +75,8 @@ public class LoadingBar extends GeneralComponent {
         To see what pollInit really does then check the source code.
      */
     @Override
-    public void init(HUD hud, GameHandler handler) {
-        pollInit(hud, handler);
+    public void init(UserInterface userInterface, GameHandler handler) {
+        pollInit(userInterface, handler);
     }
 
     /*
@@ -100,8 +100,8 @@ public class LoadingBar extends GeneralComponent {
         position. If you were using nvg to draw then you would use those two methods for x, y and w, h.
      */
     @Override
-    public void render(Vector2 relative, HUD hud, GameHandler handler){
-        pollRender(relative, hud, handler);
+    public void render(Vector2 relative, UserInterface userInterface, GameHandler handler){
+        pollRender(relative, userInterface, handler);
         if(percent <= 1)
             inner.setScale(outer.scale.x * percent, scale.y);
         percentText.setText(Math.round(percent*100) + "%");

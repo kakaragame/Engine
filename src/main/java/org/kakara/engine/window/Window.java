@@ -1,6 +1,7 @@
 package org.kakara.engine.window;
 
 import org.kakara.engine.GameEngine;
+import org.kakara.engine.ui.UserInterface;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWImage;
 import org.lwjgl.glfw.GLFWVidMode;
@@ -286,7 +287,7 @@ public class Window {
     /**
      * Restore the state of the window for normal rendering.
      * This is mainly used by the UI.
-     * {@link org.kakara.engine.ui.HUD}
+     * {@link UserInterface}
      */
     public void restoreState() {
         glEnable(GL_DEPTH_TEST);

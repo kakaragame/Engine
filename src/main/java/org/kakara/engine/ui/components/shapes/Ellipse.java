@@ -4,7 +4,7 @@ import org.kakara.engine.GameHandler;
 import org.kakara.engine.events.EventHandler;
 import org.kakara.engine.events.event.MouseClickEvent;
 import org.kakara.engine.math.Vector2;
-import org.kakara.engine.ui.HUD;
+import org.kakara.engine.ui.UserInterface;
 import org.kakara.engine.ui.RGBA;
 import org.kakara.engine.ui.components.GeneralComponent;
 import org.kakara.engine.ui.events.HUDClickEvent;
@@ -19,10 +19,10 @@ import static org.lwjgl.nanovg.NanoVG.*;
  * <p>The scale is used as the x and y radius.</p>
  * <p>the position of this component is in the center</p>
  * <code>
- *     Ellipse el = new Ellipse();
- *     // Sets the x radius to 40
- *     // and the y radius to 50.
- *     el.setScale(40, 50);
+ *     Ellipse el = new Ellipse(); <br>
+ *     // Sets the x radius to 40 <br>
+ *     // and the y radius to 50. <br>
+ *     el.setScale(40, 50); <br>
  * </code>
  * @since 1.0-Pre1
  */
@@ -73,22 +73,22 @@ public class Ellipse extends GeneralComponent {
 
     @EventHandler
     public void onClick(MouseClickEvent evt){
-        if(HUD.isColliding(getTruePosition(), getTrueScale(), new Vector2(evt.getMousePosition()))){
+        if(UserInterface.isColliding(getTruePosition(), getTrueScale(), new Vector2(evt.getMousePosition()))){
             triggerEvent(HUDClickEvent.class, new Vector2(evt.getMousePosition()), evt.getMouseClickType());
         }
     }
 
 
     @Override
-    public void init(HUD hud, GameHandler handler) {
-        pollInit(hud, handler);
-        hud.getScene().getEventManager().registerHandler(this);
+    public void init(UserInterface userInterface, GameHandler handler) {
+        pollInit(userInterface, handler);
+        userInterface.getScene().getEventManager().registerHandler(this);
     }
 
     @Override
-    public void render(Vector2 relative, HUD hud, GameHandler handler) {
+    public void render(Vector2 relative, UserInterface userInterface, GameHandler handler) {
         if(!isVisible()) return;
-        boolean isColliding = HUD.isColliding(getTruePosition(), getTrueScale(), new Vector2(handler.getMouseInput().getPosition()));
+        boolean isColliding = UserInterface.isColliding(getTruePosition(), getTrueScale(), new Vector2(handler.getMouseInput().getPosition()));
         if(isColliding && !isHovering){
             isHovering = true;
             triggerEvent(HUDHoverEnterEvent.class, handler.getMouseInput().getCurrentPosition());
@@ -97,13 +97,13 @@ public class Ellipse extends GeneralComponent {
             triggerEvent(HUDHoverLeaveEvent.class, handler.getMouseInput().getCurrentPosition());
         }
 
-        nvgBeginPath(hud.getVG());
-        nvgEllipse(hud.getVG(), getTruePosition().x, getTruePosition().y, getTrueScale().x, getTrueScale().y);
+        nvgBeginPath(userInterface.getVG());
+        nvgEllipse(userInterface.getVG(), getTruePosition().x, getTruePosition().y, getTrueScale().x, getTrueScale().y);
 
         nvgRGBA((byte) color.r, (byte) color.g, (byte) color.b, (byte) color.aToNano(), nvgColor);
-        nvgFillColor(hud.getVG(), nvgColor);
-        nvgFill(hud.getVG());
+        nvgFillColor(userInterface.getVG(), nvgColor);
+        nvgFill(userInterface.getVG());
 
-        pollRender(relative, hud, handler);
+        pollRender(relative, userInterface, handler);
     }
 }

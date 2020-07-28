@@ -3,11 +3,14 @@ package org.kakara.engine.input;
 import org.joml.Vector2d;
 import org.kakara.engine.GameHandler;
 import org.kakara.engine.events.event.MouseClickEvent;
+import org.kakara.engine.input.callbacks.ScrollInput;
 import org.kakara.engine.window.Window;
 import org.kakara.engine.math.Vector2;
 import org.lwjgl.system.MemoryStack;
 
 import java.nio.DoubleBuffer;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.lwjgl.glfw.GLFW.*;
 
@@ -23,10 +26,15 @@ public class MouseInput {
 
     private GameHandler handler;
 
+    // Callbacks prevent slowdown from reflection.
+    private List<ScrollInput> scrollCallback;
+
     public MouseInput(GameHandler handler){
         previousPos = new Vector2d(-1, -1);
         currentPos = new Vector2d(0, 0);
         this.handler = handler;
+
+        scrollCallback = new ArrayList<>();
     }
 
     /**
@@ -72,6 +80,12 @@ public class MouseInput {
                     break;
             }
             handler.getSceneManager().getCurrentScene().getEventManager().fireHandler(new MouseClickEvent(this.getPosition(), mct));
+        });
+        // This handles when the user uses the scrollbar.
+        glfwSetScrollCallback(window.getWindowHandler(), (windowHandle, xoffset, yoffset) -> {
+           for(ScrollInput scrollInput : scrollCallback){
+               scrollInput.onScrollInput(xoffset, yoffset);
+           }
         });
     }
 
@@ -162,5 +176,21 @@ public class MouseInput {
      */
    public Vector2 getPreviousPosition(){
        return new Vector2(previousPos);
+   }
+
+    /**
+     * This will cleanup the callbacks when the scenes are changed.
+     * <p>Internal use only.</p>
+     */
+   public void onSceneChange(){
+       scrollCallback.clear();
+   }
+
+    /**
+     * Add a callback for when the mouse scroll wheel is used.
+     * @param scrollInput The callback.
+     */
+   public void addScrollCallback(ScrollInput scrollInput){
+       this.scrollCallback.add(scrollInput);
    }
 }

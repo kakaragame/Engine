@@ -1,6 +1,7 @@
 package org.kakara.engine;
 
 import org.jetbrains.annotations.NotNull;
+import org.kakara.engine.input.Clipboard;
 import org.kakara.engine.window.Window;
 import org.kakara.engine.input.KeyInput;
 import org.kakara.engine.input.MouseInput;
@@ -16,6 +17,8 @@ public class GameHandler {
 
     private MouseInput mouseInput;
     private KeyInput keyInput;
+    private Clipboard clipboard;
+
     private SceneManager sceneManager;
     private SoundManager soundManager;
     private static GameHandler gameHandler;
@@ -26,6 +29,8 @@ public class GameHandler {
         this.gameEngine = gameEngine;
         this.mouseInput = new MouseInput(this);
         this.keyInput = new KeyInput(gameEngine);
+        this.clipboard = new Clipboard(gameEngine.getWindow());
+
         this.sceneManager = new SceneManager(this);
         soundManager = new SoundManager();
         GameHandler.gameHandler = this;
@@ -64,6 +69,16 @@ public class GameHandler {
      */
     public KeyInput getKeyInput() {
         return keyInput;
+    }
+
+    /**
+     * Get the clipboard input.
+     *
+     * @since 1.0-Pre3
+     * @return The clipboard input.
+     */
+    public Clipboard getClipboard(){
+        return clipboard;
     }
 
     /**

@@ -2,11 +2,11 @@ package org.kakara.engine.ui.components.text;
 
 import org.kakara.engine.GameHandler;
 import org.kakara.engine.math.Vector2;
-import org.kakara.engine.ui.HUD;
+import org.kakara.engine.ui.UserInterface;
 import org.kakara.engine.ui.RGBA;
 import org.kakara.engine.ui.components.GeneralComponent;
 import org.kakara.engine.ui.constraints.Constraint;
-import org.kakara.engine.ui.text.Font;
+import org.kakara.engine.ui.font.Font;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.nanovg.NVGColor;
 import org.lwjgl.nanovg.NVGTextRow;
@@ -39,7 +39,7 @@ public class BoundedText extends GeneralComponent {
 
     /**
      * Create some text.
-     * <p>If the text is not displaying, then ensure that the Font is added to the HUD. See {@link HUD#addFont(Font)}</p>
+     * <p>If the text is not displaying, then ensure that the Font is added to the HUD. See {@link UserInterface#addFont(Font)}</p>
      * <p><b>The scale of this component should never be changed.</b></p>
      * @param text The text
      * @param font The font of the text.
@@ -60,17 +60,17 @@ public class BoundedText extends GeneralComponent {
     }
 
     @Override
-    public void init(HUD hud, GameHandler handler) {
-        pollInit(hud, handler);
+    public void init(UserInterface userInterface, GameHandler handler) {
+        pollInit(userInterface, handler);
     }
 
     @Override
-    public void render(Vector2 relative, HUD hud, GameHandler handler) {
+    public void render(Vector2 relative, UserInterface userInterface, GameHandler handler) {
         if(!isVisible()) return;
 
-        pollRender(relative, hud, handler);
+        pollRender(relative, userInterface, handler);
 
-        displayText(hud, handler);
+        displayText(userInterface, handler);
     }
 
     @Override
@@ -84,12 +84,12 @@ public class BoundedText extends GeneralComponent {
     /**
      * Code to display the bounded text.
      * If you breath on this code it might have a seizure.
-     * @param hud The hud
+     * @param userInterface The hud
      * @param handler The handler.
      */
-    private void displayText(HUD hud, GameHandler handler){
+    private void displayText(UserInterface userInterface, GameHandler handler){
 
-        nvgSave(hud.getVG());
+        nvgSave(userInterface.getVG());
 
         long start = MemoryUtil.memAddress(paragraph);
         long end = start + paragraph.remaining();
@@ -97,12 +97,12 @@ public class BoundedText extends GeneralComponent {
 
 
 
-        nvgTextMetrics(hud.getVG(), null, null, lineh);
+        nvgTextMetrics(userInterface.getVG(), null, null, lineh);
 
         float y = getTruePosition().y;
 
 
-        while ((nrows = nnvgTextBreakLines(hud.getVG(), start, end, calculateLineWidth(handler), MemoryUtil.memAddress(rows), 3)) != 0) {
+        while ((nrows = nnvgTextBreakLines(userInterface.getVG(), start, end, calculateLineWidth(handler), MemoryUtil.memAddress(rows), 3)) != 0) {
             for (int i = 0; i < nrows; i++) {
                 NVGTextRow row = rows.get(i);
 
@@ -110,18 +110,18 @@ public class BoundedText extends GeneralComponent {
 
                 if(hit) break;
 
-                nvgBeginPath(hud.getVG());
-                nvgFontSize(hud.getVG(), calculateSize(handler));
-                nvgFontFaceId(hud.getVG(), font.getFont());
-                nvgTextAlign(hud.getVG(), textAlign);
-                nvgFontBlur(hud.getVG(), blur);
-                nvgTextLetterSpacing(hud.getVG(), letterSpacing);
-                nvgTextLineHeight(hud.getVG(), lineHeight);
+                nvgBeginPath(userInterface.getVG());
+                nvgFontSize(userInterface.getVG(), calculateSize(handler));
+                nvgFontFaceId(userInterface.getVG(), font.getFont());
+                nvgTextAlign(userInterface.getVG(), textAlign);
+                nvgFontBlur(userInterface.getVG(), blur);
+                nvgTextLetterSpacing(userInterface.getVG(), letterSpacing);
+                nvgTextLineHeight(userInterface.getVG(), lineHeight);
 
                 nvgRGBA((byte) color.r, (byte) color.g, (byte) color.b, (byte) color.aToNano(), nvgColor);
-                nvgFillColor(hud.getVG(), nvgColor);
+                nvgFillColor(userInterface.getVG(), nvgColor);
 
-                nnvgText(hud.getVG(), getTruePosition().x, y, row.start(), row.end());
+                nnvgText(userInterface.getVG(), getTruePosition().x, y, row.start(), row.end());
 
                 lnum++;
                 y += lineh.get(0);
@@ -129,7 +129,7 @@ public class BoundedText extends GeneralComponent {
             start = rows.get(nrows - 1).next();
         }
 
-        nvgRestore(hud.getVG());
+        nvgRestore(userInterface.getVG());
     }
 
     private float toRelativeX(float x){
@@ -165,6 +165,15 @@ public class BoundedText extends GeneralComponent {
      */
     public void setFont(Font font){
         this.font = font;
+    }
+
+    /**
+     * Get the font of the text.
+     * @since 1.0-Pre3
+     * @return The font.
+     */
+    public Font getFont(){
+        return font;
     }
 
     /**

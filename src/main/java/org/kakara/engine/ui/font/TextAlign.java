@@ -1,4 +1,4 @@
-package org.kakara.engine.ui.text;
+package org.kakara.engine.ui.font;
 
 import static org.lwjgl.nanovg.NanoVG.*;
 

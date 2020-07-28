@@ -60,6 +60,25 @@ public class ItemHandler {
     }
 
     /**
+     * Remove items with a certain tag.
+     *
+     * @param tag The tag to remove.
+     * @since 1.0-Pre3
+     */
+    public void removeItemWithTag(String tag){
+        for(GameItem item : new ArrayList<>(items)){
+            if(item.getTag().equals(tag)){
+                if(item.getMesh() instanceof InstancedMesh){
+                    instancedMeshMap.get(item.getMesh()).remove(item);
+                }else{
+                    nonInstancedMeshMap.get(item.getMesh()).remove(item);
+                }
+                items.remove(item);
+            }
+        }
+    }
+
+    /**
      * Get the map of non instanced meshes
      *
      * @return The map of non instanced meshes
@@ -78,16 +97,16 @@ public class ItemHandler {
     }
 
     /**
-     * Get gameobjects with a certain id.
+     * Get game items with a certain id.
      *
      * @param id The id
-     * @return Returns the gameobject. (Returns null if none found).
+     * @return Returns the game item.
      */
-    public GameItem getItemWithId(UUID id) {
+    public Optional<GameItem> getItemWithId(UUID id) {
         for (GameItem obj : items) {
-            if (obj.getUUID() == id) return obj;
+            if (obj.getUUID() == id) return Optional.of(obj);
         }
-        return null;
+        return Optional.empty();
     }
 
     /**
@@ -99,6 +118,29 @@ public class ItemHandler {
         return items;
     }
 
+    /**
+     * Grab game items based upon the provided tag(s).
+     *
+     * @since 1.0-Pre3
+     *
+     * @param tag A list of tags.
+     * @return A list of game items with the specified tag.
+     */
+    public List<GameItem> getItemsWithTag(String... tag){
+        List<String> desiredTags = new ArrayList<>(Arrays.asList(tag));
+        List<GameItem> output = new ArrayList<>();
+        for(GameItem item : items){
+            if(desiredTags.contains(item.getTag())){
+                output.add(item);
+            }
+        }
+        return output;
+    }
+
+    /**
+     * Update features within gameitems.
+     * <p>Internal use only.</p>
+     */
     public void update() {
         for (GameItem item : items) {
             for (Feature feature : item.getFeatures()) {

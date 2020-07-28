@@ -3,7 +3,7 @@ package org.kakara.engine.ui.components;
 import org.jetbrains.annotations.Nullable;
 import org.kakara.engine.GameHandler;
 import org.kakara.engine.math.Vector2;
-import org.kakara.engine.ui.HUD;
+import org.kakara.engine.ui.UserInterface;
 import org.kakara.engine.ui.events.UActionEvent;
 import org.kakara.engine.ui.constraints.Constraint;
 
@@ -60,9 +60,9 @@ public abstract class GeneralComponent implements Component {
     }
 
     @Override
-    public void render(Vector2 relative, HUD hud, GameHandler handler){
+    public void render(Vector2 relative, UserInterface userInterface, GameHandler handler){
         for(Component c : components){
-            c.render(relative.add(position), hud, handler);
+            c.render(relative.add(position), userInterface, handler);
         }
     }
 
@@ -130,10 +130,10 @@ public abstract class GeneralComponent implements Component {
      * Not calling this means certain things, like events, won't work.
      * Call this in the render method first.
      * @param relative The relative position
-     * @param hud The hud
+     * @param userInterface The hud
      * @param handler The handler.
      */
-    public void pollRender(Vector2 relative, HUD hud, GameHandler handler){
+    public void pollRender(Vector2 relative, UserInterface userInterface, GameHandler handler){
         this.truePosition = position.clone().add(relative);
         this.truePosition =  new Vector2(truePosition.x * ((float) handler.getWindow().getWidth()/ (float)handler.getWindow().initalWidth),
                 truePosition.y * ((float) handler.getWindow().getHeight()/(float)handler.getWindow().initalHeight));
@@ -145,7 +145,7 @@ public abstract class GeneralComponent implements Component {
         }
 
         for(Component cc : components){
-            cc.render(relative.clone().add(position), hud, handler);
+            cc.render(relative.clone().add(position), userInterface, handler);
         }
     }
 
@@ -153,10 +153,10 @@ public abstract class GeneralComponent implements Component {
      * Tells the engine that the object was inited.
      * This allows the engine to handle a lot of the component hassle for you.
      */
-    public void pollInit(HUD hud, GameHandler handler){
+    public void pollInit(UserInterface userInterface, GameHandler handler){
         init = true;
         for(Component cc : components){
-            cc.init(hud, handler);
+            cc.init(userInterface, handler);
         }
     }
 

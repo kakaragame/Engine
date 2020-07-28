@@ -34,7 +34,7 @@ import org.kakara.engine.ui.components.text.Text;
 import org.kakara.engine.ui.items.ComponentCanvas;
 import org.kakara.engine.ui.items.ObjectCanvas;
 import org.kakara.engine.ui.objectcanvas.UIObject;
-import org.kakara.engine.ui.text.Font;
+import org.kakara.engine.ui.font.Font;
 import org.kakara.engine.utils.Time;
 import org.kakara.engine.utils.Utils;
 import org.kakara.engine.weather.Fog;
@@ -238,7 +238,7 @@ public class MainGameScene extends AbstractGameScene {
         ComponentCanvas cc = new ComponentCanvas(this);
 
         Font font = new Font("Roboto-Regular", resourceManager.getResource("Roboto-Regular.ttf"), this);
-        hud.addFont(font);
+        userInterface.addFont(font);
 
         Text fps = new Text("FPS: 000", font);
         fps.setColor(new RGBA(255,255,255,1));
@@ -398,14 +398,14 @@ public class MainGameScene extends AbstractGameScene {
             if(selected instanceof RenderBlock){
                 RenderBlock block = (RenderBlock) selected;
                 RenderChunk parentChunk = block.getParentChunk();
-//                parentChunk.removeBlock(block);
-                block.setOverlay(getTextureAtlas().getTextures().get(ThreadLocalRandom.current().nextInt(0, 3)));
-                long curTime = System.currentTimeMillis();
+                parentChunk.removeBlock(block);
+//                block.setOverlay(getTextureAtlas().getTextures().get(ThreadLocalRandom.current().nextInt(0, 3)));
+//                long curTime = System.currentTimeMillis();
                 parentChunk.regenerateChunk(getTextureAtlas(), MeshType.SYNC);
-                System.out.println("It took " + (System.currentTimeMillis() - curTime) + "ms to regenerate the entire chunk.");
-                curTime = System.currentTimeMillis();
-                parentChunk.regenerateOverlayTextures(getTextureAtlas());
-                System.out.println("It took " + (System.currentTimeMillis() - curTime) + "ms to regenerate the overlay textures for the chunk.");
+//                System.out.println("It took " + (System.currentTimeMillis() - curTime) + "ms to regenerate the entire chunk.");
+//                curTime = System.currentTimeMillis();
+//                parentChunk.regenerateOverlayTextures(getTextureAtlas());
+//                System.out.println("It took " + (System.currentTimeMillis() - curTime) + "ms to regenerate the overlay textures for the chunk.");
             }
         }
     }

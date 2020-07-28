@@ -23,8 +23,8 @@ import org.kakara.engine.ui.events.HUDHoverLeaveEvent;
 import org.kakara.engine.ui.items.ComponentCanvas;
 import org.kakara.engine.ui.items.ObjectCanvas;
 import org.kakara.engine.ui.objectcanvas.UIObject;
-import org.kakara.engine.ui.text.Font;
-import org.kakara.engine.ui.text.TextAlign;
+import org.kakara.engine.ui.font.Font;
+import org.kakara.engine.ui.font.TextAlign;
 import org.kakara.engine.utils.Time;
 import org.kakara.engine.utils.Utils;
 

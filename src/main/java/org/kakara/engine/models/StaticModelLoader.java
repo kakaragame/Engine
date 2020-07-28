@@ -109,7 +109,6 @@ public class StaticModelLoader {
         // File.separator. File.pathSeparator is for the PATH variable.
         String separator = "/";
         AIColor4D colour = AIColor4D.create();
-
             AIString path = AIString.calloc();
             Assimp.aiGetMaterialTexture(aiMaterial, aiTextureType_DIFFUSE, 0, path, (IntBuffer) null,
                     null, null, null, null, null);

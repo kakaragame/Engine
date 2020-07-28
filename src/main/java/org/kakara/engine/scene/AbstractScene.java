@@ -16,8 +16,8 @@ import org.kakara.engine.lighting.LightHandler;
 import org.kakara.engine.lighting.PointLight;
 import org.kakara.engine.lighting.SpotLight;
 import org.kakara.engine.renderobjects.RenderChunk;
-import org.kakara.engine.ui.HUD;
-import org.kakara.engine.ui.HUDItem;
+import org.kakara.engine.ui.UserInterface;
+import org.kakara.engine.ui.UICanvas;
 import org.kakara.engine.utils.Time;
 import org.kakara.engine.weather.Fog;
 
@@ -35,7 +35,7 @@ public abstract class AbstractScene implements Scene {
     private final CollisionManager collisionManager;
     private SkyBox skyBox;
 
-    protected final HUD hud = new HUD(this);
+    protected final UserInterface userInterface = new UserInterface(this);
     private boolean mouseStatus;
     protected GameHandler gameHandler;
 
@@ -47,7 +47,7 @@ public abstract class AbstractScene implements Scene {
         this.collisionManager = new CollisionManager(gameHandler);
         fog = Fog.NOFOG;
         try{
-            hud.init(gameHandler.getWindow());
+            userInterface.init(gameHandler.getWindow());
         }catch(Exception ex){
             GameEngine.LOGGER.error("Unable to load HUD", ex);
         }
@@ -75,8 +75,8 @@ public abstract class AbstractScene implements Scene {
     }
 
     @Override
-    public HUD getHUD(){
-        return hud;
+    public UserInterface getHUD(){
+        return userInterface;
     }
 
     @Override
@@ -148,11 +148,11 @@ public abstract class AbstractScene implements Scene {
 
     /**
      * Add a hud item to the scene.
-     * <p>This functionality works the same as {@link org.kakara.engine.ui.HUD#addItem(HUDItem)}</p>
-     * @param hudItem The hud item to add.
+     * <p>This functionality works the same as {@link UserInterface#addItem(UICanvas)}</p>
+     * @param UICanvas The hud item to add.
      */
-    public void add(HUDItem hudItem){
-        hud.addItem(hudItem);
+    public void add(UICanvas UICanvas){
+        userInterface.addItem(UICanvas);
     }
 
     /**
@@ -197,12 +197,12 @@ public abstract class AbstractScene implements Scene {
 
     /**
      * Remove a hud item from the scene
-     * <p>This functionality works the same as {@link org.kakara.engine.ui.HUD#removeItem(HUDItem)}</p>
+     * <p>This functionality works the same as {@link UserInterface#removeItem(UICanvas)}</p>
      * @since 1.0-Pre1
-     * @param hudItem The hud item to remove.
+     * @param UICanvas The hud item to remove.
      */
-    public void remove(HUDItem hudItem){
-        hud.removeItem(hudItem);
+    public void remove(UICanvas UICanvas){
+        userInterface.removeItem(UICanvas);
     }
 
     /**

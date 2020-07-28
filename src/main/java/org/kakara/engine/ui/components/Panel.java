@@ -4,7 +4,7 @@ import org.kakara.engine.GameHandler;
 import org.kakara.engine.events.EventHandler;
 import org.kakara.engine.events.event.MouseClickEvent;
 import org.kakara.engine.math.Vector2;
-import org.kakara.engine.ui.HUD;
+import org.kakara.engine.ui.UserInterface;
 import org.kakara.engine.ui.events.HUDClickEvent;
 import org.kakara.engine.ui.events.HUDHoverEnterEvent;
 import org.kakara.engine.ui.events.HUDHoverLeaveEvent;
@@ -21,18 +21,18 @@ public class Panel extends GeneralComponent {
     }
 
     @Override
-    public void init(HUD hud, GameHandler handler) {
-        pollInit(hud, handler);
-        hud.getScene().getEventManager().registerHandler(this);
+    public void init(UserInterface userInterface, GameHandler handler) {
+        pollInit(userInterface, handler);
+        userInterface.getScene().getEventManager().registerHandler(this);
     }
 
     @Override
-    public void render(Vector2 relative, HUD hud, GameHandler handler){
+    public void render(Vector2 relative, UserInterface userInterface, GameHandler handler){
         if(!isVisible()) return;
 
-        pollRender(relative, hud, handler);
+        pollRender(relative, userInterface, handler);
 
-        boolean isColliding = HUD.isColliding(getTruePosition(), getTrueScale(), new Vector2(handler.getMouseInput().getPosition()));
+        boolean isColliding = UserInterface.isColliding(getTruePosition(), getTrueScale(), new Vector2(handler.getMouseInput().getPosition()));
         if(isColliding && !isHovering){
             isHovering = true;
             triggerEvent(HUDHoverEnterEvent.class, handler.getMouseInput().getCurrentPosition());
@@ -44,7 +44,7 @@ public class Panel extends GeneralComponent {
 
     @EventHandler
     public void onClick(MouseClickEvent evt){
-        if(HUD.isColliding(position, scale, new Vector2(evt.getMousePosition()))){
+        if(UserInterface.isColliding(position, scale, new Vector2(evt.getMousePosition()))){
             triggerEvent(HUDClickEvent.class, position, evt.getMouseClickType());
         }
     }

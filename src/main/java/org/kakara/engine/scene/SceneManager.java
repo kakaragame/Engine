@@ -65,6 +65,7 @@ public class SceneManager {
      */
     public void cleanupScenes(){
         currentScene.getHUD().cleanup();
+        handler.getMouseInput().onSceneChange();
         TextureCache.getInstance(handler.getResourceManager()).cleanup(currentScene);
         if(getCurrentScene() instanceof AbstractMenuScene) return;
         currentScene.unload();

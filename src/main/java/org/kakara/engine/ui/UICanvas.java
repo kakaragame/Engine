@@ -2,16 +2,16 @@ package org.kakara.engine.ui;
 
 import org.kakara.engine.GameHandler;
 
-public interface HUDItem {
+public interface UICanvas {
     /**
      * Internal use only
      */
-    void init(HUD hud, GameHandler handler);
+    void init(UserInterface userInterface, GameHandler handler);
 
     /**
      * Internal use only
      */
-    void render(HUD hud, GameHandler handler);
+    void render(UserInterface userInterface, GameHandler handler);
 
 
     /**

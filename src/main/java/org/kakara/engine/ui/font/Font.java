@@ -1,9 +1,9 @@
-package org.kakara.engine.ui.text;
+package org.kakara.engine.ui.font;
 
 import org.kakara.engine.GameEngine;
 import org.kakara.engine.resources.Resource;
 import org.kakara.engine.scene.Scene;
-import org.kakara.engine.ui.HUD;
+import org.kakara.engine.ui.UserInterface;
 
 import java.nio.ByteBuffer;
 
@@ -18,7 +18,7 @@ public class Font {
     private String name;
     private Resource fileName;
 
-    private ByteBuffer thisNeedsToBeHereSoTheGarbageCollectorDoesNotComeAndGetMeTM;
+    private ByteBuffer thisNeedsToBeHereSoTheGarbageCollectorDoesNotComeAndGetMeTMDotCom;
 
     /**
      * Create a new font
@@ -35,11 +35,11 @@ public class Font {
     /**
      * Internal Use Only
      */
-    public void init(HUD hud){
+    public void init(UserInterface userInterface){
         try{
             ByteBuffer bb = fileName.getByteBuffer();
-            font = nvgCreateFontMem(hud.getVG(), name, bb, 1);
-            this.thisNeedsToBeHereSoTheGarbageCollectorDoesNotComeAndGetMeTM = bb;
+            font = nvgCreateFontMem(userInterface.getVG(), name, bb, 1);
+            this.thisNeedsToBeHereSoTheGarbageCollectorDoesNotComeAndGetMeTMDotCom = bb;
         }catch(Exception ex){;
             GameEngine.LOGGER.error("Error: Could not load font: " + name);
         }
@@ -54,9 +54,18 @@ public class Font {
     }
 
     /**
+     * Get the name of the font.
+     * @since 1.0-Pre3
+     * @return The name of the font.
+     */
+    public String getName(){
+        return name;
+    }
+
+    /**
      * Internal Use Only
      */
     public ByteBuffer getByteBuffer(){
-        return thisNeedsToBeHereSoTheGarbageCollectorDoesNotComeAndGetMeTM;
+        return thisNeedsToBeHereSoTheGarbageCollectorDoesNotComeAndGetMeTMDotCom;
     }
 }

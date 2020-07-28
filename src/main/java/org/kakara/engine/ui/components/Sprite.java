@@ -5,7 +5,7 @@ import org.kakara.engine.events.EventHandler;
 import org.kakara.engine.events.event.MouseClickEvent;
 import org.kakara.engine.gameitems.Texture;
 import org.kakara.engine.math.Vector2;
-import org.kakara.engine.ui.HUD;
+import org.kakara.engine.ui.UserInterface;
 import org.kakara.engine.ui.events.HUDClickEvent;
 import org.kakara.engine.ui.events.HUDHoverEnterEvent;
 import org.kakara.engine.ui.events.HUDHoverLeaveEvent;
@@ -42,16 +42,15 @@ public class Sprite extends GeneralComponent {
     }
 
     @Override
-    public void init(HUD hud, GameHandler handler) {
-        pollInit(hud, handler);
-        this.image = NanoVGGL3.nvglCreateImageFromHandle(hud.getVG(), texture.getId(), texture.getWidth(), texture.getHeight(), 0);
-        hud.getImageCache().addImage(this.image);
-        hud.getScene().getEventManager().registerHandler(this);
+    public void init(UserInterface userInterface, GameHandler handler) {
+        pollInit(userInterface, handler);
+        this.image = NanoVGGL3.nvglCreateImageFromHandle(userInterface.getVG(), texture.getId(), texture.getWidth(), texture.getHeight(), 0);
+        userInterface.getScene().getEventManager().registerHandler(this);
     }
 
     @EventHandler
     public void onClick(MouseClickEvent evt){
-        if(HUD.isColliding(getTruePosition(), scale, new Vector2(evt.getMousePosition()))){
+        if(UserInterface.isColliding(getTruePosition(), scale, new Vector2(evt.getMousePosition()))){
             triggerEvent(HUDClickEvent.class, position, evt.getMouseClickType());
         }
     }
@@ -66,13 +65,11 @@ public class Sprite extends GeneralComponent {
      */
     public void setImage(Texture tex){
         this.texture = tex;
-        GameHandler.getInstance().getSceneManager().getCurrentScene().getHUD().getImageCache().removeImage(this.image);
         nvgDeleteImage(GameHandler.getInstance().getSceneManager().getCurrentScene().getHUD().getVG(),
                 image);
         this.image = NanoVGGL3.nvglCreateImageFromHandle(
                 GameHandler.getInstance().getSceneManager().getCurrentScene().getHUD().getVG(),
                 tex.getId(), texture.getWidth(),tex.getHeight(), 0);
-        GameHandler.getInstance().getSceneManager().getCurrentScene().getHUD().getImageCache().addImage(this.image);
     }
 
     /**
@@ -112,9 +109,9 @@ public class Sprite extends GeneralComponent {
     }
 
     @Override
-    public void render(Vector2 relative, HUD hud, GameHandler handler) {
+    public void render(Vector2 relative, UserInterface userInterface, GameHandler handler) {
         if(!isVisible()) return;
-        boolean isColliding = HUD.isColliding(getTruePosition(), getTrueScale(), new Vector2(handler.getMouseInput().getPosition()));
+        boolean isColliding = UserInterface.isColliding(getTruePosition(), getTrueScale(), new Vector2(handler.getMouseInput().getPosition()));
         if(isColliding && !isHovering){
             isHovering = true;
             triggerEvent(HUDHoverEnterEvent.class, handler.getMouseInput().getCurrentPosition());
@@ -123,13 +120,13 @@ public class Sprite extends GeneralComponent {
             triggerEvent(HUDHoverLeaveEvent.class, handler.getMouseInput().getCurrentPosition());
         }
 
-        NVGPaint imagePaint = nvgImagePattern(hud.getVG(), getTruePosition().x, getTruePosition().y, getTrueScale().x, getTrueScale().y, rotation, image, 1.0f, NVGPaint.calloc());
-        nvgBeginPath(hud.getVG());
-        nvgRect(hud.getVG(), getTruePosition().x, getTruePosition().y, getTruePosition().x + getTrueScale().x, getTruePosition().y + getTrueScale().y);
-        nvgFillPaint(hud.getVG(), imagePaint);
-        nvgFill(hud.getVG());
+        NVGPaint imagePaint = nvgImagePattern(userInterface.getVG(), getTruePosition().x, getTruePosition().y, getTrueScale().x, getTrueScale().y, rotation, image, 1.0f, NVGPaint.calloc());
+        nvgBeginPath(userInterface.getVG());
+        nvgRect(userInterface.getVG(), getTruePosition().x, getTruePosition().y, getTruePosition().x + getTrueScale().x, getTruePosition().y + getTrueScale().y);
+        nvgFillPaint(userInterface.getVG(), imagePaint);
+        nvgFill(userInterface.getVG());
         imagePaint.free();
-        pollRender(relative, hud, handler);
+        pollRender(relative, userInterface, handler);
     }
 
     @Override

@@ -4,7 +4,7 @@ import org.jetbrains.annotations.Nullable;
 import org.kakara.engine.GameHandler;
 import org.kakara.engine.properties.Tagable;
 import org.kakara.engine.math.Vector2;
-import org.kakara.engine.ui.HUD;
+import org.kakara.engine.ui.UserInterface;
 import org.kakara.engine.ui.events.UActionEvent;
 import org.kakara.engine.ui.constraints.Constraint;
 
@@ -25,12 +25,12 @@ public interface Component extends Tagable {
     /**
      * Internal Use Only
      */
-    void render(Vector2 relativePosition, HUD hud, GameHandler handler);
+    void render(Vector2 relativePosition, UserInterface userInterface, GameHandler handler);
 
     /**
      * Internal Use Only
      */
-    void init(HUD hud, GameHandler handler);
+    void init(UserInterface userInterface, GameHandler handler);
 
     /**
      * Internal Use Only

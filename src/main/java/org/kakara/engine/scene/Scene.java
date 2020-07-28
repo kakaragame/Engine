@@ -9,7 +9,7 @@ import org.kakara.engine.gameitems.ItemHandler;
 import org.kakara.engine.gameitems.particles.ParticleHandler;
 import org.kakara.engine.gameitems.SkyBox;
 import org.kakara.engine.lighting.LightHandler;
-import org.kakara.engine.ui.HUD;
+import org.kakara.engine.ui.UserInterface;
 import org.kakara.engine.weather.Fog;
 
 public interface Scene {
@@ -67,7 +67,7 @@ public interface Scene {
      *
      * @return The hud.
      */
-    HUD getHUD();
+    UserInterface getHUD();
 
     /**
      * Get the particle handler for the scene.
