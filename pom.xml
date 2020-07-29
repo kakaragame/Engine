@@ -13,8 +13,7 @@
         <swt.version>4.6.1</swt.version>
         <joml.version>1.9.25</joml.version>
         <pngdecoder.version>1.0</pngdecoder.version>
-        <engine.classremoval/>
-        <debug>true</debug>
+<!--        <engine.classremoval>**/org/kakara/engine/debug/*.java</engine.classremoval>-->
     </properties>
     <distributionManagement>
         <repository>
@@ -38,7 +37,7 @@
                     <source>11</source>
                     <target>11</target>
                     <excludes>
-                        <exclude>${engine.classremoval}</exclude>
+<!--                        <exclude>${engine.classremoval}</exclude>-->
                     </excludes>
                 </configuration>
             </plugin>

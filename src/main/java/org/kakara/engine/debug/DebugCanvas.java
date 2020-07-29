@@ -2,11 +2,9 @@ package org.kakara.engine.debug;
 
 import imgui.*;
 import imgui.flag.ImGuiCond;
-import imgui.flag.ImGuiConfigFlags;
 import imgui.gl3.ImGuiImplGl3;
 import imgui.glfw.ImGuiImplGlfw;
 import org.kakara.engine.GameHandler;
-import org.kakara.engine.resources.ResourceManager;
 import org.kakara.engine.scene.AbstractGameScene;
 import org.kakara.engine.scene.AbstractScene;
 import org.kakara.engine.scene.Scene;
@@ -124,48 +122,6 @@ public class DebugCanvas implements UICanvas {
 
     private void renderObjectUICanvas(ObjectCanvas canvas){
         ImGui.text("# of Objects: " + canvas.getObjects().size());
-    }
-
-    private void setupImGui() {
-        ResourceManager resourceManager = new ResourceManager();
-        // ------------------------------------------------------------
-        // Initialize ImGuiIO config
-        final ImGuiIO io = ImGui.getIO();
-
-        io.setIniFilename(null); // We don't want to save .ini file
-        io.addConfigFlags(ImGuiConfigFlags.NavEnableKeyboard | ImGuiConfigFlags.DockingEnable); // Navigation with keyboard and enabled docking
-
-        // ------------------------------------------------------------
-        // Fonts configuration
-        // Read: https://raw.githubusercontent.com/ocornut/imgui/master/docs/FONTS.txt
-
-        final ImFontAtlas fontAtlas = io.getFonts();
-        final ImFontConfig fontConfig = new ImFontConfig(); // Natively allocated object, should be explicitly destroyed
-
-        // Glyphs could be added per-font as well as per config used globally like here
-        fontConfig.setGlyphRanges(fontAtlas.getGlyphRangesCyrillic());
-
-        // Add a default font, which is 'ProggyClean.ttf, 13px'
-        fontAtlas.addFontDefault();
-
-        // Fonts merge example
-        fontConfig.setMergeMode(true); // When enabled, all fonts added with this config would be merged with the previously added font
-        fontConfig.setPixelSnapH(true);
-
-        fontConfig.setMergeMode(false);
-        fontConfig.setPixelSnapH(false);
-
-        // Or directly from the memory
-        fontConfig.setName("Roboto-Regular.ttf, 14px"); // This name will be displayed in Style Editor
-        fontAtlas.addFontFromMemoryTTF(resourceManager.getResource("Roboto-Regular.ttf").getByteArray(), 14, fontConfig);
-        fontConfig.setName("Roboto-Regular.ttf, 16px"); // We can apply a new config value every time we add a new font
-        fontAtlas.addFontFromMemoryTTF(resourceManager.getResource("Roboto-Regular.ttf").getByteArray(), 16, fontConfig);
-
-        fontConfig.destroy(); // After all fonts were added we don't need this config more
-
-        // ------------------------------------------------------------
-        // Use freetype instead of stb_truetype to build a fonts texture
-        ImGuiFreeType.buildFontAtlas(fontAtlas, ImGuiFreeType.RasterizerFlags.LightHinting);
     }
 
 }
