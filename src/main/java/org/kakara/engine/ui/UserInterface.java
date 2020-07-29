@@ -134,6 +134,14 @@ public class UserInterface {
     }
 
     /**
+     * Get a list of the UI Canvases.
+     * @return The list of ui canvases.
+     */
+    public List<UICanvas> getUICanvases(){
+        return uiCanvas;
+    }
+
+    /**
      * Get a font vis its name.
      * @param name The name of the font.
      * @since 1.0-Pre3

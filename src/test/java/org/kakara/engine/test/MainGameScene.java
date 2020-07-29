@@ -2,6 +2,7 @@ package org.kakara.engine.test;
 
 import org.joml.Vector3f;
 import org.kakara.engine.GameHandler;
+import org.kakara.engine.debug.DebugCanvas;
 import org.kakara.engine.physics.collision.BoxCollider;
 import org.kakara.engine.physics.collision.Collidable;
 import org.kakara.engine.engine.CubeData;
@@ -293,6 +294,8 @@ public class MainGameScene extends AbstractGameScene {
 
         this.handler = gameHandler;
 
+        add(new DebugCanvas());
+
         System.out.println("Done. Scene loaded in " + (time - System.currentTimeMillis()) + " ms");
     }
 
@@ -324,7 +327,7 @@ public class MainGameScene extends AbstractGameScene {
             test.exit();
         }
         if (ki.isKeyPressed(GLFW_KEY_TAB)) {
-            this.setCurserStatus(!this.getCurserStatus());
+            this.setCurserStatus(true);
         }
 
         Vector3 currentPos = collider.getPosition();

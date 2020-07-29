@@ -1,6 +1,7 @@
 package org.kakara.engine.test;
 
 import org.kakara.engine.GameHandler;
+import org.kakara.engine.debug.DebugCanvas;
 import org.kakara.engine.engine.CubeData;
 import org.kakara.engine.window.WindowIcon;
 import org.kakara.engine.input.MouseClickType;
@@ -259,6 +260,8 @@ public class TitleScreenScene extends AbstractMenuScene {
         setCurserStatus(true);
 
         setBackground(Utils.inputStreamToTexture(Texture.class.getResourceAsStream("/oa.png")));
+
+//        add(new DebugCanvas());
     }
 
     @Override

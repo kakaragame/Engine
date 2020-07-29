@@ -13,6 +13,8 @@
         <swt.version>4.6.1</swt.version>
         <joml.version>1.9.25</joml.version>
         <pngdecoder.version>1.0</pngdecoder.version>
+        <engine.classremoval/>
+        <debug>true</debug>
     </properties>
     <distributionManagement>
         <repository>
@@ -35,6 +37,9 @@
                 <configuration>
                     <source>11</source>
                     <target>11</target>
+                    <excludes>
+                        <exclude>${engine.classremoval}</exclude>
+                    </excludes>
                 </configuration>
             </plugin>
             <plugin>
@@ -70,6 +75,36 @@
 
 
     <profiles>
+        <!--
+            Debug Profiles
+            This doesn't quite work right now.
+        -->
+        <profile>
+            <id>Engine-Debug</id>
+            <activation>
+                <property>
+                    <name>!debug</name>
+                </property>
+            </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>io.imgui.java</groupId>
+                    <artifactId>binding</artifactId>
+                    <version>1.77-0.17</version>
+                </dependency>
+                <dependency>
+                    <groupId>io.imgui.java</groupId>
+                    <artifactId>lwjgl3</artifactId>
+                    <version>1.77-0.17</version>
+                </dependency>
+                <dependency>
+                    <groupId>io.imgui.java</groupId>
+                    <artifactId>${lwjgl.natives}</artifactId>
+                    <version>1.77-0.17</version>
+                </dependency>
+            </dependencies>
+        </profile>
+        <!--   LWJGL Profiles     -->
         <profile>
             <id>lwjgl-natives-linux-amd64</id>
             <activation>
@@ -183,6 +218,10 @@
     </dependencyManagement>
 
     <repositories>
+        <repository>
+            <id>jcenter</id>
+            <url>https://jcenter.bintray.com/</url>
+        </repository>
         <repository>
             <id>thevideogamevillage.com</id>
             <url>https://repo.thevideogamevillage.com/repository/maven-releases/</url>
