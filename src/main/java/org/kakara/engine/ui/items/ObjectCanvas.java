@@ -1,7 +1,15 @@
 package org.kakara.engine.ui.items;
 
+import org.joml.Intersectionf;
+import org.joml.Vector2f;
+import org.joml.Vector3f;
 import org.kakara.engine.GameHandler;
+import org.kakara.engine.events.EventHandler;
+import org.kakara.engine.events.event.MouseClickEvent;
+import org.kakara.engine.math.Vector3;
 import org.kakara.engine.ui.UserInterface;
+import org.kakara.engine.ui.events.UIClickEvent;
+import org.kakara.engine.ui.objectcanvas.UIObject;
 import org.kakara.engine.window.Window;
 import org.kakara.engine.scene.Scene;
 import org.kakara.engine.ui.UICanvas;
@@ -18,7 +26,8 @@ import static org.lwjgl.nanovg.NanoVG.nvgEndFrame;
  * @since 1.0-Pre1
  */
 public class ObjectCanvas implements UICanvas {
-    private List<org.kakara.engine.ui.objectcanvas.UIObject> objects;
+    private List<UIObject> objects;
+    private Scene scene;
     /*
      * Tagable data
      */
@@ -27,24 +36,24 @@ public class ObjectCanvas implements UICanvas {
 
     /**
      * Create a new canvas component
-     *
      * @param scene The current scene.
      */
-    public ObjectCanvas(Scene scene) {
+    public ObjectCanvas(Scene scene){
         objects = new ArrayList<>();
+        this.scene = scene;
     }
 
     /**
      * Add a child component into the canvas
-     *
      * @param object The component to add.
      */
-    public void add(org.kakara.engine.ui.objectcanvas.UIObject object) {
+    public void add(UIObject object){
         objects.add(object);
     }
 
     @Override
     public void init(UserInterface userInterface, GameHandler handler) {
+        userInterface.getScene().getEventManager().registerHandler(this);
     }
 
     @Override
@@ -52,13 +61,13 @@ public class ObjectCanvas implements UICanvas {
         nvgEndFrame(userInterface.getVG());
         Window win = handler.getGameEngine().getWindow();
         win.restoreState();
-        handler.getGameEngine().getRenderer().renderHUD(win, objects);
+        handler.getGameEngine().getRenderer().renderHUD(win, objects, userInterface.isAutoScaled());
         nvgBeginFrame(userInterface.getVG(), win.getWidth(), win.getHeight(), 1);
     }
 
     @Override
     public void cleanup(GameHandler handler) {
-        for (org.kakara.engine.ui.objectcanvas.UIObject obj : objects) {
+        for(UIObject obj : objects){
             obj.getMesh().cleanUp();
         }
     }
@@ -68,24 +77,62 @@ public class ObjectCanvas implements UICanvas {
      *
      * @return The child objects
      */
-    public List<org.kakara.engine.ui.objectcanvas.UIObject> getObjects() {
+    public List<UIObject> getObjects(){
         return objects;
     }
 
     /**
      * Clear all of the objects
      */
-    public void clearObjects() {
+    public void clearObjects(){
         objects.clear();
     }
 
     /**
      * Remove an object from the list.
-     *
      * @param o The object
      */
-    public void removeObject(org.kakara.engine.ui.objectcanvas.UIObject o) {
+    public void removeObject(UIObject o){
         objects.remove(o);
+    }
+
+    @EventHandler
+    public void onClick(MouseClickEvent evt){
+        UIObject obj = selectGameItems(scene, new Vector3(evt.getMousePosition().x, evt.getMousePosition().y, 0));
+        if(obj != null){
+            obj.triggerEvent(UIClickEvent.class, obj.getPosition(), evt.getMouseClickType());
+        }
+    }
+
+    /**
+     * Internally used to select game items.
+     * @param scene The scene.
+     * @param position The position.
+     * @return The UIObject Selected.
+     */
+    private UIObject selectGameItems(Scene scene, Vector3 position){
+        UIObject selectedGameItem = null;
+        float closestDistance = 10;
+
+        Vector3f dir = new Vector3f();
+
+        dir = scene.getCamera().getViewMatrix().positiveZ(dir).negate();
+
+        Vector3f max = new Vector3f();
+        Vector3f min = new Vector3f();
+        Vector2f nearFar = new Vector2f();
+
+        for(UIObject collidable : objects){
+            min.set(collidable.get3DPosition().toJoml());
+            max.set(collidable.get3DPosition().toJoml());
+            min.add(-collidable.getScale()/2, -collidable.getScale()/2, -collidable.getScale()/2);
+            max.add(collidable.getScale()/2, collidable.getScale()/2, collidable.getScale()/2);
+            if (Intersectionf.intersectRayAab(position.toJoml(), dir, min, max, nearFar) && nearFar.x < closestDistance) {
+                closestDistance = nearFar.x;
+                selectedGameItem = collidable;
+            }
+        }
+        return selectedGameItem;
     }
 
     @Override

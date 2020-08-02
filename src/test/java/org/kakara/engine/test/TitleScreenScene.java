@@ -1,7 +1,6 @@
 package org.kakara.engine.test;
 
 import org.kakara.engine.GameHandler;
-import org.kakara.engine.debug.DebugCanvas;
 import org.kakara.engine.engine.CubeData;
 import org.kakara.engine.window.WindowIcon;
 import org.kakara.engine.input.MouseClickType;
@@ -18,9 +17,9 @@ import org.kakara.engine.ui.components.shapes.Rectangle;
 import org.kakara.engine.ui.components.text.BoundedText;
 import org.kakara.engine.ui.components.text.Text;
 import org.kakara.engine.ui.constraints.*;
-import org.kakara.engine.ui.events.HUDClickEvent;
-import org.kakara.engine.ui.events.HUDHoverEnterEvent;
-import org.kakara.engine.ui.events.HUDHoverLeaveEvent;
+import org.kakara.engine.ui.events.UIClickEvent;
+import org.kakara.engine.ui.events.UIHoverEnterEvent;
+import org.kakara.engine.ui.events.UIHoverLeaveEvent;
 import org.kakara.engine.ui.items.ComponentCanvas;
 import org.kakara.engine.ui.items.ObjectCanvas;
 import org.kakara.engine.ui.objectcanvas.UIObject;
@@ -79,19 +78,19 @@ public class TitleScreenScene extends AbstractMenuScene {
         playButton.addConstraint(new GridConstraint(4, 7, 1, 4));
         playButton.setColor(new RGBA(0, 150, 150, 1));
         // Setup the events for the button.
-        playButton.addUActionEvent(new HUDHoverEnterEvent() {
+        playButton.addUActionEvent(new UIHoverEnterEvent() {
             @Override
             public void OnHudHoverEnter(Vector2 location) {
                 playButton.setColor(new RGBA(0, 150, 200, 1));
             }
-        }, HUDHoverEnterEvent.class);
-        playButton.addUActionEvent(new HUDHoverLeaveEvent() {
+        }, UIHoverEnterEvent.class);
+        playButton.addUActionEvent(new UIHoverLeaveEvent() {
             @Override
             public void OnHudHoverLeave(Vector2 location) {
                 playButton.setColor(new RGBA(0, 150, 150, 1));
             }
-        }, HUDHoverLeaveEvent.class);
-        playButton.addUActionEvent(new HUDClickEvent() {
+        }, UIHoverLeaveEvent.class);
+        playButton.addUActionEvent(new UIClickEvent() {
             @Override
             public void OnHUDClick(Vector2 location, MouseClickType clickType) {
                 if(!playButton.isVisible()) return;
@@ -103,7 +102,7 @@ public class TitleScreenScene extends AbstractMenuScene {
                     System.out.println("Could not switch to the main scene!");
                 }
             }
-        }, HUDClickEvent.class);
+        }, UIClickEvent.class);
         Text txt = new Text("Play Game!", roboto);
         txt.setPosition(0, playButton.scale.y/2);
         txt.setTextAlign(TextAlign.CENTER);
@@ -156,43 +155,43 @@ public class TitleScreenScene extends AbstractMenuScene {
 
         popupMenu.add(popupClose);
 
-        popupClose.addUActionEvent(new HUDHoverEnterEvent() {
+        popupClose.addUActionEvent(new UIHoverEnterEvent() {
             @Override
             public void OnHudHoverEnter(Vector2 location) {
                 popupClose.setColor(new RGBA(0, 150, 200, 1));
             }
-        }, HUDHoverEnterEvent.class);
-        popupClose.addUActionEvent(new HUDHoverLeaveEvent() {
+        }, UIHoverEnterEvent.class);
+        popupClose.addUActionEvent(new UIHoverLeaveEvent() {
             @Override
             public void OnHudHoverLeave(Vector2 location) {
                 popupClose.setColor(new RGBA(0, 150, 150, 1));
             }
-        }, HUDHoverLeaveEvent.class);
+        }, UIHoverLeaveEvent.class);
 
         Rectangle openMenuButton = new Rectangle(new Vector2(gameHandler.getWindow().getWidth()/2 + 100, gameHandler.getWindow().getHeight() - 300),
                 new Vector2(100, 100));
         openMenuButton.setColor(new RGBA(0, 150, 150, 1));
         openMenuButton.addConstraint(new GridConstraint(4, 7, 2, 4));
-        openMenuButton.addUActionEvent(new HUDHoverEnterEvent() {
+        openMenuButton.addUActionEvent(new UIHoverEnterEvent() {
             @Override
             public void OnHudHoverEnter(Vector2 location) {
                 openMenuButton.setColor(new RGBA(0, 150, 200, 1));
             }
-        }, HUDHoverEnterEvent.class);
-        openMenuButton.addUActionEvent(new HUDHoverLeaveEvent() {
+        }, UIHoverEnterEvent.class);
+        openMenuButton.addUActionEvent(new UIHoverLeaveEvent() {
             @Override
             public void OnHudHoverLeave(Vector2 location) {
                 openMenuButton.setColor(new RGBA(0, 150, 150, 1));
             }
-        }, HUDHoverLeaveEvent.class);
-        openMenuButton.addUActionEvent(new HUDClickEvent() {
+        }, UIHoverLeaveEvent.class);
+        openMenuButton.addUActionEvent(new UIClickEvent() {
             @Override
             public void OnHUDClick(Vector2 location, MouseClickType clickType) {
                 popupMenu.setVisible(true);
                 openMenuButton.setVisible(false);
                 playButton.setVisible(false);
             }
-        }, HUDClickEvent.class);
+        }, UIClickEvent.class);
         Text openMenuTxt = new Text("Open Menu!", roboto);
         openMenuTxt.setPosition(0, openMenuButton.scale.y/2);
         openMenuTxt.setTextAlign(TextAlign.CENTER);
@@ -200,14 +199,14 @@ public class TitleScreenScene extends AbstractMenuScene {
         openMenuButton.add(openMenuTxt);
         cc.add(openMenuButton);
 
-        popupClose.addUActionEvent(new HUDClickEvent() {
+        popupClose.addUActionEvent(new UIClickEvent() {
             @Override
             public void OnHUDClick(Vector2 location, MouseClickType clickType) {
                 popupMenu.setVisible(false);
                 openMenuButton.setVisible(true);
                 playButton.setVisible(true);
             }
-        }, HUDClickEvent.class);
+        }, UIClickEvent.class);
 
         cc.add(popupMenu);
 
@@ -224,7 +223,7 @@ public class TitleScreenScene extends AbstractMenuScene {
         btxt.addConstraint(new GeneralConstraint(ComponentSide.BOTTOM, null, ComponentSide.BOTTOM, 0));
         cc.add(btxt);
 
-        title.setVisible(false);
+        title.setVisible(true);
 
 
 
@@ -247,6 +246,9 @@ public class TitleScreenScene extends AbstractMenuScene {
         obj = ui;
         obj.getRotation().rotateX((float)Math.toRadians(40));
         obj.getRotation().rotateY((float)Math.toRadians(50));
+        obj.addUActionEvent(UIClickEvent.class, (UIClickEvent) (location, clickType) -> {
+            System.out.println("I got clicked!");
+        });
         oc.add(ui);
         add(oc);
 
@@ -261,6 +263,8 @@ public class TitleScreenScene extends AbstractMenuScene {
 
         setBackground(Utils.inputStreamToTexture(Texture.class.getResourceAsStream("/oa.png")));
 
+        getUserInterface().setAutoScale(false);
+
 //        add(new DebugCanvas());
     }
 
@@ -270,7 +274,7 @@ public class TitleScreenScene extends AbstractMenuScene {
 
         lb.setPercent(lb.getPercent() + Time.getDeltaTime());
 
-        obj.setPosition(gameHandler.getMouseInput().getCurrentPosition().x, gameHandler.getMouseInput().getCurrentPosition().y);
+//        obj.setPosition(gameHandler.getMouseInput().getCurrentPosition().x, gameHandler.getMouseInput().getCurrentPosition().y);
 
 //        getCamera().setPosition(getCamera().getPosition().add(1,0,0));
 //        System.out.println(getCamera().getPosition());

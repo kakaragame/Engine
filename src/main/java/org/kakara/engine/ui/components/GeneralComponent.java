@@ -80,7 +80,7 @@ public abstract class GeneralComponent implements Component {
         this.components.add(component);
         component.setParent(this);
         if(init)
-            component.init(GameHandler.getInstance().getSceneManager().getCurrentScene().getHUD(), GameHandler.getInstance());
+            component.init(GameHandler.getInstance().getSceneManager().getCurrentScene().getUserInterface(), GameHandler.getInstance());
     }
 
     @Override
@@ -134,11 +134,16 @@ public abstract class GeneralComponent implements Component {
      * @param handler The handler.
      */
     public void pollRender(Vector2 relative, UserInterface userInterface, GameHandler handler){
-        this.truePosition = position.clone().add(relative);
-        this.truePosition =  new Vector2(truePosition.x * ((float) handler.getWindow().getWidth()/ (float)handler.getWindow().initalWidth),
-                truePosition.y * ((float) handler.getWindow().getHeight()/(float)handler.getWindow().initalHeight));
-        this.trueScale = new Vector2(scale.x * ((float) handler.getWindow().getWidth()/ (float)handler.getWindow().initalWidth),
-                scale.y * ((float) handler.getWindow().getHeight()/(float)handler.getWindow().initalHeight));
+        if(userInterface.isAutoScaled()){
+            this.truePosition = position.clone().add(relative);
+            this.truePosition =  new Vector2(truePosition.x * ((float) handler.getWindow().getWidth()/ (float)handler.getWindow().initalWidth),
+                    truePosition.y * ((float) handler.getWindow().getHeight()/(float)handler.getWindow().initalHeight));
+            this.trueScale = new Vector2(scale.x * ((float) handler.getWindow().getWidth()/ (float)handler.getWindow().initalWidth),
+                    scale.y * ((float) handler.getWindow().getHeight()/(float)handler.getWindow().initalHeight));
+        }else{
+            this.truePosition = position.clone().add(relative);
+            this.trueScale = scale;
+        }
 
         for(Constraint cc : constraints){
             cc.update(this);

@@ -39,9 +39,30 @@ public class Vector3 {
      * @param z The z double
      */
     public Vector3(double x, double y, double z) {
-        this.x = (float) x;
-        this.y = (float) y;
-        this.z = (float) z;
+        this((float) x, (float) y, (float) z);
+    }
+
+    /**
+     * Creates a vector 3 using a 2d vector.
+     *
+     * @since 1.0-Pre3
+     * @param vec The 2d vector to get the x and y values from.
+     * @param z The z value.
+     */
+    public Vector3(Vector2 vec, float z){
+        this.x = vec.x;
+        this.y = vec.y;
+        this.z = z;
+    }
+
+    /**
+     * Creates a vector 3 using a 2d vector. (z is set to 0).
+     *
+     * @since 1.0-Pre3
+     * @param vec The 2d vector to get the x and y values from.
+     */
+    public Vector3(Vector2 vec){
+        this(vec, 0);
     }
 
     /**

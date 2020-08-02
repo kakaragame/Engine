@@ -81,7 +81,7 @@ public abstract class AbstractMenuScene implements Scene {
     }
 
     @Override
-    public UserInterface getHUD() {
+    public UserInterface getUserInterface() {
         return userInterface;
     }
 
@@ -194,6 +194,7 @@ class BackgroundImage extends GeneralComponent{
     @Override
     public void render(Vector2 relative, UserInterface userInterface, GameHandler handler){
         pollRender(relative, userInterface, handler);
+        sprite.scale = new Vector2(handler.getWindow().getWidth(), handler.getWindow().getHeight());
     }
 
     @Override

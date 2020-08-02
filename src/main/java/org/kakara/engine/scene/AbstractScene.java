@@ -75,7 +75,7 @@ public abstract class AbstractScene implements Scene {
     }
 
     @Override
-    public UserInterface getHUD(){
+    public UserInterface getUserInterface(){
         return userInterface;
     }
 

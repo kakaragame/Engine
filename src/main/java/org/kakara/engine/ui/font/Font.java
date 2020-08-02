@@ -29,7 +29,7 @@ public class Font {
     public Font(String name, Resource fileName, Scene currentScene){
         this.name = name;
         this.fileName = fileName;
-        currentScene.getHUD().addFont(this);
+        currentScene.getUserInterface().addFont(this);
     }
 
     /**

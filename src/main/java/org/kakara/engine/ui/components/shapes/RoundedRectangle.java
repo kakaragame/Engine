@@ -7,9 +7,9 @@ import org.kakara.engine.math.Vector2;
 import org.kakara.engine.ui.UserInterface;
 import org.kakara.engine.ui.RGBA;
 import org.kakara.engine.ui.components.GeneralComponent;
-import org.kakara.engine.ui.events.HUDClickEvent;
-import org.kakara.engine.ui.events.HUDHoverEnterEvent;
-import org.kakara.engine.ui.events.HUDHoverLeaveEvent;
+import org.kakara.engine.ui.events.UIClickEvent;
+import org.kakara.engine.ui.events.UIHoverEnterEvent;
+import org.kakara.engine.ui.events.UIHoverLeaveEvent;
 import org.lwjgl.nanovg.NVGColor;
 
 import static org.lwjgl.nanovg.NanoVG.*;
@@ -85,7 +85,7 @@ public class RoundedRectangle extends GeneralComponent {
     @EventHandler
     public void onClick(MouseClickEvent evt){
         if(UserInterface.isColliding(getTruePosition(), getTrueScale(), new Vector2(evt.getMousePosition()))){
-            triggerEvent(HUDClickEvent.class, new Vector2(evt.getMousePosition()), evt.getMouseClickType());
+            triggerEvent(UIClickEvent.class, new Vector2(evt.getMousePosition()), evt.getMouseClickType());
         }
     }
 
@@ -102,10 +102,10 @@ public class RoundedRectangle extends GeneralComponent {
         boolean isColliding = UserInterface.isColliding(getTruePosition(), getTrueScale(), new Vector2(handler.getMouseInput().getPosition()));
         if(isColliding && !isHovering){
             isHovering = true;
-            triggerEvent(HUDHoverEnterEvent.class, handler.getMouseInput().getCurrentPosition());
+            triggerEvent(UIHoverEnterEvent.class, handler.getMouseInput().getCurrentPosition());
         }else if(!isColliding && isHovering){
             isHovering = false;
-            triggerEvent(HUDHoverLeaveEvent.class, handler.getMouseInput().getCurrentPosition());
+            triggerEvent(UIHoverLeaveEvent.class, handler.getMouseInput().getCurrentPosition());
         }
 
         nvgBeginPath(userInterface.getVG());

@@ -6,9 +6,9 @@ import org.kakara.engine.events.event.MouseClickEvent;
 import org.kakara.engine.gameitems.Texture;
 import org.kakara.engine.math.Vector2;
 import org.kakara.engine.ui.UserInterface;
-import org.kakara.engine.ui.events.HUDClickEvent;
-import org.kakara.engine.ui.events.HUDHoverEnterEvent;
-import org.kakara.engine.ui.events.HUDHoverLeaveEvent;
+import org.kakara.engine.ui.events.UIClickEvent;
+import org.kakara.engine.ui.events.UIHoverEnterEvent;
+import org.kakara.engine.ui.events.UIHoverLeaveEvent;
 import org.lwjgl.nanovg.NVGPaint;
 import org.lwjgl.nanovg.NanoVGGL3;
 
@@ -51,7 +51,7 @@ public class Sprite extends GeneralComponent {
     @EventHandler
     public void onClick(MouseClickEvent evt){
         if(UserInterface.isColliding(getTruePosition(), scale, new Vector2(evt.getMousePosition()))){
-            triggerEvent(HUDClickEvent.class, position, evt.getMouseClickType());
+            triggerEvent(UIClickEvent.class, position, evt.getMouseClickType());
         }
     }
 
@@ -65,10 +65,10 @@ public class Sprite extends GeneralComponent {
      */
     public void setImage(Texture tex){
         this.texture = tex;
-        nvgDeleteImage(GameHandler.getInstance().getSceneManager().getCurrentScene().getHUD().getVG(),
+        nvgDeleteImage(GameHandler.getInstance().getSceneManager().getCurrentScene().getUserInterface().getVG(),
                 image);
         this.image = NanoVGGL3.nvglCreateImageFromHandle(
-                GameHandler.getInstance().getSceneManager().getCurrentScene().getHUD().getVG(),
+                GameHandler.getInstance().getSceneManager().getCurrentScene().getUserInterface().getVG(),
                 tex.getId(), texture.getWidth(),tex.getHeight(), 0);
     }
 
@@ -114,10 +114,10 @@ public class Sprite extends GeneralComponent {
         boolean isColliding = UserInterface.isColliding(getTruePosition(), getTrueScale(), new Vector2(handler.getMouseInput().getPosition()));
         if(isColliding && !isHovering){
             isHovering = true;
-            triggerEvent(HUDHoverEnterEvent.class, handler.getMouseInput().getCurrentPosition());
+            triggerEvent(UIHoverEnterEvent.class, handler.getMouseInput().getCurrentPosition());
         }else if(!isColliding && isHovering){
             isHovering = false;
-            triggerEvent(HUDHoverLeaveEvent.class, handler.getMouseInput().getCurrentPosition());
+            triggerEvent(UIHoverLeaveEvent.class, handler.getMouseInput().getCurrentPosition());
         }
 
         NVGPaint imagePaint = nvgImagePattern(userInterface.getVG(), getTruePosition().x, getTruePosition().y, getTrueScale().x, getTrueScale().y, rotation, image, 1.0f, NVGPaint.calloc());

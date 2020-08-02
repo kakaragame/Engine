@@ -2,6 +2,7 @@ package org.kakara.engine.ui.constraints;
 
 import org.jetbrains.annotations.Nullable;
 import org.kakara.engine.GameHandler;
+import org.kakara.engine.ui.UserInterface;
 import org.kakara.engine.window.Window;
 import org.kakara.engine.ui.components.Component;
 
@@ -21,6 +22,7 @@ public class GeneralConstraint implements Constraint {
     private float value;
 
     private Window window;
+    private UserInterface userInterface;
 
     /**
      * Apply a general constraint.
@@ -40,6 +42,7 @@ public class GeneralConstraint implements Constraint {
     @Override
     public void onAdd(Component component) {
         this.window = GameHandler.getInstance().getWindow();
+        this.userInterface = GameHandler.getInstance().getCurrentScene().getUserInterface();
     }
 
     @Override
@@ -85,9 +88,9 @@ public class GeneralConstraint implements Constraint {
                 case LEFT:
                     return 0;
                 case BOTTOM:
-                    return 720;
+                    return userInterface.isAutoScaled() ? 720 : window.getHeight();
                 case RIGHT:
-                    return 1080;
+                    return userInterface.isAutoScaled() ? 1080 : window.getWidth();
             }
         }
         switch(side){

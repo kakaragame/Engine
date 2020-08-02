@@ -103,10 +103,13 @@ public class Renderer {
      *
      * @param window  The window of the current game.
      * @param objects The list of objects.
+     * @param isAuto If the engine will scale the objects automatically.
      */
-    public void renderHUD(Window window, List<UIObject> objects) {
+    public void renderHUD(Window window, List<UIObject> objects, boolean isAuto) {
         hudShaderProgram.bind();
-        Matrix4f orthoProjection = transformation.buildOrtho(0, window.initalWidth, window.initalHeight, 0);
+        int width = isAuto ? window.initalWidth : window.getWidth();
+        int height = isAuto ? window.initalHeight : window.getHeight();
+        Matrix4f orthoProjection = transformation.buildOrtho(0, width, height, 0);
         for (UIObject object : objects) {
             IMesh mesh = object.getMesh();
             hudShaderProgram.setUniform("ortho", orthoProjection);

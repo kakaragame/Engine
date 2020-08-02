@@ -27,6 +27,7 @@ public class Text extends GeneralComponent {
     private RGBA color;
 
     private NVGColor nvgColor;
+    private UserInterface userInterface;
 
     /**
      * Create some text.
@@ -52,6 +53,7 @@ public class Text extends GeneralComponent {
     @Override
     public void init(UserInterface userInterface, GameHandler handler) {
         pollInit(userInterface, handler);
+        this.userInterface = userInterface;
     }
 
     @Override
@@ -80,7 +82,10 @@ public class Text extends GeneralComponent {
      * @return The scaled size
      */
     protected float calculateSize(GameHandler handler){
-        return this.getSize() * ((float)handler.getWindow().getWidth()/(float)handler.getWindow().initalWidth);
+        if(userInterface.isAutoScaled())
+            return this.getSize() * ((float)handler.getWindow().getWidth()/(float)handler.getWindow().initalWidth);
+        else
+            return this.getSize();
     }
 
 
@@ -90,7 +95,10 @@ public class Text extends GeneralComponent {
      * @return the scaled width
      */
     protected float calculateLineWidth(GameHandler handler){
-        return this.getLineWidth() * ((float)handler.getWindow().getWidth()/(float)handler.getWindow().initalWidth);
+        if(userInterface.isAutoScaled())
+            return this.getLineWidth() * ((float)handler.getWindow().getWidth()/(float)handler.getWindow().initalWidth);
+        else
+            return this.getLineWidth();
     }
 
     /**

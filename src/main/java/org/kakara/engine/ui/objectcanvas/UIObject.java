@@ -1,11 +1,16 @@
 package org.kakara.engine.ui.objectcanvas;
 
 import org.joml.Quaternionf;
+import org.kakara.engine.math.Vector3;
 import org.kakara.engine.properties.Tagable;
 import org.kakara.engine.gameitems.mesh.IMesh;
 import org.kakara.engine.math.Vector2;
+import org.kakara.engine.ui.events.UActionEvent;
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * This is an object that is to be displayed on the UI.
@@ -17,6 +22,8 @@ public class UIObject implements Tagable {
     private final Vector2 position;
     private final Quaternionf rotation;
     private float scale;
+
+    private Map<UActionEvent, Class<? extends UActionEvent>> events;
 
     /*
      * Tagable data
@@ -49,6 +56,8 @@ public class UIObject implements Tagable {
         this.scale = scale;
         this.rotation.rotateZ((float)Math.toRadians(180));
         this.rotation.rotateY((float)Math.toRadians(180));
+
+        this.events = new HashMap<>();
     }
 
     /**
@@ -125,6 +134,44 @@ public class UIObject implements Tagable {
      */
     public void setScale(float scale){
         this.scale = scale;
+    }
+
+    /**
+     * Add supported UAction events.
+     *
+     * @param clazz The UAction event class.
+     * @param uae The event.
+     * @since 1.0-Pre3
+     */
+    public void addUActionEvent(Class<? extends UActionEvent> clazz, UActionEvent uae){
+        events.put(uae, clazz);
+    }
+
+    /**
+     * Process and call events.
+     * @param clazz The type of event
+     * @param objs The parameters
+     */
+    public <T> void triggerEvent(Class<? extends UActionEvent> clazz, T... objs){
+        try{
+            for (Map.Entry<UActionEvent,Class<? extends UActionEvent>> event : events.entrySet()){
+                if(clazz != event.getValue()) continue;
+                if(event.getValue().getMethods().length > 1) continue;
+                event.getValue().getMethods()[0].invoke(event.getKey(), objs);
+            }
+        }
+        catch (InvocationTargetException | IllegalAccessException ex){
+            ex.printStackTrace();
+        }
+    }
+
+    /**
+     * Grab the position of the object in 3d.
+     * @since 1.0-Pre3
+     * @return The 3D vector.
+     */
+    public Vector3 get3DPosition(){
+        return new Vector3(getPosition().x, getPosition().y, 0);
     }
 
     /**

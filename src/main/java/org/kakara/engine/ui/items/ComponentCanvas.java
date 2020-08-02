@@ -27,72 +27,68 @@ public class ComponentCanvas implements UICanvas {
 
     /**
      * Create a new canvas component
-     *
      * @param scene The current scene.
      */
-    public ComponentCanvas(Scene scene) {
+    public ComponentCanvas(Scene scene){
         components = new ArrayList<>();
         this.scene = scene;
     }
 
     /**
      * Add a child component into the canvas
-     *
      * @param component The component to add.
      */
-    public void add(Component component) {
-        if (component.getParent() != null)
+    public void add(Component component){
+        if(component.getParent() != null)
             throw new RuntimeException("Error: That component already has a parent!");
         components.add(component);
-        if (init) {
-            component.init(scene.getHUD(), GameHandler.getInstance());
+        if(init){
+            component.init(scene.getUserInterface(), GameHandler.getInstance());
         }
     }
 
     @Override
     public void init(UserInterface userInterface, GameHandler handler) {
         init = true;
-        for (Component c : components) {
+        for(Component c : components){
             c.init(userInterface, handler);
         }
     }
 
     @Override
     public void render(UserInterface userInterface, GameHandler handler) {
-        for (Component component : components) {
+        for(Component component : components){
             component.render(new Vector2(0, 0), userInterface, handler);
         }
     }
 
     @Override
     public void cleanup(GameHandler handler) {
-        for (Component component : components) {
+        for(Component component : components){
             component.cleanup(handler);
         }
     }
 
     /**
      * Get a list of the child components
-     *
      * @return The child components
      */
-    public List<Component> getComponents() {
+    public List<Component> getComponents(){
         return components;
     }
 
     /**
      * Clear all of the components
      */
-    public void clearComponents() {
+    public void clearComponents(){
         components.clear();
     }
 
     /**
      * Remove a component from the list.
-     *
      * @param c The component
      */
-    public void removeComponent(Component c) {
+    public void removeComponent(Component c){
         components.remove(c);
     }
 

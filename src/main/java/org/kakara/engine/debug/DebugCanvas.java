@@ -85,9 +85,9 @@ public class DebugCanvas implements UICanvas {
         ImGui.text("Scene Super Class: " + scene.getClass().getSuperclass().getSimpleName());
         ImGui.separator();
         if(ImGui.collapsingHeader("UserInterface")){
-            ImGui.text("# of UICanvases: " + scene.getHUD().getUICanvases().size());
+            ImGui.text("# of UICanvases: " + scene.getUserInterface().getUICanvases().size());
             int i = 0;
-            for(UICanvas canvas : scene.getHUD().getUICanvases()){
+            for(UICanvas canvas : scene.getUserInterface().getUICanvases()){
                 if(ImGui.collapsingHeader(canvas.getClass().getSimpleName() + " : " + i)){
                     if(canvas instanceof ComponentCanvas){
                         renderComponentUICanvas((ComponentCanvas) canvas);

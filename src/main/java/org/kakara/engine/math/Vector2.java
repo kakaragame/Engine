@@ -38,6 +38,18 @@ public class Vector2 {
     }
 
     /**
+     * Convert a Vector 3 to a Vector 2
+     * <p>The z component of the Vector 3 is ignored.</p>
+     *
+     * @since 1.0-Pre3
+     * @param vec The 3D vector.
+     */
+    public Vector2(Vector3 vec){
+        this.x = vec.x;
+        this.y = vec.y;
+    }
+
+    /**
      * Add a value to the vector.
      * <p>This mutates the vector.</p>
      * @param x The x value

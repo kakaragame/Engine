@@ -63,11 +63,11 @@ public interface Scene {
     @Nullable LightHandler getLightHandler();
 
     /**
-     * Get the HUD for this scene.
+     * Get the UserInterface for this scene.
      *
-     * @return The hud.
+     * @return The user interface for the scene.
      */
-    UserInterface getHUD();
+    UserInterface getUserInterface();
 
     /**
      * Get the particle handler for the scene.

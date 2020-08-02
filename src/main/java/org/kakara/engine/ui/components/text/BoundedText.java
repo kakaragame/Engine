@@ -37,6 +37,8 @@ public class BoundedText extends GeneralComponent {
     private NVGTextRow.Buffer rows = NVGTextRow.create(3);
     private FloatBuffer lineh = BufferUtils.createFloatBuffer(1);
 
+    private UserInterface userInterface;
+
     /**
      * Create some text.
      * <p>If the text is not displaying, then ensure that the Font is added to the HUD. See {@link UserInterface#addFont(Font)}</p>
@@ -62,6 +64,7 @@ public class BoundedText extends GeneralComponent {
     @Override
     public void init(UserInterface userInterface, GameHandler handler) {
         pollInit(userInterface, handler);
+        this.userInterface = userInterface;
     }
 
     @Override
@@ -146,7 +149,10 @@ public class BoundedText extends GeneralComponent {
      * @return The scaled size
      */
     protected float calculateSize(GameHandler handler){
-        return this.getSize() * ((float)handler.getWindow().getWidth()/(float)handler.getWindow().initalWidth);
+        if(userInterface.isAutoScaled())
+            return this.getSize() * ((float)handler.getWindow().getWidth()/(float)handler.getWindow().initalWidth);
+        else
+            return this.getSize();
     }
 
 
@@ -156,7 +162,10 @@ public class BoundedText extends GeneralComponent {
      * @return the scaled width
      */
     protected float calculateLineWidth(GameHandler handler){
-        return this.getMaximumBound().x * ((float)handler.getWindow().getWidth()/(float)handler.getWindow().initalWidth);
+        if(userInterface.isAutoScaled())
+            return this.getMaximumBound().x * ((float)handler.getWindow().getWidth()/(float)handler.getWindow().initalWidth);
+        else
+            return this.getMaximumBound().x;
     }
 
     /**
