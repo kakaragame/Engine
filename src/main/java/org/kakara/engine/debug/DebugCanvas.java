@@ -15,6 +15,7 @@ import org.kakara.engine.ui.items.ObjectCanvas;
 import org.kakara.engine.utils.Time;
 import org.kakara.engine.weather.Fog;
 
+import java.util.List;
 import java.util.Stack;
 
 public class DebugCanvas implements UICanvas {
@@ -23,7 +24,11 @@ public class DebugCanvas implements UICanvas {
     private final ImGuiImplGl3 imGuiGl3 = new ImGuiImplGl3();
 
     Stack<Integer> fps = new Stack<>();
-
+    /*
+     * Tagable data
+     */
+    private List<Object> data;
+    private String tag;
     @Override
     public void init(UserInterface userInterface, GameHandler handler) {
         ImGui.createContext();
@@ -123,5 +128,23 @@ public class DebugCanvas implements UICanvas {
     private void renderObjectUICanvas(ObjectCanvas canvas){
         ImGui.text("# of Objects: " + canvas.getObjects().size());
     }
+    @Override
+    public void setData(List<Object> data) {
+        this.data = data;
+    }
 
+    @Override
+    public List<Object> getData() {
+        return data;
+    }
+
+    @Override
+    public void setTag(String tag) {
+        this.tag = tag;
+    }
+
+    @Override
+    public String getTag() {
+        return tag;
+    }
 }

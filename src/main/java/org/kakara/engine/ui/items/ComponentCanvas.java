@@ -19,25 +19,32 @@ public class ComponentCanvas implements UICanvas {
     boolean init = false;
 
     private Scene scene;
+    /*
+     * Tagable data
+     */
+    private List<Object> data;
+    private String tag;
 
     /**
      * Create a new canvas component
+     *
      * @param scene The current scene.
      */
-    public ComponentCanvas(Scene scene){
+    public ComponentCanvas(Scene scene) {
         components = new ArrayList<>();
         this.scene = scene;
     }
 
     /**
      * Add a child component into the canvas
+     *
      * @param component The component to add.
      */
-    public void add(Component component){
-        if(component.getParent() != null)
+    public void add(Component component) {
+        if (component.getParent() != null)
             throw new RuntimeException("Error: That component already has a parent!");
         components.add(component);
-        if(init){
+        if (init) {
             component.init(scene.getHUD(), GameHandler.getInstance());
         }
     }
@@ -45,45 +52,67 @@ public class ComponentCanvas implements UICanvas {
     @Override
     public void init(UserInterface userInterface, GameHandler handler) {
         init = true;
-        for(Component c : components){
+        for (Component c : components) {
             c.init(userInterface, handler);
         }
     }
 
     @Override
     public void render(UserInterface userInterface, GameHandler handler) {
-        for(Component component : components){
+        for (Component component : components) {
             component.render(new Vector2(0, 0), userInterface, handler);
         }
     }
 
     @Override
     public void cleanup(GameHandler handler) {
-        for(Component component : components){
+        for (Component component : components) {
             component.cleanup(handler);
         }
     }
 
     /**
      * Get a list of the child components
+     *
      * @return The child components
      */
-    public List<Component> getComponents(){
+    public List<Component> getComponents() {
         return components;
     }
 
     /**
      * Clear all of the components
      */
-    public void clearComponents(){
+    public void clearComponents() {
         components.clear();
     }
 
     /**
      * Remove a component from the list.
+     *
      * @param c The component
      */
-    public void removeComponent(Component c){
+    public void removeComponent(Component c) {
         components.remove(c);
+    }
+
+    @Override
+    public void setData(List<Object> data) {
+        this.data = data;
+    }
+
+    @Override
+    public List<Object> getData() {
+        return data;
+    }
+
+    @Override
+    public void setTag(String tag) {
+        this.tag = tag;
+    }
+
+    @Override
+    public String getTag() {
+        return tag;
     }
 }
