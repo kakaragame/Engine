@@ -5,6 +5,7 @@ import org.joml.Vector3f;
 import org.joml.Vector4f;
 import org.kakara.engine.Camera;
 import org.kakara.engine.GameHandler;
+import org.kakara.engine.render.culling.FrustumCullingFilter;
 import org.kakara.engine.window.Window;
 import org.kakara.engine.gameitems.*;
 import org.kakara.engine.gameitems.mesh.IMesh;
@@ -32,10 +33,12 @@ import static org.lwjgl.opengl.GL30.glBindFramebuffer;
  */
 public class Renderer {
     private Transformation transformation;
+    private FrustumCullingFilter frustumFilter;
 
     public Renderer() {
         transformation = new Transformation();
         specularPower = 10f;
+        frustumFilter = new FrustumCullingFilter();
     }
 
     private Shader shaderProgram;
@@ -89,6 +92,8 @@ public class Renderer {
 
         transformation.updateProjectionMatrix(FOV, window.getWidth(), window.getHeight(), Z_NEAR, Z_FAR);
         scene.getCamera().updateViewMatrix();
+
+        frustumFilter.updateFrustum(transformation.getProjectionMatrix(), camera.getViewMatrix());
 
 
         renderScene(window, camera, scene);
@@ -166,6 +171,9 @@ public class Renderer {
             Matrix4f modelLightViewMatrix = transformation.buildModelLightViewMatrix(modelMatrix, lightViewMatrix);
             chunkShaderProgram.setUniform("modelLightViewMatrix", modelLightViewMatrix);
 
+            if(!frustumFilter.testRenderObject(renderChunk.getPosition(), 16, 16, 16))
+                continue;
+
             renderChunk.render();
         }
         glEnable(GL_CULL_FACE);
@@ -232,7 +240,8 @@ public class Renderer {
 
             mesh.renderList(mapMeshes.get(mesh), (GameItem gameItem) -> {
                         MeshGameItem meshGameItem = ((MeshGameItem) gameItem);
-                        if (meshGameItem.isVisible()) {
+                        if (meshGameItem.isVisible() && frustumFilter.testCollider(meshGameItem.getCollider())) {
+
                             Matrix4f modelMatrix = transformation.buildModelMatrix(gameItem);
                             if (!depthMap) {
                                 Matrix4f modelViewMatrix = transformation.buildModelViewMatrix(modelMatrix, viewMatrix);
@@ -617,5 +626,13 @@ public class Renderer {
      */
     public Transformation getTransformation() {
         return transformation;
+    }
+
+    /**
+     * Get the FrustumCullingFilter for the Renderer.
+     * @return The Frustum Culling Filter.
+     */
+    public FrustumCullingFilter getFrustumFilter(){
+        return frustumFilter;
     }
 }

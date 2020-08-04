@@ -5,6 +5,7 @@ import org.kakara.engine.GameHandler;
 import org.kakara.engine.gameitems.GameItem;
 import org.kakara.engine.math.KMath;
 import org.kakara.engine.render.Transformation;
+import org.kakara.engine.render.culling.FrustumCullingFilter;
 import org.lwjgl.system.MemoryUtil;
 
 import java.nio.FloatBuffer;
@@ -126,7 +127,10 @@ public class InstancedMesh extends Mesh {
         this.modelViewBuffer.clear();
         this.modelLightViewBuffer.clear();
         int i = 0;
+        FrustumCullingFilter filter = GameHandler.getInstance().getGameEngine().getRenderer().getFrustumFilter();
         for (GameItem gameItem : gameItems) {
+            if(!filter.testCollider(gameItem.getCollider()))
+                continue;
 
             if(KMath.distance(gameItem.getPosition(), GameHandler.getInstance().getCurrentScene().getCamera().getPosition()) > 100)
                 continue;
