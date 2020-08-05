@@ -4,6 +4,7 @@ import org.jetbrains.annotations.Nullable;
 import org.kakara.engine.GameEngine;
 import org.kakara.engine.GameHandler;
 import org.kakara.engine.exceptions.InvalidThreadException;
+import org.kakara.engine.render.culling.RenderQuery;
 import org.kakara.engine.renderobjects.RenderBlock;
 import org.kakara.engine.renderobjects.RenderChunk;
 import org.kakara.engine.renderobjects.TextureAtlas;
@@ -34,6 +35,8 @@ public class MultiThreadMesh implements RenderMesh {
     private int vertexCount;
     private boolean finished;
 
+    private RenderQuery query;
+
     /**
      * Create a render mesh
      *
@@ -63,6 +66,7 @@ public class MultiThreadMesh implements RenderMesh {
 
         MeshLayout finalLayout = layout;
         GameHandler.getInstance().getGameEngine().addQueueItem(() -> {
+            query = new RenderQuery(GL_SAMPLES_PASSED);
             vaoId = glGenVertexArrays();
             try {
                 glBindVertexArray(vaoId);
@@ -248,6 +252,11 @@ public class MultiThreadMesh implements RenderMesh {
                 }
             });
         }
+    }
+
+    @Override
+    public RenderQuery getQuery() {
+        return query;
     }
 
 }

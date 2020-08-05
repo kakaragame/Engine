@@ -1,5 +1,6 @@
 package org.kakara.engine.renderobjects.mesh;
 
+import org.kakara.engine.render.culling.RenderQuery;
 import org.kakara.engine.renderobjects.RenderBlock;
 import org.kakara.engine.renderobjects.TextureAtlas;
 
@@ -35,4 +36,6 @@ public interface RenderMesh {
      * @param textureAtlas The texture atlas to use.
      */
     void updateOverlay(List<RenderBlock> blocks, TextureAtlas textureAtlas);
+
+    RenderQuery getQuery();
 }

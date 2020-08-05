@@ -91,6 +91,10 @@ public class RenderChunk extends MeshGameItem {
         return octChunk;
     }
 
+    public RenderMesh getRenderMesh(){
+        return mesh;
+    }
+
     /**
      * Get all of the visible blocks
      * @param blocks The list of blocks to work with
