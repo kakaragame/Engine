@@ -4,6 +4,7 @@ import org.jetbrains.annotations.Nullable;
 import org.kakara.engine.GameEngine;
 import org.kakara.engine.GameHandler;
 import org.kakara.engine.exceptions.InvalidThreadException;
+import org.kakara.engine.render.culling.RenderQuery;
 import org.kakara.engine.renderobjects.ChunkHandler;
 import org.kakara.engine.renderobjects.RenderBlock;
 import org.kakara.engine.renderobjects.RenderChunk;
@@ -39,6 +40,8 @@ public class ModifiedAsyncMesh implements RenderMesh {
 
     private CompletableFuture<ModifiedAsyncMesh> whenFinished;
 
+    private RenderQuery query;
+
     /**
      * Create a render mesh
      *
@@ -51,6 +54,7 @@ public class ModifiedAsyncMesh implements RenderMesh {
         if(Thread.currentThread() != GameEngine.currentThread){
             throw new InvalidThreadException("This class can only be constructed on the main thread!");
         }
+        query = new RenderQuery(GL_SAMPLES_PASSED);
         vboIdList = new ArrayList<>();
         vaoId = glGenVertexArrays();
 
@@ -267,6 +271,11 @@ public class ModifiedAsyncMesh implements RenderMesh {
                 }
             });
         }
+    }
+
+    @Override
+    public RenderQuery getQuery() {
+        return query;
     }
 
 }
