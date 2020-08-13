@@ -222,8 +222,8 @@
             <url>https://jcenter.bintray.com/</url>
         </repository>
         <repository>
-            <id>thevideogamevillage.com</id>
-            <url>https://repo.thevideogamevillage.com/repository/maven-releases/</url>
+            <id>Ryandw11</id>
+            <url>https://repo.ryandw11.com/repository/maven-releases/</url>
         </repository>
     </repositories>
 
