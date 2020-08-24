@@ -2,29 +2,40 @@ package org.kakara.engine.ui.components.text;
 
 import org.kakara.engine.GameHandler;
 import org.kakara.engine.math.Vector2;
-import org.kakara.engine.ui.UserInterface;
 import org.kakara.engine.ui.RGBA;
+import org.kakara.engine.ui.UserInterface;
 import org.kakara.engine.ui.components.GeneralComponent;
 import org.kakara.engine.ui.constraints.Constraint;
 import org.kakara.engine.ui.font.Font;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.nanovg.NVGColor;
 import org.lwjgl.nanovg.NVGTextRow;
+import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
 
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static org.lwjgl.nanovg.NanoVG.*;
 
 /**
- * Displays text to the UI in a bounded region.
+ * Displays colored text to the UI in a bounded region.
+ * <p>This class does not contain as setColor method. Colors are set in the strings themselves by using color codes.
+ * <code>
+ *     {#FFFFFF}
+ * </code>
+ * Color codes are just hex colors wrapped in curly braces. '{}'. 3 letter hex color codes are not supported. Example String:
+ * <code>
+ *     "{#5BE0D5}I am a cool color! {#5BE06D} Me too! {#F54FFFF}Another cool color! {#ED4725}I am red!"
+ * </code>
+ * </p>
  * <p><b>The scale is automatically set and should not be edited!</b></p>
- * @since 1.0-Pre1
+ * @since 1.0-Pre3
  */
-public class BoundedText extends GeneralComponent {
+public class BoundedColoredText extends GeneralComponent {
     private String text;
     private ByteBuffer paragraph;
     private Font font;
@@ -34,10 +45,10 @@ public class BoundedText extends GeneralComponent {
     private int textAlign;
     private float blur;
     private Vector2 maximumBound;
-    private RGBA color;
     private NVGColor nvgColor;
     private NVGTextRow.Buffer rows = NVGTextRow.create(3);
     private FloatBuffer lineh = BufferUtils.createFloatBuffer(1);
+    private int lnum;
 
     private UserInterface userInterface;
 
@@ -48,7 +59,7 @@ public class BoundedText extends GeneralComponent {
      * @param text The text
      * @param font The font of the text.
      */
-    public BoundedText(String text, Font font){
+    public BoundedColoredText(String text, Font font){
         this.paragraph = MemoryUtil.memUTF8(text, false);
         this.text = text;
         this.font = font;
@@ -56,7 +67,6 @@ public class BoundedText extends GeneralComponent {
         this.letterSpacing = 1;
         this.lineHeight = 1;
         this.textAlign = NVG_ALIGN_LEFT;
-        this.color = new RGBA(255, 255, 255, 1);
         this.scale = new Vector2(100, 0);
         this.maximumBound = new Vector2(100, 100);
 
@@ -85,17 +95,8 @@ public class BoundedText extends GeneralComponent {
         MemoryUtil.memFree(paragraph);
     }
 
-//    private String getStringFromMem(long start, long end){
-//        byte[] bytes = new byte[(int)(end-start)];
-//        for(long i = start; i < end; i++){
-//            bytes[(int)(i-start)] = MemoryUtil.memGetByte(i);
-//        }
-//        return new String(bytes);
-//    }
-
-
     /**
-     * Code to display the bounded text.
+     * Code to display the *colored* bounded text.
      * If you breath on this code it might have a seizure.
      * @param userInterface The hud
      * @param handler The handler.
@@ -104,49 +105,103 @@ public class BoundedText extends GeneralComponent {
 
         nvgSave(userInterface.getVG());
 
-        long start = MemoryUtil.memAddress(paragraph);
-        long end = start + paragraph.remaining();
-        int  nrows, lnum = 0;
-
-
-
         nvgTextMetrics(userInterface.getVG(), null, null, lineh);
 
         float y = getTruePosition().y;
+        float x = getTruePosition().x;
 
-//        NVGTextRow.Buffer buf = NVGTextRow.create(3);
-//        nvgTextBreakLines(userInterface.getVG(), "This is a test", calculateLineWidth(handler), buf);
-//        System.out.println(getStringFromMem(buf.get(0).start(), buf.get(0).end()));
+        float curWith = 0;
+        lnum = 0;
+        for(Map.Entry<String, RGBA> entry : splitColors(text).entrySet()){
+            float[] prevBounds = new float[4];
+
+            try(MemoryStack stack = MemoryStack.stackPush()){
+                ByteBuffer para = stack.UTF8(entry.getKey(), false);
+
+                long start = MemoryUtil.memAddress(para);
+                long end = start + para.remaining();
+                int nrows;
+
+                while ((nrows = nnvgTextBreakLines(userInterface.getVG(), start, end, calculateLineWidth(handler) - curWith, MemoryUtil.memAddress(rows), 3)) != 0) {
+                    for (int i = 0; i < nrows; i++) {
+                        NVGTextRow row = rows.get(i);
+
+                        boolean hit = toRelativeY(y) > maximumBound.y;
+
+                        if(hit) break;
+
+                        nvgBeginPath(userInterface.getVG());
+                        nvgFontSize(userInterface.getVG(), calculateSize(handler));
+                        nvgFontFaceId(userInterface.getVG(), font.getFont());
+                        nvgTextAlign(userInterface.getVG(), textAlign);
+                        nvgFontBlur(userInterface.getVG(), blur);
+                        nvgTextLetterSpacing(userInterface.getVG(), letterSpacing);
+                        nvgTextLineHeight(userInterface.getVG(), lineHeight);
+
+                        nvgRGBA((byte) entry.getValue().r, (byte) entry.getValue().g, (byte) entry.getValue().b, (byte) entry.getValue().aToNano(), nvgColor);
+                        nvgFillColor(userInterface.getVG(), nvgColor);
+
+                        nnvgTextBounds(userInterface.getVG(), x, y, row.start(), row.end(), prevBounds);
+
+                        nnvgText(userInterface.getVG(), x, y, row.start(), row.end());
 
 
-        while ((nrows = nnvgTextBreakLines(userInterface.getVG(), start, end, calculateLineWidth(handler), MemoryUtil.memAddress(rows), 3)) != 0) {
-            for (int i = 0; i < nrows; i++) {
-                NVGTextRow row = rows.get(i);
-
-                boolean hit = toRelativeY(y) > maximumBound.y;
-
-                if(hit) break;
-
-                nvgBeginPath(userInterface.getVG());
-                nvgFontSize(userInterface.getVG(), calculateSize(handler));
-                nvgFontFaceId(userInterface.getVG(), font.getFont());
-                nvgTextAlign(userInterface.getVG(), textAlign);
-                nvgFontBlur(userInterface.getVG(), blur);
-                nvgTextLetterSpacing(userInterface.getVG(), letterSpacing);
-                nvgTextLineHeight(userInterface.getVG(), lineHeight);
-
-                nvgRGBA((byte) color.r, (byte) color.g, (byte) color.b, (byte) color.aToNano(), nvgColor);
-                nvgFillColor(userInterface.getVG(), nvgColor);
-
-                nnvgText(userInterface.getVG(), getTruePosition().x, y, row.start(), row.end());
-
-                lnum++;
-                y += lineh.get(0);
+                        curWith += prevBounds[2] - prevBounds[0];
+                        if(prevBounds[2]-prevBounds[0] >= calculateLineWidth(handler) - curWith){
+                            y += lineh.get(0);
+                            x = getTruePosition().x;
+                            lnum++;
+                            curWith = 0;
+                        }
+                    }
+                    start = rows.get(nrows - 1).next();
+                }
+                x += prevBounds[2]-prevBounds[0];
             }
-            start = rows.get(nrows - 1).next();
         }
 
         nvgRestore(userInterface.getVG());
+        if(lnum == 0) lnum++;
+    }
+
+    protected Map<String, RGBA> splitColors(String message) {
+        List<String> normalMessage = new ArrayList<>(Arrays.asList(message.split("\\{(#[^}]+)}")));
+        List<String> colorCodes = new ArrayList<>();
+        colorCodes.add("{#FFFFFF}");
+        Matcher m = Pattern.compile("\\{(#[^}]+)}").matcher(message);
+        while(m.find()) {
+            colorCodes.add(m.group());
+        }
+        for(int i = 0; i < colorCodes.size(); i++){
+            if(!isChatCode(colorCodes.get(i)) && i != 0){
+                normalMessage.set(i-1, normalMessage.get(i-1) +colorCodes.get(i)+normalMessage.get(i));
+                normalMessage.remove(i);
+                colorCodes.remove(i);
+                i--;
+            }
+        }
+        Map<String, RGBA> output = new LinkedHashMap<>();
+        for(int i = 0; i < normalMessage.size(); i++){
+            output.put(normalMessage.get(i), hex2Rgb(colorCodes.get(i)));
+        }
+        return output;
+    }
+
+    protected boolean isChatCode(String code) {
+        try{
+            hex2Rgb(code);
+        }catch(NumberFormatException ex){
+            return false;
+        }
+        return true;
+    }
+
+    protected RGBA hex2Rgb(String colorStr) {
+        String hexCode = colorStr.replace("{", "").replace("}", "");
+        return new RGBA(
+                Integer.valueOf( hexCode.substring( 1, 3 ), 16 ),
+                Integer.valueOf( hexCode.substring( 3, 5 ), 16 ),
+                Integer.valueOf( hexCode.substring( 5, 7 ), 16 ), 1 );
     }
 
     private float toRelativeX(float x){
@@ -274,22 +329,6 @@ public class BoundedText extends GeneralComponent {
     }
 
     /**
-     * Set the color of the text.
-     * @param color The color.
-     */
-    public void setColor(RGBA color){
-        this.color = color;
-    }
-
-    /**
-     * Get the color of the text
-     * @return The color.
-     */
-    public RGBA getColor(){
-        return this.color;
-    }
-
-    /**
      * Set the blur of the text.
      * <p>This can be used to create shadow effects.</p>
      * @param blur The blur.
@@ -304,6 +343,16 @@ public class BoundedText extends GeneralComponent {
      */
     public float getBlur(){
         return blur;
+    }
+
+    /**
+     * Get the number of lines of text.
+     * <p>Note: This number is not known until
+     * the first render call.</p>
+     * @return The number of lines of text.
+     */
+    public int getLineNumbers(){
+        return lnum;
     }
 
 

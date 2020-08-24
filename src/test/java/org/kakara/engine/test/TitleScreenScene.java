@@ -2,6 +2,7 @@ package org.kakara.engine.test;
 
 import org.kakara.engine.GameHandler;
 import org.kakara.engine.engine.CubeData;
+import org.kakara.engine.ui.components.text.BoundedColoredText;
 import org.kakara.engine.window.WindowIcon;
 import org.kakara.engine.input.MouseClickType;
 import org.kakara.engine.gameitems.Material;
@@ -224,6 +225,13 @@ public class TitleScreenScene extends AbstractMenuScene {
         cc.add(btxt);
 
         title.setVisible(true);
+
+        BoundedColoredText nTxt = new BoundedColoredText("{#5BE0D5}Yeet {#5BE06D} Am I right? {#F54FFFF}No you are not!{#ED4725}I really love this" +
+                "stuff you know!", roboto);
+        nTxt.addConstraint(new HorizontalCenterConstraint());
+        nTxt.addConstraint(new VerticalCenterConstraint(200));
+        nTxt.setMaximumBound(new Vector2(300, 400));
+        cc.add(nTxt);
 
 
 
