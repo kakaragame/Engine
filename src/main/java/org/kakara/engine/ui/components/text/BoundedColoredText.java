@@ -95,6 +95,56 @@ public class BoundedColoredText extends GeneralComponent {
         MemoryUtil.memFree(paragraph);
     }
 
+    public void calculateLineNumbers(UserInterface userInterface, GameHandler handler){
+        nvgSave(userInterface.getVG());
+
+        nvgTextMetrics(userInterface.getVG(), null, null, lineh);
+
+        float y = getTruePosition().y;
+        float x = getTruePosition().x;
+
+        float curWith = 0;
+        lnum = 0;
+        for(Map.Entry<String, RGBA> entry : splitColors(text).entrySet()){
+            float[] prevBounds = new float[4];
+
+            try(MemoryStack stack = MemoryStack.stackPush()){
+                ByteBuffer para = stack.UTF8(entry.getKey(), false);
+
+                long start = MemoryUtil.memAddress(para);
+                long end = start + para.remaining();
+                int nrows;
+
+                int z = 0;
+                while ((nrows = nnvgTextBreakLines(userInterface.getVG(), start, end, calculateLineWidth(handler) - curWith, MemoryUtil.memAddress(rows), 3)) != 0) {
+                    for (int i = 0; i < nrows; i++) {
+                        NVGTextRow row = rows.get(i);
+
+                        boolean hit = toRelativeY(y) > maximumBound.y;
+
+                        if(hit) break;
+
+                        nnvgTextBounds(userInterface.getVG(), x, y, row.start(), row.end(), prevBounds);
+
+                        x += prevBounds[2] - prevBounds[0];
+                        curWith += prevBounds[2] - prevBounds[0];
+                        if(curWith >= calculateLineWidth(handler)){
+                            y += lineh.get(0);
+                            x = getTruePosition().x;
+                            curWith = 0;
+                            lnum += 1;
+                        }
+                    }
+                    start = rows.get(nrows - 1).next();
+                }
+
+            }
+        }
+
+        nvgRestore(userInterface.getVG());
+        lnum++;
+    }
+
     /**
      * Code to display the *colored* bounded text.
      * If you breath on this code it might have a seizure.
@@ -122,6 +172,7 @@ public class BoundedColoredText extends GeneralComponent {
                 long end = start + para.remaining();
                 int nrows;
 
+                int z = 0;
                 while ((nrows = nnvgTextBreakLines(userInterface.getVG(), start, end, calculateLineWidth(handler) - curWith, MemoryUtil.memAddress(rows), 3)) != 0) {
                     for (int i = 0; i < nrows; i++) {
                         NVGTextRow row = rows.get(i);
@@ -142,26 +193,24 @@ public class BoundedColoredText extends GeneralComponent {
                         nvgFillColor(userInterface.getVG(), nvgColor);
 
                         nnvgTextBounds(userInterface.getVG(), x, y, row.start(), row.end(), prevBounds);
-
                         nnvgText(userInterface.getVG(), x, y, row.start(), row.end());
-
-
+                        x += prevBounds[2] - prevBounds[0];
                         curWith += prevBounds[2] - prevBounds[0];
-                        if(prevBounds[2]-prevBounds[0] >= calculateLineWidth(handler) - curWith){
+                        if(curWith >= calculateLineWidth(handler)){
                             y += lineh.get(0);
                             x = getTruePosition().x;
-                            lnum++;
                             curWith = 0;
+                            lnum += 1;
                         }
                     }
                     start = rows.get(nrows - 1).next();
                 }
-                x += prevBounds[2]-prevBounds[0];
+
             }
         }
 
         nvgRestore(userInterface.getVG());
-        if(lnum == 0) lnum++;
+        lnum++;
     }
 
     protected Map<String, RGBA> splitColors(String message) {
