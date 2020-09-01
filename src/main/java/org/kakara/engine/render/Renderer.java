@@ -168,7 +168,8 @@ public class Renderer {
             RenderMesh mesh = renderChunk.getRenderMesh();
             if(mesh == null || mesh.getQuery() == null)
                 continue;
-            if(mesh.getQuery().pollPreviousResult() < 3 && mesh.getQuery().pollPreviousResult() != -1)
+            int i = mesh.getQuery().pollPreviousResult();
+            if(i < 3 && i != -1)
                 continue;
 
             Matrix4f modelMatrix = transformation.buildModelMatrix(renderChunk);
@@ -181,6 +182,7 @@ public class Renderer {
             }
             Matrix4f modelLightViewMatrix = transformation.buildModelLightViewMatrix(modelMatrix, lightViewMatrix);
             chunkShaderProgram.setUniform("modelLightViewMatrix", modelLightViewMatrix);
+
 
             renderChunk.render();
         }
