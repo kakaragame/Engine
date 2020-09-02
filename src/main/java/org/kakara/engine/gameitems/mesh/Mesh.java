@@ -39,30 +39,28 @@ public class Mesh implements IMesh {
     private boolean wireframe = false;
 
     /**
-     *
-     * @param positions The vertex positions. See the code at {@link org.kakara.engine.engine.CubeData#vertex} for an example.
+     * @param positions  The vertex positions. See the code at {@link org.kakara.engine.engine.CubeData#vertex} for an example.
      * @param textCoords The texture positions. See the code at {@link org.kakara.engine.engine.CubeData#texture} for an example.
-     * @param normals The normal positions.
-     *                This is used to tell the code what direction the light should bounce off of the faces. See the code at {@link org.kakara.engine.engine.CubeData#normal} for an example.
-     * @param indices The indices positions (An int array). This is used to shorten the three lists above.
-     *                So indices one will indicate position # 1 and texture # 1 and normal # 1.
-     *                See the code at {@link org.kakara.engine.engine.CubeData#texture} for an example.
+     * @param normals    The normal positions.
+     *                   This is used to tell the code what direction the light should bounce off of the faces. See the code at {@link org.kakara.engine.engine.CubeData#normal} for an example.
+     * @param indices    The indices positions (An int array). This is used to shorten the three lists above.
+     *                   So indices one will indicate position # 1 and texture # 1 and normal # 1.
+     *                   See the code at {@link org.kakara.engine.engine.CubeData#texture} for an example.
      */
     public Mesh(@NotNull float[] positions, @NotNull float[] textCoords, @NotNull float[] normals, @NotNull int[] indices) {
         this(positions, textCoords, normals, indices, createEmptyIntArray(MAX_WEIGHTS * positions.length / 3, 0), createEmptyFloatArray(MAX_WEIGHTS * positions.length / 3, 0));
     }
 
     /**
-     *
-     * @param positions See above.
-     * @param textCoords See above.
-     * @param normals See above.
-     * @param indices See above.
+     * @param positions    See above.
+     * @param textCoords   See above.
+     * @param normals      See above.
+     * @param indices      See above.
      * @param jointIndices Not implemented
-     * @param weights Not implemented
+     * @param weights      Not implemented
      */
     public Mesh(@NotNull float[] positions, @NotNull float[] textCoords, @NotNull float[] normals, @NotNull int[] indices, @NotNull int[] jointIndices, @NotNull float[] weights) {
-        if(Thread.currentThread() != GameEngine.currentThread)
+        if (Thread.currentThread() != GameEngine.currentThread)
             throw new InvalidThreadException("This class can only be constructed on the main thread.");
 
         FloatBuffer posBuffer = null;
@@ -74,10 +72,10 @@ public class Mesh implements IMesh {
         try {
             calculateBoundingRadius(positions);
 
-            if(indices != null)
+            if (indices != null)
                 vertexCount = indices.length;
-            else{
-                vertexCount = positions.length/3;
+            else {
+                vertexCount = positions.length / 3;
             }
             vboIdList = new ArrayList();
 
@@ -130,7 +128,7 @@ public class Mesh implements IMesh {
             glVertexAttribPointer(4, 4, GL_FLOAT, false, 0, 0);
 
             // Index VBO
-            if(indices != null) {
+            if (indices != null) {
                 vboId = glGenBuffers();
                 vboIdList.add(vboId);
                 indicesBuffer = MemoryUtil.memAllocInt(indices.length);
@@ -163,10 +161,22 @@ public class Mesh implements IMesh {
         }
     }
 
+    protected static float[] createEmptyFloatArray(int length, float defaultValue) {
+        float[] result = new float[length];
+        Arrays.fill(result, defaultValue);
+        return result;
+    }
+
+    protected static int[] createEmptyIntArray(int length, int defaultValue) {
+        int[] result = new int[length];
+        Arrays.fill(result, defaultValue);
+        return result;
+    }
+
     private void calculateBoundingRadius(float positions[]) {
         int length = positions.length;
         boundingRadius = 0;
-        for(int i=0; i< length; i++) {
+        for (int i = 0; i < length; i++) {
             float pos = positions[i];
             boundingRadius = Math.max(Math.abs(pos), boundingRadius);
         }
@@ -174,6 +184,7 @@ public class Mesh implements IMesh {
 
     /**
      * Get the material of the mesh
+     *
      * @return The material
      */
     public Optional<Material> getMaterial() {
@@ -182,6 +193,7 @@ public class Mesh implements IMesh {
 
     /**
      * Set the material of the mesh.
+     *
      * @param material The material
      */
     public void setMaterial(Material material) {
@@ -190,6 +202,7 @@ public class Mesh implements IMesh {
 
     /**
      * Get the vao id of the mesh
+     *
      * @return The vaoid.
      */
     public final int getVaoId() {
@@ -198,6 +211,7 @@ public class Mesh implements IMesh {
 
     /**
      * Get the vertex count of the mesh
+     *
      * @return The vertex count.
      */
     public int getVertexCount() {
@@ -207,6 +221,7 @@ public class Mesh implements IMesh {
     /**
      * Get the bounding radius.
      * <p><b>Not Implemented</b></p>
+     *
      * @return The bounding radius
      */
     public float getBoundingRadius() {
@@ -215,6 +230,7 @@ public class Mesh implements IMesh {
 
     /**
      * Set the bounding radius.
+     *
      * @param boundingRadius The bounding radius.
      */
     public void setBoundingRadius(float boundingRadius) {
@@ -246,7 +262,7 @@ public class Mesh implements IMesh {
 //        }
 
         int[] textures = {GL_TEXTURE3, GL_TEXTURE4, GL_TEXTURE5, GL_TEXTURE6, GL_TEXTURE7};
-        for(int i = 0; i < material.getOverlayTextures().size(); i++){
+        for (int i = 0; i < material.getOverlayTextures().size(); i++) {
             Texture ovText = material != null ? material.getOverlayTextures().get(i) : null;
             if (ovText != null) {
                 // Activate i texture bank
@@ -285,12 +301,12 @@ public class Mesh implements IMesh {
     public void render() {
         initRender();
 
-        if(isWireframe())
+        if (isWireframe())
             glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
         glDrawElements(GL_TRIANGLES, getVertexCount(), GL_UNSIGNED_INT, 0);
 
-        if(isWireframe())
+        if (isWireframe())
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
         endRender();
@@ -299,19 +315,19 @@ public class Mesh implements IMesh {
     /**
      * Render the mesh.
      * <p>Internal use only.</p>
+     *
      * @param gameItems The game items to render
-     * @param consumer The consumer
+     * @param consumer  The consumer
      */
     @Override
-    public void renderList(List<GameItem> gameItems, Consumer<GameItem> consumer){
+    public void renderList(List<GameItem> gameItems, Consumer<GameItem> consumer) {
         initRender();
-        for(GameItem gameItem : gameItems){
+        for (GameItem gameItem : gameItems) {
             consumer.accept(gameItem);
             glDrawElements(GL_TRIANGLES, getVertexCount(), GL_UNSIGNED_INT, 0);
         }
         endRender();
     }
-
 
     /**
      * Cleanup the mesh
@@ -331,7 +347,7 @@ public class Mesh implements IMesh {
             texture.cleanup();
         }
 
-        for(int i = 0; i < material.getOverlayTextures().size(); i++){
+        for (int i = 0; i < material.getOverlayTextures().size(); i++) {
             material.getOverlayTextures().get(i).cleanup();
         }
 
@@ -342,6 +358,7 @@ public class Mesh implements IMesh {
 
     /**
      * Delete buffers
+     *
      * @deprecated Use {@link #cleanUp()}
      */
     public void deleteBuffers() {
@@ -359,33 +376,23 @@ public class Mesh implements IMesh {
     }
 
     /**
-     * If you want the mesh to be rendered as a wireframe.
-     * @since 1.0-Pre2
-     * @param value If the mesh is a wireframe.
-     */
-    @Override
-    public void setWireframe(boolean value){
-        this.wireframe = value;
-    }
-
-    /**
      * If the mesh is a wire frame.
+     *
      * @return If the mesh is a wireframe.
      */
     @Override
-    public boolean isWireframe(){
+    public boolean isWireframe() {
         return this.wireframe;
     }
 
-    protected static float[] createEmptyFloatArray(int length, float defaultValue) {
-        float[] result = new float[length];
-        Arrays.fill(result, defaultValue);
-        return result;
-    }
-
-    protected static int[] createEmptyIntArray(int length, int defaultValue) {
-        int[] result = new int[length];
-        Arrays.fill(result, defaultValue);
-        return result;
+    /**
+     * If you want the mesh to be rendered as a wireframe.
+     *
+     * @param value If the mesh is a wireframe.
+     * @since 1.0-Pre2
+     */
+    @Override
+    public void setWireframe(boolean value) {
+        this.wireframe = value;
     }
 }

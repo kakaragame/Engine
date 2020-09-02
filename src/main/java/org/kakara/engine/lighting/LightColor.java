@@ -12,69 +12,77 @@ public class LightColor {
 
     /**
      * A light color.
+     *
      * @param r Red (0 - 255)
      * @param g Green (0 - 255)
      * @param b Blue (0 - 255)
      */
-    public LightColor(int r, int g, int b){
+    public LightColor(int r, int g, int b) {
         red = (r > 255 || r < 0) ? 255 : r;
         green = (g > 255 || g < 0) ? 255 : g;
-        blue = (b > 255 || b < 0) ? 255 : b;
-    }
-
-    /**
-     * Set the red color
-     * @param r Red (0 - 255)
-     */
-    public void setRed(int r){
-        red = (r > 255 || r < 0) ? 255 : r;
-    }
-
-    /**
-     * Set the green color
-     * @param g Green (0 - 255)
-     */
-    public void setGreen(int g){
-        green = (g > 255 || g < 0) ? 255 : g;
-    }
-
-    /**
-     * Set the blue color.
-     * @param b Blue (0 - 255)
-     */
-    public void setBlue(int b){
         blue = (b > 255 || b < 0) ? 255 : b;
     }
 
     /**
      * Get the red color
+     *
      * @return 0 - 255
      */
-    public int getRed(){
+    public int getRed() {
         return red;
     }
 
     /**
+     * Set the red color
+     *
+     * @param r Red (0 - 255)
+     */
+    public void setRed(int r) {
+        red = (r > 255 || r < 0) ? 255 : r;
+    }
+
+    /**
      * Get the green color
+     *
      * @return 0 - 255
      */
-    public int getGreen(){
+    public int getGreen() {
         return green;
     }
 
     /**
+     * Set the green color
+     *
+     * @param g Green (0 - 255)
+     */
+    public void setGreen(int g) {
+        green = (g > 255 || g < 0) ? 255 : g;
+    }
+
+    /**
      * Get the blue color
+     *
      * @return 0 - 255
      */
-    public int getBlue(){
+    public int getBlue() {
         return blue;
     }
 
     /**
+     * Set the blue color.
+     *
+     * @param b Blue (0 - 255)
+     */
+    public void setBlue(int b) {
+        blue = (b > 255 || b < 0) ? 255 : b;
+    }
+
+    /**
      * Convert this color into a vector that JOML can read.
+     *
      * @return A Vector3f
      */
-    public Vector3f toVector(){
-        return new Vector3f((float)red/(float)255, (float)green/(float)255, (float)blue/(float)255);
+    public Vector3f toVector() {
+        return new Vector3f((float) red / (float) 255, (float) green / (float) 255, (float) blue / (float) 255);
     }
 }

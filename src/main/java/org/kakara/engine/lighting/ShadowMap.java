@@ -40,6 +40,7 @@ public class ShadowMap {
 
     /**
      * Get the texture of the depth mpa
+     *
      * @return The texture.
      */
     public Texture getDepthMapTexture() {
@@ -48,6 +49,7 @@ public class ShadowMap {
 
     /**
      * Get the depth map fbo.
+     *
      * @return The fbo.
      */
     public int getDepthMapFBO() {

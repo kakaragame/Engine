@@ -33,7 +33,23 @@ public class Transformation {
     }
 
     /**
+     * Update the generic view matrix.
+     *
+     * @param position The position
+     * @param rotation The rotation
+     * @param matrix   The matrix in question.
+     * @return The updated matrix.
+     */
+    public static Matrix4f updateGenericViewMatrix(Vector3f position, Vector3f rotation, Matrix4f matrix) {
+        // First do the rotation so camera rotates over its position
+        return matrix.rotationX((float) Math.toRadians(rotation.x))
+                .rotateY((float) Math.toRadians(rotation.y))
+                .translate(-position.x, -position.y, -position.z);
+    }
+
+    /**
      * Update the projection matrix
+     *
      * @return The project matrix.
      */
     public Matrix4f updateProjectionMatrix(float fov, float width, float height, float zNear, float zFar) {
@@ -43,6 +59,7 @@ public class Transformation {
 
     /**
      * Get the project matrix.
+     *
      * @return
      */
     public Matrix4f getProjectionMatrix() {
@@ -51,6 +68,7 @@ public class Transformation {
 
     /**
      * Build the model matrix.
+     *
      * @param gameItem The game item.
      * @return The model matrix.
      */
@@ -78,6 +96,7 @@ public class Transformation {
 
     /**
      * Get the otho projection
+     *
      * @return The otho projection
      */
     public final Matrix4f getOrthoProjectionMatrix() {
@@ -86,12 +105,13 @@ public class Transformation {
 
     /**
      * Update the ortho projection
-     * @param left -
-     * @param right -
+     *
+     * @param left   -
+     * @param right  -
      * @param bottom -
-     * @param top -
-     * @param zNear -
-     * @param zFar -
+     * @param top    -
+     * @param zNear  -
+     * @param zFar   -
      * @return The ortho projection.
      */
     public Matrix4f updateOrthoProjectionMatrix(float left, float right, float bottom, float top, float zNear, float zFar) {
@@ -102,6 +122,7 @@ public class Transformation {
 
     /**
      * Get the light view matrix.
+     *
      * @return The light view matrix.
      */
     public Matrix4f getLightViewMatrix() {
@@ -110,6 +131,7 @@ public class Transformation {
 
     /**
      * Set the light view matrix.
+     *
      * @param lightViewMatrix The light view matrix.
      */
     public void setLightViewMatrix(Matrix4f lightViewMatrix) {
@@ -118,6 +140,7 @@ public class Transformation {
 
     /**
      * Update the light view matrix
+     *
      * @param position The position
      * @param rotation The rotation
      * @return The light view matrix.
@@ -127,25 +150,12 @@ public class Transformation {
     }
 
     /**
-     * Update the generic view matrix.
-     * @param position The position
-     * @param rotation The rotation
-     * @param matrix The matrix in question.
-     * @return The updated matrix.
-     */
-    public static  Matrix4f updateGenericViewMatrix(Vector3f position, Vector3f rotation, Matrix4f matrix) {
-        // First do the rotation so camera rotates over its position
-        return matrix.rotationX((float)Math.toRadians(rotation.x))
-                .rotateY((float)Math.toRadians(rotation.y))
-                .translate(-position.x, -position.y, -position.z);
-    }
-
-    /**
      * Get the 2d projection matrix.
-     * @param left -
-     * @param right -
+     *
+     * @param left   -
+     * @param right  -
      * @param bottom -
-     * @param top -
+     * @param top    -
      * @return The orth 2d projection matrix.
      */
     public final Matrix4f getOrtho2DProjectionMatrix(float left, float right, float bottom, float top) {
@@ -157,8 +167,9 @@ public class Transformation {
 
     /**
      * Build the model view matrix
+     *
      * @param gameItem The game item
-     * @param matrix The view matrix.
+     * @param matrix   The view matrix.
      * @return The model view matrix.
      */
     public Matrix4f buildModelViewMatrix(GameItem gameItem, Matrix4f matrix) {
@@ -171,6 +182,7 @@ public class Transformation {
 
     /**
      * Construct the model matrix for the 3D UI elements.
+     *
      * @param gameItem The UIObject to construct for.
      * @return The model matrix.
      */
@@ -184,13 +196,14 @@ public class Transformation {
 
     /**
      * Construct the ortho projection for the 3D UI layer.
-     * @param left The left value
-     * @param right The right value
+     *
+     * @param left   The left value
+     * @param right  The right value
      * @param bottom The bottom value
-     * @param top The top value.
+     * @param top    The top value.
      * @return The ortho projection matrix.
      */
-    public Matrix4f buildOrtho(float left, float right, float bottom, float top){
+    public Matrix4f buildOrtho(float left, float right, float bottom, float top) {
         orthoProjMatrix.identity();
         orthoProjMatrix.setOrtho(left, right, bottom, top, -100, 1000);
         return orthoProjMatrix;
@@ -198,8 +211,9 @@ public class Transformation {
 
     /**
      * Build the model view matrix.
+     *
      * @param modelMatrix The model matrix
-     * @param viewMatrix The view matrix.
+     * @param viewMatrix  The view matrix.
      * @return The model view matrix.
      */
     public Matrix4f buildModelViewMatrix(Matrix4f modelMatrix, Matrix4f viewMatrix) {
@@ -208,8 +222,9 @@ public class Transformation {
 
     /**
      * Build the light view matrix.
+     *
      * @param gameItem The game item
-     * @param matrix The light view matrix.
+     * @param matrix   The light view matrix.
      * @return The model light view matrix.
      */
     public Matrix4f buildModelLightViewMatrix(GameItem gameItem, Matrix4f matrix) {
@@ -222,7 +237,8 @@ public class Transformation {
 
     /**
      * Build the model light view matrix
-     * @param modelMatrix The model matrix
+     *
+     * @param modelMatrix     The model matrix
      * @param lightViewMatrix the light view matrix.
      * @return The model light view matrix.
      */
@@ -232,7 +248,8 @@ public class Transformation {
 
     /**
      * Build the ortho projection model matrix
-     * @param gameItem The game item
+     *
+     * @param gameItem    The game item
      * @param orthoMatrix The ortho matrix
      * @return The otho project model matrix.
      */

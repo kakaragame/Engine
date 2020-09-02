@@ -7,12 +7,12 @@ import org.kakara.engine.GameHandler;
 import org.kakara.engine.events.EventHandler;
 import org.kakara.engine.events.event.MouseClickEvent;
 import org.kakara.engine.math.Vector3;
+import org.kakara.engine.scene.Scene;
+import org.kakara.engine.ui.UICanvas;
 import org.kakara.engine.ui.UserInterface;
 import org.kakara.engine.ui.events.UIClickEvent;
 import org.kakara.engine.ui.objectcanvas.UIObject;
 import org.kakara.engine.window.Window;
-import org.kakara.engine.scene.Scene;
-import org.kakara.engine.ui.UICanvas;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,18 +36,20 @@ public class ObjectCanvas implements UICanvas {
 
     /**
      * Create a new canvas component
+     *
      * @param scene The current scene.
      */
-    public ObjectCanvas(Scene scene){
+    public ObjectCanvas(Scene scene) {
         objects = new ArrayList<>();
         this.scene = scene;
     }
 
     /**
      * Add a child component into the canvas
+     *
      * @param object The component to add.
      */
-    public void add(UIObject object){
+    public void add(UIObject object) {
         objects.add(object);
     }
 
@@ -67,7 +69,7 @@ public class ObjectCanvas implements UICanvas {
 
     @Override
     public void cleanup(GameHandler handler) {
-        for(UIObject obj : objects){
+        for (UIObject obj : objects) {
             obj.getMesh().cleanUp();
         }
     }
@@ -77,40 +79,42 @@ public class ObjectCanvas implements UICanvas {
      *
      * @return The child objects
      */
-    public List<UIObject> getObjects(){
+    public List<UIObject> getObjects() {
         return objects;
     }
 
     /**
      * Clear all of the objects
      */
-    public void clearObjects(){
+    public void clearObjects() {
         objects.clear();
     }
 
     /**
      * Remove an object from the list.
+     *
      * @param o The object
      */
-    public void removeObject(UIObject o){
+    public void removeObject(UIObject o) {
         objects.remove(o);
     }
 
     @EventHandler
-    public void onClick(MouseClickEvent evt){
+    public void onClick(MouseClickEvent evt) {
         UIObject obj = selectGameItems(scene, new Vector3(evt.getMousePosition().x, evt.getMousePosition().y, 0));
-        if(obj != null){
+        if (obj != null) {
             obj.triggerEvent(UIClickEvent.class, obj.getPosition(), evt.getMouseClickType());
         }
     }
 
     /**
      * Internally used to select game items.
-     * @param scene The scene.
+     *
+     * @param scene    The scene.
      * @param position The position.
      * @return The UIObject Selected.
      */
-    private UIObject selectGameItems(Scene scene, Vector3 position){
+    private UIObject selectGameItems(Scene scene, Vector3 position) {
         UIObject selectedGameItem = null;
         float closestDistance = 10;
 
@@ -122,11 +126,11 @@ public class ObjectCanvas implements UICanvas {
         Vector3f min = new Vector3f();
         Vector2f nearFar = new Vector2f();
 
-        for(UIObject collidable : objects){
+        for (UIObject collidable : objects) {
             min.set(collidable.get3DPosition().toJoml());
             max.set(collidable.get3DPosition().toJoml());
-            min.add(-collidable.getScale()/2, -collidable.getScale()/2, -collidable.getScale()/2);
-            max.add(collidable.getScale()/2, collidable.getScale()/2, collidable.getScale()/2);
+            min.add(-collidable.getScale() / 2, -collidable.getScale() / 2, -collidable.getScale() / 2);
+            max.add(collidable.getScale() / 2, collidable.getScale() / 2, collidable.getScale() / 2);
             if (Intersectionf.intersectRayAab(position.toJoml(), dir, min, max, nearFar) && nearFar.x < closestDistance) {
                 closestDistance = nearFar.x;
                 selectedGameItem = collidable;
@@ -136,22 +140,22 @@ public class ObjectCanvas implements UICanvas {
     }
 
     @Override
-    public void setData(List<Object> data) {
-        this.data = data;
-    }
-
-    @Override
     public List<Object> getData() {
         return data;
     }
 
     @Override
-    public void setTag(String tag) {
-        this.tag = tag;
+    public void setData(List<Object> data) {
+        this.data = data;
     }
 
     @Override
     public String getTag() {
         return tag;
+    }
+
+    @Override
+    public void setTag(String tag) {
+        this.tag = tag;
     }
 }

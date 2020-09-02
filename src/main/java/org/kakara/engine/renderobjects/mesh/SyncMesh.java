@@ -9,34 +9,36 @@ import org.kakara.engine.renderobjects.TextureAtlas;
 import org.kakara.engine.renderobjects.renderlayouts.MeshLayout;
 import org.lwjgl.system.MemoryUtil;
 
-import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.*;
-import static org.lwjgl.opengl.GL20.glDisableVertexAttribArray;
 import static org.lwjgl.opengl.GL30.*;
 
 /**
  * The mesh for the chunks.
+ *
  * @since 1.0-Pre2
  */
 public class SyncMesh implements RenderMesh {
 
-    protected int vaoId;
     protected final List<Integer> vboIdList;
+    protected int vaoId;
     private int vertexCount;
 
     /**
      * Create a render mesh
+     *
      * @param blocks       The list of render blocks
      * @param renderChunk  renderchunk
      * @param textureAtlas The texture atlas to use
      */
     public SyncMesh(List<RenderBlock> blocks, RenderChunk renderChunk, TextureAtlas textureAtlas) {
-        if(Thread.currentThread() != GameEngine.currentThread)
+        if (Thread.currentThread() != GameEngine.currentThread)
             throw new InvalidThreadException("This class must be constructed on the main tread!");
         vboIdList = new ArrayList<>();
         vaoId = glGenVertexArrays();
@@ -100,9 +102,9 @@ public class SyncMesh implements RenderMesh {
                 MemoryUtil.memFree(layout.getNormals());
             if (layout.getIndices() != null)
                 MemoryUtil.memFree(layout.getIndices());
-            if(layout.getOverlayCoords() != null)
+            if (layout.getOverlayCoords() != null)
                 MemoryUtil.memFree(layout.getOverlayCoords());
-            if(layout.getHasOverlay() != null)
+            if (layout.getHasOverlay() != null)
                 MemoryUtil.memFree(layout.getHasOverlay());
         }
 
@@ -166,9 +168,9 @@ public class SyncMesh implements RenderMesh {
         List<Integer> hasOverlay = new ArrayList<>();
 
         for (RenderBlock rb : blocks) {
-            int initial = overlayCoords.size()/2;
+            int initial = overlayCoords.size() / 2;
             rb.getOverlayFromFaces(overlayCoords, textureAtlas);
-            hasOverlay.addAll(Collections.nCopies((overlayCoords.size()/2 - initial), rb.getOverlay() == null ? 0 : 1));
+            hasOverlay.addAll(Collections.nCopies((overlayCoords.size() / 2 - initial), rb.getOverlay() == null ? 0 : 1));
         }
 
         FloatBuffer overlayCoordsBuffer = MemoryUtil.memAllocFloat(overlayCoords.size());
@@ -181,8 +183,8 @@ public class SyncMesh implements RenderMesh {
             hasOverlayBuffer.put(f);
         hasOverlayBuffer.flip();
 
-        if(Thread.currentThread() == GameEngine.currentThread){
-            try{
+        if (Thread.currentThread() == GameEngine.currentThread) {
+            try {
                 glBindVertexArray(vaoId);
                 int pid = vboIdList.get(3);
                 glBindBuffer(GL_ARRAY_BUFFER, pid);
@@ -196,13 +198,13 @@ public class SyncMesh implements RenderMesh {
 
                 glBindBuffer(GL_ARRAY_BUFFER, 0);
                 glBindVertexArray(0);
-            }finally {
+            } finally {
                 MemoryUtil.memFree(overlayCoordsBuffer);
                 MemoryUtil.memFree(hasOverlayBuffer);
             }
-        }else{
+        } else {
             GameHandler.getInstance().getGameEngine().addQueueItem(() -> {
-                try{
+                try {
                     glBindVertexArray(vaoId);
                     int pid = vboIdList.get(3);
                     glBindBuffer(GL_ARRAY_BUFFER, pid);
@@ -216,7 +218,7 @@ public class SyncMesh implements RenderMesh {
 
                     glBindBuffer(GL_ARRAY_BUFFER, 0);
                     glBindVertexArray(0);
-                }finally {
+                } finally {
                     MemoryUtil.memFree(overlayCoordsBuffer);
                     MemoryUtil.memFree(hasOverlayBuffer);
                 }

@@ -5,27 +5,37 @@ package org.kakara.engine.utils;
  */
 public class Time {
 
+    private static float deltaTime;
     private double lastLoopTime;
 
-    private static float deltaTime;
+    /**
+     * The time in between frames. (In milliseconds).
+     *
+     * @return The time between frames. (In milliseconds).
+     */
+    public static float getDeltaTime() {
+        return Time.deltaTime;
+    }
 
-    public void init(){
+    public void init() {
         lastLoopTime = getTime();
     }
 
     /**
      * Get the current delta time.
+     *
      * @return The delta time.
      */
-    public double getTime(){
+    public double getTime() {
         return System.nanoTime() / 1000_000_000.0;
     }
 
     /**
      * the change in time between frames. (In milliseconds).
+     *
      * @return The time between frames (delta time).
      */
-    public float getElapsedTime(){
+    public float getElapsedTime() {
         double time = getTime();
         float elapsedTime = (float) (time - lastLoopTime);
         lastLoopTime = time;
@@ -33,15 +43,7 @@ public class Time {
         return elapsedTime;
     }
 
-    public double getLastLoopTime(){
+    public double getLastLoopTime() {
         return lastLoopTime;
-    }
-
-    /**
-     * The time in between frames. (In milliseconds).
-     * @return The time between frames. (In milliseconds).
-     */
-    public static float getDeltaTime(){
-        return Time.deltaTime;
     }
 }

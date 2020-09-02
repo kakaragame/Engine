@@ -128,17 +128,17 @@ public class ObjectBoxCollider implements Collider {
     }
 
     @Override
+    public Predicate<Collidable> getPredicate() {
+        return predicate;
+    }
+
+    @Override
     public void setPredicate(Predicate<Collidable> gameItemPredicate) {
         if (gameItemPredicate == null) {
             predicate = gameItem -> false;
             return;
         }
         predicate = gameItemPredicate;
-    }
-
-    @Override
-    public Predicate<Collidable> getPredicate() {
-        return predicate;
     }
 
     public Collider setTrigger(boolean value) {
@@ -151,13 +151,13 @@ public class ObjectBoxCollider implements Collider {
     }
 
     @Override
-    public void setResolvable(boolean value) {
-        this.resolveable = value;
+    public boolean isResolvable() {
+        return resolveable;
     }
 
     @Override
-    public boolean isResolvable() {
-        return resolveable;
+    public void setResolvable(boolean value) {
+        this.resolveable = value;
     }
 
     @Override

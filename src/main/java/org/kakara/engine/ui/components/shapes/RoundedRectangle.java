@@ -4,8 +4,8 @@ import org.kakara.engine.GameHandler;
 import org.kakara.engine.events.EventHandler;
 import org.kakara.engine.events.event.MouseClickEvent;
 import org.kakara.engine.math.Vector2;
-import org.kakara.engine.ui.UserInterface;
 import org.kakara.engine.ui.RGBA;
+import org.kakara.engine.ui.UserInterface;
 import org.kakara.engine.ui.components.GeneralComponent;
 import org.kakara.engine.ui.events.UIClickEvent;
 import org.kakara.engine.ui.events.UIHoverEnterEvent;
@@ -16,6 +16,7 @@ import static org.lwjgl.nanovg.NanoVG.*;
 
 /**
  * A rectangle with rounded corners.
+ *
  * @since 1.0-Pre1
  */
 public class RoundedRectangle extends GeneralComponent {
@@ -25,18 +26,19 @@ public class RoundedRectangle extends GeneralComponent {
 
     private boolean isHovering;
 
-    public RoundedRectangle(){
+    public RoundedRectangle() {
         this(new Vector2(0, 0), new Vector2(40, 40), 1.0f, new RGBA());
     }
 
     /**
      * Create a rectangle
+     *
      * @param position The position of the rectangle
-     * @param scale The scale of the rectangle
-     * @param radius The radius of the corners.
-     * @param color The color of the rectangle.
+     * @param scale    The scale of the rectangle
+     * @param radius   The radius of the corners.
+     * @param color    The color of the rectangle.
      */
-    public RoundedRectangle(Vector2 position, Vector2 scale, float radius, RGBA color){
+    public RoundedRectangle(Vector2 position, Vector2 scale, float radius, RGBA color) {
         this.position = position;
         this.scale = scale;
         this.color = color;
@@ -45,46 +47,49 @@ public class RoundedRectangle extends GeneralComponent {
         this.radius = radius;
     }
 
-    public RoundedRectangle(Vector2 position, Vector2 scale){
+    public RoundedRectangle(Vector2 position, Vector2 scale) {
         this(position, scale, 1.0f, new RGBA());
-    }
-
-
-    /**
-     * Set the color of the rectangle.
-     * @param color The color value
-     */
-    public void setColor(RGBA color){
-        this.color = color;
     }
 
     /**
      * Get the color of the rectangle.
+     *
      * @return The color of the rectangle.
      */
-    public RGBA getColor(){
+    public RGBA getColor() {
         return color;
     }
 
     /**
+     * Set the color of the rectangle.
+     *
+     * @param color The color value
+     */
+    public void setColor(RGBA color) {
+        this.color = color;
+    }
+
+    /**
      * Get the radius of the corners.
+     *
      * @return The radius of the corners.
      */
-    public float getRadius(){
+    public float getRadius() {
         return radius;
     }
 
     /**
      * Set the radius of the corners.
+     *
      * @param radius The radius.
      */
-    public void setRadius(float radius){
+    public void setRadius(float radius) {
         this.radius = radius;
     }
 
     @EventHandler
-    public void onClick(MouseClickEvent evt){
-        if(UserInterface.isColliding(getTruePosition(), getTrueScale(), new Vector2(evt.getMousePosition()))){
+    public void onClick(MouseClickEvent evt) {
+        if (UserInterface.isColliding(getTruePosition(), getTrueScale(), new Vector2(evt.getMousePosition()))) {
             triggerEvent(UIClickEvent.class, new Vector2(evt.getMousePosition()), evt.getMouseClickType());
         }
     }
@@ -98,12 +103,12 @@ public class RoundedRectangle extends GeneralComponent {
 
     @Override
     public void render(Vector2 relative, UserInterface userInterface, GameHandler handler) {
-        if(!isVisible()) return;
+        if (!isVisible()) return;
         boolean isColliding = UserInterface.isColliding(getTruePosition(), getTrueScale(), new Vector2(handler.getMouseInput().getPosition()));
-        if(isColliding && !isHovering){
+        if (isColliding && !isHovering) {
             isHovering = true;
             triggerEvent(UIHoverEnterEvent.class, handler.getMouseInput().getCurrentPosition());
-        }else if(!isColliding && isHovering){
+        } else if (!isColliding && isHovering) {
             isHovering = false;
             triggerEvent(UIHoverLeaveEvent.class, handler.getMouseInput().getCurrentPosition());
         }

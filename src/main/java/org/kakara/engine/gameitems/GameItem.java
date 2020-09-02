@@ -22,6 +22,13 @@ public interface GameItem extends Tagable, Collidable, PhysicsItem {
      */
     Vector3 getPosition();
 
+    /**
+     * Set the position of the item
+     *
+     * @param position The position in vector form
+     * @return The instance of the Game Item.
+     */
+    GameItem setPosition(Vector3 position);
 
     /**
      * Set the position of the game item.
@@ -32,14 +39,6 @@ public interface GameItem extends Tagable, Collidable, PhysicsItem {
      * @return The instance of the game item.
      */
     GameItem setPosition(float x, float y, float z);
-
-    /**
-     * Set the position of the item
-     *
-     * @param position The position in vector form
-     * @return The instance of the Game Item.
-     */
-    GameItem setPosition(Vector3 position);
 
     /**
      * Change the position of the game item by x, y, and z values.
@@ -142,16 +141,16 @@ public interface GameItem extends Tagable, Collidable, PhysicsItem {
     /**
      * Get the features on this GameItem.
      *
-     * @since 1.0-Pre2
      * @return The list of features.
+     * @since 1.0-Pre2
      */
     List<Feature> getFeatures();
 
     /**
      * Add a feature to this GameItem.
      *
-     * @since 1.0-Pre2
      * @param feature The feature to add.
+     * @since 1.0-Pre2
      */
     void addFeature(Feature feature);
 }

@@ -1,11 +1,11 @@
 package org.kakara.engine.renderobjects;
 
 import org.jetbrains.annotations.Nullable;
-import org.kakara.engine.properties.Tagable;
+import org.kakara.engine.math.Vector3;
 import org.kakara.engine.physics.collision.Collidable;
 import org.kakara.engine.physics.collision.Collider;
 import org.kakara.engine.physics.collision.ObjectBoxCollider;
-import org.kakara.engine.math.Vector3;
+import org.kakara.engine.properties.Tagable;
 import org.kakara.engine.renderobjects.mesh.MeshType;
 import org.kakara.engine.renderobjects.renderlayouts.BlockLayout;
 import org.kakara.engine.renderobjects.renderlayouts.Face;
@@ -43,11 +43,12 @@ public class RenderBlock implements Collidable, Tagable {
 
     /**
      * Create a render block.
-     * @param layout The layout to use
-     * @param texture The texture to use.
+     *
+     * @param layout   The layout to use
+     * @param texture  The texture to use.
      * @param position The position of the block. (Must be 0-16 for x, y, and z).
      */
-    public RenderBlock(Layout layout, RenderTexture texture, Vector3 position){
+    public RenderBlock(Layout layout, RenderTexture texture, Vector3 position) {
         this.layout = layout;
         this.texture = texture;
         this.position = position;
@@ -60,107 +61,118 @@ public class RenderBlock implements Collidable, Tagable {
         this.uuid = UUID.randomUUID();
     }
 
-    public RenderBlock(RenderTexture texture, Vector3 position){
+    public RenderBlock(RenderTexture texture, Vector3 position) {
         this(new BlockLayout(), texture, position);
     }
 
     /**
-     * Set the position of the block
-     * @param position the position
-     */
-    public void setPosition(Vector3 position){
-        this.position = position.clone();
-    }
-
-    /**
      * Get the list of visible faces.
+     *
      * @return The list of visible faces.
      */
-    public List<Face> getVisibleFaces(){
+    public List<Face> getVisibleFaces() {
         return this.visibleFaces;
     }
 
     /**
      * Get the position.
+     *
      * @return The position.
      */
-    public Vector3 getPosition(){
+    public Vector3 getPosition() {
         return position.clone();
     }
 
     /**
+     * Set the position of the block
+     *
+     * @param position the position
+     */
+    public void setPosition(Vector3 position) {
+        this.position = position.clone();
+    }
+
+    /**
      * Get the parent chunk.
+     *
      * @return The parent chunk.
      */
-    public RenderChunk getParentChunk(){
+    public RenderChunk getParentChunk() {
         return this.parentChunk;
     }
 
     /**
      * Set the parent chunk
+     *
      * @param chunk The parent chunk
      */
-    protected void setParentChunk(RenderChunk chunk){
+    protected void setParentChunk(RenderChunk chunk) {
         this.parentChunk = chunk;
     }
 
     /**
      * Get the render texture
+     *
      * @return The render texture.
      */
-    public RenderTexture getTexture(){
+    public RenderTexture getTexture() {
         return texture;
     }
 
     /**
      * Get the layout that is used.
+     *
      * @return The layout.
      */
-    public Layout getLayout(){
+    public Layout getLayout() {
         return layout;
     }
 
     /**
      * Add a face to the visible face list.
+     *
      * @param f The face to add
      */
-    public void addFace(Face f){
+    public void addFace(Face f) {
         visibleFaces.add(f);
     }
 
     /**
      * Remove all faces from the visible face list.
      */
-    public void clearFaces(){
+    public void clearFaces() {
         visibleFaces.clear();
     }
 
     /**
-     * Add an overlay render texture.
-     * @since 1.0-Pre2
-     * @param texture The overlay render texture.
-     */
-    public void setOverlay(@Nullable RenderTexture texture){
-        this.overlay = texture;
-    }
-
-    /**
      * Get the overlay render texture.
-     * @since 1.0-Pre2
+     *
      * @return The overlay render texture.
+     * @since 1.0-Pre2
      */
-    public RenderTexture getOverlay(){
+    public RenderTexture getOverlay() {
         return this.overlay;
     }
 
     /**
+     * Add an overlay render texture.
+     *
+     * @param texture The overlay render texture.
+     * @since 1.0-Pre2
+     */
+    public void setOverlay(@Nullable RenderTexture texture) {
+        this.overlay = texture;
+    }
+
+    /**
      * Get the vertex array from the visible faces
+     *
      * @param vertex The list to append the vertexes to.
      */
-    public void getVertexFromFaces(List<Float> vertex){
-        for(Face f : this.visibleFaces){
+    public void getVertexFromFaces(List<Float> vertex) {
+        for (Face f : this.visibleFaces) {
             List<Float> temp;
-            switch(f){
+            switch (f) {
                 case FRONT:
                     temp = layout.getVertex(getPosition()).getFront();
                     break;
@@ -189,13 +201,14 @@ public class RenderBlock implements Collidable, Tagable {
 
     /**
      * Get the texture coord array from the visible faces
+     *
      * @param vertex The list to append the textures to.
-     * @param atlas The texture atlas
+     * @param atlas  The texture atlas
      */
-    public void getTextureFromFaces(List<Float> vertex, TextureAtlas atlas){
-        for(Face f : this.visibleFaces){
+    public void getTextureFromFaces(List<Float> vertex, TextureAtlas atlas) {
+        for (Face f : this.visibleFaces) {
             List<Float> temp;
-            switch(f){
+            switch (f) {
                 case FRONT:
                     temp = layout.getTextureCords().getFront(getTexture().getXOffset(), getTexture().getYOffset(), atlas.getNumberOfRows());
                     break;
@@ -224,21 +237,22 @@ public class RenderBlock implements Collidable, Tagable {
 
     /**
      * Get the overlay texture coordinates of the render blocks.
+     *
      * @param vertex The list of overlay textures to append to.
-     * @param atlas The texture atlas.
+     * @param atlas  The texture atlas.
      */
-    public void getOverlayFromFaces(List<Float> vertex, TextureAtlas atlas){
-        if(getOverlay() == null){
+    public void getOverlayFromFaces(List<Float> vertex, TextureAtlas atlas) {
+        if (getOverlay() == null) {
             vertex.addAll(Collections.nCopies(4 * 2 * this.visibleFaces.size(), 0f));
             return;
         }
-        for(Face f : this.visibleFaces){
-            if(getOverlay() == null){
+        for (Face f : this.visibleFaces) {
+            if (getOverlay() == null) {
                 vertex.addAll(Arrays.asList(0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
                 continue;
             }
             List<Float> temp;
-            switch(f){
+            switch (f) {
                 case FRONT:
                     temp = layout.getTextureCords().getFront(getOverlay().getXOffset(), getOverlay().getYOffset(), atlas.getNumberOfRows());
                     break;
@@ -267,12 +281,13 @@ public class RenderBlock implements Collidable, Tagable {
 
     /**
      * Get the normal array from the visible faces
+     *
      * @param vertex This list to append the normals to.
      */
-    public void getNormalsFromFaces(List<Float> vertex){
-        for(Face f : this.visibleFaces){
+    public void getNormalsFromFaces(List<Float> vertex) {
+        for (Face f : this.visibleFaces) {
             List<Float> temp;
-            switch(f){
+            switch (f) {
                 case FRONT:
                     temp = layout.getNormal().getFront();
                     break;
@@ -301,14 +316,15 @@ public class RenderBlock implements Collidable, Tagable {
 
     /**
      * Get the indices array from the visible faces.
+     *
      * @param currentIndex The current index. (Starting number of the indices)
-     * @param vertex The list to append the indices to.
+     * @param vertex       The list to append the indices to.
      */
-    public void getIndicesFromFaces(List<Integer> vertex, int currentIndex){
+    public void getIndicesFromFaces(List<Integer> vertex, int currentIndex) {
         int index = currentIndex;
-        for(Face f : this.visibleFaces){
+        for (Face f : this.visibleFaces) {
             List<Integer> temp;
-            switch(f){
+            switch (f) {
                 case FRONT:
                     temp = layout.getIndices().getFront(index);
                     break;
@@ -338,7 +354,7 @@ public class RenderBlock implements Collidable, Tagable {
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return "{RenderBlock: " + position.x + ", " + position.y + ", " + position.z + "}";
     }
 
@@ -349,14 +365,13 @@ public class RenderBlock implements Collidable, Tagable {
     }
 
     @Override
-    public float getColScale() {
-        return 1;
+    public void setColPosition(Vector3 vec) {
+        setPosition(vec.clone());
     }
 
     @Override
-    public void setCollider(Collider collider) {
-        this.collider = collider;
-        collider.onRegister(this);
+    public float getColScale() {
+        return 1;
     }
 
     @Override
@@ -370,13 +385,14 @@ public class RenderBlock implements Collidable, Tagable {
     }
 
     @Override
-    public void setColPosition(Vector3 vec) {
-        setPosition(vec.clone());
+    public Collider getCollider() {
+        return collider;
     }
 
     @Override
-    public Collider getCollider() {
-        return collider;
+    public void setCollider(Collider collider) {
+        this.collider = collider;
+        collider.onRegister(this);
     }
 
     @Override
@@ -395,22 +411,22 @@ public class RenderBlock implements Collidable, Tagable {
     }
 
     @Override
-    public void setData(List<Object> data) {
-        this.data = data;
-    }
-
-    @Override
     public List<Object> getData() {
         return data;
     }
 
     @Override
-    public void setTag(String tag) {
-        this.tag = tag;
+    public void setData(List<Object> data) {
+        this.data = data;
     }
 
     @Override
     public String getTag() {
         return tag;
+    }
+
+    @Override
+    public void setTag(String tag) {
+        this.tag = tag;
     }
 }

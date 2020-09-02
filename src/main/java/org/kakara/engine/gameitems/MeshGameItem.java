@@ -6,9 +6,9 @@ import org.kakara.engine.Camera;
 import org.kakara.engine.GameHandler;
 import org.kakara.engine.gameitems.features.Feature;
 import org.kakara.engine.gameitems.mesh.IMesh;
-import org.kakara.engine.physics.collision.Collider;
 import org.kakara.engine.gameitems.mesh.Mesh;
 import org.kakara.engine.math.Vector3;
+import org.kakara.engine.physics.collision.Collider;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,11 +20,11 @@ import java.util.UUID;
  * This is a Collidable GameItem. That uses meshes to create an item
  */
 public class MeshGameItem implements GameItem {
+    private final UUID uuid;
     private List<Feature> features = new ArrayList<>();
     private IMesh[] meshes;
     private float scale;
     private Quaternionf rotation;
-    private final UUID uuid;
     private int textPos;
     private boolean visible = true;
     private boolean selected;
@@ -207,6 +207,10 @@ public class MeshGameItem implements GameItem {
         return meshes[0];
     }
 
+    public void setMesh(@NotNull Mesh mesh) {
+        this.meshes = new Mesh[]{mesh};
+    }
+
     @Override
     public int getTextPos() {
         return this.textPos;
@@ -246,30 +250,19 @@ public class MeshGameItem implements GameItem {
         this.meshes = meshes;
     }
 
-    public void setMesh(@NotNull Mesh mesh) {
-        this.meshes = new Mesh[]{mesh};
-    }
-
     @Override
     public final Vector3 getColPosition() {
         return getPosition().clone();
     }
 
     @Override
-    public float getColScale() {
-        return getScale();
+    public void setColPosition(Vector3 vec) {
+        setPosition(vec.clone());
     }
 
-    /**
-     * Set the collider for a game item
-     *
-     * @param collider The instance of the collider.
-     * @return The instance of the game item.
-     */
-    public void setCollider(Collider collider) {
-        this.collider = collider;
-        collider.onRegister(this);
-        GameHandler.getInstance().getCurrentScene().getCollisionManager().addCollidingItem(this);
+    @Override
+    public float getColScale() {
+        return getScale();
     }
 
     /**
@@ -286,13 +279,20 @@ public class MeshGameItem implements GameItem {
     }
 
     @Override
-    public void setColPosition(Vector3 vec) {
-        setPosition(vec.clone());
-    }
-
-    @Override
     public Collider getCollider() {
         return this.collider;
+    }
+
+    /**
+     * Set the collider for a game item
+     *
+     * @param collider The instance of the collider.
+     * @return The instance of the game item.
+     */
+    public void setCollider(Collider collider) {
+        this.collider = collider;
+        collider.onRegister(this);
+        GameHandler.getInstance().getCurrentScene().getCollisionManager().addCollidingItem(this);
     }
 
     @Override
@@ -432,11 +432,6 @@ public class MeshGameItem implements GameItem {
     }
 
     @Override
-    public void setVelocity(Vector3 velocity) {
-        this.velocity = velocity;
-    }
-
-    @Override
     public void setVelocityX(float x) {
         this.velocity.setX(x);
     }
@@ -470,8 +465,8 @@ public class MeshGameItem implements GameItem {
     }
 
     @Override
-    public void setAcceleration(Vector3 acceleration) {
-        this.acceleration = acceleration;
+    public void setVelocity(Vector3 velocity) {
+        this.velocity = velocity;
     }
 
     @Override
@@ -485,8 +480,8 @@ public class MeshGameItem implements GameItem {
     }
 
     @Override
-    public void setData(List<Object> data) {
-        this.data = data;
+    public void setAcceleration(Vector3 acceleration) {
+        this.acceleration = acceleration;
     }
 
     @Override
@@ -495,12 +490,17 @@ public class MeshGameItem implements GameItem {
     }
 
     @Override
-    public void setTag(String tag) {
-        this.tag = tag;
+    public void setData(List<Object> data) {
+        this.data = data;
     }
 
     @Override
     public String getTag() {
         return tag;
+    }
+
+    @Override
+    public void setTag(String tag) {
+        this.tag = tag;
     }
 }

@@ -7,11 +7,11 @@ public class CharacterPressEvent {
 
     private int codepoint;
 
-    public CharacterPressEvent(int codepoint){
+    public CharacterPressEvent(int codepoint) {
         this.codepoint = codepoint;
     }
 
-    public int getCodePoint(){
+    public int getCodePoint() {
         return codepoint;
     }
 }

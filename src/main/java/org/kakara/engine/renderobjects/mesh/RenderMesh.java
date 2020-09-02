@@ -7,11 +7,13 @@ import java.util.List;
 
 /**
  * The general interface for the different types of render meshes.
+ *
  * @since 1.0-Pre2
  */
 public interface RenderMesh {
     /**
      * The number of vertexes.
+     *
      * @return The number of vertexes.
      */
     int getVertexCount();
@@ -31,7 +33,8 @@ public interface RenderMesh {
     /**
      * Update the overlay textures.
      * <p>The list of blocks cannot be different from the current mesh.</p>
-     * @param blocks The list of blocks. (Much be the same as the current render).
+     *
+     * @param blocks       The list of blocks. (Much be the same as the current render).
      * @param textureAtlas The texture atlas to use.
      */
     void updateOverlay(List<RenderBlock> blocks, TextureAtlas textureAtlas);

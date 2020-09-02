@@ -1,12 +1,12 @@
 package org.kakara.engine;
 
-import org.kakara.engine.window.Window;
 import org.kakara.engine.render.Renderer;
 import org.kakara.engine.renderobjects.ChunkHandler;
 import org.kakara.engine.scene.AbstractGameScene;
 import org.kakara.engine.scene.AbstractMenuScene;
 import org.kakara.engine.scene.AbstractScene;
 import org.kakara.engine.utils.Time;
+import org.kakara.engine.window.Window;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,21 +18,18 @@ import java.util.concurrent.LinkedBlockingQueue;
  * <p>Handles the backend, such as the window.</p>
  */
 public class GameEngine implements Runnable {
-    public final int TARGET_FPS = 75;
-    public final int TARGET_UPS = 30;
+    public static final Thread currentThread = Thread.currentThread();
     //WE will change this to the games logger in the impl.
     public static Logger LOGGER = LoggerFactory.getLogger(GameEngine.class);
+    public final int TARGET_FPS = 75;
+    public final int TARGET_UPS = 30;
     private final Window window;
     private final Time time;
-
     private final Game game;
-    private Renderer renderer;
     private final GameHandler gameHandler;
-    protected boolean running = true;
-
     private final Queue<Runnable> mainThreadQueue = new LinkedBlockingQueue<>();
-
-    public static final Thread currentThread = Thread.currentThread();
+    protected boolean running = true;
+    private Renderer renderer;
 
     /**
      * Create a new game.

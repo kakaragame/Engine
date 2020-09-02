@@ -5,20 +5,22 @@ import org.joml.Vector3f;
 import org.joml.Vector4f;
 import org.kakara.engine.Camera;
 import org.kakara.engine.GameHandler;
-import org.kakara.engine.render.culling.FrustumCullingFilter;
-import org.kakara.engine.window.Window;
-import org.kakara.engine.gameitems.*;
+import org.kakara.engine.gameitems.GameItem;
+import org.kakara.engine.gameitems.MeshGameItem;
+import org.kakara.engine.gameitems.Texture;
 import org.kakara.engine.gameitems.mesh.IMesh;
 import org.kakara.engine.gameitems.mesh.InstancedMesh;
 import org.kakara.engine.gameitems.mesh.Mesh;
 import org.kakara.engine.gameitems.particles.ParticleEmitter;
 import org.kakara.engine.lighting.*;
 import org.kakara.engine.math.Vector3;
+import org.kakara.engine.render.culling.FrustumCullingFilter;
 import org.kakara.engine.renderobjects.RenderChunk;
 import org.kakara.engine.scene.AbstractGameScene;
 import org.kakara.engine.scene.Scene;
 import org.kakara.engine.ui.objectcanvas.UIObject;
 import org.kakara.engine.utils.Utils;
+import org.kakara.engine.window.Window;
 
 import java.util.List;
 import java.util.Map;
@@ -32,32 +34,25 @@ import static org.lwjgl.opengl.GL30.glBindFramebuffer;
  * Handles the rendering pipeline of the game.
  */
 public class Renderer {
+    private static final float FOV = (float) Math.toRadians(60.0f);
+    private static final float Z_NEAR = 0.01f;
+    private static final float Z_FAR = 1000.0f;
+    private final float specularPower;
     private Transformation transformation;
     private FrustumCullingFilter frustumFilter;
-
-    public Renderer() {
-        transformation = new Transformation();
-        specularPower = 10f;
-        frustumFilter = new FrustumCullingFilter();
-    }
-
     private Shader shaderProgram;
     private Shader skyBoxShaderProgram;
     private Shader depthShaderProgram;
     private Shader particleShaderProgram;
     private Shader chunkShaderProgram;
     private Shader hudShaderProgram;
-
     private ShadowMap shadowMap;
 
-    private static final float FOV = (float) Math.toRadians(60.0f);
-
-    private static final float Z_NEAR = 0.01f;
-
-    private static final float Z_FAR = 1000.0f;
-
-    private final float specularPower;
-
+    public Renderer() {
+        transformation = new Transformation();
+        specularPower = 10f;
+        frustumFilter = new FrustumCullingFilter();
+    }
 
     /**
      * Setup shaders
@@ -108,7 +103,7 @@ public class Renderer {
      *
      * @param window  The window of the current game.
      * @param objects The list of objects.
-     * @param isAuto If the engine will scale the objects automatically.
+     * @param isAuto  If the engine will scale the objects automatically.
      */
     public void renderHUD(Window window, List<UIObject> objects, boolean isAuto) {
         hudShaderProgram.bind();
@@ -171,7 +166,7 @@ public class Renderer {
             Matrix4f modelLightViewMatrix = transformation.buildModelLightViewMatrix(modelMatrix, lightViewMatrix);
             chunkShaderProgram.setUniform("modelLightViewMatrix", modelLightViewMatrix);
 
-            if(!frustumFilter.testRenderObject(renderChunk.getPosition(), 16, 16, 16))
+            if (!frustumFilter.testRenderObject(renderChunk.getPosition(), 16, 16, 16))
                 continue;
 
             renderChunk.render();
@@ -232,7 +227,7 @@ public class Renderer {
         Map<IMesh, List<GameItem>> mapMeshes = scene.getItemHandler().getNonInstancedMeshMap();
         for (IMesh mesh : mapMeshes.keySet()) {
             if (!depthMap) {
-                if(mesh.getMaterial().isPresent())
+                if (mesh.getMaterial().isPresent())
                     shader.setUniform("material", mesh.getMaterial().get());
                 glActiveTexture(GL_TEXTURE2);
                 glBindTexture(GL_TEXTURE_2D, shadowMap.getDepthMapTexture().getId());
@@ -630,9 +625,10 @@ public class Renderer {
 
     /**
      * Get the FrustumCullingFilter for the Renderer.
+     *
      * @return The Frustum Culling Filter.
      */
-    public FrustumCullingFilter getFrustumFilter(){
+    public FrustumCullingFilter getFrustumFilter() {
         return frustumFilter;
     }
 }

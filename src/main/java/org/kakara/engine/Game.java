@@ -9,6 +9,7 @@ public interface Game {
     /**
      * What should happen on the start of the game
      * <p><b>Nothing graphical related can be done here. All of that must be handled by a scene.</b></p>
+     *
      * @param gameHandler The Game Handler
      * @throws Exception Exception if something breaks
      */
@@ -16,8 +17,9 @@ public interface Game {
 
     /**
      * The first scene of the game.
-     * @since 1.0-Pre1
+     *
      * @return The first scene that should be loaded in.
+     * @since 1.0-Pre1
      */
     Scene firstScene(GameHandler handler) throws Exception;
 

@@ -14,8 +14,8 @@ import java.util.List;
  */
 public class BlockLayout implements Layout {
 
-    private static float ONE_THIRD = 1f/3f;
-    private static float TWO_THIRD = 2f/3f;
+    private static float ONE_THIRD = 1f / 3f;
+    private static float TWO_THIRD = 2f / 3f;
 
     @Override
     public Vertex getVertex(final Vector3 pos) {
@@ -23,46 +23,51 @@ public class BlockLayout implements Layout {
             @Override
             public List<Float> getFront() {
                 return Arrays.asList(-0.5f + pos.x, 0.5f + pos.y, 0.5f + pos.z,
-                        -0.5f+ pos.x, -0.5f + pos.y, 0.5f + pos.z,
-                        0.5f+ pos.x, -0.5f + pos.y, 0.5f + pos.z,
-                        0.5f+ pos.x, 0.5f + pos.y, 0.5f + pos.z);
+                        -0.5f + pos.x, -0.5f + pos.y, 0.5f + pos.z,
+                        0.5f + pos.x, -0.5f + pos.y, 0.5f + pos.z,
+                        0.5f + pos.x, 0.5f + pos.y, 0.5f + pos.z);
             }
+
             @Override
             public List<Float> getBack() {
-                return  Arrays.asList(
-                        -0.5f+ pos.x, 0.5f + pos.y, -0.5f + pos.z,
-                        -0.5f+ pos.x, -0.5f + pos.y, -0.5f + pos.z,
-                        0.5f+ pos.x, -0.5f + pos.y, -0.5f + pos.z,
-                        0.5f+ pos.x, 0.5f + pos.y, -0.5f + pos.z
+                return Arrays.asList(
+                        -0.5f + pos.x, 0.5f + pos.y, -0.5f + pos.z,
+                        -0.5f + pos.x, -0.5f + pos.y, -0.5f + pos.z,
+                        0.5f + pos.x, -0.5f + pos.y, -0.5f + pos.z,
+                        0.5f + pos.x, 0.5f + pos.y, -0.5f + pos.z
                 );
             }
+
             @Override
             public List<Float> getTop() {
-                return  Arrays.asList( -0.5f+ pos.x, 0.5f + pos.y, -0.5f + pos.z,
-                        -0.5f+ pos.x, 0.5f + pos.y, 0.5f + pos.z,
-                        0.5f+ pos.x, 0.5f + pos.y, 0.5f + pos.z,
-                        0.5f+ pos.x, 0.5f + pos.y, -0.5f + pos.z);
+                return Arrays.asList(-0.5f + pos.x, 0.5f + pos.y, -0.5f + pos.z,
+                        -0.5f + pos.x, 0.5f + pos.y, 0.5f + pos.z,
+                        0.5f + pos.x, 0.5f + pos.y, 0.5f + pos.z,
+                        0.5f + pos.x, 0.5f + pos.y, -0.5f + pos.z);
             }
+
             @Override
             public List<Float> getBottom() {
-                return Arrays.asList( -0.5f+ pos.x, -0.5f + pos.y, -0.5f + pos.z,
-                        -0.5f+ pos.x, -0.5f + pos.y, 0.5f + pos.z,
-                        0.5f+ pos.x, -0.5f + pos.y, 0.5f + pos.z,
-                        0.5f+ pos.x, -0.5f + pos.y, -0.5f + pos.z);
+                return Arrays.asList(-0.5f + pos.x, -0.5f + pos.y, -0.5f + pos.z,
+                        -0.5f + pos.x, -0.5f + pos.y, 0.5f + pos.z,
+                        0.5f + pos.x, -0.5f + pos.y, 0.5f + pos.z,
+                        0.5f + pos.x, -0.5f + pos.y, -0.5f + pos.z);
             }
+
             @Override
             public List<Float> getRight() {
-                return  Arrays.asList(0.5f+ pos.x, 0.5f + pos.y, 0.5f + pos.z,
-                        0.5f+ pos.x, -0.5f + pos.y, 0.5f + pos.z,
-                        0.5f+ pos.x, -0.5f + pos.y, -0.5f + pos.z,
-                        0.5f+ pos.x, 0.5f + pos.y, -0.5f + pos.z);
+                return Arrays.asList(0.5f + pos.x, 0.5f + pos.y, 0.5f + pos.z,
+                        0.5f + pos.x, -0.5f + pos.y, 0.5f + pos.z,
+                        0.5f + pos.x, -0.5f + pos.y, -0.5f + pos.z,
+                        0.5f + pos.x, 0.5f + pos.y, -0.5f + pos.z);
             }
+
             @Override
             public List<Float> getLeft() {
-                return  Arrays.asList(-0.5f+ pos.x, 0.5f + pos.y, -0.5f + pos.z,
-                        -0.5f+ pos.x, -0.5f + pos.y, -0.5f + pos.z,
-                        -0.5f+ pos.x, -0.5f + pos.y, 0.5f + pos.z,
-                        -0.5f+ pos.x, 0.5f + pos.y, 0.5f + pos.z);
+                return Arrays.asList(-0.5f + pos.x, 0.5f + pos.y, -0.5f + pos.z,
+                        -0.5f + pos.x, -0.5f + pos.y, -0.5f + pos.z,
+                        -0.5f + pos.x, -0.5f + pos.y, 0.5f + pos.z,
+                        -0.5f + pos.x, 0.5f + pos.y, 0.5f + pos.z);
             }
         };
     }
@@ -72,61 +77,61 @@ public class BlockLayout implements Layout {
         return new Texture() {
             @Override
             public List<Float> getFront(float xOffset, float yOffset, int rows) {
-                return  Arrays.asList(
-                        0.25f/rows + xOffset, ONE_THIRD/rows + yOffset,
-                        0.25f/rows + xOffset, TWO_THIRD/rows + yOffset,
-                        0.5f/rows + xOffset, TWO_THIRD/rows + yOffset,
-                        0.5f/rows + xOffset, ONE_THIRD/rows + yOffset
+                return Arrays.asList(
+                        0.25f / rows + xOffset, ONE_THIRD / rows + yOffset,
+                        0.25f / rows + xOffset, TWO_THIRD / rows + yOffset,
+                        0.5f / rows + xOffset, TWO_THIRD / rows + yOffset,
+                        0.5f / rows + xOffset, ONE_THIRD / rows + yOffset
                 );
             }
 
             @Override
             public List<Float> getBack(float xOffset, float yOffset, int rows) {
-                return  Arrays.asList(
-                        1f/rows + xOffset, ONE_THIRD/rows + yOffset,
-                        1f/rows + xOffset, TWO_THIRD/rows + yOffset,
-                        0.75f/rows + xOffset, TWO_THIRD/rows + yOffset,
-                        0.75f/rows + xOffset, ONE_THIRD/rows + yOffset
+                return Arrays.asList(
+                        1f / rows + xOffset, ONE_THIRD / rows + yOffset,
+                        1f / rows + xOffset, TWO_THIRD / rows + yOffset,
+                        0.75f / rows + xOffset, TWO_THIRD / rows + yOffset,
+                        0.75f / rows + xOffset, ONE_THIRD / rows + yOffset
                 );
             }
 
             @Override
             public List<Float> getTop(float xOffset, float yOffset, int rows) {
-                return  Arrays.asList(
-                        0.25f/rows + xOffset, 0 + yOffset,
-                        0.25f/rows + xOffset, ONE_THIRD/rows + yOffset,
-                        0.5f/rows + xOffset, ONE_THIRD/rows + yOffset,
-                        0.5f/rows + xOffset, 0 + yOffset
+                return Arrays.asList(
+                        0.25f / rows + xOffset, 0 + yOffset,
+                        0.25f / rows + xOffset, ONE_THIRD / rows + yOffset,
+                        0.5f / rows + xOffset, ONE_THIRD / rows + yOffset,
+                        0.5f / rows + xOffset, 0 + yOffset
                 );
             }
 
             @Override
             public List<Float> getBottom(float xOffset, float yOffset, int rows) {
-                return  Arrays.asList(
-                        0.25f/rows + xOffset, TWO_THIRD/rows + yOffset,
-                        0.25f/rows + xOffset, 1f/rows + yOffset,
-                        0.5f/rows + xOffset, 1f/rows + yOffset,
-                        0.5f/rows + xOffset, TWO_THIRD/rows + yOffset
+                return Arrays.asList(
+                        0.25f / rows + xOffset, TWO_THIRD / rows + yOffset,
+                        0.25f / rows + xOffset, 1f / rows + yOffset,
+                        0.5f / rows + xOffset, 1f / rows + yOffset,
+                        0.5f / rows + xOffset, TWO_THIRD / rows + yOffset
                 );
             }
 
             @Override
             public List<Float> getRight(float xOffset, float yOffset, int rows) {
-                return  Arrays.asList(
-                        0.5f/rows + xOffset, ONE_THIRD/rows + yOffset,
-                        0.5f/rows + xOffset, TWO_THIRD/rows + yOffset,
-                        0.75f/rows + xOffset, TWO_THIRD/rows + yOffset,
-                        0.75f/rows + xOffset, ONE_THIRD/rows + yOffset
+                return Arrays.asList(
+                        0.5f / rows + xOffset, ONE_THIRD / rows + yOffset,
+                        0.5f / rows + xOffset, TWO_THIRD / rows + yOffset,
+                        0.75f / rows + xOffset, TWO_THIRD / rows + yOffset,
+                        0.75f / rows + xOffset, ONE_THIRD / rows + yOffset
                 );
             }
 
             @Override
             public List<Float> getLeft(float xOffset, float yOffset, int rows) {
-                return  Arrays.asList(
-                        0 + xOffset, ONE_THIRD/rows + yOffset,
-                        0 + xOffset, TWO_THIRD/rows + yOffset,
-                        0.25f/rows + xOffset, TWO_THIRD/rows + yOffset,
-                        0.25f/rows + xOffset, ONE_THIRD/rows + yOffset
+                return Arrays.asList(
+                        0 + xOffset, ONE_THIRD / rows + yOffset,
+                        0 + xOffset, TWO_THIRD / rows + yOffset,
+                        0.25f / rows + xOffset, TWO_THIRD / rows + yOffset,
+                        0.25f / rows + xOffset, ONE_THIRD / rows + yOffset
                 );
             }
         };
@@ -137,7 +142,7 @@ public class BlockLayout implements Layout {
         return new Normal() {
             @Override
             public List<Float> getFront() {
-                return  Arrays.asList(
+                return Arrays.asList(
                         0f, 0f, 1f,
                         0f, 0f, 1f,
                         0f, 0f, 1f,
@@ -147,7 +152,7 @@ public class BlockLayout implements Layout {
 
             @Override
             public List<Float> getBack() {
-                return  Arrays.asList(
+                return Arrays.asList(
                         0f, 0f, -1f,
                         0f, 0f, -1f,
                         0f, 0f, -1f,
@@ -157,7 +162,7 @@ public class BlockLayout implements Layout {
 
             @Override
             public List<Float> getTop() {
-                return  Arrays.asList(
+                return Arrays.asList(
                         0f, 1f, 0f,
                         0f, 1f, 0f,
                         0f, 1f, 0f,
@@ -167,7 +172,7 @@ public class BlockLayout implements Layout {
 
             @Override
             public List<Float> getBottom() {
-                return  Arrays.asList(
+                return Arrays.asList(
                         0f, -1f, 0f,
                         0f, -1f, 0f,
                         0f, -1f, 0f,
@@ -202,32 +207,32 @@ public class BlockLayout implements Layout {
         return new Indices() {
             @Override
             public List<Integer> getFront(int i) {
-                return Arrays.asList(i, i+1, i+2, i+2, i+3, i);
+                return Arrays.asList(i, i + 1, i + 2, i + 2, i + 3, i);
             }
 
             @Override
             public List<Integer> getBack(int i) {
-                return  Arrays.asList(i, i+3, i+2, i+2, i+1, i);
+                return Arrays.asList(i, i + 3, i + 2, i + 2, i + 1, i);
             }
 
             @Override
             public List<Integer> getTop(int i) {
-                return  Arrays.asList(i, i+1, i+2, i+2, i+3, i);
+                return Arrays.asList(i, i + 1, i + 2, i + 2, i + 3, i);
             }
 
             @Override
             public List<Integer> getBottom(int i) {
-                return  Arrays.asList(i, i+3, i+2, i+2, i+1, i);
+                return Arrays.asList(i, i + 3, i + 2, i + 2, i + 1, i);
             }
 
             @Override
             public List<Integer> getRight(int i) {
-                return  Arrays.asList(i, i+1, i+2, i+2, i+3, i);
+                return Arrays.asList(i, i + 1, i + 2, i + 2, i + 3, i);
             }
 
             @Override
             public List<Integer> getLeft(int i) {
-                return  Arrays.asList(i, i+1, i+2, i+2, i+3, i);
+                return Arrays.asList(i, i + 1, i + 2, i + 2, i + 3, i);
             }
         };
     }

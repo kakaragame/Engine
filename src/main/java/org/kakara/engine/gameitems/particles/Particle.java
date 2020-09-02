@@ -1,9 +1,9 @@
 package org.kakara.engine.gameitems.particles;
 
 import org.joml.Quaternionf;
-import org.kakara.engine.gameitems.mesh.Mesh;
 import org.kakara.engine.gameitems.MeshGameItem;
 import org.kakara.engine.gameitems.Texture;
+import org.kakara.engine.gameitems.mesh.Mesh;
 import org.kakara.engine.math.Vector3;
 
 /**
@@ -22,7 +22,7 @@ public class Particle extends MeshGameItem {
 
     private int animFrames;
 
-    public Particle(Mesh mesh, Vector3 speed, long ttl, long updateTextureMillis){
+    public Particle(Mesh mesh, Vector3 speed, long ttl, long updateTextureMillis) {
         super(mesh);
         this.speed = speed.clone();
         this.ttl = ttl;
@@ -32,7 +32,7 @@ public class Particle extends MeshGameItem {
         this.animFrames = texture.getNumCols() * texture.getNumRows();
     }
 
-    public Particle(Particle baseParticle){
+    public Particle(Particle baseParticle) {
         super(baseParticle.getMesh());
         Vector3 aux = baseParticle.getPosition();
         setPosition(aux.x, aux.y, aux.z);
@@ -46,28 +46,30 @@ public class Particle extends MeshGameItem {
         this.animFrames = baseParticle.getAnimFrames();
     }
 
-    public Vector3 getSpeed(){
+    public Vector3 getSpeed() {
         return speed;
     }
 
-    public void setSpeed(Vector3 speed){
+    public void setSpeed(Vector3 speed) {
         this.speed = speed;
     }
 
-    public long getTtl(){
+    public long getTtl() {
         return ttl;
     }
 
-    public void setTtl(long ttl){
+    public void setTtl(long ttl) {
         this.ttl = ttl;
     }
 
     public int getAnimFrames() {
         return animFrames;
     }
+
     public long getUpdateTextureMillis() {
         return updateTextureMillis;
     }
+
     public void setUpdateTextureMills(long updateTextureMillis) {
         this.updateTextureMillis = updateTextureMillis;
     }
@@ -75,11 +77,11 @@ public class Particle extends MeshGameItem {
     public long updateTtl(long elapsedTime) {
         this.ttl -= elapsedTime;
         this.currentAnimTimeMillis += elapsedTime;
-        if ( this.currentAnimTimeMillis >= this.getUpdateTextureMillis() && this.animFrames > 0 ) {
+        if (this.currentAnimTimeMillis >= this.getUpdateTextureMillis() && this.animFrames > 0) {
             this.currentAnimTimeMillis = 0;
             int pos = this.getTextPos();
             pos++;
-            if ( pos < this.animFrames ) {
+            if (pos < this.animFrames) {
                 this.setTextPos(pos);
             } else {
                 this.setTextPos(0);

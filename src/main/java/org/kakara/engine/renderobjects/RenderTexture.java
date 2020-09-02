@@ -17,22 +17,24 @@ public class RenderTexture {
 
     /**
      * Create a render texture from a resource.
+     *
      * @param resource The resource
      */
-    public RenderTexture(Resource resource){
+    public RenderTexture(Resource resource) {
         this.resource = resource;
     }
 
-    public Resource getResource(){
+    public Resource getResource() {
         return this.resource;
     }
 
     /**
      * Initializes the render texture.
      * This is for internal use only.
+     *
      * @param id The id
      */
-    public void init(int id, float xOffset, float yOffset){
+    public void init(int id, float xOffset, float yOffset) {
         this.id = id;
         this.xOffset = xOffset;
         this.yOffset = yOffset;
@@ -40,25 +42,28 @@ public class RenderTexture {
 
     /**
      * Grab the id of the texture.
+     *
      * @return The id of the texture.
      */
-    public int getId(){
+    public int getId() {
         return id;
     }
 
     /**
      * Get the offset on the x side.
+     *
      * @return
      */
-    public float getXOffset(){
+    public float getXOffset() {
         return xOffset;
     }
 
     /**
      * Get the offset on the y side.
+     *
      * @return
      */
-    public float getYOffset(){
+    public float getYOffset() {
         return yOffset;
     }
 

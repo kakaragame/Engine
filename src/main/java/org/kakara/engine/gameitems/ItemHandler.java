@@ -65,12 +65,12 @@ public class ItemHandler {
      * @param tag The tag to remove.
      * @since 1.0-Pre3
      */
-    public void removeItemWithTag(String tag){
-        for(GameItem item : new ArrayList<>(items)){
-            if(item.getTag().equals(tag)){
-                if(item.getMesh() instanceof InstancedMesh){
+    public void removeItemWithTag(String tag) {
+        for (GameItem item : new ArrayList<>(items)) {
+            if (item.getTag().equals(tag)) {
+                if (item.getMesh() instanceof InstancedMesh) {
                     instancedMeshMap.get(item.getMesh()).remove(item);
-                }else{
+                } else {
                     nonInstancedMeshMap.get(item.getMesh()).remove(item);
                 }
                 items.remove(item);
@@ -121,16 +121,15 @@ public class ItemHandler {
     /**
      * Grab game items based upon the provided tag(s).
      *
-     * @since 1.0-Pre3
-     *
      * @param tag A list of tags.
      * @return A list of game items with the specified tag.
+     * @since 1.0-Pre3
      */
-    public List<GameItem> getItemsWithTag(String... tag){
+    public List<GameItem> getItemsWithTag(String... tag) {
         List<String> desiredTags = new ArrayList<>(Arrays.asList(tag));
         List<GameItem> output = new ArrayList<>();
-        for(GameItem item : items){
-            if(desiredTags.contains(item.getTag())){
+        for (GameItem item : items) {
+            if (desiredTags.contains(item.getTag())) {
                 output.add(item);
             }
         }

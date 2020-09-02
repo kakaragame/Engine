@@ -25,12 +25,13 @@ import static org.lwjgl.opengl.GL30.*;
  * This mesh will do the async part on the current thread.
  * The OpenGL portion will be done on the main thread.
  * <p>This class can only be constructed on a secondary thread.</p>
+ *
  * @since 1.0-Pre2
  */
 public class MultiThreadMesh implements RenderMesh {
 
-    protected int vaoId;
     protected final List<Integer> vboIdList;
+    protected int vaoId;
     private int vertexCount;
     private boolean finished;
 
@@ -43,7 +44,7 @@ public class MultiThreadMesh implements RenderMesh {
      * @param future       The completable future that is to be completed once the generation is complete.
      */
     public MultiThreadMesh(List<RenderBlock> blocks, RenderChunk renderChunk, TextureAtlas textureAtlas, @Nullable CompletableFuture<MultiThreadMesh> future) {
-        if(Thread.currentThread() == GameEngine.currentThread)
+        if (Thread.currentThread() == GameEngine.currentThread)
             throw new InvalidThreadException("This class can only be constructed on a secondary thread!");
         vboIdList = new ArrayList<>();
         MultiThreadMesh instance = this;
@@ -123,9 +124,9 @@ public class MultiThreadMesh implements RenderMesh {
                     MemoryUtil.memFree(finalLayout.getNormals());
                 if (finalLayout.getIndices() != null)
                     MemoryUtil.memFree(finalLayout.getIndices());
-                if(finalLayout.getOverlayCoords() != null)
+                if (finalLayout.getOverlayCoords() != null)
                     MemoryUtil.memFree(finalLayout.getOverlayCoords());
-                if(finalLayout.getHasOverlay() != null)
+                if (finalLayout.getHasOverlay() != null)
                     MemoryUtil.memFree(finalLayout.getHasOverlay());
             }
             if (future != null)
@@ -192,9 +193,9 @@ public class MultiThreadMesh implements RenderMesh {
         List<Integer> hasOverlay = new ArrayList<>();
 
         for (RenderBlock rb : blocks) {
-            int initial = overlayCoords.size()/2;
+            int initial = overlayCoords.size() / 2;
             rb.getOverlayFromFaces(overlayCoords, textureAtlas);
-            hasOverlay.addAll(Collections.nCopies((overlayCoords.size()/2 - initial), rb.getOverlay() == null ? 0 : 1));
+            hasOverlay.addAll(Collections.nCopies((overlayCoords.size() / 2 - initial), rb.getOverlay() == null ? 0 : 1));
         }
 
         FloatBuffer overlayCoordsBuffer = MemoryUtil.memAllocFloat(overlayCoords.size());
@@ -207,8 +208,8 @@ public class MultiThreadMesh implements RenderMesh {
             hasOverlayBuffer.put(f);
         hasOverlayBuffer.flip();
 
-        if(Thread.currentThread() == GameEngine.currentThread){
-            try{
+        if (Thread.currentThread() == GameEngine.currentThread) {
+            try {
                 glBindVertexArray(vaoId);
                 int pid = vboIdList.get(3);
                 glBindBuffer(GL_ARRAY_BUFFER, pid);
@@ -222,13 +223,13 @@ public class MultiThreadMesh implements RenderMesh {
 
                 glBindBuffer(GL_ARRAY_BUFFER, 0);
                 glBindVertexArray(0);
-            }finally {
+            } finally {
                 MemoryUtil.memFree(overlayCoordsBuffer);
                 MemoryUtil.memFree(hasOverlayBuffer);
             }
-        }else{
+        } else {
             GameHandler.getInstance().getGameEngine().addQueueItem(() -> {
-                try{
+                try {
                     glBindVertexArray(vaoId);
                     int pid = vboIdList.get(3);
                     glBindBuffer(GL_ARRAY_BUFFER, pid);
@@ -242,7 +243,7 @@ public class MultiThreadMesh implements RenderMesh {
 
                     glBindBuffer(GL_ARRAY_BUFFER, 0);
                     glBindVertexArray(0);
-                }finally {
+                } finally {
                     MemoryUtil.memFree(overlayCoordsBuffer);
                     MemoryUtil.memFree(hasOverlayBuffer);
                 }

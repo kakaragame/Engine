@@ -86,13 +86,13 @@ public class Texture {
             // Decode texture image into a byte buffer
 
             ByteBuffer decodedImage;
-            if(resource instanceof JarResource) {
+            if (resource instanceof JarResource) {
                 decodedImage = stbi_load_from_memory(resource.getByteBuffer(), w, h, avChannels, 4);
-            }else{
+            } else {
                 decodedImage = stbi_load(resource.getPath(), w, h, avChannels, 4);
 
             }
-            if(decodedImage == null){
+            if (decodedImage == null) {
                 throw new RuntimeException("Error: Cannot load specified image. " + stbi_failure_reason());
             }
             this.width = w.get();
@@ -154,6 +154,7 @@ public class Texture {
     /**
      * Get the number of columns
      * <p>For use with particles</p>
+     *
      * @return The number of columns
      */
     public int getNumCols() {
@@ -163,6 +164,7 @@ public class Texture {
     /**
      * Get the number of rows.
      * <p>For use with particles</p>
+     *
      * @return The number of rows.
      */
     public int getNumRows() {
@@ -171,6 +173,7 @@ public class Texture {
 
     /**
      * Get the width of the texture.
+     *
      * @return The width of the texture.
      */
     public int getWidth() {
@@ -179,6 +182,7 @@ public class Texture {
 
     /**
      * Get the height of the texture.
+     *
      * @return The height of the texture.
      */
     public int getHeight() {
@@ -187,6 +191,7 @@ public class Texture {
 
     /**
      * Bind the texture.
+     *
      * @deprecated This is now handled by the engine.
      */
     public void bind() {
@@ -195,6 +200,7 @@ public class Texture {
 
     /**
      * Get the id of the texture.
+     *
      * @return
      */
     public int getId() {
@@ -210,9 +216,10 @@ public class Texture {
 
     /**
      * Grabs the scene this texture is for/
+     *
      * @return The scene.
      */
-    public Scene getCurrentScene(){
+    public Scene getCurrentScene() {
         return scene;
     }
 }

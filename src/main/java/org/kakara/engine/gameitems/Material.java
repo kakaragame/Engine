@@ -45,11 +45,12 @@ public class Material {
 
     /**
      * Create a material
-     * @param ambientColor The color of the object (RGBA)
-     * @param diffuseColor The surrounding color (RGBA)
+     *
+     * @param ambientColor  The color of the object (RGBA)
+     * @param diffuseColor  The surrounding color (RGBA)
      * @param specularColor The color when the light is shined (RGBA)
-     * @param texture The texture
-     * @param reflectance The reflectance of the material.
+     * @param texture       The texture
+     * @param reflectance   The reflectance of the material.
      */
     public Material(Vector4f ambientColor, Vector4f diffuseColor, Vector4f specularColor, Texture texture, float reflectance) {
         this.ambientColor = ambientColor;
@@ -61,71 +62,80 @@ public class Material {
     }
 
     /**
-     * Set the ambient color of the material
-     * @param ambientColor The ambient color (RGBA)
-     */
-    public void setAmbientColor(Vector4f ambientColor){
-        this.ambientColor = ambientColor;
-    }
-
-    /**
      * Get the ambient color of the material.
+     *
      * @return The ambient color (RGBA)
      */
-    public Vector4f getAmbientColor(){
+    public Vector4f getAmbientColor() {
         return ambientColor;
     }
 
     /**
-     * Set the diffuse color of the material.
-     * @param diffuseColor The diffuse color (RGBA)
+     * Set the ambient color of the material
+     *
+     * @param ambientColor The ambient color (RGBA)
      */
-    public void setDiffuseColor(Vector4f diffuseColor){
-        this.diffuseColor = diffuseColor;
+    public void setAmbientColor(Vector4f ambientColor) {
+        this.ambientColor = ambientColor;
     }
 
     /**
      * Get the diffuse color of the material.
+     *
      * @return The diffuse color of the material (RGBA)
      */
-    public Vector4f getDiffuseColor(){
+    public Vector4f getDiffuseColor() {
         return diffuseColor;
     }
 
     /**
-     * Set the specular color of the material.
-     * @param specularColor The specular color of the material (RGBA).
+     * Set the diffuse color of the material.
+     *
+     * @param diffuseColor The diffuse color (RGBA)
      */
-    public void setSpecularColor(Vector4f specularColor){
-        this.specularColor = specularColor;
+    public void setDiffuseColor(Vector4f diffuseColor) {
+        this.diffuseColor = diffuseColor;
     }
 
     /**
      * Get the specular color of the material
+     *
      * @return The specular color (RGBA)
      */
-    public Vector4f getSpecularColor(){
+    public Vector4f getSpecularColor() {
         return specularColor;
     }
 
     /**
-     * Set the reflectance.
-     * @param reflectance The reflectance
+     * Set the specular color of the material.
+     *
+     * @param specularColor The specular color of the material (RGBA).
      */
-    public void setReflectance(float reflectance){
-        this.reflectance = reflectance;
+    public void setSpecularColor(Vector4f specularColor) {
+        this.specularColor = specularColor;
     }
 
     /**
      * Get the reflectance.
+     *
      * @return The reflectance
      */
-    public float getReflectance(){
+    public float getReflectance() {
         return reflectance;
     }
 
     /**
+     * Set the reflectance.
+     *
+     * @param reflectance The reflectance
+     */
+    public void setReflectance(float reflectance) {
+        this.reflectance = reflectance;
+    }
+
+    /**
      * If the material has a texture
+     *
      * @return If the material has a texture
      */
     public boolean isTextured() {
@@ -134,6 +144,7 @@ public class Material {
 
     /**
      * Get the texture of the material.
+     *
      * @return
      */
     public Texture getTexture() {
@@ -142,6 +153,7 @@ public class Material {
 
     /**
      * Set the texture of the material.
+     *
      * @param texture
      */
     public void setTexture(Texture texture) {
@@ -149,24 +161,13 @@ public class Material {
     }
 
     /**
-     * Set the list of overlay textures.
-     * <p>A maximum of 5 textures are allowed.</p>
-     * @param overlayTextures The list
-     * @throws Exception If the list exceeds 5 overlay textures.
-     */
-    public void setOverlayTextures(List<Texture> overlayTextures) throws Exception{
-        if(overlayTextures.size() >= 5)
-            throw new Exception("A maximum of 5 overlay textures only.");
-        this.overlayTextures = overlayTextures;
-    }
-
-    /**
      * Add a texture to the list of overlay textures
+     *
      * @param overlayTexture The texture
      * @return True if successful, false if not. (Max limit of 5 overlay textures).
      */
-    public boolean addOverlayTexture(Texture overlayTexture){
-        if(overlayTextures.size() >= 5){
+    public boolean addOverlayTexture(Texture overlayTexture) {
+        if (overlayTextures.size() >= 5) {
             return false;
         }
         overlayTextures.add(overlayTexture);
@@ -175,16 +176,30 @@ public class Material {
 
     /**
      * Get the list of overlay textures.
+     *
      * @return
      */
-    public List<Texture> getOverlayTextures(){
+    public List<Texture> getOverlayTextures() {
         return overlayTextures;
     }
 
+    /**
+     * Set the list of overlay textures.
+     * <p>A maximum of 5 textures are allowed.</p>
+     *
+     * @param overlayTextures The list
+     * @throws Exception If the list exceeds 5 overlay textures.
+     */
+    public void setOverlayTextures(List<Texture> overlayTextures) throws Exception {
+        if (overlayTextures.size() >= 5)
+            throw new Exception("A maximum of 5 overlay textures only.");
+        this.overlayTextures = overlayTextures;
+    }
 
     /**
      * If the material has a normal map
      * <p><b>Not implemented yet</b></p>
+     *
      * @return If the material has a normal map
      */
     public boolean hasNormalMap() {
@@ -194,6 +209,7 @@ public class Material {
     /**
      * Get the texture of the normal map.
      * <p><b>Not implemented yet.</b></p>
+     *
      * @return The texture of the normal map.
      */
     public Texture getNormalMap() {
@@ -203,6 +219,7 @@ public class Material {
     /**
      * Set the normal map
      * <p><b>Not implemented yet.</b></p>
+     *
      * @param normalMap The normal map texture
      */
     public void setNormalMap(Texture normalMap) {

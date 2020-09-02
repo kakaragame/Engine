@@ -35,6 +35,7 @@ public class Utils {
 
     /**
      * Convert a resource into a File.
+     *
      * @param url The resource
      * @return The file
      * @throws URISyntaxException
@@ -46,15 +47,17 @@ public class Utils {
     /**
      * Such a hacky thing. We need to fix this.
      * TODO fix this
+     *
      * @param url The url to remove
      * @return The removal of file:/ and jar:
      */
-    public static String removeFile(String url){
+    public static String removeFile(String url) {
         return url.replace("file:/", "").replace("jar:", "");
     }
 
     /**
      * Convert a list into an int array
+     *
      * @param list The list
      * @return The array
      */
@@ -65,6 +68,7 @@ public class Utils {
 
     /**
      * Convert a float list to a float array
+     *
      * @param list The list
      * @return The array
      */
@@ -79,9 +83,10 @@ public class Utils {
 
     /**
      * Check if a resource file exists
-     * @deprecated unused
+     *
      * @param fileName The file name
      * @return if it exists
+     * @deprecated unused
      */
     public static boolean existsResourceFile(String fileName) {
         boolean result;
@@ -95,7 +100,8 @@ public class Utils {
 
     /**
      * Convert a resource ot byte buffer
-     * @param resource The file path
+     *
+     * @param resource   The file path
      * @param bufferSize The buffer size
      * @return The byte buffer.
      * @throws IOException If the file can't be read or does not exist.
@@ -133,7 +139,8 @@ public class Utils {
 
     /**
      * Resize a buffer.
-     * @param buffer The buffer to resize
+     *
+     * @param buffer      The buffer to resize
      * @param newCapacity The new capacity
      * @return The new buffer.
      */
@@ -146,6 +153,7 @@ public class Utils {
 
     /**
      * Convert an inputstream into a texture.
+     *
      * @param io The input stream.
      * @return The texture.
      * @throws IOException If a file does not exist or can't be read.
@@ -160,6 +168,7 @@ public class Utils {
 
     /**
      * Convert an inputstream into a bytebuffer.
+     *
      * @param io The input stream.
      * @return The byte buffer.
      * @throws IOException If a file does not exist or can't be read.
@@ -174,6 +183,7 @@ public class Utils {
 
     /**
      * Get the current directory
+     *
      * @return The current directory.
      */
     public static File getCurrentDirectory() {

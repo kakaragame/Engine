@@ -17,10 +17,11 @@ public class SceneManager {
 
     /**
      * Set the current scene.
+     *
      * @param scene The scene to set.
      */
     public void setScene(@NotNull Scene scene) {
-        if(currentScene != null)
+        if (currentScene != null)
             this.cleanupScenes();
         currentScene = null;
         // Tell java it is time to finalize objects for collection
@@ -28,10 +29,10 @@ public class SceneManager {
         currentScene = scene;
         // Tell java now would be a great time to run the garbage collector.
         System.gc();
-        try{
+        try {
             // Sleep for 150ms to give the GC time to operate.
             Thread.sleep(150);
-        }catch(InterruptedException ex){
+        } catch (InterruptedException ex) {
             ex.printStackTrace();
         }
         // Continue loading the next scene.
@@ -54,6 +55,7 @@ public class SceneManager {
     /**
      * Get the current scene.
      * <p>This value will never be null.</p>
+     *
      * @return The current scene.
      */
     public @NotNull Scene getCurrentScene() {
@@ -63,11 +65,11 @@ public class SceneManager {
     /**
      * Cleanup the scene and clear the memory that way it is ready for the next scene to be loaded.
      */
-    public void cleanupScenes(){
+    public void cleanupScenes() {
         currentScene.getUserInterface().cleanup();
         handler.getMouseInput().onSceneChange();
         TextureCache.getInstance(handler.getResourceManager()).cleanup(currentScene);
-        if(getCurrentScene() instanceof AbstractMenuScene) return;
+        if (getCurrentScene() instanceof AbstractMenuScene) return;
         currentScene.unload();
     }
 }

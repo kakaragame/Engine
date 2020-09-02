@@ -1,8 +1,8 @@
 package org.kakara.engine.renderobjects;
 
-import org.kakara.engine.physics.collision.Collidable;
 import org.kakara.engine.math.KMath;
 import org.kakara.engine.math.Vector3;
+import org.kakara.engine.physics.collision.Collidable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,8 +14,8 @@ import java.util.concurrent.Executors;
  * Handles the chunks
  */
 public class ChunkHandler {
-    private List<RenderChunk> renderChunkList;
     public static final ExecutorService EXECUTORS = Executors.newFixedThreadPool(2);
+    private List<RenderChunk> renderChunkList;
 
     public ChunkHandler() {
         renderChunkList = new ArrayList<>();
@@ -59,7 +59,7 @@ public class ChunkHandler {
         Vector3 pos = new Vector3((int) Math.floor(position.x), (int) Math.floor(position.y), (int) Math.floor(position.z));
         List<Collidable> collisionList = new ArrayList<>();
         for (RenderChunk chunk : new ArrayList<>(renderChunkList)) {
-            if(chunk == null) continue;
+            if (chunk == null) continue;
             if (KMath.distance(new Vector3(0, chunk.getPosition().y, 0), new Vector3(0, pos.y, 0)) > 16) continue;
             if (KMath.distance(new Vector3(chunk.getPosition().x, 0, 0), new Vector3(pos.x, 0, 0)) < 17
                     && KMath.distance(new Vector3(0, 0, chunk.getPosition().z), new Vector3(0, 0, pos.z)) < 17) {

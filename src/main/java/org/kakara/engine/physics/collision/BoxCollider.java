@@ -63,13 +63,13 @@ public class BoxCollider implements Collider {
     }
 
     @Override
-    public void setResolvable(boolean value) {
-        this.resolveable = value;
+    public boolean isResolvable() {
+        return resolveable;
     }
 
     @Override
-    public boolean isResolvable() {
-        return resolveable;
+    public void setResolvable(boolean value) {
+        this.resolveable = value;
     }
 
     /**
@@ -90,6 +90,14 @@ public class BoxCollider implements Collider {
         this.relative = relative;
     }
 
+    /**
+     * Get the offset for this collider.
+     *
+     * @return The offset.
+     */
+    public Vector3 getOffset() {
+        return offset;
+    }
 
     /**
      * Set the offset of the collider.
@@ -99,15 +107,6 @@ public class BoxCollider implements Collider {
      */
     public void setOffset(Vector3 offset) {
         this.offset = offset;
-    }
-
-    /**
-     * Get the offset for this collider.
-     *
-     * @return The offset.
-     */
-    public Vector3 getOffset() {
-        return offset;
     }
 
     @Override
@@ -204,26 +203,17 @@ public class BoxCollider implements Collider {
     }
 
     @Override
+    public Predicate<Collidable> getPredicate() {
+        return predicate;
+    }
+
+    @Override
     public void setPredicate(Predicate<Collidable> gameItemPredicate) {
         if (gameItemPredicate == null) {
             predicate = gameItem -> false;
             return;
         }
         this.predicate = gameItemPredicate;
-    }
-
-    @Override
-    public Predicate<Collidable> getPredicate() {
-        return predicate;
-    }
-
-    /**
-     * Set point 1.
-     *
-     * @param point1 The vector for the point.
-     */
-    public void setPoint1(Vector3 point1) {
-        this.point1 = point1;
     }
 
     /**
@@ -233,6 +223,15 @@ public class BoxCollider implements Collider {
      */
     public Vector3 getPoint1() {
         return point1;
+    }
+
+    /**
+     * Set point 1.
+     *
+     * @param point1 The vector for the point.
+     */
+    public void setPoint1(Vector3 point1) {
+        this.point1 = point1;
     }
 
     /**

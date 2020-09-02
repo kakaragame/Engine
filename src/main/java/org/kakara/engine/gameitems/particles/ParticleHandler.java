@@ -9,39 +9,43 @@ import java.util.List;
 public class ParticleHandler {
 
     private List<ParticleEmitter> particleEmitters;
-    public ParticleHandler(){
+
+    public ParticleHandler() {
         particleEmitters = new ArrayList<>();
     }
 
     /**
      * Add a particle to the scene
+     *
      * @param emitter The particle to add
      */
-    public void addParticleEmitter(ParticleEmitter emitter){
+    public void addParticleEmitter(ParticleEmitter emitter) {
         particleEmitters.add(emitter);
     }
 
     /**
      * Remove a particle from the scene
-     * @since 1.0-Pre1
+     *
      * @param emitter The particle to remove
+     * @since 1.0-Pre1
      */
-    public void removeParticleEmitter(ParticleEmitter emitter){
+    public void removeParticleEmitter(ParticleEmitter emitter) {
         particleEmitters.remove(emitter);
     }
 
     /**
      * Get the list of particle emitters in the scene.
+     *
      * @return The list of particles
      */
-    public List<ParticleEmitter> getParticleEmitters(){
+    public List<ParticleEmitter> getParticleEmitters() {
         return particleEmitters;
     }
 
     /**
      * Clear the list of particles.
      */
-    public void clear(){
+    public void clear() {
         particleEmitters.clear();
     }
 }

@@ -27,6 +27,7 @@ public class TextureCache {
 
     /**
      * Get the instanced of the texture cache
+     *
      * @param resourceManager The resource manager
      * @return The texture cache.
      */
@@ -40,7 +41,8 @@ public class TextureCache {
     /**
      * Get a texture.
      * <p>If the texture already exists, return that, if not create a new one.</p>
-     * @param path The path
+     *
+     * @param path         The path
      * @param currentScene The current scene
      * @return The texture found or created.
      * @throws MalformedURLException If the resource could not be found.
@@ -61,6 +63,7 @@ public class TextureCache {
 
     /**
      * Remove unused textures from the scene
+     *
      * @param scene The current scene.
      */
     public void cleanup(Scene scene) {

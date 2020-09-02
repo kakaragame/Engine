@@ -23,6 +23,7 @@ import static org.lwjgl.opengl.GL30.*;
  * The normal mesh for game items.
  * If a ton of objects use this mesh, than consider changing to {@link InstancedMesh}.
  * <p>This class is <b>not</b> thread safe.</p>
+ *
  * @since 1.0-Pre1
  */
 public class AtlasMesh implements IMesh {
@@ -39,15 +40,16 @@ public class AtlasMesh implements IMesh {
 
     /**
      * Create a new AtlasMesh
-     * @param texture The RenderTexture to use
-     * @param atlas The texture atlas
-     * @param layout The layout to use.
+     *
+     * @param texture   The RenderTexture to use
+     * @param atlas     The texture atlas
+     * @param layout    The layout to use.
      * @param positions The list of positions
-     * @param normals The list of normals.
-     * @param indices The indices
+     * @param normals   The list of normals.
+     * @param indices   The indices
      */
     public AtlasMesh(RenderTexture texture, TextureAtlas atlas, Layout layout, float[] positions, float[] normals, int[] indices) {
-        if(Thread.currentThread() != GameEngine.currentThread)
+        if (Thread.currentThread() != GameEngine.currentThread)
             throw new InvalidThreadException("This class can only be constructed on the main thread!");
         this.atlas = atlas;
         List<Float> textCords = new ArrayList<>();
@@ -62,7 +64,7 @@ public class AtlasMesh implements IMesh {
 
         float[] data = new float[textCords.size()];
         int i = 0;
-        for(Float f : textCords){
+        for (Float f : textCords) {
             data[i] = f;
             i++;
         }
@@ -73,10 +75,10 @@ public class AtlasMesh implements IMesh {
         IntBuffer indicesBuffer = null;
         try {
 
-            if(indices != null)
+            if (indices != null)
                 vertexCount = indices.length;
-            else{
-                vertexCount = positions.length/3;
+            else {
+                vertexCount = positions.length / 3;
             }
             vboIdList = new ArrayList<>();
 
@@ -112,7 +114,7 @@ public class AtlasMesh implements IMesh {
             glVertexAttribPointer(2, 3, GL_FLOAT, false, 0, 0);
 
             // Index VBO
-            if(indices != null) {
+            if (indices != null) {
                 vboId = glGenBuffers();
                 vboIdList.add(vboId);
                 indicesBuffer = MemoryUtil.memAllocInt(indices.length);
@@ -140,6 +142,7 @@ public class AtlasMesh implements IMesh {
 
     /**
      * Get the vao id of the mesh
+     *
      * @return The vaoid.
      */
     public final int getVaoId() {
@@ -148,6 +151,7 @@ public class AtlasMesh implements IMesh {
 
     /**
      * Get the vertex count of the mesh
+     *
      * @return The vertex count.
      */
     public int getVertexCount() {
@@ -183,12 +187,12 @@ public class AtlasMesh implements IMesh {
     public void render() {
         initRender();
 
-        if(isWireframe())
+        if (isWireframe())
             glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
         glDrawElements(GL_TRIANGLES, getVertexCount(), GL_UNSIGNED_INT, 0);
 
-        if(isWireframe())
+        if (isWireframe())
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
         endRender();
@@ -197,13 +201,14 @@ public class AtlasMesh implements IMesh {
     /**
      * Render the mesh.
      * <p>Internal use only.</p>
+     *
      * @param gameItems The game items to render
-     * @param consumer The consumer
+     * @param consumer  The consumer
      */
     @Override
-    public void renderList(List<GameItem> gameItems, Consumer<GameItem> consumer){
+    public void renderList(List<GameItem> gameItems, Consumer<GameItem> consumer) {
         initRender();
-        for(GameItem gameItem : gameItems){
+        for (GameItem gameItem : gameItems) {
             consumer.accept(gameItem);
             glDrawElements(GL_TRIANGLES, getVertexCount(), GL_UNSIGNED_INT, 0);
         }
@@ -211,29 +216,30 @@ public class AtlasMesh implements IMesh {
     }
 
     @Override
-    public Optional<Material> getMaterial(){
+    public Optional<Material> getMaterial() {
         return Optional.empty();
     }
 
     /**
-     * If you want the mesh to be rendered as a wireframe.
-     * @since 1.0-Pre2
-     * @param value If the mesh is a wireframe.
-     */
-    @Override
-    public void setWireframe(boolean value){
-        this.wireframe = value;
-    }
-
-    /**
      * If the mesh is a wire frame.
+     *
      * @return If the mesh is a wireframe.
      */
     @Override
-    public boolean isWireframe(){
+    public boolean isWireframe() {
         return this.wireframe;
     }
 
+    /**
+     * If you want the mesh to be rendered as a wireframe.
+     *
+     * @param value If the mesh is a wireframe.
+     * @since 1.0-Pre2
+     */
+    @Override
+    public void setWireframe(boolean value) {
+        this.wireframe = value;
+    }
 
     /**
      * Cleanup the mesh

@@ -25,14 +25,15 @@ import static org.lwjgl.nanovg.NanoVG.*;
  * Displays colored text to the UI in a bounded region.
  * <p>This class does not contain as setColor method. Colors are set in the strings themselves by using color codes.
  * <code>
- *     {#FFFFFF}
+ * {#FFFFFF}
  * </code>
  * Color codes are just hex colors wrapped in curly braces. '{}'. 3 letter hex color codes are not supported. Example String:
  * <code>
- *     "{#5BE0D5}I am a cool color! {#5BE06D} Me too! {#F54FFFF}Another cool color! {#ED4725}I am red!"
+ * "{#5BE0D5}I am a cool color! {#5BE06D} Me too! {#F54FFFF}Another cool color! {#ED4725}I am red!"
  * </code>
  * </p>
  * <p><b>The scale is automatically set and should not be edited!</b></p>
+ *
  * @since 1.0-Pre3
  */
 public class BoundedColoredText extends GeneralComponent {
@@ -56,10 +57,11 @@ public class BoundedColoredText extends GeneralComponent {
      * Create some text.
      * <p>If the text is not displaying, then ensure that the Font is added to the HUD. See {@link UserInterface#addFont(Font)}</p>
      * <p><b>The scale of this component should never be changed.</b></p>
+     *
      * @param text The text
      * @param font The font of the text.
      */
-    public BoundedColoredText(String text, Font font){
+    public BoundedColoredText(String text, Font font) {
         this.paragraph = MemoryUtil.memUTF8(text, false);
         this.text = text;
         this.font = font;
@@ -81,7 +83,7 @@ public class BoundedColoredText extends GeneralComponent {
 
     @Override
     public void render(Vector2 relative, UserInterface userInterface, GameHandler handler) {
-        if(!isVisible()) return;
+        if (!isVisible()) return;
 
         pollRender(relative, userInterface, handler);
 
@@ -89,13 +91,13 @@ public class BoundedColoredText extends GeneralComponent {
     }
 
     @Override
-    public void cleanup(GameHandler handler){
+    public void cleanup(GameHandler handler) {
         super.cleanup(handler);
 
         MemoryUtil.memFree(paragraph);
     }
 
-    public void calculateLineNumbers(UserInterface userInterface, GameHandler handler){
+    public void calculateLineNumbers(UserInterface userInterface, GameHandler handler) {
         nvgSave(userInterface.getVG());
 
         nvgTextMetrics(userInterface.getVG(), null, null, lineh);
@@ -105,10 +107,10 @@ public class BoundedColoredText extends GeneralComponent {
 
         float curWith = 0;
         lnum = 0;
-        for(Map.Entry<String, RGBA> entry : splitColors(text).entrySet()){
+        for (Map.Entry<String, RGBA> entry : splitColors(text).entrySet()) {
             float[] prevBounds = new float[4];
 
-            try(MemoryStack stack = MemoryStack.stackPush()){
+            try (MemoryStack stack = MemoryStack.stackPush()) {
                 ByteBuffer para = stack.UTF8(entry.getKey(), false);
 
                 long start = MemoryUtil.memAddress(para);
@@ -122,13 +124,13 @@ public class BoundedColoredText extends GeneralComponent {
 
                         boolean hit = toRelativeY(y) > maximumBound.y;
 
-                        if(hit) break;
+                        if (hit) break;
 
                         nnvgTextBounds(userInterface.getVG(), x, y, row.start(), row.end(), prevBounds);
 
                         x += prevBounds[2] - prevBounds[0];
                         curWith += prevBounds[2] - prevBounds[0];
-                        if(curWith >= calculateLineWidth(handler)){
+                        if (curWith >= calculateLineWidth(handler)) {
                             y += lineh.get(0);
                             x = getTruePosition().x;
                             curWith = 0;
@@ -148,10 +150,11 @@ public class BoundedColoredText extends GeneralComponent {
     /**
      * Code to display the *colored* bounded text.
      * If you breath on this code it might have a seizure.
+     *
      * @param userInterface The hud
-     * @param handler The handler.
+     * @param handler       The handler.
      */
-    private void displayText(UserInterface userInterface, GameHandler handler){
+    private void displayText(UserInterface userInterface, GameHandler handler) {
 
         nvgSave(userInterface.getVG());
 
@@ -162,10 +165,10 @@ public class BoundedColoredText extends GeneralComponent {
 
         float curWith = 0;
         lnum = 0;
-        for(Map.Entry<String, RGBA> entry : splitColors(text).entrySet()){
+        for (Map.Entry<String, RGBA> entry : splitColors(text).entrySet()) {
             float[] prevBounds = new float[4];
 
-            try(MemoryStack stack = MemoryStack.stackPush()){
+            try (MemoryStack stack = MemoryStack.stackPush()) {
                 ByteBuffer para = stack.UTF8(entry.getKey(), false);
 
                 long start = MemoryUtil.memAddress(para);
@@ -179,7 +182,7 @@ public class BoundedColoredText extends GeneralComponent {
 
                         boolean hit = toRelativeY(y) > maximumBound.y;
 
-                        if(hit) break;
+                        if (hit) break;
 
                         nvgBeginPath(userInterface.getVG());
                         nvgFontSize(userInterface.getVG(), calculateSize(handler));
@@ -196,7 +199,7 @@ public class BoundedColoredText extends GeneralComponent {
                         nnvgText(userInterface.getVG(), x, y, row.start(), row.end());
                         x += prevBounds[2] - prevBounds[0];
                         curWith += prevBounds[2] - prevBounds[0];
-                        if(curWith >= calculateLineWidth(handler)){
+                        if (curWith >= calculateLineWidth(handler)) {
                             y += lineh.get(0);
                             x = getTruePosition().x;
                             curWith = 0;
@@ -218,28 +221,28 @@ public class BoundedColoredText extends GeneralComponent {
         List<String> colorCodes = new ArrayList<>();
         colorCodes.add("{#FFFFFF}");
         Matcher m = Pattern.compile("\\{(#[^}]+)}").matcher(message);
-        while(m.find()) {
+        while (m.find()) {
             colorCodes.add(m.group());
         }
-        for(int i = 0; i < colorCodes.size(); i++){
-            if(!isChatCode(colorCodes.get(i)) && i != 0){
-                normalMessage.set(i-1, normalMessage.get(i-1) +colorCodes.get(i)+normalMessage.get(i));
+        for (int i = 0; i < colorCodes.size(); i++) {
+            if (!isChatCode(colorCodes.get(i)) && i != 0) {
+                normalMessage.set(i - 1, normalMessage.get(i - 1) + colorCodes.get(i) + normalMessage.get(i));
                 normalMessage.remove(i);
                 colorCodes.remove(i);
                 i--;
             }
         }
         Map<String, RGBA> output = new LinkedHashMap<>();
-        for(int i = 0; i < normalMessage.size(); i++){
+        for (int i = 0; i < normalMessage.size(); i++) {
             output.put(normalMessage.get(i), hex2Rgb(colorCodes.get(i)));
         }
         return output;
     }
 
     protected boolean isChatCode(String code) {
-        try{
+        try {
             hex2Rgb(code);
-        }catch(NumberFormatException ex){
+        } catch (NumberFormatException ex) {
             return false;
         }
         return true;
@@ -248,27 +251,28 @@ public class BoundedColoredText extends GeneralComponent {
     protected RGBA hex2Rgb(String colorStr) {
         String hexCode = colorStr.replace("{", "").replace("}", "");
         return new RGBA(
-                Integer.valueOf( hexCode.substring( 1, 3 ), 16 ),
-                Integer.valueOf( hexCode.substring( 3, 5 ), 16 ),
-                Integer.valueOf( hexCode.substring( 5, 7 ), 16 ), 1 );
+                Integer.valueOf(hexCode.substring(1, 3), 16),
+                Integer.valueOf(hexCode.substring(3, 5), 16),
+                Integer.valueOf(hexCode.substring(5, 7), 16), 1);
     }
 
-    private float toRelativeX(float x){
+    private float toRelativeX(float x) {
         return x - getTruePosition().x;
     }
 
-    private float toRelativeY(float y){
+    private float toRelativeY(float y) {
         return y - getTruePosition().y;
     }
 
     /**
      * Calculate the font size if the window is resized.
+     *
      * @param handler Instance of gamehandler.
      * @return The scaled size
      */
-    protected float calculateSize(GameHandler handler){
-        if(userInterface.isAutoScaled())
-            return this.getSize() * ((float)handler.getWindow().getWidth()/(float)handler.getWindow().initalWidth);
+    protected float calculateSize(GameHandler handler) {
+        if (userInterface.isAutoScaled())
+            return this.getSize() * ((float) handler.getWindow().getWidth() / (float) handler.getWindow().initalWidth);
         else
             return this.getSize();
     }
@@ -276,156 +280,172 @@ public class BoundedColoredText extends GeneralComponent {
 
     /**
      * Calculate the line width if the window is resized.
+     *
      * @param handler Instance of gamehandler.
      * @return the scaled width
      */
-    protected float calculateLineWidth(GameHandler handler){
-        if(userInterface.isAutoScaled())
-            return this.getMaximumBound().x * ((float)handler.getWindow().getWidth()/(float)handler.getWindow().initalWidth);
+    protected float calculateLineWidth(GameHandler handler) {
+        if (userInterface.isAutoScaled())
+            return this.getMaximumBound().x * ((float) handler.getWindow().getWidth() / (float) handler.getWindow().initalWidth);
         else
             return this.getMaximumBound().x;
     }
 
     /**
-     * Set the font.
-     * @param font The font that is to be used.
-     */
-    public void setFont(Font font){
-        this.font = font;
-    }
-
-    /**
      * Get the font of the text.
-     * @since 1.0-Pre3
+     *
      * @return The font.
+     * @since 1.0-Pre3
      */
-    public Font getFont(){
+    public Font getFont() {
         return font;
     }
 
     /**
-     * Set the size of the text.
-     * @param size The size of the text. (Non-Negative)
+     * Set the font.
+     *
+     * @param font The font that is to be used.
      */
-    public void setSize(float size){
-        this.size = size;
+    public void setFont(Font font) {
+        this.font = font;
     }
 
     /**
      * Get the size of the font
+     *
      * @return The size
      */
-    public float getSize(){
+    public float getSize() {
         return this.size;
     }
 
     /**
+     * Set the size of the text.
+     *
+     * @param size The size of the text. (Non-Negative)
+     */
+    public void setSize(float size) {
+        this.size = size;
+    }
+
+    /**
+     * Get the text
+     *
+     * @return The text.
+     */
+    public String getText() {
+        return this.text;
+    }
+
+    /**
      * Set the value of the text!
+     *
      * @param text The text.
      */
-    public void setText(String text){
+    public void setText(String text) {
         MemoryUtil.memFree(paragraph);
         this.text = text;
         this.paragraph = MemoryUtil.memUTF8(text);
     }
 
     /**
-     * Get the text
-     * @return The text.
-     */
-    public String getText(){
-        return this.text;
-    }
-
-    /**
-     * Set the height of the space between lines.
-     * @param height The height.
-     */
-    public void setLineHeight(float height){
-        this.lineHeight = height;
-    }
-
-    /**
      * Get the line height
+     *
      * @return The list height
      */
-    public float getLineHeight(){
+    public float getLineHeight() {
         return this.lineHeight;
     }
 
     /**
-     * Set the spacing between letters.
-     * @param letterSpacing The letter spacing.
+     * Set the height of the space between lines.
+     *
+     * @param height The height.
      */
-    public void setLetterSpacing(float letterSpacing){
-        this.letterSpacing = letterSpacing;
+    public void setLineHeight(float height) {
+        this.lineHeight = height;
     }
 
     /**
      * Get the letter spacing
+     *
      * @return The letter spacing
      */
-    public float getLetterSpacing(){
+    public float getLetterSpacing() {
         return this.letterSpacing;
     }
 
     /**
+     * Set the spacing between letters.
+     *
+     * @param letterSpacing The letter spacing.
+     */
+    public void setLetterSpacing(float letterSpacing) {
+        this.letterSpacing = letterSpacing;
+    }
+
+    /**
      * Set the text align values. {@see ui.text.TextAlign}
+     *
      * @param textAlign The text align values.
      */
-    public void setTextAlign(int textAlign){
+    public void setTextAlign(int textAlign) {
         this.textAlign = textAlign;
+    }
+
+    /**
+     * Get the current blur.
+     *
+     * @return The current blur.
+     */
+    public float getBlur() {
+        return blur;
     }
 
     /**
      * Set the blur of the text.
      * <p>This can be used to create shadow effects.</p>
+     *
      * @param blur The blur.
      */
-    public void setBlur(float blur){
+    public void setBlur(float blur) {
         this.blur = blur;
-    }
-
-    /**
-     * Get the current blur.
-     * @return The current blur.
-     */
-    public float getBlur(){
-        return blur;
     }
 
     /**
      * Get the number of lines of text.
      * <p>Note: This number is not known until
      * the first render call.</p>
+     *
      * @return The number of lines of text.
      */
-    public int getLineNumbers(){
+    public int getLineNumbers() {
         return lnum;
     }
 
+    /**
+     * Get the boundary of the text.
+     *
+     * @return Get the boundary of the text.
+     */
+    public Vector2 getMaximumBound() {
+        return maximumBound;
+    }
 
     /**
      * This is the boundary of the text.
      * <p>This value is relative to the position.</p>
      * <code>
-     *     text.setMaximumBound(new Vector2(50, 50));
+     * text.setMaximumBound(new Vector2(50, 50));
      * </code>
+     *
      * @param maximumBound The boundary of the text.
      */
-    public void setMaximumBound(Vector2 maximumBound){
+    public void setMaximumBound(Vector2 maximumBound) {
         this.maximumBound = maximumBound;
         this.scale = maximumBound.clone();
-        for(Constraint cc : constraints){
+        for (Constraint cc : constraints) {
             cc.update(this);
         }
-    }
-
-    /**
-     * Get the boundary of the text.
-     * @return Get the boundary of the text.
-     */
-    public Vector2 getMaximumBound(){
-        return maximumBound;
     }
 }

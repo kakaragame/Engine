@@ -129,10 +129,10 @@ public class InstancedMesh extends Mesh {
         int i = 0;
         FrustumCullingFilter filter = GameHandler.getInstance().getGameEngine().getRenderer().getFrustumFilter();
         for (GameItem gameItem : gameItems) {
-            if(!filter.testCollider(gameItem.getCollider()))
+            if (!filter.testCollider(gameItem.getCollider()))
                 continue;
 
-            if(KMath.distance(gameItem.getPosition(), GameHandler.getInstance().getCurrentScene().getCamera().getPosition()) > 100)
+            if (KMath.distance(gameItem.getPosition(), GameHandler.getInstance().getCurrentScene().getCamera().getPosition()) > 100)
                 continue;
 
             Matrix4f modelMatrix = transformation.buildModelMatrix(gameItem);

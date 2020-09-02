@@ -12,14 +12,10 @@ import java.util.List;
  * TODO Improve this system.
  */
 public class FlowParticleEmitter implements ParticleEmitter {
-    private int maxParticles;
-
-    private boolean active;
-
     private final List<GameItem> particles;
-
     private final Particle baseParticle;
-
+    private int maxParticles;
+    private boolean active;
     private long creationPeriodMillis;
 
     private long lastCreationTime;
@@ -50,8 +46,16 @@ public class FlowParticleEmitter implements ParticleEmitter {
         return creationPeriodMillis;
     }
 
+    public void setCreationPeriodMillis(long creationPeriodMillis) {
+        this.creationPeriodMillis = creationPeriodMillis;
+    }
+
     public int getMaxParticles() {
         return maxParticles;
+    }
+
+    public void setMaxParticles(int maxParticles) {
+        this.maxParticles = maxParticles;
     }
 
     @Override
@@ -63,32 +67,28 @@ public class FlowParticleEmitter implements ParticleEmitter {
         return positionRndRange;
     }
 
+    public void setPositionRndRange(float positionRndRange) {
+        this.positionRndRange = positionRndRange;
+    }
+
     public float getScaleRndRange() {
         return scaleRndRange;
+    }
+
+    public void setScaleRndRange(float scaleRndRange) {
+        this.scaleRndRange = scaleRndRange;
     }
 
     public float getSpeedRndRange() {
         return speedRndRange;
     }
 
+    public void setSpeedRndRange(float speedRndRange) {
+        this.speedRndRange = speedRndRange;
+    }
+
     public void setAnimRange(long animRange) {
         this.animRange = animRange;
-    }
-
-    public void setCreationPeriodMillis(long creationPeriodMillis) {
-        this.creationPeriodMillis = creationPeriodMillis;
-    }
-
-    public void setMaxParticles(int maxParticles) {
-        this.maxParticles = maxParticles;
-    }
-
-    public void setPositionRndRange(float positionRndRange) {
-        this.positionRndRange = positionRndRange;
-    }
-
-    public void setScaleRndRange(float scaleRndRange) {
-        this.scaleRndRange = scaleRndRange;
     }
 
     public boolean isActive() {
@@ -97,10 +97,6 @@ public class FlowParticleEmitter implements ParticleEmitter {
 
     public void setActive(boolean active) {
         this.active = active;
-    }
-
-    public void setSpeedRndRange(float speedRndRange) {
-        this.speedRndRange = speedRndRange;
     }
 
     public void update(long elapsedTime) {
@@ -129,10 +125,10 @@ public class FlowParticleEmitter implements ParticleEmitter {
         Particle particle = new Particle(this.getBaseParticle());
         // Add a little bit of randomness of the parrticle
         float sign = Math.random() > 0.5d ? -1.0f : 1.0f;
-        float speedInc = sign * (float)Math.random() * this.speedRndRange;
-        float posInc = sign * (float)Math.random() * this.positionRndRange;
-        float scaleInc = sign * (float)Math.random() * this.scaleRndRange;
-        long updateAnimInc = (long)sign *(long)(Math.random() * (float)this.animRange);
+        float speedInc = sign * (float) Math.random() * this.speedRndRange;
+        float posInc = sign * (float) Math.random() * this.positionRndRange;
+        float scaleInc = sign * (float) Math.random() * this.scaleRndRange;
+        long updateAnimInc = (long) sign * (long) (Math.random() * (float) this.animRange);
         particle.getPosition().add(posInc, posInc, posInc);
         particle.getSpeed().add(speedInc, speedInc, speedInc);
         particle.setScale(particle.getScale() + scaleInc);
@@ -142,7 +138,8 @@ public class FlowParticleEmitter implements ParticleEmitter {
 
     /**
      * Updates a particle position
-     * @param particle The particle to update
+     *
+     * @param particle    The particle to update
      * @param elapsedTime Elapsed time in milliseconds
      */
     public void updatePosition(Particle particle, long elapsedTime) {

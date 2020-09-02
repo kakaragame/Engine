@@ -4,8 +4,8 @@ import org.kakara.engine.GameHandler;
 import org.kakara.engine.events.EventHandler;
 import org.kakara.engine.events.event.MouseClickEvent;
 import org.kakara.engine.math.Vector2;
-import org.kakara.engine.ui.UserInterface;
 import org.kakara.engine.ui.RGBA;
+import org.kakara.engine.ui.UserInterface;
 import org.kakara.engine.ui.components.GeneralComponent;
 import org.kakara.engine.ui.events.UIClickEvent;
 import org.kakara.engine.ui.events.UIHoverEnterEvent;
@@ -23,17 +23,18 @@ public class Rectangle extends GeneralComponent {
 
     private boolean isHovering;
 
-    public Rectangle(){
+    public Rectangle() {
         this(new Vector2(0, 0), new Vector2(40, 40), new RGBA());
     }
 
     /**
      * Create a rectangle
+     *
      * @param position The position of the rectangle
-     * @param scale The scale of the rectangle
-     * @param color The color of the rectangle.
+     * @param scale    The scale of the rectangle
+     * @param color    The color of the rectangle.
      */
-    public Rectangle(Vector2 position, Vector2 scale, RGBA color){
+    public Rectangle(Vector2 position, Vector2 scale, RGBA color) {
         this.position = position;
         this.scale = scale;
         this.color = color;
@@ -41,30 +42,31 @@ public class Rectangle extends GeneralComponent {
         this.isHovering = false;
     }
 
-    public Rectangle(Vector2 position, Vector2 scale){
+    public Rectangle(Vector2 position, Vector2 scale) {
         this(position, scale, new RGBA());
-    }
-
-
-    /**
-     * Set the color of the rectangle.
-     * @param color The color value
-     */
-    public void setColor(RGBA color){
-        this.color = color;
     }
 
     /**
      * Get the color of the rectangle.
+     *
      * @return The color of the rectangle.
      */
-    public RGBA getColor(){
+    public RGBA getColor() {
         return color;
     }
 
+    /**
+     * Set the color of the rectangle.
+     *
+     * @param color The color value
+     */
+    public void setColor(RGBA color) {
+        this.color = color;
+    }
+
     @EventHandler
-    public void onClick(MouseClickEvent evt){
-        if(UserInterface.isColliding(getTruePosition(), getTrueScale(), new Vector2(evt.getMousePosition()))){
+    public void onClick(MouseClickEvent evt) {
+        if (UserInterface.isColliding(getTruePosition(), getTrueScale(), new Vector2(evt.getMousePosition()))) {
             triggerEvent(UIClickEvent.class, new Vector2(evt.getMousePosition()), evt.getMouseClickType());
         }
     }
@@ -78,12 +80,12 @@ public class Rectangle extends GeneralComponent {
 
     @Override
     public void render(Vector2 relative, UserInterface userInterface, GameHandler handler) {
-        if(!isVisible()) return;
+        if (!isVisible()) return;
         boolean isColliding = UserInterface.isColliding(getTruePosition(), getTrueScale(), new Vector2(handler.getMouseInput().getPosition()));
-        if(isColliding && !isHovering){
+        if (isColliding && !isHovering) {
             isHovering = true;
             triggerEvent(UIHoverEnterEvent.class, handler.getMouseInput().getCurrentPosition());
-        }else if(!isColliding && isHovering){
+        } else if (!isColliding && isHovering) {
             isHovering = false;
             triggerEvent(UIHoverLeaveEvent.class, handler.getMouseInput().getCurrentPosition());
         }

@@ -16,21 +16,17 @@ import static org.lwjgl.system.MemoryUtil.NULL;
  */
 public class Window {
 
+    public final int initalWidth;
+    public final int initalHeight;
     private final String title;
     private int width;
     private int height;
     private boolean resized;
     private boolean vSync;
     private boolean resizable;
-
     private WindowOptions options;
-
     private boolean cursor;
-
     private long window;
-
-    public final int initalWidth;
-    public final int initalHeight;
 
     public Window(String title, int width, int height, boolean resizable, boolean vSync) {
         this.title = title;
@@ -184,21 +180,21 @@ public class Window {
     }
 
     /**
-     * Set if the window was resized
-     *
-     * @param resized If the window was resized
-     */
-    public void setResized(boolean resized) {
-        this.resized = resized;
-    }
-
-    /**
      * If the window was resized
      *
      * @return if the window as resized.
      */
     public boolean isResized() {
         return resized;
+    }
+
+    /**
+     * Set if the window was resized
+     *
+     * @param resized If the window was resized
+     */
+    public void setResized(boolean resized) {
+        this.resized = resized;
     }
 
     /**
@@ -249,6 +245,7 @@ public class Window {
     /**
      * Get the window handler.
      * <p>This is the window id used by GLFW.</p>
+     *
      * @return The window handler.
      */
     public long getWindowHandler() {
@@ -257,6 +254,7 @@ public class Window {
 
     /**
      * Get all of the options for the window
+     *
      * @return The options for the render.
      */
     public WindowOptions getOptions() {
@@ -265,10 +263,11 @@ public class Window {
 
     /**
      * Set the window icon.
-     * @since 1.0-Pre2
+     *
      * @param icon The icon to set.
+     * @since 1.0-Pre2
      */
-    public void setIcon(WindowIcon icon){
+    public void setIcon(WindowIcon icon) {
         GLFWImage iconImage = GLFWImage.malloc();
         GLFWImage.Buffer iconBuffer = GLFWImage.malloc(1);
         iconImage.set(icon.getWidth(), icon.getHeight(), icon.getImage());
@@ -278,9 +277,10 @@ public class Window {
 
     /**
      * Set the window icon to the default.
+     *
      * @since 1.0-Pre2
      */
-    public void setIcon(){
+    public void setIcon() {
         glfwSetWindowIcon(window, null);
     }
 

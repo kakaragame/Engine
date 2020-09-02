@@ -2,26 +2,25 @@ package org.kakara.engine;
 
 import org.jetbrains.annotations.NotNull;
 import org.kakara.engine.input.Clipboard;
-import org.kakara.engine.window.Window;
 import org.kakara.engine.input.KeyInput;
 import org.kakara.engine.input.MouseInput;
 import org.kakara.engine.resources.ResourceManager;
 import org.kakara.engine.scene.Scene;
 import org.kakara.engine.scene.SceneManager;
 import org.kakara.engine.sound.SoundManager;
+import org.kakara.engine.window.Window;
 
 /**
  * Handles the game information.
  */
 public class GameHandler {
 
+    private static GameHandler gameHandler;
     private MouseInput mouseInput;
     private KeyInput keyInput;
     private Clipboard clipboard;
-
     private SceneManager sceneManager;
     private SoundManager soundManager;
-    private static GameHandler gameHandler;
     private GameEngine gameEngine;
     private ResourceManager resourceManager;
 
@@ -35,6 +34,15 @@ public class GameHandler {
         soundManager = new SoundManager();
         GameHandler.gameHandler = this;
         resourceManager = new ResourceManager();
+    }
+
+    /**
+     * Get the current instance of the game handler. (Is safe to use as long as the game is open).
+     *
+     * @return The game handler
+     */
+    public static GameHandler getInstance() {
+        return gameHandler;
     }
 
     /**
@@ -74,10 +82,10 @@ public class GameHandler {
     /**
      * Get the clipboard input.
      *
-     * @since 1.0-Pre3
      * @return The clipboard input.
+     * @since 1.0-Pre3
      */
-    public Clipboard getClipboard(){
+    public Clipboard getClipboard() {
         return clipboard;
     }
 
@@ -91,15 +99,8 @@ public class GameHandler {
     }
 
     /**
-     * Get the current instance of the game handler. (Is safe to use as long as the game is open).
-     * @return The game handler
-     */
-    public static GameHandler getInstance() {
-        return gameHandler;
-    }
-
-    /**
      * Get the scene manager.
+     *
      * @return The scene manager.
      */
     public SceneManager getSceneManager() {
@@ -108,6 +109,7 @@ public class GameHandler {
 
     /**
      * Get the game engine class
+     *
      * @return The game engine class.
      */
     public GameEngine getGameEngine() {
@@ -116,6 +118,7 @@ public class GameHandler {
 
     /**
      * Get the sound manager.
+     *
      * @return The sound manager.
      */
     public SoundManager getSoundManager() {
@@ -124,6 +127,7 @@ public class GameHandler {
 
     /**
      * Get the resource manager.
+     *
      * @return The resource manager.
      */
     public ResourceManager getResourceManager() {
@@ -132,9 +136,10 @@ public class GameHandler {
 
     /**
      * Get the current scene.
+     *
      * @return The current scene.
      */
-    public @NotNull Scene getCurrentScene(){
+    public @NotNull Scene getCurrentScene() {
         return getSceneManager().getCurrentScene();
     }
 

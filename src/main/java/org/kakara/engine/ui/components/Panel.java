@@ -15,7 +15,8 @@ import org.kakara.engine.ui.events.UIHoverLeaveEvent;
 public class Panel extends GeneralComponent {
 
     private boolean isHovering;
-    public Panel(){
+
+    public Panel() {
         super();
         isHovering = false;
     }
@@ -27,24 +28,24 @@ public class Panel extends GeneralComponent {
     }
 
     @Override
-    public void render(Vector2 relative, UserInterface userInterface, GameHandler handler){
-        if(!isVisible()) return;
+    public void render(Vector2 relative, UserInterface userInterface, GameHandler handler) {
+        if (!isVisible()) return;
 
         pollRender(relative, userInterface, handler);
 
         boolean isColliding = UserInterface.isColliding(getTruePosition(), getTrueScale(), new Vector2(handler.getMouseInput().getPosition()));
-        if(isColliding && !isHovering){
+        if (isColliding && !isHovering) {
             isHovering = true;
             triggerEvent(UIHoverEnterEvent.class, handler.getMouseInput().getCurrentPosition());
-        }else if(!isColliding && isHovering){
+        } else if (!isColliding && isHovering) {
             isHovering = false;
             triggerEvent(UIHoverLeaveEvent.class, handler.getMouseInput().getCurrentPosition());
         }
     }
 
     @EventHandler
-    public void onClick(MouseClickEvent evt){
-        if(UserInterface.isColliding(position, scale, new Vector2(evt.getMousePosition()))){
+    public void onClick(MouseClickEvent evt) {
+        if (UserInterface.isColliding(position, scale, new Vector2(evt.getMousePosition()))) {
             triggerEvent(UIClickEvent.class, position, evt.getMouseClickType());
         }
     }

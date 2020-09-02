@@ -2,8 +2,8 @@ package org.kakara.engine.test.components;
 
 import org.kakara.engine.GameHandler;
 import org.kakara.engine.math.Vector2;
-import org.kakara.engine.ui.UserInterface;
 import org.kakara.engine.ui.RGBA;
+import org.kakara.engine.ui.UserInterface;
 import org.kakara.engine.ui.components.GeneralComponent;
 import org.kakara.engine.ui.components.shapes.Rectangle;
 import org.kakara.engine.ui.components.text.Text;
@@ -24,7 +24,7 @@ public class LoadingBar extends GeneralComponent {
      * If this component is made from other components, then here is where you define those
      * components and add them to this component. (this.add())
      */
-    public LoadingBar(Vector2 position, Vector2 scale, Font font){
+    public LoadingBar(Vector2 position, Vector2 scale, Font font) {
         super();
         this.position = position;
         this.scale = scale;
@@ -32,35 +32,35 @@ public class LoadingBar extends GeneralComponent {
         RGBA foregroundColor = new RGBA(0, 150, 150, 1);
         RGBA backgroundColor = new RGBA(255, 10, 10, 1);
         percentText = new Text("0.00%", font);
-        percentText.setPosition(scale.x /2, scale.y /2 + 10);
-        outer = new Rectangle(new Vector2(0,0), new Vector2(scale.x,scale.y), backgroundColor);
-        inner = new Rectangle(new Vector2(0,0), new Vector2(0,scale.y-5), foregroundColor);
+        percentText.setPosition(scale.x / 2, scale.y / 2 + 10);
+        outer = new Rectangle(new Vector2(0, 0), new Vector2(scale.x, scale.y), backgroundColor);
+        inner = new Rectangle(new Vector2(0, 0), new Vector2(0, scale.y - 5), foregroundColor);
 
         this.add(outer);
         this.add(inner);
         this.add(percentText);
     }
 
-    /*
-        Simple getters and setters
-     */
-    public void setPercent(float percent){
-        this.percent = percent;
-    }
-
-    public float getPercent(){
+    public float getPercent() {
         return percent;
     }
 
-    public void setForegroundColor(RGBA color){
+    /*
+        Simple getters and setters
+     */
+    public void setPercent(float percent) {
+        this.percent = percent;
+    }
+
+    public void setForegroundColor(RGBA color) {
         inner.setColor(color);
     }
 
-    public void setBackgroundColor(RGBA color){
+    public void setBackgroundColor(RGBA color) {
         outer.setColor(color);
     }
 
-    public void setTextColor(RGBA color){
+    public void setTextColor(RGBA color) {
         percentText.setColor(color);
     }
 
@@ -100,11 +100,11 @@ public class LoadingBar extends GeneralComponent {
         position. If you were using nvg to draw then you would use those two methods for x, y and w, h.
      */
     @Override
-    public void render(Vector2 relative, UserInterface userInterface, GameHandler handler){
+    public void render(Vector2 relative, UserInterface userInterface, GameHandler handler) {
         pollRender(relative, userInterface, handler);
-        if(percent <= 1)
+        if (percent <= 1)
             inner.setScale(outer.scale.x * percent, scale.y);
-        percentText.setText(Math.round(percent*100) + "%");
+        percentText.setText(Math.round(percent * 100) + "%");
 
         /*
             Now time to trigger a custom event. See the LoadingBarCompleteEvent interface to see how to create
@@ -112,7 +112,7 @@ public class LoadingBar extends GeneralComponent {
 
             The GeneralComponent comes with a handy method to trigger an event called triggerEvent.
          */
-        if(percent >= 1){
+        if (percent >= 1) {
             triggerEvent(LoadingBarCompleteEvent.class, percent);
             // The following prevent this event from calling every frame after 1. Make sure that an event can never
             // be triggered every frame!

@@ -3,8 +3,8 @@ package org.kakara.engine.ui.items;
 import org.kakara.engine.GameHandler;
 import org.kakara.engine.math.Vector2;
 import org.kakara.engine.scene.Scene;
-import org.kakara.engine.ui.UserInterface;
 import org.kakara.engine.ui.UICanvas;
+import org.kakara.engine.ui.UserInterface;
 import org.kakara.engine.ui.components.Component;
 
 import java.util.ArrayList;
@@ -15,9 +15,8 @@ import java.util.List;
  * <p>This is what is added directly to the hud.</p>
  */
 public class ComponentCanvas implements UICanvas {
-    private List<Component> components;
     boolean init = false;
-
+    private List<Component> components;
     private Scene scene;
     /*
      * Tagable data
@@ -27,22 +26,24 @@ public class ComponentCanvas implements UICanvas {
 
     /**
      * Create a new canvas component
+     *
      * @param scene The current scene.
      */
-    public ComponentCanvas(Scene scene){
+    public ComponentCanvas(Scene scene) {
         components = new ArrayList<>();
         this.scene = scene;
     }
 
     /**
      * Add a child component into the canvas
+     *
      * @param component The component to add.
      */
-    public void add(Component component){
-        if(component.getParent() != null)
+    public void add(Component component) {
+        if (component.getParent() != null)
             throw new RuntimeException("Error: That component already has a parent!");
         components.add(component);
-        if(init){
+        if (init) {
             component.init(scene.getUserInterface(), GameHandler.getInstance());
         }
     }
@@ -50,51 +51,48 @@ public class ComponentCanvas implements UICanvas {
     @Override
     public void init(UserInterface userInterface, GameHandler handler) {
         init = true;
-        for(Component c : components){
+        for (Component c : components) {
             c.init(userInterface, handler);
         }
     }
 
     @Override
     public void render(UserInterface userInterface, GameHandler handler) {
-        for(Component component : components){
+        for (Component component : components) {
             component.render(new Vector2(0, 0), userInterface, handler);
         }
     }
 
     @Override
     public void cleanup(GameHandler handler) {
-        for(Component component : components){
+        for (Component component : components) {
             component.cleanup(handler);
         }
     }
 
     /**
      * Get a list of the child components
+     *
      * @return The child components
      */
-    public List<Component> getComponents(){
+    public List<Component> getComponents() {
         return components;
     }
 
     /**
      * Clear all of the components
      */
-    public void clearComponents(){
+    public void clearComponents() {
         components.clear();
     }
 
     /**
      * Remove a component from the list.
+     *
      * @param c The component
      */
-    public void removeComponent(Component c){
+    public void removeComponent(Component c) {
         components.remove(c);
-    }
-
-    @Override
-    public void setData(List<Object> data) {
-        this.data = data;
     }
 
     @Override
@@ -103,12 +101,17 @@ public class ComponentCanvas implements UICanvas {
     }
 
     @Override
-    public void setTag(String tag) {
-        this.tag = tag;
+    public void setData(List<Object> data) {
+        this.data = data;
     }
 
     @Override
     public String getTag() {
         return tag;
+    }
+
+    @Override
+    public void setTag(String tag) {
+        this.tag = tag;
     }
 }

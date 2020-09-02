@@ -7,19 +7,20 @@ import static org.lwjgl.glfw.GLFW.glfwGetKeyName;
  */
 public class KeyPressEvent {
     private int keycode;
-    public KeyPressEvent(int keycode){
+
+    public KeyPressEvent(int keycode) {
         this.keycode = keycode;
     }
 
-    public boolean isKeyPressed(int keycode){
+    public boolean isKeyPressed(int keycode) {
         return this.keycode == keycode;
     }
 
-    public int getKeyCode(){
+    public int getKeyCode() {
         return this.keycode;
     }
 
-    public String getKeyName(){
+    public String getKeyName() {
         return glfwGetKeyName(keycode, 0);
     }
 }
