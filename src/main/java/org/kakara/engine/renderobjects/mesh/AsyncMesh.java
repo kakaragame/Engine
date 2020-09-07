@@ -36,19 +36,18 @@ public class AsyncMesh implements RenderMesh {
     /**
      * Create a render mesh
      *
-     * @param blocks       The list of render blocks
      * @param renderChunk  renderchunk
      * @param textureAtlas The texture atlas to use
      * @param future       The completable future that is to be completed once the generation is complete.
      */
-    public AsyncMesh(List<RenderBlock> blocks, RenderChunk renderChunk, TextureAtlas textureAtlas, @Nullable CompletableFuture<AsyncMesh> future) {
+    public AsyncMesh(RenderChunk renderChunk, TextureAtlas textureAtlas, @Nullable CompletableFuture<AsyncMesh> future) {
         vboIdList = new ArrayList<>();
         AsyncMesh instance = this;
 
         GameHandler.getInstance().getGameEngine().addQueueItem(() -> vaoId = glGenVertexArrays());
 
         ChunkHandler.EXECUTORS.submit(() -> {
-            List<RenderBlock> renderBlocks = renderChunk.calculateVisibleBlocks(blocks);
+            List<RenderBlock> renderBlocks = renderChunk.calculateVisibleBlocks();
             MeshLayout layout = null;
             try {
                 layout = MeshUtils.setupLayout(renderBlocks, textureAtlas);

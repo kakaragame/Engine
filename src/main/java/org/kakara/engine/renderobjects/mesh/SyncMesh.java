@@ -33,16 +33,15 @@ public class SyncMesh implements RenderMesh {
     /**
      * Create a render mesh
      *
-     * @param blocks       The list of render blocks
      * @param renderChunk  renderchunk
      * @param textureAtlas The texture atlas to use
      */
-    public SyncMesh(List<RenderBlock> blocks, RenderChunk renderChunk, TextureAtlas textureAtlas) {
+    public SyncMesh(RenderChunk renderChunk, TextureAtlas textureAtlas) {
         if (Thread.currentThread() != GameEngine.currentThread)
             throw new InvalidThreadException("This class must be constructed on the main tread!");
         vboIdList = new ArrayList<>();
         vaoId = glGenVertexArrays();
-        List<RenderBlock> renderBlocks = renderChunk.calculateVisibleBlocks(blocks);
+        List<RenderBlock> renderBlocks = renderChunk.calculateVisibleBlocks();
         MeshLayout layout = MeshUtils.setupLayout(renderBlocks, textureAtlas);
         try {
             vertexCount = layout.getVertexLength();
