@@ -199,7 +199,8 @@ public class Renderer {
      * @param chunks Render Chunks.
      */
     private void doOcclusionTest(List<RenderChunk> chunks){
-        if(chunks.size() > 0 && (chunks.get(0).getRenderMesh().getQuery() == null || chunks.get(0).getRenderMesh().getQuery().isInUse())) return;
+        if(chunks == null || chunks.get(0) == null || chunks.get(0).getRenderMesh() == null) return;
+        if(chunks.get(0).getRenderMesh().getQuery() == null || chunks.get(0).getRenderMesh().getQuery().isInUse()) return;
         glColorMask(false, false, false, false);
         glDepthMask(false);
         for(RenderChunk chunk : chunks){
