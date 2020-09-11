@@ -19,6 +19,8 @@ import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL20.glDisableVertexAttribArray;
 import static org.lwjgl.opengl.GL30.*;
+import static org.lwjgl.opengl.GL33.GL_ANY_SAMPLES_PASSED;
+import static org.lwjgl.opengl.GL43.GL_ANY_SAMPLES_PASSED_CONSERVATIVE;
 
 /**
  * The mesh for the chunks.
@@ -42,7 +44,7 @@ public class SyncMesh implements RenderMesh {
         if(Thread.currentThread() != GameEngine.currentThread)
             throw new InvalidThreadException("This class must be constructed on the main tread!");
 
-        query = new RenderQuery(GL_SAMPLES_PASSED);
+        query = new RenderQuery(GL_ANY_SAMPLES_PASSED);
 
         vboIdList = new ArrayList<>();
         vaoId = glGenVertexArrays();

@@ -21,6 +21,8 @@ import java.util.concurrent.CompletableFuture;
 import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.*;
+import static org.lwjgl.opengl.GL33.GL_ANY_SAMPLES_PASSED;
+import static org.lwjgl.opengl.GL43.GL_ANY_SAMPLES_PASSED_CONSERVATIVE;
 
 /**
  * This mesh will do the async part on the current thread.
@@ -66,7 +68,7 @@ public class MultiThreadMesh implements RenderMesh {
 
         MeshLayout finalLayout = layout;
         GameHandler.getInstance().getGameEngine().addQueueItem(() -> {
-            query = new RenderQuery(GL_SAMPLES_PASSED);
+            query = new RenderQuery(GL_ANY_SAMPLES_PASSED);
             vaoId = glGenVertexArrays();
             try {
                 glBindVertexArray(vaoId);
@@ -188,6 +190,7 @@ public class MultiThreadMesh implements RenderMesh {
 
         glBindVertexArray(0);
         glDeleteVertexArrays(vaoId);
+        query.delete();
     }
 
     @Override

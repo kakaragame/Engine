@@ -23,6 +23,8 @@ import java.util.concurrent.ExecutionException;
 import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.*;
+import static org.lwjgl.opengl.GL33.GL_ANY_SAMPLES_PASSED;
+import static org.lwjgl.opengl.GL43.GL_ANY_SAMPLES_PASSED_CONSERVATIVE;
 
 /**
  * This mesh will do all mesh calculations on a different thread while,
@@ -54,7 +56,7 @@ public class ModifiedAsyncMesh implements RenderMesh {
         if(Thread.currentThread() != GameEngine.currentThread){
             throw new InvalidThreadException("This class can only be constructed on the main thread!");
         }
-        query = new RenderQuery(GL_SAMPLES_PASSED);
+        query = new RenderQuery(GL_ANY_SAMPLES_PASSED);
         vboIdList = new ArrayList<>();
         vaoId = glGenVertexArrays();
 
@@ -207,6 +209,7 @@ public class ModifiedAsyncMesh implements RenderMesh {
 
         glBindVertexArray(0);
         glDeleteVertexArrays(vaoId);
+        query.delete();
     }
 
     @Override

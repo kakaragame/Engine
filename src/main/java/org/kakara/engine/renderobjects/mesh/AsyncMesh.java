@@ -21,6 +21,8 @@ import java.util.concurrent.CompletableFuture;
 import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.*;
+import static org.lwjgl.opengl.GL33.GL_ANY_SAMPLES_PASSED;
+import static org.lwjgl.opengl.GL43.GL_ANY_SAMPLES_PASSED_CONSERVATIVE;
 
 /**
  * This calculates the data for the Mesh on a different thread.
@@ -49,7 +51,7 @@ public class AsyncMesh implements RenderMesh {
 
         GameHandler.getInstance().getGameEngine().addQueueItem(() -> {
             vaoId = glGenVertexArrays();
-            query = new RenderQuery(GL_SAMPLES_PASSED);
+            query = new RenderQuery(GL_ANY_SAMPLES_PASSED);
         });
 
         ChunkHandler.EXECUTORS.submit(() -> {
@@ -195,6 +197,7 @@ public class AsyncMesh implements RenderMesh {
 
         glBindVertexArray(0);
         glDeleteVertexArrays(vaoId);
+        query.delete();
     }
 
     @Override

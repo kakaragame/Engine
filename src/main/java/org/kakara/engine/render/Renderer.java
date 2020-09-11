@@ -96,7 +96,6 @@ public class Renderer {
 
         frustumFilter.updateFrustum(transformation.getProjectionMatrix(), camera.getViewMatrix());
 
-
         renderScene(window, camera, scene);
         renderChunk(window, camera, scene, false);
         renderParticles(window, camera, scene);
@@ -155,11 +154,12 @@ public class Renderer {
         chunkShaderProgram.setUniform("shadowMap", 2);
         chunkShaderProgram.setUniform("textureAtlas", 0);
         chunkShaderProgram.setUniform("reflectance", 1f);
-        if(!depthMap)
-            doOcclusionTest(renderChunks);
 
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, ags.getTextureAtlas().getTexture().getId());
+
+        doOcclusionTest(renderChunks, chunkShaderProgram, viewMatrix, lightViewMatrix);
+
         for (RenderChunk renderChunk : renderChunks) {
             if (renderChunk == null) continue;
 
@@ -169,7 +169,8 @@ public class Renderer {
             if(mesh == null || mesh.getQuery() == null)
                 continue;
             int i = mesh.getQuery().pollPreviousResult();
-            if(i < 3 && i != -1)
+
+            if(i == GL_FALSE)
                 continue;
 
             Matrix4f modelMatrix = transformation.buildModelMatrix(renderChunk);
@@ -197,18 +198,30 @@ public class Renderer {
     /**
      * Test the queries to see if they are culled.
      * @param chunks Render Chunks.
+     * @param chunkShaderProgram The ShaderProgram for the chunk
+     * @param viewMatrix The view matrix.
+     * @param lightViewMatrix The lightViewMatrix
      */
-    private void doOcclusionTest(List<RenderChunk> chunks){
-        if(chunks == null || chunks.get(0) == null || chunks.get(0).getRenderMesh() == null) return;
-        if(chunks.get(0).getRenderMesh().getQuery() == null || chunks.get(0).getRenderMesh().getQuery().isInUse()) return;
+    private void doOcclusionTest(List<RenderChunk> chunks, Shader chunkShaderProgram, Matrix4f viewMatrix, Matrix4f lightViewMatrix){
+        if(chunks == null || chunks.isEmpty() || chunks.get(0).getRenderMesh() == null) return;
+        if(chunks.get(0).getRenderMesh().getQuery() == null) return;
         glColorMask(false, false, false, false);
         glDepthMask(false);
         for(RenderChunk chunk : chunks){
+            // If the chunk is out of the frustum then don't bother testing.
             if(!frustumFilter.testRenderObject(chunk.getPosition(), 16, 16, 16))
                 continue;
             RenderMesh mesh = chunk.getRenderMesh();
             if(mesh == null) continue;
             if(mesh.getQuery() != null && !mesh.getQuery().isInUse()){
+                // Calculate the Matrix for the chunk so it is tested in the right spot
+                Matrix4f modelMatrix = transformation.buildModelMatrix(chunk);
+                Matrix4f modelViewMatrix = transformation.buildModelViewMatrix(modelMatrix, viewMatrix);
+                chunkShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+                Matrix4f modelLightViewMatrix = transformation.buildModelLightViewMatrix(modelMatrix, lightViewMatrix);
+                chunkShaderProgram.setUniform("modelLightViewMatrix", modelLightViewMatrix);
+
+                // Do the query
                 mesh.getQuery().start();
                 mesh.render();
                 mesh.getQuery().end();

@@ -181,9 +181,9 @@ public class MainGameScene extends AbstractGameScene {
 
 
         new Thread(() -> {
-            for(int cx = 0; cx < 5; cx++){
+            for(int cx = 0; cx < 7; cx++){
                 for(int cy = 0; cy < 2; cy++){
-                    for(int cz = 0; cz < 5; cz++){
+                    for(int cz = 0; cz < 7; cz++){
                         RenderChunk rc = new RenderChunk(new ArrayList<>(), getTextureAtlas());
                         rc.setPosition(cx * 16, cy*16, cz * 16);
                         for(int x = 0; x < 16; x++){
