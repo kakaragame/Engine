@@ -48,13 +48,13 @@ public class MultiThreadMesh implements RenderMesh {
      * @param textureAtlas The texture atlas to use
      * @param future       The completable future that is to be completed once the generation is complete.
      */
-    public MultiThreadMesh(List<RenderBlock> blocks, RenderChunk renderChunk, TextureAtlas textureAtlas, @Nullable CompletableFuture<MultiThreadMesh> future) {
+    public MultiThreadMesh(RenderChunk renderChunk, TextureAtlas textureAtlas, @Nullable CompletableFuture<MultiThreadMesh> future) {
         if (Thread.currentThread() == GameEngine.currentThread)
             throw new InvalidThreadException("This class can only be constructed on a secondary thread!");
         vboIdList = new ArrayList<>();
         MultiThreadMesh instance = this;
 
-        List<RenderBlock> renderBlocks = renderChunk.calculateVisibleBlocks(blocks);
+        List<RenderBlock> renderBlocks = renderChunk.calculateVisibleBlocks();
         MeshLayout layout = null;
         try {
             layout = MeshUtils.setupLayout(renderBlocks, textureAtlas);

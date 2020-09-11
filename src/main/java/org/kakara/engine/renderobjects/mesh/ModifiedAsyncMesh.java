@@ -53,7 +53,7 @@ public class ModifiedAsyncMesh implements RenderMesh {
      * @param textureAtlas The texture atlas to use
      * @param whenFinished The completable future that is to be completed once the generation is complete.
      */
-    public ModifiedAsyncMesh(List<RenderBlock> blocks, RenderChunk renderChunk, TextureAtlas textureAtlas, @Nullable CompletableFuture<ModifiedAsyncMesh> whenFinished) {
+    public ModifiedAsyncMesh(RenderChunk renderChunk, TextureAtlas textureAtlas, @Nullable CompletableFuture<ModifiedAsyncMesh> whenFinished) {
         if (Thread.currentThread() != GameEngine.currentThread) {
             throw new InvalidThreadException("This class can only be constructed on the main thread!");
         }
@@ -66,7 +66,7 @@ public class ModifiedAsyncMesh implements RenderMesh {
         this.future = new CompletableFuture<>();
 
         ChunkHandler.EXECUTORS.submit(() -> {
-            List<RenderBlock> renderBlocks = renderChunk.calculateVisibleBlocks(blocks);
+            List<RenderBlock> renderBlocks = renderChunk.calculateVisibleBlocks();
             MeshLayout layout = null;
             try {
                 layout = MeshUtils.setupLayout(renderBlocks, textureAtlas);

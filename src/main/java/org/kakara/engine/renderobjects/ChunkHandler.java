@@ -67,7 +67,13 @@ public class ChunkHandler {
                     for (int y = -2; y < 3; y++) {
                         for (int z = -1; z < 2; z++) {
                             Vector3 coords = coordsToRenderCoords(chunk.getPosition(), pos.clone().add(x, y, z));
-                            RenderBlock blck = chunk.getOctChunk().get((int) coords.x, (int) coords.y, (int) coords.z);
+                            RenderBlock blck;
+                            // This might be a bad idea.
+                            try{
+                               blck = chunk.getOctChunk()[(int) coords.x][(int) coords.y][(int) coords.z];
+                            }catch(ArrayIndexOutOfBoundsException ex){
+                                continue;
+                            }
                             if (blck != null)
                                 collisionList.add(blck);
                         }
@@ -95,7 +101,13 @@ public class ChunkHandler {
                     for (int y = -10; y < 10; y++) {
                         for (int z = -10; z < 10; z++) {
                             Vector3 coords = coordsToRenderCoords(chunk.getPosition(), pos.clone().add(x, y, z));
-                            RenderBlock blck = chunk.getOctChunk().get((int) coords.x, (int) coords.y, (int) coords.z);
+                            RenderBlock blck;
+                            // This might also be a bad idea.
+                            try{
+                                blck = chunk.getOctChunk()[(int) coords.x][(int) coords.y][(int) coords.z];
+                            }catch(ArrayIndexOutOfBoundsException ex){
+                                continue;
+                            }
                             if (blck != null)
                                 collisionList.add(blck);
                         }
