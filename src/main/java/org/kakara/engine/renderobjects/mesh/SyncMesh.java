@@ -3,6 +3,7 @@ package org.kakara.engine.renderobjects.mesh;
 import org.kakara.engine.GameEngine;
 import org.kakara.engine.GameHandler;
 import org.kakara.engine.exceptions.InvalidThreadException;
+import org.kakara.engine.render.culling.RenderQuery;
 import org.kakara.engine.renderobjects.RenderBlock;
 import org.kakara.engine.renderobjects.RenderChunk;
 import org.kakara.engine.renderobjects.TextureAtlas;
@@ -18,6 +19,8 @@ import java.util.List;
 import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.*;
+import static org.lwjgl.opengl.GL33.GL_ANY_SAMPLES_PASSED;
+import static org.lwjgl.opengl.GL43.GL_ANY_SAMPLES_PASSED_CONSERVATIVE;
 
 /**
  * The mesh for the chunks.
@@ -30,6 +33,8 @@ public class SyncMesh implements RenderMesh {
     protected int vaoId;
     private int vertexCount;
 
+    private RenderQuery query;
+
     /**
      * Create a render mesh
      *
@@ -40,6 +45,9 @@ public class SyncMesh implements RenderMesh {
     public SyncMesh(List<RenderBlock> blocks, RenderChunk renderChunk, TextureAtlas textureAtlas) {
         if (Thread.currentThread() != GameEngine.currentThread)
             throw new InvalidThreadException("This class must be constructed on the main tread!");
+
+        query = new RenderQuery(GL_ANY_SAMPLES_PASSED);
+
         vboIdList = new ArrayList<>();
         vaoId = glGenVertexArrays();
         List<RenderBlock> renderBlocks = renderChunk.calculateVisibleBlocks(blocks);
@@ -160,6 +168,7 @@ public class SyncMesh implements RenderMesh {
 
         glBindVertexArray(0);
         glDeleteVertexArrays(vaoId);
+        query.delete();
     }
 
     @Override
@@ -224,6 +233,11 @@ public class SyncMesh implements RenderMesh {
                 }
             });
         }
+    }
+
+    @Override
+    public RenderQuery getQuery() {
+        return query;
     }
 
 }

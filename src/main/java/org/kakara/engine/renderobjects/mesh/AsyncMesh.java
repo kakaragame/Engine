@@ -3,6 +3,7 @@ package org.kakara.engine.renderobjects.mesh;
 import org.jetbrains.annotations.Nullable;
 import org.kakara.engine.GameEngine;
 import org.kakara.engine.GameHandler;
+import org.kakara.engine.render.culling.RenderQuery;
 import org.kakara.engine.renderobjects.ChunkHandler;
 import org.kakara.engine.renderobjects.RenderBlock;
 import org.kakara.engine.renderobjects.RenderChunk;
@@ -20,6 +21,8 @@ import java.util.concurrent.CompletableFuture;
 import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.*;
+import static org.lwjgl.opengl.GL33.GL_ANY_SAMPLES_PASSED;
+import static org.lwjgl.opengl.GL43.GL_ANY_SAMPLES_PASSED_CONSERVATIVE;
 
 /**
  * This calculates the data for the Mesh on a different thread.
@@ -33,6 +36,8 @@ public class AsyncMesh implements RenderMesh {
     private int vertexCount;
     private boolean finished;
 
+    private RenderQuery query;
+
     /**
      * Create a render mesh
      *
@@ -45,7 +50,10 @@ public class AsyncMesh implements RenderMesh {
         vboIdList = new ArrayList<>();
         AsyncMesh instance = this;
 
-        GameHandler.getInstance().getGameEngine().addQueueItem(() -> vaoId = glGenVertexArrays());
+        GameHandler.getInstance().getGameEngine().addQueueItem(() -> {
+            vaoId = glGenVertexArrays();
+            query = new RenderQuery(GL_ANY_SAMPLES_PASSED);
+        });
 
         ChunkHandler.EXECUTORS.submit(() -> {
             List<RenderBlock> renderBlocks = renderChunk.calculateVisibleBlocks(blocks);
@@ -190,6 +198,7 @@ public class AsyncMesh implements RenderMesh {
 
         glBindVertexArray(0);
         glDeleteVertexArrays(vaoId);
+        query.delete();
     }
 
     @Override
@@ -254,6 +263,11 @@ public class AsyncMesh implements RenderMesh {
                 }
             });
         }
+    }
+
+    @Override
+    public RenderQuery getQuery() {
+        return query;
     }
 
 

@@ -4,6 +4,7 @@ import org.jetbrains.annotations.Nullable;
 import org.kakara.engine.GameEngine;
 import org.kakara.engine.GameHandler;
 import org.kakara.engine.exceptions.InvalidThreadException;
+import org.kakara.engine.render.culling.RenderQuery;
 import org.kakara.engine.renderobjects.RenderBlock;
 import org.kakara.engine.renderobjects.RenderChunk;
 import org.kakara.engine.renderobjects.TextureAtlas;
@@ -20,6 +21,8 @@ import java.util.concurrent.CompletableFuture;
 import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.*;
+import static org.lwjgl.opengl.GL33.GL_ANY_SAMPLES_PASSED;
+import static org.lwjgl.opengl.GL43.GL_ANY_SAMPLES_PASSED_CONSERVATIVE;
 
 /**
  * This mesh will do the async part on the current thread.
@@ -34,6 +37,8 @@ public class MultiThreadMesh implements RenderMesh {
     protected int vaoId;
     private int vertexCount;
     private boolean finished;
+
+    private RenderQuery query;
 
     /**
      * Create a render mesh
@@ -64,6 +69,7 @@ public class MultiThreadMesh implements RenderMesh {
 
         MeshLayout finalLayout = layout;
         GameHandler.getInstance().getGameEngine().addQueueItem(() -> {
+            query = new RenderQuery(GL_ANY_SAMPLES_PASSED);
             vaoId = glGenVertexArrays();
             try {
                 glBindVertexArray(vaoId);
@@ -185,6 +191,7 @@ public class MultiThreadMesh implements RenderMesh {
 
         glBindVertexArray(0);
         glDeleteVertexArrays(vaoId);
+        query.delete();
     }
 
     @Override
@@ -249,6 +256,11 @@ public class MultiThreadMesh implements RenderMesh {
                 }
             });
         }
+    }
+
+    @Override
+    public RenderQuery getQuery() {
+        return query;
     }
 
 }

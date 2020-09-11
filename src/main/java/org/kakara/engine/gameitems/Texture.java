@@ -1,6 +1,7 @@
 package org.kakara.engine.gameitems;
 
 
+import org.apache.commons.lang3.SystemUtils;
 import org.jetbrains.annotations.NotNull;
 import org.kakara.engine.resources.JarResource;
 import org.kakara.engine.resources.Resource;
@@ -86,13 +87,13 @@ public class Texture {
             // Decode texture image into a byte buffer
 
             ByteBuffer decodedImage;
-            if (resource instanceof JarResource) {
+            if(resource instanceof JarResource) {
                 decodedImage = stbi_load_from_memory(resource.getByteBuffer(), w, h, avChannels, 4);
-            } else {
-                decodedImage = stbi_load(resource.getPath(), w, h, avChannels, 4);
+            }else{
+                decodedImage = stbi_load(correctPath(resource.getPath()), w, h, avChannels, 4);
 
             }
-            if (decodedImage == null) {
+            if(decodedImage == null){
                 throw new RuntimeException("Error: Cannot load specified image. " + stbi_failure_reason());
             }
             this.width = w.get();
@@ -114,6 +115,13 @@ public class Texture {
             glGenerateMipmap(GL_TEXTURE_2D);
         }
 
+    }
+
+    private String correctPath(String path){
+        if(SystemUtils.IS_OS_WINDOWS && path.startsWith("/")){
+            return path.substring(1);
+        }
+        return path;
     }
 
     public Texture(@NotNull ByteBuffer imageData) {
@@ -154,7 +162,6 @@ public class Texture {
     /**
      * Get the number of columns
      * <p>For use with particles</p>
-     *
      * @return The number of columns
      */
     public int getNumCols() {
@@ -164,7 +171,6 @@ public class Texture {
     /**
      * Get the number of rows.
      * <p>For use with particles</p>
-     *
      * @return The number of rows.
      */
     public int getNumRows() {
@@ -173,7 +179,6 @@ public class Texture {
 
     /**
      * Get the width of the texture.
-     *
      * @return The width of the texture.
      */
     public int getWidth() {
@@ -182,7 +187,6 @@ public class Texture {
 
     /**
      * Get the height of the texture.
-     *
      * @return The height of the texture.
      */
     public int getHeight() {
@@ -191,7 +195,6 @@ public class Texture {
 
     /**
      * Bind the texture.
-     *
      * @deprecated This is now handled by the engine.
      */
     public void bind() {
@@ -200,7 +203,6 @@ public class Texture {
 
     /**
      * Get the id of the texture.
-     *
      * @return
      */
     public int getId() {
@@ -216,10 +218,9 @@ public class Texture {
 
     /**
      * Grabs the scene this texture is for/
-     *
      * @return The scene.
      */
-    public Scene getCurrentScene() {
+    public Scene getCurrentScene(){
         return scene;
     }
 }

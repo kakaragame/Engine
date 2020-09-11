@@ -4,6 +4,7 @@ import org.jetbrains.annotations.Nullable;
 import org.kakara.engine.GameEngine;
 import org.kakara.engine.GameHandler;
 import org.kakara.engine.exceptions.InvalidThreadException;
+import org.kakara.engine.render.culling.RenderQuery;
 import org.kakara.engine.renderobjects.ChunkHandler;
 import org.kakara.engine.renderobjects.RenderBlock;
 import org.kakara.engine.renderobjects.RenderChunk;
@@ -22,6 +23,8 @@ import java.util.concurrent.ExecutionException;
 import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.*;
+import static org.lwjgl.opengl.GL33.GL_ANY_SAMPLES_PASSED;
+import static org.lwjgl.opengl.GL43.GL_ANY_SAMPLES_PASSED_CONSERVATIVE;
 
 /**
  * This mesh will do all mesh calculations on a different thread while,
@@ -40,6 +43,8 @@ public class ModifiedAsyncMesh implements RenderMesh {
 
     private CompletableFuture<ModifiedAsyncMesh> whenFinished;
 
+    private RenderQuery query;
+
     /**
      * Create a render mesh
      *
@@ -52,6 +57,7 @@ public class ModifiedAsyncMesh implements RenderMesh {
         if (Thread.currentThread() != GameEngine.currentThread) {
             throw new InvalidThreadException("This class can only be constructed on the main thread!");
         }
+        query = new RenderQuery(GL_ANY_SAMPLES_PASSED);
         vboIdList = new ArrayList<>();
         vaoId = glGenVertexArrays();
 
@@ -204,6 +210,7 @@ public class ModifiedAsyncMesh implements RenderMesh {
 
         glBindVertexArray(0);
         glDeleteVertexArrays(vaoId);
+        query.delete();
     }
 
     @Override
@@ -268,6 +275,11 @@ public class ModifiedAsyncMesh implements RenderMesh {
                 }
             });
         }
+    }
+
+    @Override
+    public RenderQuery getQuery() {
+        return query;
     }
 
 }

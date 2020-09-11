@@ -15,6 +15,8 @@ import org.kakara.engine.renderobjects.TextureAtlas;
 
 import java.util.*;
 
+import static org.lwjgl.opengl.GL11.glFinish;
+
 /**
  * This scene is to be used for the game.
  * <p>See {@link AbstractMenuScene} for a title scene.</p>
