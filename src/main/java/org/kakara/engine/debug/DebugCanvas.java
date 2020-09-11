@@ -5,6 +5,8 @@ import imgui.flag.ImGuiCond;
 import imgui.gl3.ImGuiImplGl3;
 import imgui.glfw.ImGuiImplGlfw;
 import org.kakara.engine.GameHandler;
+import org.kakara.engine.physics.collision.Collidable;
+import org.kakara.engine.renderobjects.RenderBlock;
 import org.kakara.engine.scene.AbstractGameScene;
 import org.kakara.engine.scene.AbstractScene;
 import org.kakara.engine.scene.Scene;
@@ -24,6 +26,7 @@ public class DebugCanvas implements UICanvas {
     private final ImGuiImplGl3 imGuiGl3 = new ImGuiImplGl3();
 
     Stack<Integer> fps = new Stack<>();
+    Stack<Integer> query = new Stack<>();
     /*
      * Tagable data
      */
@@ -77,6 +80,14 @@ public class DebugCanvas implements UICanvas {
         return data;
     }
 
+    private float[] getQuery(){
+        float[] data = new float[query.size()];
+        for(int i = 0; i < query.size(); i++){
+            data[i] = query.get(i);
+        }
+        return data;
+    }
+
     private void renderSceneInfo(Scene scene){
         ImGui.setNextWindowSize(300, 300, ImGuiCond.Once);
         ImGui.setNextWindowPos(10, 10, ImGuiCond.Once);
@@ -116,6 +127,18 @@ public class DebugCanvas implements UICanvas {
             if(ImGui.collapsingHeader("Abstract Game Scene Information")){
                 AbstractGameScene abstractGameScene = (AbstractGameScene) scene;
                 ImGui.text("# of Render Chunks: " + abstractGameScene.getChunkHandler().getRenderChunkList().size());
+                Collidable lookingAt = abstractGameScene.selectGameItems(30);
+                if(lookingAt instanceof RenderBlock){
+                    RenderBlock rb = (RenderBlock) lookingAt;
+                    ImGui.text("Facing Chunk Query Result: " + rb.getParentChunk().getRenderMesh().getQuery().pollPreviousResult());
+                    query.push(rb.getParentChunk().getRenderMesh().getQuery().pollPreviousResult());
+                }else{
+                    ImGui.text("Facing Chunk Query Result: NAN");
+                }
+                if(query.size() > 50)
+                    query.remove(0);
+                float[] queryData = getQuery();
+                ImGui.plotHistogram("", queryData, query.size(), 0, "Query Value (Histogram)", 0, 1, 200, 100);
             }
         }
         ImGui.end();

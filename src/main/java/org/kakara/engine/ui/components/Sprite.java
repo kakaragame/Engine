@@ -41,10 +41,25 @@ public class Sprite extends GeneralComponent {
         isHovering = false;
     }
 
+    public Sprite(Texture texture, Vector2 position){
+        this.alpha = (byte) 255;
+        this.rotation = 0;
+        this.position = position;
+        this.scale = new Vector2(-1, -1);
+        this.texture = texture;
+
+        isHovering = false;
+    }
+
     @Override
     public void init(UserInterface userInterface, GameHandler handler) {
         pollInit(userInterface, handler);
         this.image = NanoVGGL3.nvglCreateImageFromHandle(userInterface.getVG(), texture.getId(), texture.getWidth(), texture.getHeight(), 0);
+        if(scale.equals(new Vector2(-1, -1))){
+            int[] w = new int[1], h = new int[1];
+            nvgImageSize(userInterface.getVG(), image, w, h);
+            this.setScale(w[0], h[0]);
+        }
         userInterface.getScene().getEventManager().registerHandler(this);
     }
 
@@ -56,7 +71,7 @@ public class Sprite extends GeneralComponent {
     }
 
     public Sprite(Texture tex){
-        this(tex, new Vector2(0, 0), new Vector2(1, 1));
+        this(tex, new Vector2(0, 0));
     }
 
     /**
@@ -70,6 +85,12 @@ public class Sprite extends GeneralComponent {
         this.image = NanoVGGL3.nvglCreateImageFromHandle(
                 GameHandler.getInstance().getSceneManager().getCurrentScene().getUserInterface().getVG(),
                 tex.getId(), texture.getWidth(),tex.getHeight(), 0);
+    }
+
+    public void setScaleToImageSize(){
+        int[] w = new int[1], h = new int[1];
+        nvgImageSize(GameHandler.getInstance().getSceneManager().getCurrentScene().getUserInterface().getVG(), image, w, h);
+        this.setScale(w[0], h[0]);
     }
 
     /**
@@ -119,10 +140,9 @@ public class Sprite extends GeneralComponent {
             isHovering = false;
             triggerEvent(UIHoverLeaveEvent.class, handler.getMouseInput().getCurrentPosition());
         }
-
         NVGPaint imagePaint = nvgImagePattern(userInterface.getVG(), getTruePosition().x, getTruePosition().y, getTrueScale().x, getTrueScale().y, rotation, image, 1.0f, NVGPaint.calloc());
         nvgBeginPath(userInterface.getVG());
-        nvgRect(userInterface.getVG(), getTruePosition().x, getTruePosition().y, getTruePosition().x + getTrueScale().x, getTruePosition().y + getTrueScale().y);
+        nvgRect(userInterface.getVG(), getTruePosition().x, getTruePosition().y,  getTrueScale().x, getTrueScale().y);
         nvgFillPaint(userInterface.getVG(), imagePaint);
         nvgFill(userInterface.getVG());
         imagePaint.free();

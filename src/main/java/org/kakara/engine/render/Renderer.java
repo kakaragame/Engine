@@ -21,6 +21,7 @@ import org.kakara.engine.scene.Scene;
 import org.kakara.engine.ui.objectcanvas.UIObject;
 import org.kakara.engine.utils.Utils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -158,7 +159,8 @@ public class Renderer {
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, ags.getTextureAtlas().getTexture().getId());
 
-        doOcclusionTest(renderChunks, chunkShaderProgram, viewMatrix, lightViewMatrix);
+        // TODO one day reimplement occlusion culling.
+        //doOcclusionTest(renderChunks, chunkShaderProgram, viewMatrix, lightViewMatrix);
 
         for (RenderChunk renderChunk : renderChunks) {
             if (renderChunk == null) continue;
@@ -207,13 +209,13 @@ public class Renderer {
         if(chunks.get(0).getRenderMesh().getQuery() == null) return;
         glColorMask(false, false, false, false);
         glDepthMask(false);
-        for(RenderChunk chunk : chunks){
+        for(RenderChunk chunk : new ArrayList<>(chunks)){
             // If the chunk is out of the frustum then don't bother testing.
             if(!frustumFilter.testRenderObject(chunk.getPosition(), 16, 16, 16))
                 continue;
             RenderMesh mesh = chunk.getRenderMesh();
             if(mesh == null) continue;
-            if(mesh.getQuery() != null && !mesh.getQuery().isInUse()){
+            if(mesh.getQuery() != null){
                 // Calculate the Matrix for the chunk so it is tested in the right spot
                 Matrix4f modelMatrix = transformation.buildModelMatrix(chunk);
                 Matrix4f modelViewMatrix = transformation.buildModelViewMatrix(modelMatrix, viewMatrix);

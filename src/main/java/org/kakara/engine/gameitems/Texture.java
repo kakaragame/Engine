@@ -1,6 +1,7 @@
 package org.kakara.engine.gameitems;
 
 
+import org.apache.commons.lang3.SystemUtils;
 import org.jetbrains.annotations.NotNull;
 import org.kakara.engine.resources.JarResource;
 import org.kakara.engine.resources.Resource;
@@ -89,7 +90,7 @@ public class Texture {
             if(resource instanceof JarResource) {
                 decodedImage = stbi_load_from_memory(resource.getByteBuffer(), w, h, avChannels, 4);
             }else{
-                decodedImage = stbi_load(resource.getPath(), w, h, avChannels, 4);
+                decodedImage = stbi_load(correctPath(resource.getPath()), w, h, avChannels, 4);
 
             }
             if(decodedImage == null){
@@ -114,6 +115,13 @@ public class Texture {
             glGenerateMipmap(GL_TEXTURE_2D);
         }
 
+    }
+
+    private String correctPath(String path){
+        if(SystemUtils.IS_OS_WINDOWS && path.startsWith("/")){
+            return path.substring(1);
+        }
+        return path;
     }
 
     public Texture(@NotNull ByteBuffer imageData) {
