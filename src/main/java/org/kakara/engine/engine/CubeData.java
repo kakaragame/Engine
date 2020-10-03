@@ -114,8 +114,10 @@ public final class CubeData {
             -100f, -100f, 100f,
             -100f, 100f, 100f
     };
-    private static float ONE_THIRD = 1f / 3f;
-    private static float TWO_THIRD = 2f / 3f;
+
+    private final static float ONE_THIRD = 1f / 3f;
+    private final static float TWO_THIRD = 2f / 3f;
+
     public static final float[] texture = {
             0.25f, ONE_THIRD,
             0.25f, TWO_THIRD,

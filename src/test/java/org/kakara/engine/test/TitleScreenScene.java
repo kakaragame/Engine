@@ -11,7 +11,7 @@ import org.kakara.engine.resources.ResourceManager;
 import org.kakara.engine.scene.AbstractMenuScene;
 import org.kakara.engine.test.components.LoadingBar;
 import org.kakara.engine.test.components.LoadingBarCompleteEvent;
-import org.kakara.engine.ui.RGBA;
+import org.kakara.engine.utils.RGBA;
 import org.kakara.engine.ui.components.shapes.Rectangle;
 import org.kakara.engine.ui.components.text.BoundedColoredText;
 import org.kakara.engine.ui.components.text.BoundedText;

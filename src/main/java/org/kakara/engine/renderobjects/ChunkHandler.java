@@ -128,6 +128,16 @@ public class ChunkHandler {
     }
 
     /**
+     * Remove all chunks from the render list.
+     */
+    public void removeAll(){
+        for(RenderChunk rc : renderChunkList){
+            rc.cleanup();
+        }
+        renderChunkList.clear();
+    }
+
+    /**
      * Convert normal positions to render positions (Which can only be 0-16 for x, y, and z).
      *
      * @param chunkpos The chunk position

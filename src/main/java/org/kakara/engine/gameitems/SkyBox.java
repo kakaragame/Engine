@@ -15,26 +15,29 @@ public class SkyBox extends MeshGameItem {
      *
      * @param skyBoxTexture  The texture to be used for the skybox
      * @param useUniqueModel If the skybox uses the same texture layout as cube (false) or if it uses the skybox texture layout (true).
-     * @throws Exception
      */
-    public SkyBox(Texture skyBoxTexture, boolean useUniqueModel) throws Exception {
+    public SkyBox(Texture skyBoxTexture, boolean useUniqueModel) {
         super();
-        GameHandler gm = GameHandler.getInstance();
-        if (useUniqueModel) {
-            Mesh[] skyBoxMesh = StaticModelLoader.load(gm.getResourceManager().getResource("skybox.obj"), "/player", gm.getSceneManager().getCurrentScene(),
-                    gm.getResourceManager());
-            for (Mesh m : skyBoxMesh) {
-                m.setMaterial(new Material(skyBoxTexture, 0f));
-            }
+        try{
+            GameHandler gm = GameHandler.getInstance();
+            if (useUniqueModel) {
+                Mesh[] skyBoxMesh = StaticModelLoader.load(gm.getResourceManager().getResource("skybox.obj"), "/player", gm.getSceneManager().getCurrentScene(),
+                        gm.getResourceManager());
+                for (Mesh m : skyBoxMesh) {
+                    m.setMaterial(new Material(skyBoxTexture, 0f));
+                }
 
-            setMeshes(skyBoxMesh);
-            setScale(100);
-        } else {
-            Mesh skyBoxMesh = new Mesh(CubeData.skyboxVertex, CubeData.texture, CubeData.normal, CubeData.indices);
-            skyBoxMesh.setMaterial(new Material(skyBoxTexture, 0f));
-            setMesh(skyBoxMesh);
+                setMeshes(skyBoxMesh);
+                setScale(100);
+            } else {
+                Mesh skyBoxMesh = new Mesh(CubeData.skyboxVertex, CubeData.texture, CubeData.normal, CubeData.indices);
+                skyBoxMesh.setMaterial(new Material(skyBoxTexture, 0f));
+                setMesh(skyBoxMesh);
+            }
+            setPosition(0, 0, 0);
+        }catch(Exception ex){
+            throw new RuntimeException("Error: unable to load skybox object!");
         }
-        setPosition(0, 0, 0);
     }
 
     /**

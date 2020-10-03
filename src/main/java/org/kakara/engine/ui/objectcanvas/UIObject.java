@@ -54,7 +54,7 @@ public class UIObject implements Tagable {
      */
     public UIObject(IMesh mesh, Vector2 position, Quaternionf rotation, float scale) {
         this.mesh = mesh;
-        this.position = position;
+        this.position = position.clone();
         this.rotation = rotation;
         this.scale = scale;
         this.rotation.rotateZ((float) Math.toRadians(180));

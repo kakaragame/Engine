@@ -188,7 +188,7 @@ public class Mesh implements IMesh {
      * @return The material
      */
     public Optional<Material> getMaterial() {
-        return Optional.of(material);
+        return Optional.ofNullable(material);
     }
 
     /**
@@ -261,14 +261,16 @@ public class Mesh implements IMesh {
 //            glBindTexture(GL_TEXTURE_2D, specMap.getId());
 //        }
 
-        int[] textures = {GL_TEXTURE3, GL_TEXTURE4, GL_TEXTURE5, GL_TEXTURE6, GL_TEXTURE7};
-        for (int i = 0; i < material.getOverlayTextures().size(); i++) {
-            Texture ovText = material != null ? material.getOverlayTextures().get(i) : null;
-            if (ovText != null) {
-                // Activate i texture bank
-                glActiveTexture(textures[i]);
-                // Bind the texture
-                glBindTexture(GL_TEXTURE_2D, ovText.getId());
+        if(material != null){
+            int[] textures = {GL_TEXTURE3, GL_TEXTURE4, GL_TEXTURE5, GL_TEXTURE6, GL_TEXTURE7};
+            for (int i = 0; i < material.getOverlayTextures().size(); i++) {
+                Texture ovText = material != null ? material.getOverlayTextures().get(i) : null;
+                if (ovText != null) {
+                    // Activate i texture bank
+                    glActiveTexture(textures[i]);
+                    // Bind the texture
+                    glBindTexture(GL_TEXTURE_2D, ovText.getId());
+                }
             }
         }
 
@@ -341,33 +343,16 @@ public class Mesh implements IMesh {
             glDeleteBuffers(vboId);
         }
 
-        // Delete the texture
-        Texture texture = material.getTexture();
-        if (texture != null) {
-            texture.cleanup();
-        }
+        if(material != null){
+            // Delete the texture
+            Texture texture = material.getTexture();
+            if (texture != null) {
+                texture.cleanup();
+            }
 
-        for (int i = 0; i < material.getOverlayTextures().size(); i++) {
-            material.getOverlayTextures().get(i).cleanup();
-        }
-
-        // Delete the VAO
-        glBindVertexArray(0);
-        glDeleteVertexArrays(vaoId);
-    }
-
-    /**
-     * Delete buffers
-     *
-     * @deprecated Use {@link #cleanUp()}
-     */
-    public void deleteBuffers() {
-        glDisableVertexAttribArray(0);
-
-        // Delete the VBOs
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-        for (int vboId : vboIdList) {
-            glDeleteBuffers(vboId);
+            for (int i = 0; i < material.getOverlayTextures().size(); i++) {
+                material.getOverlayTextures().get(i).cleanup();
+            }
         }
 
         // Delete the VAO

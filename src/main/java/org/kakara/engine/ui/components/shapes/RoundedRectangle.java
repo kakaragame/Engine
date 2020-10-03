@@ -4,7 +4,7 @@ import org.kakara.engine.GameHandler;
 import org.kakara.engine.events.EventHandler;
 import org.kakara.engine.events.event.MouseClickEvent;
 import org.kakara.engine.math.Vector2;
-import org.kakara.engine.ui.RGBA;
+import org.kakara.engine.utils.RGBA;
 import org.kakara.engine.ui.UserInterface;
 import org.kakara.engine.ui.components.GeneralComponent;
 import org.kakara.engine.ui.events.UIClickEvent;

@@ -60,8 +60,6 @@ public class AtlasMesh implements IMesh {
         textCords.addAll(layout.getTextureCords().getRight(texture.getXOffset(), texture.getYOffset(), atlas.getNumberOfRows()));
         textCords.addAll(layout.getTextureCords().getLeft(texture.getXOffset(), texture.getYOffset(), atlas.getNumberOfRows()));
 
-        System.out.println(textCords.size());
-
         float[] data = new float[textCords.size()];
         int i = 0;
         for (Float f : textCords) {
@@ -73,6 +71,7 @@ public class AtlasMesh implements IMesh {
         FloatBuffer textCoordsBuffer = null;
         FloatBuffer vecNormalsBuffer = null;
         IntBuffer indicesBuffer = null;
+
         try {
 
             if (indices != null)

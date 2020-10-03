@@ -26,6 +26,9 @@ import static org.lwjgl.opengl.GL33.glVertexAttribDivisor;
  */
 public class InstancedMesh extends Mesh {
 
+    /*
+        Stores the size of objects in bytes.
+     */
     private static final int VECTOR4F_SIZE_BYTES = 4 * 4;
 
     private static final int MATRIX_SIZE_BYTES = 4 * InstancedMesh.VECTOR4F_SIZE_BYTES;
@@ -35,8 +38,6 @@ public class InstancedMesh extends Mesh {
     private static final int FLOAT_SIZE_BYTES = 4;
 
     private static final int INSTANCE_SIZE_BYTES = InstancedMesh.MATRIX_SIZE_BYTES * 2 + InstancedMesh.FLOAT_SIZE_BYTES * 2 + InstancedMesh.FLOAT_SIZE_BYTES;
-
-    private static final int INSTANCE_SIZE_FLOATS = InstancedMesh.MATRIX_SIZE_FLOATS * 2 + 3;
 
     private final int numInstances;
 
@@ -48,6 +49,15 @@ public class InstancedMesh extends Mesh {
 
     private FloatBuffer modelLightViewBuffer;
 
+    /**
+     * Create an instanced mesh.
+     *
+     * @param positions    The list of positions.
+     * @param textCoords   The texture coordinates.
+     * @param normals      The normal values.
+     * @param indices      The indices.
+     * @param numInstances The number of instances this mesh has.
+     */
     public InstancedMesh(float[] positions, float[] textCoords, float[] normals, int[] indices, int numInstances) {
         super(positions, textCoords, normals, indices, Mesh.createEmptyIntArray(Mesh.MAX_WEIGHTS * positions.length / 3, 0), Mesh.createEmptyFloatArray(Mesh.MAX_WEIGHTS * positions.length / 3, 0));
 
@@ -109,6 +119,17 @@ public class InstancedMesh extends Mesh {
         super.endRender();
     }
 
+    /**
+     * Render a list of game items that are instanced.
+     *
+     * <p>This is for internal use only.</p>
+     *
+     * @param gameItems       The list of game items. (Assumed to have the same mesh.)
+     * @param depthMap        If the depth map is being rendered.
+     * @param transformation  The transformation of the Renderer.
+     * @param viewMatrix      The view matrix.
+     * @param lightViewMatrix The light view matrix.
+     */
     public void renderListInstanced(List<GameItem> gameItems, boolean depthMap, Transformation transformation, Matrix4f viewMatrix, Matrix4f lightViewMatrix) {
         initRender();
 
@@ -123,6 +144,17 @@ public class InstancedMesh extends Mesh {
         endRender();
     }
 
+    /**
+     * Render a chunk of the game item list.
+     *
+     * <p>Chunks are divided up by the number of instances you define in the constructor.</p>
+     *
+     * @param gameItems       The list of game items. (Must be already divided up into chunks).
+     * @param depthMap        If the depth map is being rendered.
+     * @param transformation  The transformation of the Renderer.
+     * @param viewMatrix      The view matrix.
+     * @param lightViewMatrix The light view matrix.
+     */
     private void renderChunkInstanced(List<GameItem> gameItems, boolean depthMap, Transformation transformation, Matrix4f viewMatrix, Matrix4f lightViewMatrix) {
         this.modelViewBuffer.clear();
         this.modelLightViewBuffer.clear();

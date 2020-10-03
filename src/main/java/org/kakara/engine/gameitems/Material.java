@@ -1,6 +1,6 @@
 package org.kakara.engine.gameitems;
 
-import org.joml.Vector4f;
+import org.kakara.engine.utils.RGBA;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,19 +9,21 @@ import java.util.List;
  * The material to be used on meshes.
  */
 public class Material {
-    public static final Vector4f DEFAULT_COLOUR = new Vector4f(1.0f, 1.0f, 1.0f, 1.0f);
+    public static final RGBA DEFAULT_COLOUR = new RGBA(255, 255, 255, 1.0f);
 
-    private Texture specularMap;
     private float reflectance;
     private Texture texture;
     private Texture normalMap;
 
-    private Vector4f ambientColor;
-    private Vector4f diffuseColor;
-    private Vector4f specularColor;
+    private RGBA ambientColor;
+    private RGBA diffuseColor;
+    private RGBA specularColor;
 
     private List<Texture> overlayTextures;
 
+    /**
+     * Create a material with the default values.
+     */
     public Material() {
         this.ambientColor = DEFAULT_COLOUR;
         this.diffuseColor = DEFAULT_COLOUR;
@@ -31,14 +33,31 @@ public class Material {
         this.overlayTextures = new ArrayList<>();
     }
 
-    public Material(Vector4f color, float reflectance) {
+    /**
+     * Create a new material object.
+     *
+     * @param color       The color of the object.
+     * @param reflectance The reflectance of the object.
+     */
+    public Material(RGBA color, float reflectance) {
         this(color, color, color, null, reflectance);
     }
 
+    /**
+     * Create a new material using a texture.
+     *
+     * @param texture The texture to use.
+     */
     public Material(Texture texture) {
         this(DEFAULT_COLOUR, DEFAULT_COLOUR, DEFAULT_COLOUR, texture, 32f);
     }
 
+    /**
+     * Create a new material using a texture.
+     *
+     * @param texture     The texture to use.
+     * @param reflectance The reflectance of the object.
+     */
     public Material(Texture texture, float reflectance) {
         this(DEFAULT_COLOUR, DEFAULT_COLOUR, DEFAULT_COLOUR, texture, reflectance);
     }
@@ -52,7 +71,7 @@ public class Material {
      * @param texture       The texture
      * @param reflectance   The reflectance of the material.
      */
-    public Material(Vector4f ambientColor, Vector4f diffuseColor, Vector4f specularColor, Texture texture, float reflectance) {
+    public Material(RGBA ambientColor, RGBA diffuseColor, RGBA specularColor, Texture texture, float reflectance) {
         this.ambientColor = ambientColor;
         this.diffuseColor = diffuseColor;
         this.specularColor = specularColor;
@@ -66,7 +85,7 @@ public class Material {
      *
      * @return The ambient color (RGBA)
      */
-    public Vector4f getAmbientColor() {
+    public RGBA getAmbientColor() {
         return ambientColor;
     }
 
@@ -75,7 +94,7 @@ public class Material {
      *
      * @param ambientColor The ambient color (RGBA)
      */
-    public void setAmbientColor(Vector4f ambientColor) {
+    public void setAmbientColor(RGBA ambientColor) {
         this.ambientColor = ambientColor;
     }
 
@@ -84,7 +103,7 @@ public class Material {
      *
      * @return The diffuse color of the material (RGBA)
      */
-    public Vector4f getDiffuseColor() {
+    public RGBA getDiffuseColor() {
         return diffuseColor;
     }
 
@@ -93,7 +112,7 @@ public class Material {
      *
      * @param diffuseColor The diffuse color (RGBA)
      */
-    public void setDiffuseColor(Vector4f diffuseColor) {
+    public void setDiffuseColor(RGBA diffuseColor) {
         this.diffuseColor = diffuseColor;
     }
 
@@ -102,7 +121,7 @@ public class Material {
      *
      * @return The specular color (RGBA)
      */
-    public Vector4f getSpecularColor() {
+    public RGBA getSpecularColor() {
         return specularColor;
     }
 
@@ -111,7 +130,7 @@ public class Material {
      *
      * @param specularColor The specular color of the material (RGBA).
      */
-    public void setSpecularColor(Vector4f specularColor) {
+    public void setSpecularColor(RGBA specularColor) {
         this.specularColor = specularColor;
     }
 
@@ -145,7 +164,7 @@ public class Material {
     /**
      * Get the texture of the material.
      *
-     * @return
+     * @return The texture of the material.
      */
     public Texture getTexture() {
         return texture;
@@ -154,7 +173,7 @@ public class Material {
     /**
      * Set the texture of the material.
      *
-     * @param texture
+     * @param texture The texture to set the material to.
      */
     public void setTexture(Texture texture) {
         this.texture = texture;
@@ -177,7 +196,7 @@ public class Material {
     /**
      * Get the list of overlay textures.
      *
-     * @return
+     * @return The list of overlay textures.
      */
     public List<Texture> getOverlayTextures() {
         return overlayTextures;
@@ -185,14 +204,13 @@ public class Material {
 
     /**
      * Set the list of overlay textures.
-     * <p>A maximum of 5 textures are allowed.</p>
+     * <p>A maximum of 5 textures are allowed. IllegalArgumentException is thrown if over 5.</p>
      *
      * @param overlayTextures The list
-     * @throws Exception If the list exceeds 5 overlay textures.
      */
-    public void setOverlayTextures(List<Texture> overlayTextures) throws Exception {
+    public void setOverlayTextures(List<Texture> overlayTextures) {
         if (overlayTextures.size() >= 5)
-            throw new Exception("A maximum of 5 overlay textures only.");
+            throw new IllegalArgumentException("A maximum of 5 overlay textures only.");
         this.overlayTextures = overlayTextures;
     }
 

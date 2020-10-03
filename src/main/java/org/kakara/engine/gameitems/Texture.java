@@ -45,7 +45,6 @@ public class Texture {
      * @param width       Width of the texture
      * @param height      Height of the texture
      * @param pixelFormat Specifies the format of the pixel data (GL_RGBA, etc.)
-     * @throws Exception
      */
     public Texture(int width, int height, int pixelFormat) {
         this.id = glGenTextures();
@@ -59,23 +58,55 @@ public class Texture {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     }
 
+    /**
+     * Create a texture using a file name.
+     * <p>This is primarily used for the particle system.</p>
+     *
+     * @param fileName     The name of the file.
+     * @param numCols      THe number of columns.
+     * @param numRows      The number of rows.
+     * @param currentScene The current scene.
+     * @throws IOException Throws IOException if the file cannot be found.
+     */
     public Texture(String fileName, int numCols, int numRows, Scene currentScene) throws IOException {
         this(fileName, currentScene);
         this.numCols = numCols;
         this.numRows = numRows;
     }
 
-    public Texture(Resource fileName, int numCols, int numRows, Scene currentScene) throws IOException {
+    /**
+     * Create a texture using a resource.
+     * <p>This is primarily used for the particle system.</p>
+     *
+     * @param fileName     The resource.
+     * @param numCols      The number of columns.
+     * @param numRows      The number of rows.
+     * @param currentScene The current scene.
+     */
+    public Texture(Resource fileName, int numCols, int numRows, Scene currentScene) {
         this(fileName, currentScene);
         this.numCols = numCols;
         this.numRows = numRows;
     }
 
+    /**
+     * Create a new texture using the file name.
+     *
+     * @param fileName     The file name.
+     * @param currentScene The current scene.
+     * @throws IOException Throws an IOException if the file cannot be found.
+     */
     public Texture(@NotNull String fileName, @NotNull Scene currentScene) throws IOException {
         this(Utils.ioResourceToByteBuffer(fileName, 1024));
         this.scene = currentScene;
     }
 
+    /**
+     * Create a new texture using a resource.
+     *
+     * @param resource     The resource.
+     * @param currentScene The current scene.
+     */
     public Texture(@NotNull Resource resource, @NotNull Scene currentScene) {
         this.scene = currentScene;
 
@@ -87,13 +118,14 @@ public class Texture {
             // Decode texture image into a byte buffer
 
             ByteBuffer decodedImage;
-            if(resource instanceof JarResource) {
+            if (resource instanceof JarResource) {
                 decodedImage = stbi_load_from_memory(resource.getByteBuffer(), w, h, avChannels, 4);
-            }else{
+            } else {
+                // The path needs to be corrected on windows.
                 decodedImage = stbi_load(correctPath(resource.getPath()), w, h, avChannels, 4);
 
             }
-            if(decodedImage == null){
+            if (decodedImage == null) {
                 throw new RuntimeException("Error: Cannot load specified image. " + stbi_failure_reason());
             }
             this.width = w.get();
@@ -114,16 +146,27 @@ public class Texture {
             // Generate Mip Map
             glGenerateMipmap(GL_TEXTURE_2D);
         }
-
     }
 
-    private String correctPath(String path){
-        if(SystemUtils.IS_OS_WINDOWS && path.startsWith("/")){
+    /**
+     * Correct the file path on windows.
+     *
+     * @param path The path.
+     * @return The corrected path.
+     */
+    private String correctPath(String path) {
+        // Remove an extra / in front of the drive on windows.
+        if (SystemUtils.IS_OS_WINDOWS && path.startsWith("/")) {
             return path.substring(1);
         }
         return path;
     }
 
+    /**
+     * Create a texture from a byte buffer.
+     *
+     * @param imageData The byte buffer.
+     */
     public Texture(@NotNull ByteBuffer imageData) {
         try (MemoryStack stack = stackPush()) {
             IntBuffer w = stack.mallocInt(1);
@@ -133,6 +176,10 @@ public class Texture {
             // Decode texture image into a byte buffer
 
             ByteBuffer decodedImage = stbi_load_from_memory(imageData, w, h, avChannels, 4);
+
+            if(decodedImage == null){
+                throw new RuntimeException("Error: Cannot load specified image. " + stbi_failure_reason());
+            }
 
             this.width = w.get();
             this.height = h.get();
@@ -162,6 +209,7 @@ public class Texture {
     /**
      * Get the number of columns
      * <p>For use with particles</p>
+     *
      * @return The number of columns
      */
     public int getNumCols() {
@@ -171,6 +219,7 @@ public class Texture {
     /**
      * Get the number of rows.
      * <p>For use with particles</p>
+     *
      * @return The number of rows.
      */
     public int getNumRows() {
@@ -179,6 +228,7 @@ public class Texture {
 
     /**
      * Get the width of the texture.
+     *
      * @return The width of the texture.
      */
     public int getWidth() {
@@ -187,6 +237,7 @@ public class Texture {
 
     /**
      * Get the height of the texture.
+     *
      * @return The height of the texture.
      */
     public int getHeight() {
@@ -195,6 +246,7 @@ public class Texture {
 
     /**
      * Bind the texture.
+     *
      * @deprecated This is now handled by the engine.
      */
     public void bind() {
@@ -203,7 +255,8 @@ public class Texture {
 
     /**
      * Get the id of the texture.
-     * @return
+     *
+     * @return Get the id of the texture. (OpenGL id)
      */
     public int getId() {
         return id;
@@ -217,10 +270,11 @@ public class Texture {
     }
 
     /**
-     * Grabs the scene this texture is for/
+     * Grabs the scene this texture is for
+     *
      * @return The scene.
      */
-    public Scene getCurrentScene(){
+    public Scene getCurrentScene() {
         return scene;
     }
 }

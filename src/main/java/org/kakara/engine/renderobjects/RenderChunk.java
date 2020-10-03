@@ -1,6 +1,5 @@
 package org.kakara.engine.renderobjects;
 
-import me.ryandw11.octree.Octree;
 import org.kakara.engine.gameitems.MeshGameItem;
 import org.kakara.engine.math.Vector3;
 import org.kakara.engine.renderobjects.mesh.*;
@@ -201,4 +200,8 @@ public class RenderChunk extends MeshGameItem {
         mesh.render();
     }
 
+    @Override
+    public void cleanup() {
+        mesh.cleanUp();
+    }
 }
