@@ -173,6 +173,13 @@ public abstract class AbstractMenuScene implements Scene {
     public float getDeltaTime() {
         return Time.getDeltaTime();
     }
+
+    @Override
+    public void handleException(Exception exception) {
+        GameEngine.LOGGER.error(String.format("Exception Thrown inside %s", getClass().getName()), exception);
+        //End the Game...
+        gameHandler.exit();
+    }
 }
 
 /**
@@ -202,4 +209,5 @@ class BackgroundImage extends GeneralComponent {
     public void cleanup(GameHandler handler) {
         sprite.cleanup(handler);
     }
+
 }
