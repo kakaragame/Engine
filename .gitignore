@@ -3,3 +3,8 @@ target/
 *.iml
 *.log
 out/
+
+MANIFEST.MF
+imgui.ini
+textureAtlas.png
+dependency-reduced-pom.xml
