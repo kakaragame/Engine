@@ -119,8 +119,8 @@ public class BoxCollider implements Collider {
     @Override
     public Vector3 getAbsolutePoint1() {
         if (relative)
-            return point1.add(offset).add(item.getColPosition());
-        return point1.add(offset);
+            return new Vector3(point1.x, point1.y, point1.z).addMut(offset).addMut(item.getColPosition());
+        return new Vector3(point1.x, point1.y, point1.z).addMut(offset);
     }
 
     @Override
@@ -133,8 +133,8 @@ public class BoxCollider implements Collider {
     @Override
     public Vector3 getAbsolutePoint2() {
         if (relative)
-            return point2.add(offset).add(item.getColPosition());
-        return point2.add(offset);
+            return new Vector3(point2.x, point2.y, point2.z).addMut(offset).addMut(item.getColPosition());
+        return new Vector3(point2.x, point2.y, point2.z).addMut(offset);
     }
 
     @Override

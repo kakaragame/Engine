@@ -18,6 +18,7 @@ public class RenderChunk extends MeshGameItem {
     private RenderMesh mesh;
     private RenderBlock[][][] octChunk;
     private UUID chunkId;
+    private int blockCount = 0;
 
     /**
      * Creates a new render chunk.
@@ -36,6 +37,7 @@ public class RenderChunk extends MeshGameItem {
             octChunk[(int) blck.getPosition().x][(int) blck.getPosition().y][(int) blck.getPosition().z] = blck;
         }
         chunkId = UUID.randomUUID();
+        blockCount = blocks.size();
     }
 
     /**
@@ -49,7 +51,10 @@ public class RenderChunk extends MeshGameItem {
         if (block.getParentChunk() != null)
             throw new RuntimeException("Error: This block already has a parent!");
         block.setParentChunk(this);
+        if(octChunk[(int) block.getPosition().x][(int) block.getPosition().y][(int) block.getPosition().z] == null)
+            blockCount++;
         octChunk[(int) block.getPosition().x][(int) block.getPosition().y][(int) block.getPosition().z] = block;
+
     }
 
     /**
@@ -60,6 +65,7 @@ public class RenderChunk extends MeshGameItem {
     public void removeBlock(RenderBlock block) {
         octChunk[(int) block.getPosition().x][(int) block.getPosition().y][(int) block.getPosition().z] = null;
         block.setParentChunk(null);
+        blockCount--;
     }
 
     /**
@@ -191,6 +197,14 @@ public class RenderChunk extends MeshGameItem {
      */
     public void regenerateOverlayTextures(TextureAtlas atlas) {
         mesh.updateOverlay(calculateVisibleBlocks(), atlas);
+    }
+
+    /**
+     * Get the number of blocks stored in the render chunk.
+     * @return The number of blocks stored.
+     */
+    public int getBlockCount(){
+        return blockCount;
     }
 
 

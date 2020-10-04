@@ -52,7 +52,7 @@ public class FrustumCullingFilter {
      * @return If the collider is visible.
      */
     public boolean testCollider(@Nullable Collider collider) {
-        return collider != null &&
+        return collider == null ||
                 frustumInt.testAab(collider.getAbsolutePoint1().toJoml(), collider.getAbsolutePoint2().toJoml());
     }
 }

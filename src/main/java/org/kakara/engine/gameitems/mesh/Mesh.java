@@ -5,7 +5,9 @@ import org.kakara.engine.GameEngine;
 import org.kakara.engine.exceptions.InvalidThreadException;
 import org.kakara.engine.gameitems.GameItem;
 import org.kakara.engine.gameitems.Material;
+import org.kakara.engine.gameitems.MeshGameItem;
 import org.kakara.engine.gameitems.Texture;
+import org.kakara.engine.render.culling.FrustumCullingFilter;
 import org.lwjgl.system.MemoryUtil;
 
 import java.nio.FloatBuffer;
@@ -322,11 +324,19 @@ public class Mesh implements IMesh {
      * @param consumer  The consumer
      */
     @Override
-    public void renderList(List<GameItem> gameItems, Consumer<GameItem> consumer) {
+    public void renderList(List<GameItem> gameItems, FrustumCullingFilter filter, Consumer<GameItem> consumer) {
         initRender();
         for (GameItem gameItem : gameItems) {
-            consumer.accept(gameItem);
-            glDrawElements(GL_TRIANGLES, getVertexCount(), GL_UNSIGNED_INT, 0);
+            if(gameItem instanceof MeshGameItem){
+                MeshGameItem meshGameItem = (MeshGameItem) gameItem;
+                if (meshGameItem.isVisible() && filter.testCollider(meshGameItem.getCollider())) {
+                    consumer.accept(gameItem);
+                    glDrawElements(GL_TRIANGLES, getVertexCount(), GL_UNSIGNED_INT, 0);
+                }
+            }else{
+                consumer.accept(gameItem);
+                glDrawElements(GL_TRIANGLES, getVertexCount(), GL_UNSIGNED_INT, 0);
+            }
         }
         endRender();
     }

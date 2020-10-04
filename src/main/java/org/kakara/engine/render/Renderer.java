@@ -5,21 +5,23 @@ import org.joml.Vector3f;
 import org.joml.Vector4f;
 import org.kakara.engine.Camera;
 import org.kakara.engine.GameHandler;
-import org.kakara.engine.render.culling.FrustumCullingFilter;
-import org.kakara.engine.renderobjects.mesh.RenderMesh;
-import org.kakara.engine.window.Window;
-import org.kakara.engine.gameitems.*;
+import org.kakara.engine.gameitems.GameItem;
+import org.kakara.engine.gameitems.MeshGameItem;
+import org.kakara.engine.gameitems.Texture;
 import org.kakara.engine.gameitems.mesh.IMesh;
 import org.kakara.engine.gameitems.mesh.InstancedMesh;
 import org.kakara.engine.gameitems.mesh.Mesh;
 import org.kakara.engine.gameitems.particles.ParticleEmitter;
 import org.kakara.engine.lighting.*;
 import org.kakara.engine.math.Vector3;
+import org.kakara.engine.render.culling.FrustumCullingFilter;
 import org.kakara.engine.renderobjects.RenderChunk;
+import org.kakara.engine.renderobjects.mesh.RenderMesh;
 import org.kakara.engine.scene.AbstractGameScene;
 import org.kakara.engine.scene.Scene;
 import org.kakara.engine.ui.objectcanvas.UIObject;
 import org.kakara.engine.utils.Utils;
+import org.kakara.engine.window.Window;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -109,7 +111,7 @@ public class Renderer {
      *
      * @param window  The window of the current game.
      * @param objects The list of objects.
-     * @param isAuto If the engine will scale the objects automatically.
+     * @param isAuto  If the engine will scale the objects automatically.
      */
     public void renderHUD(Window window, List<UIObject> objects, boolean isAuto) {
         hudShaderProgram.bind();
@@ -164,15 +166,16 @@ public class Renderer {
 
         for (RenderChunk renderChunk : renderChunks) {
             if (renderChunk == null) continue;
+            if (renderChunk.getBlockCount() < 1) continue;
 
-            if(!frustumFilter.testRenderObject(renderChunk.getPosition(), 16, 16, 16))
+            if (!frustumFilter.testRenderObject(renderChunk.getPosition(), 16, 16, 16))
                 continue;
             RenderMesh mesh = renderChunk.getRenderMesh();
-            if(mesh == null || mesh.getQuery() == null)
+            if (mesh == null || mesh.getQuery() == null)
                 continue;
             int i = mesh.getQuery().pollPreviousResult();
 
-            if(i == GL_FALSE)
+            if (i == GL_FALSE)
                 continue;
 
             Matrix4f modelMatrix = transformation.buildModelMatrix(renderChunk);
@@ -199,23 +202,24 @@ public class Renderer {
 
     /**
      * Test the queries to see if they are culled.
-     * @param chunks Render Chunks.
+     *
+     * @param chunks             Render Chunks.
      * @param chunkShaderProgram The ShaderProgram for the chunk
-     * @param viewMatrix The view matrix.
-     * @param lightViewMatrix The lightViewMatrix
+     * @param viewMatrix         The view matrix.
+     * @param lightViewMatrix    The lightViewMatrix
      */
-    private void doOcclusionTest(List<RenderChunk> chunks, Shader chunkShaderProgram, Matrix4f viewMatrix, Matrix4f lightViewMatrix){
-        if(chunks == null || chunks.isEmpty() || chunks.get(0).getRenderMesh() == null) return;
-        if(chunks.get(0).getRenderMesh().getQuery() == null) return;
+    private void doOcclusionTest(List<RenderChunk> chunks, Shader chunkShaderProgram, Matrix4f viewMatrix, Matrix4f lightViewMatrix) {
+        if (chunks == null || chunks.isEmpty() || chunks.get(0).getRenderMesh() == null) return;
+        if (chunks.get(0).getRenderMesh().getQuery() == null) return;
         glColorMask(false, false, false, false);
         glDepthMask(false);
-        for(RenderChunk chunk : new ArrayList<>(chunks)){
+        for (RenderChunk chunk : new ArrayList<>(chunks)) {
             // If the chunk is out of the frustum then don't bother testing.
-            if(!frustumFilter.testRenderObject(chunk.getPosition(), 16, 16, 16))
+            if (!frustumFilter.testRenderObject(chunk.getPosition(), 16, 16, 16))
                 continue;
             RenderMesh mesh = chunk.getRenderMesh();
-            if(mesh == null) continue;
-            if(mesh.getQuery() != null){
+            if (mesh == null) continue;
+            if (mesh.getQuery() != null) {
                 // Calculate the Matrix for the chunk so it is tested in the right spot
                 Matrix4f modelMatrix = transformation.buildModelMatrix(chunk);
                 Matrix4f modelViewMatrix = transformation.buildModelViewMatrix(modelMatrix, viewMatrix);
@@ -280,30 +284,26 @@ public class Renderer {
         Map<IMesh, List<GameItem>> mapMeshes = scene.getItemHandler().getNonInstancedMeshMap();
         for (IMesh mesh : mapMeshes.keySet()) {
             if (!depthMap) {
-                if(mesh.getMaterial().isPresent())
+                if (mesh.getMaterial().isPresent())
                     shader.setUniform("material", mesh.getMaterial().get());
                 glActiveTexture(GL_TEXTURE2);
                 glBindTexture(GL_TEXTURE_2D, shadowMap.getDepthMapTexture().getId());
             }
 
-            mesh.renderList(mapMeshes.get(mesh), (GameItem gameItem) -> {
-                        MeshGameItem meshGameItem = ((MeshGameItem) gameItem);
-                        if (meshGameItem.isVisible() && frustumFilter.testCollider(meshGameItem.getCollider())) {
-
-                            Matrix4f modelMatrix = transformation.buildModelMatrix(gameItem);
-                            if (!depthMap) {
-                                Matrix4f modelViewMatrix = transformation.buildModelViewMatrix(modelMatrix, viewMatrix);
-                                shaderProgram.setUniform("modelViewNonInstancedMatrix", modelViewMatrix);
-                            }
-                            Matrix4f modelLightViewMatrix = transformation.buildModelLightViewMatrix(modelMatrix, lightViewMatrix);
-                            shaderProgram.setUniform("modelLightViewNonInstancedMatrix", modelLightViewMatrix);
-                            // Render every mesh (some game items can have more than one)
-                            for (IMesh m : meshGameItem.getMeshes()) {
-                                m.render();
-                            }
-                        }
-                    }
-            );
+            mesh.renderList(mapMeshes.get(mesh), frustumFilter, (GameItem gameItem) -> {
+                MeshGameItem meshGameItem = ((MeshGameItem) gameItem);
+                Matrix4f modelMatrix = transformation.buildModelMatrix(gameItem);
+                if (!depthMap) {
+                    Matrix4f modelViewMatrix = transformation.buildModelViewMatrix(modelMatrix, viewMatrix);
+                    shaderProgram.setUniform("modelViewNonInstancedMatrix", modelViewMatrix);
+                }
+                Matrix4f modelLightViewMatrix = transformation.buildModelLightViewMatrix(modelMatrix, lightViewMatrix);
+                shaderProgram.setUniform("modelLightViewNonInstancedMatrix", modelLightViewMatrix);
+                // Render every mesh (some game items can have more than one)
+                for (IMesh m : meshGameItem.getMeshes()) {
+                    m.render();
+                }
+            });
         }
     }
 
@@ -473,7 +473,7 @@ public class Renderer {
             particleShaderProgram.setUniform("numCols", text.getNumCols());
             particleShaderProgram.setUniform("numRows", text.getNumRows());
 
-            mesh.renderList((emitter.getParticles()), (GameItem gameItem) -> {
+            mesh.renderList((emitter.getParticles()), frustumFilter, (GameItem gameItem) -> {
                         int col = gameItem.getTextPos() % text.getNumCols();
                         int row = gameItem.getTextPos() / text.getNumCols();
                         float textXOffset = (float) col / text.getNumCols();
@@ -678,9 +678,10 @@ public class Renderer {
 
     /**
      * Get the FrustumCullingFilter for the Renderer.
+     *
      * @return The Frustum Culling Filter.
      */
-    public FrustumCullingFilter getFrustumFilter(){
+    public FrustumCullingFilter getFrustumFilter() {
         return frustumFilter;
     }
 }

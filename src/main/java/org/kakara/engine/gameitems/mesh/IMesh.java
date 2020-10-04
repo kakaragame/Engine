@@ -2,6 +2,7 @@ package org.kakara.engine.gameitems.mesh;
 
 import org.kakara.engine.gameitems.GameItem;
 import org.kakara.engine.gameitems.Material;
+import org.kakara.engine.render.culling.FrustumCullingFilter;
 
 import java.util.List;
 import java.util.Optional;
@@ -41,7 +42,7 @@ public interface IMesh {
      * @param gameItems The list of game items.
      * @param consumer The consumer to trigger on render.
      */
-    void renderList(List<GameItem> gameItems, Consumer<GameItem> consumer);
+    void renderList(List<GameItem> gameItems, FrustumCullingFilter filter, Consumer<GameItem> consumer);
 
     /**
      * Get if the mesh has wireframe mode enabled.
