@@ -36,8 +36,8 @@ import static org.lwjgl.opengl.GL30.glBindFramebuffer;
  * Handles the rendering pipeline of the game.
  */
 public class Renderer {
-    private Transformation transformation;
-    private FrustumCullingFilter frustumFilter;
+    private final Transformation transformation;
+    private final FrustumCullingFilter frustumFilter;
 
     public Renderer() {
         transformation = new Transformation();

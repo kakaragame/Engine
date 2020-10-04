@@ -7,7 +7,7 @@ package org.kakara.engine.events.event;
  */
 public class CharacterPressEvent {
 
-    private int codePoint;
+    private final int codePoint;
 
     public CharacterPressEvent(int codePoint) {
         this.codePoint = codePoint;

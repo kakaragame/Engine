@@ -15,17 +15,15 @@ import org.kakara.engine.renderobjects.TextureAtlas;
 
 import java.util.*;
 
-import static org.lwjgl.opengl.GL11.glFinish;
-
 /**
  * This scene is to be used for the game.
  * <p>See {@link AbstractMenuScene} for a title scene.</p>
  */
 public abstract class AbstractGameScene extends AbstractScene {
 
-    private ChunkHandler chunkHandler;
+    private final ChunkHandler chunkHandler;
     private TextureAtlas textureAtlas;
-    private Timer physicsUpdater;
+    private final Timer physicsUpdater;
 
     public AbstractGameScene(GameHandler gameHandler) {
         super(gameHandler);

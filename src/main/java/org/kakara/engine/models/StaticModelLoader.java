@@ -1,6 +1,5 @@
 package org.kakara.engine.models;
 
-import org.joml.Vector4f;
 import org.kakara.engine.GameEngine;
 import org.kakara.engine.exceptions.ModelLoadException;
 import org.kakara.engine.gameitems.Material;
@@ -57,7 +56,7 @@ public class StaticModelLoader {
      * @return The array of meshes.
      * @throws Exception
      */
-    public static Mesh[] load(Resource resource, String texturesDir, ResourceManager resourceManager, Scene scene, int flags) throws Exception {
+    public static Mesh[] load(Resource resource, String texturesDir, ResourceManager resourceManager, Scene scene, int flags) throws ModelLoadException {
         GameEngine.LOGGER.debug(String.format("Loading Model %s With Textures in %s", resource.toString(), texturesDir));
 
         AIScene aiScene = null;
@@ -80,7 +79,11 @@ public class StaticModelLoader {
         List<Material> materials = new ArrayList<>();
         for (int i = 0; i < numMaterials; i++) {
             AIMaterial aiMaterial = AIMaterial.create(aiMaterials.get(i));
-            processMaterial(aiMaterial, materials, texturesDir, resourceManager, scene);
+            try {
+                processMaterial(aiMaterial, materials, texturesDir, resourceManager, scene);
+            } catch (Exception e) {
+                throw new ModelLoadException(e);
+            }
         }
 
         int numMeshes = aiScene.mNumMeshes();

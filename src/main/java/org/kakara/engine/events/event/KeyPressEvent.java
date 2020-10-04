@@ -6,7 +6,7 @@ import static org.lwjgl.glfw.GLFW.glfwGetKeyName;
  * When a key is pressed on the keyboard.
  */
 public class KeyPressEvent {
-    private int keyCode;
+    private final int keyCode;
 
     public KeyPressEvent(int keyCode) {
         this.keyCode = keyCode;

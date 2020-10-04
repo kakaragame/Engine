@@ -11,7 +11,7 @@ import static org.lwjgl.glfw.GLFW.*;
  */
 public class KeyInput {
 
-    private GameEngine engine;
+    private final GameEngine engine;
 
     public KeyInput(GameEngine engine) {
         this.engine = engine;

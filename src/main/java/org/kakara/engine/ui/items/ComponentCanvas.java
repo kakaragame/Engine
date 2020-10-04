@@ -16,8 +16,8 @@ import java.util.List;
  */
 public class ComponentCanvas implements UICanvas {
     boolean init = false;
-    private List<Component> components;
-    private Scene scene;
+    private final List<Component> components;
+    private final Scene scene;
     /*
      * Tagable data
      */

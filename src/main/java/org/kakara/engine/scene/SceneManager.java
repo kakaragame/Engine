@@ -9,7 +9,7 @@ import org.kakara.engine.models.TextureCache;
  */
 public class SceneManager {
     private Scene currentScene;
-    private GameHandler handler;
+    private final GameHandler handler;
 
     public SceneManager(GameHandler gameHandler) {
         this.handler = gameHandler;

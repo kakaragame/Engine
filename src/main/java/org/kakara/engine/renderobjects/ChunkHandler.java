@@ -15,7 +15,7 @@ import java.util.concurrent.Executors;
  */
 public class ChunkHandler {
     public static final ExecutorService EXECUTORS = Executors.newFixedThreadPool(2);
-    private List<RenderChunk> renderChunkList;
+    private final List<RenderChunk> renderChunkList;
 
     public ChunkHandler() {
         renderChunkList = new ArrayList<>();

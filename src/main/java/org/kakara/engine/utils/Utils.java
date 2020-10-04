@@ -12,6 +12,7 @@ import java.nio.ByteBuffer;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.channels.SeekableByteChannel;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -27,7 +28,7 @@ public class Utils {
     public static String loadResource(String fileName) throws Exception {
         String result;
         try (InputStream in = Class.forName(Utils.class.getName()).getResourceAsStream(fileName);
-             Scanner scanner = new Scanner(in, "UTF-8")) {
+             Scanner scanner = new Scanner(in, StandardCharsets.UTF_8)) {
             result = scanner.useDelimiter("\\A").next();
         }
         return result;

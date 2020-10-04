@@ -25,9 +25,9 @@ public class UserInterface {
 
     private long vg;
 
-    private List<UICanvas> uiCanvas;
-    private List<Font> fonts;
-    private Scene scene;
+    private final List<UICanvas> uiCanvas;
+    private final List<Font> fonts;
+    private final Scene scene;
 
     private boolean autoScale;
 

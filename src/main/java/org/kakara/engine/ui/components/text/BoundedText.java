@@ -2,11 +2,11 @@ package org.kakara.engine.ui.components.text;
 
 import org.kakara.engine.GameHandler;
 import org.kakara.engine.math.Vector2;
-import org.kakara.engine.utils.RGBA;
 import org.kakara.engine.ui.UserInterface;
 import org.kakara.engine.ui.components.GeneralComponent;
 import org.kakara.engine.ui.constraints.Constraint;
 import org.kakara.engine.ui.font.Font;
+import org.kakara.engine.utils.RGBA;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.nanovg.NVGColor;
 import org.lwjgl.nanovg.NVGTextRow;
@@ -34,9 +34,9 @@ public class BoundedText extends GeneralComponent {
     private float blur;
     private Vector2 maximumBound;
     private RGBA color;
-    private NVGColor nvgColor;
-    private NVGTextRow.Buffer rows = NVGTextRow.create(3);
-    private FloatBuffer lineh = BufferUtils.createFloatBuffer(1);
+    private final NVGColor nvgColor;
+    private final NVGTextRow.Buffer rows = NVGTextRow.create(3);
+    private final FloatBuffer lineh = BufferUtils.createFloatBuffer(1);
 
     private UserInterface userInterface;
 

@@ -17,10 +17,10 @@ import org.kakara.engine.window.Window;
  */
 public class GridConstraint implements Constraint {
 
-    private int rows;
-    private int columns;
-    private int xpos;
-    private int ypos;
+    private final int rows;
+    private final int columns;
+    private final int xpos;
+    private final int ypos;
     private Window window;
     private UserInterface userInterface;
 

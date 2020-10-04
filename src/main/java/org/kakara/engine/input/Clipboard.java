@@ -11,7 +11,7 @@ import static org.lwjgl.glfw.GLFW.glfwSetClipboardString;
  * @since 1.0-Pre3
  */
 public class Clipboard {
-    private Window window;
+    private final Window window;
 
     public Clipboard(Window window) {
         this.window = window;

@@ -16,13 +16,13 @@ import org.kakara.engine.window.Window;
 public class GameHandler {
 
     private static GameHandler gameHandler;
-    private MouseInput mouseInput;
-    private KeyInput keyInput;
-    private Clipboard clipboard;
-    private SceneManager sceneManager;
-    private SoundManager soundManager;
-    private GameEngine gameEngine;
-    private ResourceManager resourceManager;
+    private final MouseInput mouseInput;
+    private final KeyInput keyInput;
+    private final Clipboard clipboard;
+    private final SceneManager sceneManager;
+    private final SoundManager soundManager;
+    private final GameEngine gameEngine;
+    private final ResourceManager resourceManager;
 
     public GameHandler(GameEngine gameEngine) {
         this.gameEngine = gameEngine;

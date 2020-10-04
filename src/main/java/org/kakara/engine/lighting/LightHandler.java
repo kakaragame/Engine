@@ -14,8 +14,8 @@ public class LightHandler {
     public static final int MAX_POINT_LIGHTS = 5;
     public static final int MAX_SPOT_LIGHTS = 5;
 
-    private List<PointLight> pointLights;
-    private List<SpotLight> spotLights;
+    private final List<PointLight> pointLights;
+    private final List<SpotLight> spotLights;
     private DirectionalLight directionalLight;
     private LightColor ambientLight;
     private LightColor skyBoxLight;

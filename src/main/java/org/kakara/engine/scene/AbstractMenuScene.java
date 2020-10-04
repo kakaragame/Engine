@@ -187,7 +187,7 @@ public abstract class AbstractMenuScene implements Scene {
  */
 class BackgroundImage extends GeneralComponent {
 
-    private Sprite sprite;
+    private final Sprite sprite;
 
     public BackgroundImage(Texture texture, GameHandler handler) {
         sprite = new Sprite(texture, new Vector2(0, 0), new Vector2(handler.getWindow().getWidth(), handler.getWindow().getHeight()));

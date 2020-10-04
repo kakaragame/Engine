@@ -2,9 +2,6 @@ package org.kakara.engine.test;
 
 import org.kakara.engine.GameHandler;
 import org.kakara.engine.engine.CubeData;
-import org.kakara.engine.events.EventHandler;
-import org.kakara.engine.events.event.MouseClickEvent;
-import org.kakara.engine.events.event.MouseReleaseEvent;
 import org.kakara.engine.gameitems.Material;
 import org.kakara.engine.gameitems.Texture;
 import org.kakara.engine.gameitems.mesh.Mesh;
@@ -14,7 +11,6 @@ import org.kakara.engine.resources.ResourceManager;
 import org.kakara.engine.scene.AbstractMenuScene;
 import org.kakara.engine.test.components.LoadingBar;
 import org.kakara.engine.test.components.LoadingBarCompleteEvent;
-import org.kakara.engine.utils.RGBA;
 import org.kakara.engine.ui.components.shapes.Rectangle;
 import org.kakara.engine.ui.components.text.BoundedColoredText;
 import org.kakara.engine.ui.components.text.BoundedText;
@@ -28,6 +24,7 @@ import org.kakara.engine.ui.font.TextAlign;
 import org.kakara.engine.ui.items.ComponentCanvas;
 import org.kakara.engine.ui.items.ObjectCanvas;
 import org.kakara.engine.ui.objectcanvas.UIObject;
+import org.kakara.engine.utils.RGBA;
 import org.kakara.engine.utils.Time;
 import org.kakara.engine.utils.Utils;
 import org.kakara.engine.window.WindowIcon;
@@ -40,7 +37,7 @@ import java.io.InputStream;
  */
 public class TitleScreenScene extends AbstractMenuScene {
     UIObject obj;
-    private KakaraTest kakaraTest;
+    private final KakaraTest kakaraTest;
     private Text fps;
     private LoadingBar lb;
 

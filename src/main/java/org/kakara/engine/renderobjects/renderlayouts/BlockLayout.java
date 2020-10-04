@@ -14,8 +14,8 @@ import java.util.List;
  */
 public class BlockLayout implements Layout {
 
-    private static float ONE_THIRD = 1f / 3f;
-    private static float TWO_THIRD = 2f / 3f;
+    private static final float ONE_THIRD = 1f / 3f;
+    private static final float TWO_THIRD = 2f / 3f;
 
     @Override
     public Vertex getVertex(final Vector3 pos) {

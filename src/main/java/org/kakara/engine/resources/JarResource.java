@@ -12,10 +12,10 @@ import java.nio.ByteBuffer;
  * Get resources from inside of the jar.
  */
 public class JarResource implements Resource {
-    private String path;
-    private URL url;
-    private Class<?> justTheClass;
-    private String originalPath;
+    private final String path;
+    private final URL url;
+    private final Class<?> justTheClass;
+    private final String originalPath;
 
     public JarResource(String path, URL url, Class<?> justTheClass, String originalPath) {
         this.path = path;

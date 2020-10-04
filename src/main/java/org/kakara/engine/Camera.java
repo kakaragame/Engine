@@ -11,7 +11,7 @@ public class Camera {
     private final Vector3 position;
     private final Vector3 rotation;
 
-    private Matrix4f viewMatrix;
+    private final Matrix4f viewMatrix;
 
     public Camera() {
         position = new Vector3(0, 0, 0);

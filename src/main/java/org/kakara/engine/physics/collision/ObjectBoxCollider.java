@@ -18,15 +18,15 @@ public class ObjectBoxCollider implements Collider {
     private boolean isTrigger;
     private boolean resolveable;
 
-    private boolean isInAir = false;
+    private final boolean isInAir = false;
     private float timeInAir;
 
     private Vector3 lastPosition;
     private Vector3 deltaPosition;
     private Collidable item;
-    private GameHandler handler;
+    private final GameHandler handler;
     private Predicate<Collidable> predicate = gameItem -> false;
-    private List<OnTriggerEnter> triggerEvents;
+    private final List<OnTriggerEnter> triggerEvents;
 
     public ObjectBoxCollider(boolean isTrigger, boolean resolveable) {
         this.isTrigger = isTrigger;

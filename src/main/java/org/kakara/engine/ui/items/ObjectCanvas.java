@@ -28,8 +28,8 @@ import static org.lwjgl.nanovg.NanoVG.nvgEndFrame;
  * @since 1.0-Pre1
  */
 public class ObjectCanvas implements UICanvas {
-    private List<UIObject> objects;
-    private Scene scene;
+    private final List<UIObject> objects;
+    private final Scene scene;
     /*
      * Tagable data
      */

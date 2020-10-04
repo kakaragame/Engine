@@ -21,19 +21,19 @@ import java.util.*;
  */
 public class RenderBlock implements Collidable, Tagable {
 
-    private Layout layout;
-    private RenderTexture texture;
+    private final Layout layout;
+    private final RenderTexture texture;
     private RenderTexture overlay;
 
     private Vector3 position;
 
     private RenderChunk parentChunk;
-    private List<Face> visibleFaces;
+    private final List<Face> visibleFaces;
     private boolean selected;
 
     private Collider collider;
 
-    private UUID uuid;
+    private final UUID uuid;
 
     /*
         Tagable data

@@ -11,7 +11,7 @@ public class RGBA {
     public int b;
     public float a;
 
-    private Vector4f vec;
+    private final Vector4f vec;
 
     /**
      * Set the values of RGBA

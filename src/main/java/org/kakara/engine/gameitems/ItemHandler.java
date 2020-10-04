@@ -13,10 +13,10 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * <p>This class does not manager render chunks. See: {@link org.kakara.engine.renderobjects.ChunkHandler} to add render chunks.</p>
  */
 public class ItemHandler {
-    private List<GameItem> items;
+    private final List<GameItem> items;
 
-    private Map<IMesh, List<GameItem>> nonInstancedMeshMap;
-    private Map<InstancedMesh, List<GameItem>> instancedMeshMap;
+    private final Map<IMesh, List<GameItem>> nonInstancedMeshMap;
+    private final Map<InstancedMesh, List<GameItem>> instancedMeshMap;
 
     public ItemHandler() {
         items = new CopyOnWriteArrayList<>();

@@ -36,7 +36,7 @@ public class AtlasMesh implements IMesh {
 
     private final int vertexCount;
 
-    private TextureAtlas atlas;
+    private final TextureAtlas atlas;
 
     private boolean wireframe;
 

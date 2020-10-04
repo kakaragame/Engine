@@ -25,10 +25,10 @@ public class MouseInput {
     private boolean leftButtonPressed = false;
     private boolean rightButtonPressed = false;
 
-    private GameHandler handler;
+    private final GameHandler handler;
 
     // Callbacks prevent slowdown from reflection.
-    private List<ScrollInput> scrollCallback;
+    private final List<ScrollInput> scrollCallback;
 
     public MouseInput(GameHandler handler) {
         previousPos = new Vector2d(-1, -1);

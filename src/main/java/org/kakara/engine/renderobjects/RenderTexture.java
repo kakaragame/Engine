@@ -8,7 +8,7 @@ import org.kakara.engine.resources.Resource;
  * This class also states where the texture is within the texture atlas.
  */
 public class RenderTexture {
-    private Resource resource;
+    private final Resource resource;
 
     private int id;
 

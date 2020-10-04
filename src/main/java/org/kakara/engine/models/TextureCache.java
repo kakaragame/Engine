@@ -17,8 +17,8 @@ import java.util.MissingResourceException;
 public class TextureCache {
     private static TextureCache instance;
 
-    private Map<String, Texture> texturesMap;
-    private ResourceManager resourceManager;
+    private final Map<String, Texture> texturesMap;
+    private final ResourceManager resourceManager;
 
     private TextureCache(ResourceManager resourceManager) {
         this.resourceManager = resourceManager;

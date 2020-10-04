@@ -15,8 +15,8 @@ import java.util.List;
  */
 public class CollisionManager {
 
-    private GameHandler handler;
-    private List<Collidable> collidingItems = new ArrayList<>();
+    private final GameHandler handler;
+    private final List<Collidable> collidingItems = new ArrayList<>();
 
     public CollisionManager(GameHandler handler) {
         this.handler = handler;

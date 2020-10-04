@@ -7,8 +7,8 @@ import org.kakara.engine.input.MouseClickType;
  * When a mouse button is clicked.
  */
 public class MouseClickEvent {
-    private Vector2d position;
-    private MouseClickType mouseClickType;
+    private final Vector2d position;
+    private final MouseClickType mouseClickType;
 
     public MouseClickEvent(Vector2d position, MouseClickType mouseClickType) {
         this.position = position;

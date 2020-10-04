@@ -2,10 +2,10 @@ package org.kakara.engine.ui.components.text;
 
 import org.kakara.engine.GameHandler;
 import org.kakara.engine.math.Vector2;
-import org.kakara.engine.utils.RGBA;
 import org.kakara.engine.ui.UserInterface;
 import org.kakara.engine.ui.components.GeneralComponent;
 import org.kakara.engine.ui.font.Font;
+import org.kakara.engine.utils.RGBA;
 import org.lwjgl.nanovg.NVGColor;
 
 import static org.lwjgl.nanovg.NanoVG.*;
@@ -26,7 +26,7 @@ public class Text extends GeneralComponent {
     private float blur;
     private RGBA color;
 
-    private NVGColor nvgColor;
+    private final NVGColor nvgColor;
     private UserInterface userInterface;
 
     /**

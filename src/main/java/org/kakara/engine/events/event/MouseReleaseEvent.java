@@ -9,8 +9,8 @@ import org.kakara.engine.input.MouseClickType;
  * @since 1.0-Pre3
  */
 public class MouseReleaseEvent {
-    private Vector2d position;
-    private MouseClickType mouseClickType;
+    private final Vector2d position;
+    private final MouseClickType mouseClickType;
 
     public MouseReleaseEvent(Vector2d position, MouseClickType mouseClickType) {
         this.position = position;

@@ -9,7 +9,7 @@ public class DirectionalLight {
     private LightColor color;
     private Vector3 direction;
     private float intensity;
-    private OrthoCoords orthoCords;
+    private final OrthoCoords orthoCords;
     private float shadowPosMult;
 
     /**

@@ -13,7 +13,7 @@ import org.kakara.engine.physics.collision.Collider;
  */
 public class FrustumCullingFilter {
     private final Matrix4f projViewMatrix;
-    private FrustumIntersection frustumInt;
+    private final FrustumIntersection frustumInt;
 
     public FrustumCullingFilter() {
         projViewMatrix = new Matrix4f();

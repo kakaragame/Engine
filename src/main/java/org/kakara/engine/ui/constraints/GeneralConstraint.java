@@ -17,10 +17,10 @@ import org.kakara.engine.window.Window;
  */
 public class GeneralConstraint implements Constraint {
 
-    private ComponentSide mySide;
-    private Component otherComponent;
-    private ComponentSide otherComponentSide;
-    private float value;
+    private final ComponentSide mySide;
+    private final Component otherComponent;
+    private final ComponentSide otherComponentSide;
+    private final float value;
 
     private Window window;
     private UserInterface userInterface;

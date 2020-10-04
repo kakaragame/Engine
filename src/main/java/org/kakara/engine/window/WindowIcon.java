@@ -15,9 +15,9 @@ import static org.lwjgl.stb.STBImage.*;
  * @since 1.0-Pre2
  */
 public class WindowIcon {
-    private ByteBuffer image;
-    private int width;
-    private int height;
+    private final ByteBuffer image;
+    private final int width;
+    private final int height;
 
     /**
      * Create a window icon object.

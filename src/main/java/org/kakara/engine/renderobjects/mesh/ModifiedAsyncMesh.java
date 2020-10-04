@@ -24,7 +24,6 @@ import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.*;
 import static org.lwjgl.opengl.GL33.GL_ANY_SAMPLES_PASSED;
-import static org.lwjgl.opengl.GL43.GL_ANY_SAMPLES_PASSED_CONSERVATIVE;
 
 /**
  * This mesh will do all mesh calculations on a different thread while,
@@ -39,11 +38,11 @@ public class ModifiedAsyncMesh implements RenderMesh {
     protected int vaoId;
     private int vertexCount;
     private boolean finished;
-    private CompletableFuture<MeshLayout> future;
+    private final CompletableFuture<MeshLayout> future;
 
-    private CompletableFuture<ModifiedAsyncMesh> whenFinished;
+    private final CompletableFuture<ModifiedAsyncMesh> whenFinished;
 
-    private RenderQuery query;
+    private final RenderQuery query;
 
     /**
      * Create a render mesh

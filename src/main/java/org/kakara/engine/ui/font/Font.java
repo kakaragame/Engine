@@ -15,8 +15,8 @@ import static org.lwjgl.nanovg.NanoVG.nvgCreateFontMem;
 public class Font {
 
     private int font;
-    private String name;
-    private Resource fileName;
+    private final String name;
+    private final Resource fileName;
 
     private ByteBuffer thisNeedsToBeHereSoTheGarbageCollectorDoesNotComeAndGetMeTMDotCom;
 
@@ -42,7 +42,6 @@ public class Font {
             font = nvgCreateFontMem(userInterface.getVG(), name, bb, 1);
             this.thisNeedsToBeHereSoTheGarbageCollectorDoesNotComeAndGetMeTMDotCom = bb;
         } catch (Exception ex) {
-            ;
             GameEngine.LOGGER.error("Error: Could not load font: " + name);
         }
     }

@@ -10,8 +10,8 @@ import java.net.MalformedURLException;
  * Manages the resources of the game.
  */
 public class ResourceManager {
-    private String internalLocation;
-    private File externalLocation;
+    private final String internalLocation;
+    private final File externalLocation;
 
     public ResourceManager() {
         this("/resources/", new File(Utils.getCurrentDirectory(), "resources"));

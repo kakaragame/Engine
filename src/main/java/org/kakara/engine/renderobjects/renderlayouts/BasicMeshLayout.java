@@ -4,13 +4,13 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
 public class BasicMeshLayout implements MeshLayout {
-    private int vertexLength;
-    private FloatBuffer vertex;
-    private FloatBuffer textcoords;
-    private FloatBuffer overlaycords;
-    private IntBuffer hasOverlay;
-    private FloatBuffer normals;
-    private IntBuffer indices;
+    private final int vertexLength;
+    private final FloatBuffer vertex;
+    private final FloatBuffer textcoords;
+    private final FloatBuffer overlaycords;
+    private final IntBuffer hasOverlay;
+    private final FloatBuffer normals;
+    private final IntBuffer indices;
 
     public BasicMeshLayout(int vertexLength, FloatBuffer vertex, FloatBuffer textcoords, FloatBuffer overlaycords, IntBuffer hasOverlay, FloatBuffer normals, IntBuffer indices) {
         this.vertexLength = vertexLength;

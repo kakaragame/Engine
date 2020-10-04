@@ -22,10 +22,10 @@ import java.util.UUID;
  */
 public class MeshGameItem implements GameItem {
     private final UUID uuid;
-    private List<Feature> features = new ArrayList<>();
+    private final List<Feature> features = new ArrayList<>();
     private IMesh[] meshes;
     private float scale;
-    private Quaternionf rotation;
+    private final Quaternionf rotation;
     private int textPos;
     private boolean visible = true;
     private boolean selected;

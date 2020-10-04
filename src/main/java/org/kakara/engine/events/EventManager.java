@@ -13,7 +13,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * Handles all of the events.
  */
 public class EventManager {
-    private List<Object> handlers;
+    private final List<Object> handlers;
 
     public EventManager() {
         handlers = new CopyOnWriteArrayList<>();

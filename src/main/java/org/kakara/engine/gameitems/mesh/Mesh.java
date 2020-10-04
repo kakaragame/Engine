@@ -175,7 +175,7 @@ public class Mesh implements IMesh {
         return result;
     }
 
-    private void calculateBoundingRadius(float positions[]) {
+    private void calculateBoundingRadius(float[] positions) {
         int length = positions.length;
         boundingRadius = 0;
         for (int i = 0; i < length; i++) {

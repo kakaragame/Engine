@@ -15,7 +15,7 @@ public class HorizontalCenterConstraint implements Constraint {
 
     private Window window;
     private UserInterface userInterface;
-    private float offset;
+    private final float offset;
 
     public HorizontalCenterConstraint() {
         this(0);

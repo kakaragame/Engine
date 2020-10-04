@@ -23,8 +23,8 @@ public class Window {
     private int height;
     private boolean resized;
     private boolean vSync;
-    private boolean resizable;
-    private WindowOptions options;
+    private final boolean resizable;
+    private final WindowOptions options;
     private boolean cursor;
     private long window;
 

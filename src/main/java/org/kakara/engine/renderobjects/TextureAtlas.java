@@ -18,8 +18,8 @@ import java.util.stream.Collectors;
  * <p>The textures on the texture atlas are put together at runtime.</p>
  */
 public class TextureAtlas {
-    private String output;
-    private List<RenderTexture> textures;
+    private final String output;
+    private final List<RenderTexture> textures;
 
     private int textureWidth;
     private int textureHeight;
@@ -28,7 +28,7 @@ public class TextureAtlas {
 
     private int numberOfRows;
 
-    private Scene currentScene;
+    private final Scene currentScene;
 
     /**
      * Create the texture atlas.

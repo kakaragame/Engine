@@ -5,13 +5,13 @@ import org.kakara.engine.events.EventHandler;
 import org.kakara.engine.events.event.MouseClickEvent;
 import org.kakara.engine.events.event.MouseReleaseEvent;
 import org.kakara.engine.math.Vector2;
-import org.kakara.engine.ui.events.UIReleaseEvent;
-import org.kakara.engine.utils.RGBA;
 import org.kakara.engine.ui.UserInterface;
 import org.kakara.engine.ui.components.GeneralComponent;
 import org.kakara.engine.ui.events.UIClickEvent;
 import org.kakara.engine.ui.events.UIHoverEnterEvent;
 import org.kakara.engine.ui.events.UIHoverLeaveEvent;
+import org.kakara.engine.ui.events.UIReleaseEvent;
+import org.kakara.engine.utils.RGBA;
 import org.lwjgl.nanovg.NVGColor;
 
 import static org.lwjgl.nanovg.NanoVG.*;
@@ -31,7 +31,7 @@ import static org.lwjgl.nanovg.NanoVG.*;
  */
 public class Ellipse extends GeneralComponent {
     private RGBA color;
-    private NVGColor nvgColor;
+    private final NVGColor nvgColor;
 
     private boolean isHovering;
 

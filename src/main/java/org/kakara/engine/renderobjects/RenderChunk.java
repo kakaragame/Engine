@@ -16,8 +16,8 @@ import java.util.concurrent.CompletableFuture;
  */
 public class RenderChunk extends MeshGameItem {
     private RenderMesh mesh;
-    private RenderBlock[][][] octChunk;
-    private UUID chunkId;
+    private final RenderBlock[][][] octChunk;
+    private final UUID chunkId;
     private int blockCount = 0;
 
     /**

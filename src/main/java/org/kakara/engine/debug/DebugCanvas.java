@@ -1,6 +1,6 @@
 package org.kakara.engine.debug;
 
-import imgui.*;
+import imgui.ImGui;
 import imgui.flag.ImGuiCond;
 import imgui.gl3.ImGuiImplGl3;
 import imgui.glfw.ImGuiImplGlfw;

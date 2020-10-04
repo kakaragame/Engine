@@ -25,9 +25,9 @@ public class BoxCollider implements Collider {
 
     private Vector3 lastPosition;
     private Collidable item;
-    private GameHandler handler;
+    private final GameHandler handler;
     private Predicate<Collidable> predicate = gameItem -> false;
-    private List<OnTriggerEnter> triggerEvents;
+    private final List<OnTriggerEnter> triggerEvents;
 
     /**
      * Create a box collider

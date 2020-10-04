@@ -14,7 +14,7 @@ import org.kakara.engine.window.Window;
 public class VerticalCenterConstraint implements Constraint {
 
     private Window window;
-    private float offset;
+    private final float offset;
     private UserInterface userInterface;
 
     public VerticalCenterConstraint() {

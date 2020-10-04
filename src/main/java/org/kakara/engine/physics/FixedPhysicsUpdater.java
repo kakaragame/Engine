@@ -17,7 +17,7 @@ import java.util.TimerTask;
  * @since 1.0-Pre2
  */
 public class FixedPhysicsUpdater extends TimerTask {
-    private Scene scene;
+    private final Scene scene;
     private long oldTime;
     private long currentTime;
 

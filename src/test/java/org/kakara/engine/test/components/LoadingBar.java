@@ -2,12 +2,12 @@ package org.kakara.engine.test.components;
 
 import org.kakara.engine.GameHandler;
 import org.kakara.engine.math.Vector2;
-import org.kakara.engine.utils.RGBA;
 import org.kakara.engine.ui.UserInterface;
 import org.kakara.engine.ui.components.GeneralComponent;
 import org.kakara.engine.ui.components.shapes.Rectangle;
 import org.kakara.engine.ui.components.text.Text;
 import org.kakara.engine.ui.font.Font;
+import org.kakara.engine.utils.RGBA;
 
 /**
  * This is an example component. All components must extend GeneralComponent.
@@ -15,9 +15,9 @@ import org.kakara.engine.ui.font.Font;
 public class LoadingBar extends GeneralComponent {
     private float percent;
 
-    private Text percentText;
-    private Rectangle outer;
-    private Rectangle inner;
+    private final Text percentText;
+    private final Rectangle outer;
+    private final Rectangle inner;
 
     /*
      * Be sure to put super(); here.

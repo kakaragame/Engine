@@ -20,7 +20,7 @@ public class Particle extends MeshGameItem {
 
     private long currentAnimTimeMillis;
 
-    private int animFrames;
+    private final int animFrames;
 
     public Particle(Mesh mesh, Vector3 speed, long ttl, long updateTextureMillis) {
         super(mesh);

@@ -21,10 +21,10 @@ import java.util.Map;
 public class UIObject implements Tagable {
     private final Vector2 position;
     private final Quaternionf rotation;
-    private IMesh mesh;
+    private final IMesh mesh;
     private float scale;
 
-    private Map<UActionEvent, Class<? extends UActionEvent>> events;
+    private final Map<UActionEvent, Class<? extends UActionEvent>> events;
 
     /*
      * Tagable data

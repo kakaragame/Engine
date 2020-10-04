@@ -8,7 +8,7 @@ import java.util.List;
  */
 public class ParticleHandler {
 
-    private List<ParticleEmitter> particleEmitters;
+    private final List<ParticleEmitter> particleEmitters;
 
     public ParticleHandler() {
         particleEmitters = new ArrayList<>();
