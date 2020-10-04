@@ -1,7 +1,7 @@
 package org.kakara.engine.physics;
 
-import org.kakara.engine.item.GameItem;
-import org.kakara.engine.item.MeshGameItem;
+import org.kakara.engine.gameitems.GameItem;
+import org.kakara.engine.gameitems.MeshGameItem;
 import org.kakara.engine.physics.collision.Collider;
 import org.kakara.engine.scene.Scene;
 
@@ -17,7 +17,7 @@ import java.util.TimerTask;
  * @since 1.0-Pre2
  */
 public class FixedPhysicsUpdater extends TimerTask {
-    private Scene scene;
+    private final Scene scene;
     private long oldTime;
     private long currentTime;
 

@@ -3,44 +3,52 @@ package org.kakara.engine.renderobjects.mesh;
 import org.kakara.engine.GameEngine;
 import org.kakara.engine.GameHandler;
 import org.kakara.engine.exceptions.InvalidThreadException;
+import org.kakara.engine.render.culling.RenderQuery;
 import org.kakara.engine.renderobjects.RenderBlock;
 import org.kakara.engine.renderobjects.RenderChunk;
 import org.kakara.engine.renderobjects.TextureAtlas;
 import org.kakara.engine.renderobjects.renderlayouts.MeshLayout;
 import org.lwjgl.system.MemoryUtil;
 
-import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.*;
-import static org.lwjgl.opengl.GL20.glDisableVertexAttribArray;
 import static org.lwjgl.opengl.GL30.*;
+import static org.lwjgl.opengl.GL33.GL_ANY_SAMPLES_PASSED;
 
 /**
  * The mesh for the chunks.
+ *
  * @since 1.0-Pre2
  */
 public class SyncMesh implements RenderMesh {
 
-    protected int vaoId;
     protected final List<Integer> vboIdList;
-    private int vertexCount;
+    protected int vaoId;
+    private final int vertexCount;
+
+    private final RenderQuery query;
 
     /**
      * Create a render mesh
-     * @param blocks       The list of render blocks
+     *
      * @param renderChunk  renderchunk
      * @param textureAtlas The texture atlas to use
      */
-    public SyncMesh(List<RenderBlock> blocks, RenderChunk renderChunk, TextureAtlas textureAtlas) {
-        if(Thread.currentThread() != GameEngine.currentThread)
+    public SyncMesh(RenderChunk renderChunk, TextureAtlas textureAtlas) {
+        if (Thread.currentThread() != GameEngine.currentThread)
             throw new InvalidThreadException("This class must be constructed on the main tread!");
+
+        query = new RenderQuery(GL_ANY_SAMPLES_PASSED);
+
         vboIdList = new ArrayList<>();
         vaoId = glGenVertexArrays();
-        List<RenderBlock> renderBlocks = renderChunk.calculateVisibleBlocks(blocks);
+        List<RenderBlock> renderBlocks = renderChunk.calculateVisibleBlocks();
         MeshLayout layout = MeshUtils.setupLayout(renderBlocks, textureAtlas);
         try {
             vertexCount = layout.getVertexLength();
@@ -100,9 +108,9 @@ public class SyncMesh implements RenderMesh {
                 MemoryUtil.memFree(layout.getNormals());
             if (layout.getIndices() != null)
                 MemoryUtil.memFree(layout.getIndices());
-            if(layout.getOverlayCoords() != null)
+            if (layout.getOverlayCoords() != null)
                 MemoryUtil.memFree(layout.getOverlayCoords());
-            if(layout.getHasOverlay() != null)
+            if (layout.getHasOverlay() != null)
                 MemoryUtil.memFree(layout.getHasOverlay());
         }
 
@@ -158,6 +166,7 @@ public class SyncMesh implements RenderMesh {
 
         glBindVertexArray(0);
         glDeleteVertexArrays(vaoId);
+        query.delete();
     }
 
     @Override
@@ -166,9 +175,9 @@ public class SyncMesh implements RenderMesh {
         List<Integer> hasOverlay = new ArrayList<>();
 
         for (RenderBlock rb : blocks) {
-            int initial = overlayCoords.size()/2;
+            int initial = overlayCoords.size() / 2;
             rb.getOverlayFromFaces(overlayCoords, textureAtlas);
-            hasOverlay.addAll(Collections.nCopies((overlayCoords.size()/2 - initial), rb.getOverlay() == null ? 0 : 1));
+            hasOverlay.addAll(Collections.nCopies((overlayCoords.size() / 2 - initial), rb.getOverlay() == null ? 0 : 1));
         }
 
         FloatBuffer overlayCoordsBuffer = MemoryUtil.memAllocFloat(overlayCoords.size());
@@ -181,8 +190,8 @@ public class SyncMesh implements RenderMesh {
             hasOverlayBuffer.put(f);
         hasOverlayBuffer.flip();
 
-        if(Thread.currentThread() == GameEngine.currentThread){
-            try{
+        if (Thread.currentThread() == GameEngine.currentThread) {
+            try {
                 glBindVertexArray(vaoId);
                 int pid = vboIdList.get(3);
                 glBindBuffer(GL_ARRAY_BUFFER, pid);
@@ -196,13 +205,13 @@ public class SyncMesh implements RenderMesh {
 
                 glBindBuffer(GL_ARRAY_BUFFER, 0);
                 glBindVertexArray(0);
-            }finally {
+            } finally {
                 MemoryUtil.memFree(overlayCoordsBuffer);
                 MemoryUtil.memFree(hasOverlayBuffer);
             }
-        }else{
+        } else {
             GameHandler.getInstance().getGameEngine().addQueueItem(() -> {
-                try{
+                try {
                     glBindVertexArray(vaoId);
                     int pid = vboIdList.get(3);
                     glBindBuffer(GL_ARRAY_BUFFER, pid);
@@ -216,12 +225,17 @@ public class SyncMesh implements RenderMesh {
 
                     glBindBuffer(GL_ARRAY_BUFFER, 0);
                     glBindVertexArray(0);
-                }finally {
+                } finally {
                     MemoryUtil.memFree(overlayCoordsBuffer);
                     MemoryUtil.memFree(hasOverlayBuffer);
                 }
             });
         }
+    }
+
+    @Override
+    public RenderQuery getQuery() {
+        return query;
     }
 
 }

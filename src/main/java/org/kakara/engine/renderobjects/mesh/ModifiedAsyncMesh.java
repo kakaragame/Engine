@@ -4,6 +4,7 @@ import org.jetbrains.annotations.Nullable;
 import org.kakara.engine.GameEngine;
 import org.kakara.engine.GameHandler;
 import org.kakara.engine.exceptions.InvalidThreadException;
+import org.kakara.engine.render.culling.RenderQuery;
 import org.kakara.engine.renderobjects.ChunkHandler;
 import org.kakara.engine.renderobjects.RenderBlock;
 import org.kakara.engine.renderobjects.RenderChunk;
@@ -22,22 +23,26 @@ import java.util.concurrent.ExecutionException;
 import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.*;
+import static org.lwjgl.opengl.GL33.GL_ANY_SAMPLES_PASSED;
 
 /**
  * This mesh will do all mesh calculations on a different thread while,
  * the OpenGL will be on the main thread.
  * <p>This class can only be constructed on the primary thread.</p>
+ *
  * @since 1.0-Pre2
  */
 public class ModifiedAsyncMesh implements RenderMesh {
 
-    protected int vaoId;
     protected final List<Integer> vboIdList;
+    protected int vaoId;
     private int vertexCount;
     private boolean finished;
-    private CompletableFuture<MeshLayout> future;
+    private final CompletableFuture<MeshLayout> future;
 
-    private CompletableFuture<ModifiedAsyncMesh> whenFinished;
+    private final CompletableFuture<ModifiedAsyncMesh> whenFinished;
+
+    private final RenderQuery query;
 
     /**
      * Create a render mesh
@@ -45,12 +50,13 @@ public class ModifiedAsyncMesh implements RenderMesh {
      * @param blocks       The list of render blocks
      * @param renderChunk  renderchunk
      * @param textureAtlas The texture atlas to use
-     * @param whenFinished       The completable future that is to be completed once the generation is complete.
+     * @param whenFinished The completable future that is to be completed once the generation is complete.
      */
-    public ModifiedAsyncMesh(List<RenderBlock> blocks, RenderChunk renderChunk, TextureAtlas textureAtlas, @Nullable CompletableFuture<ModifiedAsyncMesh> whenFinished) {
-        if(Thread.currentThread() != GameEngine.currentThread){
+    public ModifiedAsyncMesh(RenderChunk renderChunk, TextureAtlas textureAtlas, @Nullable CompletableFuture<ModifiedAsyncMesh> whenFinished) {
+        if (Thread.currentThread() != GameEngine.currentThread) {
             throw new InvalidThreadException("This class can only be constructed on the main thread!");
         }
+        query = new RenderQuery(GL_ANY_SAMPLES_PASSED);
         vboIdList = new ArrayList<>();
         vaoId = glGenVertexArrays();
 
@@ -59,7 +65,7 @@ public class ModifiedAsyncMesh implements RenderMesh {
         this.future = new CompletableFuture<>();
 
         ChunkHandler.EXECUTORS.submit(() -> {
-            List<RenderBlock> renderBlocks = renderChunk.calculateVisibleBlocks(blocks);
+            List<RenderBlock> renderBlocks = renderChunk.calculateVisibleBlocks();
             MeshLayout layout = null;
             try {
                 layout = MeshUtils.setupLayout(renderBlocks, textureAtlas);
@@ -101,8 +107,8 @@ public class ModifiedAsyncMesh implements RenderMesh {
      * <p>Internal Use Only</p>
      */
     public void render() {
-        if(future.isDone() && !finished){
-            try{
+        if (future.isDone() && !finished) {
+            try {
                 MeshLayout finalLayout = future.get();
                 try {
                     glBindVertexArray(vaoId);
@@ -163,15 +169,15 @@ public class ModifiedAsyncMesh implements RenderMesh {
                         MemoryUtil.memFree(finalLayout.getNormals());
                     if (finalLayout.getIndices() != null)
                         MemoryUtil.memFree(finalLayout.getIndices());
-                    if(finalLayout.getOverlayCoords() != null)
+                    if (finalLayout.getOverlayCoords() != null)
                         MemoryUtil.memFree(finalLayout.getOverlayCoords());
-                    if(finalLayout.getHasOverlay() != null)
+                    if (finalLayout.getHasOverlay() != null)
                         MemoryUtil.memFree(finalLayout.getHasOverlay());
                 }
                 if (whenFinished != null)
                     whenFinished.complete(this);
                 finished = true;
-            }catch(InterruptedException | ExecutionException ex){
+            } catch (InterruptedException | ExecutionException ex) {
                 GameEngine.LOGGER.error("CRITICAL: Cannot create OpenGL mesh.", ex);
             }
         }
@@ -203,6 +209,7 @@ public class ModifiedAsyncMesh implements RenderMesh {
 
         glBindVertexArray(0);
         glDeleteVertexArrays(vaoId);
+        query.delete();
     }
 
     @Override
@@ -211,9 +218,9 @@ public class ModifiedAsyncMesh implements RenderMesh {
         List<Integer> hasOverlay = new ArrayList<>();
 
         for (RenderBlock rb : blocks) {
-            int initial = overlayCoords.size()/2;
+            int initial = overlayCoords.size() / 2;
             rb.getOverlayFromFaces(overlayCoords, textureAtlas);
-            hasOverlay.addAll(Collections.nCopies((overlayCoords.size()/2 - initial), rb.getOverlay() == null ? 0 : 1));
+            hasOverlay.addAll(Collections.nCopies((overlayCoords.size() / 2 - initial), rb.getOverlay() == null ? 0 : 1));
         }
 
         FloatBuffer overlayCoordsBuffer = MemoryUtil.memAllocFloat(overlayCoords.size());
@@ -226,8 +233,8 @@ public class ModifiedAsyncMesh implements RenderMesh {
             hasOverlayBuffer.put(f);
         hasOverlayBuffer.flip();
 
-        if(Thread.currentThread() == GameEngine.currentThread){
-            try{
+        if (Thread.currentThread() == GameEngine.currentThread) {
+            try {
                 glBindVertexArray(vaoId);
                 int pid = vboIdList.get(3);
                 glBindBuffer(GL_ARRAY_BUFFER, pid);
@@ -241,13 +248,13 @@ public class ModifiedAsyncMesh implements RenderMesh {
 
                 glBindBuffer(GL_ARRAY_BUFFER, 0);
                 glBindVertexArray(0);
-            }finally {
+            } finally {
                 MemoryUtil.memFree(overlayCoordsBuffer);
                 MemoryUtil.memFree(hasOverlayBuffer);
             }
-        }else{
+        } else {
             GameHandler.getInstance().getGameEngine().addQueueItem(() -> {
-                try{
+                try {
                     glBindVertexArray(vaoId);
                     int pid = vboIdList.get(3);
                     glBindBuffer(GL_ARRAY_BUFFER, pid);
@@ -261,12 +268,17 @@ public class ModifiedAsyncMesh implements RenderMesh {
 
                     glBindBuffer(GL_ARRAY_BUFFER, 0);
                     glBindVertexArray(0);
-                }finally {
+                } finally {
                     MemoryUtil.memFree(overlayCoordsBuffer);
                     MemoryUtil.memFree(hasOverlayBuffer);
                 }
             });
         }
+    }
+
+    @Override
+    public RenderQuery getQuery() {
+        return query;
     }
 
 }

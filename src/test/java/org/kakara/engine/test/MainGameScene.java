@@ -2,25 +2,29 @@ package org.kakara.engine.test;
 
 import org.joml.Vector3f;
 import org.kakara.engine.GameHandler;
-import org.kakara.engine.physics.collision.BoxCollider;
-import org.kakara.engine.physics.collision.Collidable;
+import org.kakara.engine.debug.DebugCanvas;
 import org.kakara.engine.engine.CubeData;
 import org.kakara.engine.events.EventHandler;
 import org.kakara.engine.events.event.MouseClickEvent;
+import org.kakara.engine.gameitems.GameItem;
+import org.kakara.engine.gameitems.Material;
+import org.kakara.engine.gameitems.MeshGameItem;
+import org.kakara.engine.gameitems.Texture;
+import org.kakara.engine.gameitems.mesh.AtlasMesh;
+import org.kakara.engine.gameitems.mesh.InstancedMesh;
+import org.kakara.engine.gameitems.mesh.Mesh;
+import org.kakara.engine.gameitems.particles.FlowParticleEmitter;
+import org.kakara.engine.gameitems.particles.Particle;
 import org.kakara.engine.input.KeyInput;
 import org.kakara.engine.input.MouseClickType;
 import org.kakara.engine.input.MouseInput;
-import org.kakara.engine.item.*;
-import org.kakara.engine.item.mesh.AtlasMesh;
-import org.kakara.engine.item.mesh.InstancedMesh;
-import org.kakara.engine.item.mesh.Mesh;
-import org.kakara.engine.item.particles.FlowParticleEmitter;
-import org.kakara.engine.item.particles.Particle;
 import org.kakara.engine.lighting.DirectionalLight;
 import org.kakara.engine.lighting.LightColor;
 import org.kakara.engine.lighting.PointLight;
 import org.kakara.engine.math.Vector3;
 import org.kakara.engine.models.StaticModelLoader;
+import org.kakara.engine.physics.collision.BoxCollider;
+import org.kakara.engine.physics.collision.Collidable;
 import org.kakara.engine.renderobjects.RenderBlock;
 import org.kakara.engine.renderobjects.RenderChunk;
 import org.kakara.engine.renderobjects.RenderTexture;
@@ -28,13 +32,13 @@ import org.kakara.engine.renderobjects.TextureAtlas;
 import org.kakara.engine.renderobjects.mesh.MeshType;
 import org.kakara.engine.renderobjects.renderlayouts.BlockLayout;
 import org.kakara.engine.scene.AbstractGameScene;
-import org.kakara.engine.ui.RGBA;
 import org.kakara.engine.ui.components.shapes.Rectangle;
 import org.kakara.engine.ui.components.text.Text;
+import org.kakara.engine.ui.font.Font;
 import org.kakara.engine.ui.items.ComponentCanvas;
 import org.kakara.engine.ui.items.ObjectCanvas;
 import org.kakara.engine.ui.objectcanvas.UIObject;
-import org.kakara.engine.ui.text.Font;
+import org.kakara.engine.utils.RGBA;
 import org.kakara.engine.utils.Time;
 import org.kakara.engine.utils.Utils;
 import org.kakara.engine.weather.Fog;
@@ -61,7 +65,7 @@ public class MainGameScene extends AbstractGameScene {
 
     private Text fps;
 
-    private boolean once = false;
+    private final boolean once = false;
 
     public MainGameScene(GameHandler gameHandler, KakaraTest test) throws Exception {
         super(gameHandler);
@@ -180,9 +184,9 @@ public class MainGameScene extends AbstractGameScene {
 
 
         new Thread(() -> {
-            for(int cx = 0; cx < 5; cx++){
+            for(int cx = 0; cx < 7; cx++){
                 for(int cy = 0; cy < 2; cy++){
-                    for(int cz = 0; cz < 5; cz++){
+                    for(int cz = 0; cz < 7; cz++){
                         RenderChunk rc = new RenderChunk(new ArrayList<>(), getTextureAtlas());
                         rc.setPosition(cx * 16, cy*16, cz * 16);
                         for(int x = 0; x < 16; x++){
@@ -238,7 +242,7 @@ public class MainGameScene extends AbstractGameScene {
         ComponentCanvas cc = new ComponentCanvas(this);
 
         Font font = new Font("Roboto-Regular", resourceManager.getResource("Roboto-Regular.ttf"), this);
-        hud.addFont(font);
+        userInterface.addFont(font);
 
         Text fps = new Text("FPS: 000", font);
         fps.setColor(new RGBA(255,255,255,1));
@@ -293,6 +297,8 @@ public class MainGameScene extends AbstractGameScene {
 
         this.handler = gameHandler;
 
+        add(new DebugCanvas());
+
         System.out.println("Done. Scene loaded in " + (time - System.currentTimeMillis()) + " ms");
     }
 
@@ -300,7 +306,7 @@ public class MainGameScene extends AbstractGameScene {
     public void update(float interval) {
         KeyInput ki = handler.getKeyInput();
 
-        fps.setText("FPS: " + Math.round(1/ Time.deltaTime));
+        fps.setText("FPS: " + Math.round(1/ Time.getDeltaTime()));
 
         if (ki.isKeyPressed(GLFW_KEY_W)) {
             getCamera().movePosition(0, 0, -1);
@@ -324,7 +330,7 @@ public class MainGameScene extends AbstractGameScene {
             test.exit();
         }
         if (ki.isKeyPressed(GLFW_KEY_TAB)) {
-            this.setCurserStatus(!this.getCurserStatus());
+            this.setCurserStatus(true);
         }
 
         Vector3 currentPos = collider.getPosition();
@@ -372,7 +378,7 @@ public class MainGameScene extends AbstractGameScene {
             handler.getSoundManager().getListener().setPosition(getCamera().getPosition());
 
 
-        lightAngle += Time.deltaTime * 1.3;
+        lightAngle += Time.getDeltaTime() * 1.3;
         if (lightAngle < 0) {
             lightAngle = 0;
         } else if (lightAngle > 180) {
@@ -398,14 +404,14 @@ public class MainGameScene extends AbstractGameScene {
             if(selected instanceof RenderBlock){
                 RenderBlock block = (RenderBlock) selected;
                 RenderChunk parentChunk = block.getParentChunk();
-//                parentChunk.removeBlock(block);
-                block.setOverlay(getTextureAtlas().getTextures().get(ThreadLocalRandom.current().nextInt(0, 3)));
-                long curTime = System.currentTimeMillis();
+                parentChunk.removeBlock(block);
+//                block.setOverlay(getTextureAtlas().getTextures().get(ThreadLocalRandom.current().nextInt(0, 3)));
+//                long curTime = System.currentTimeMillis();
                 parentChunk.regenerateChunk(getTextureAtlas(), MeshType.SYNC);
-                System.out.println("It took " + (System.currentTimeMillis() - curTime) + "ms to regenerate the entire chunk.");
-                curTime = System.currentTimeMillis();
-                parentChunk.regenerateOverlayTextures(getTextureAtlas());
-                System.out.println("It took " + (System.currentTimeMillis() - curTime) + "ms to regenerate the overlay textures for the chunk.");
+//                System.out.println("It took " + (System.currentTimeMillis() - curTime) + "ms to regenerate the entire chunk.");
+//                curTime = System.currentTimeMillis();
+//                parentChunk.regenerateOverlayTextures(getTextureAtlas());
+//                System.out.println("It took " + (System.currentTimeMillis() - curTime) + "ms to regenerate the overlay textures for the chunk.");
             }
         }
     }

@@ -3,13 +3,13 @@ package org.kakara.engine.scene;
 import org.jetbrains.annotations.Nullable;
 import org.kakara.engine.Camera;
 import org.kakara.engine.GameHandler;
-import org.kakara.engine.physics.collision.CollisionManager;
 import org.kakara.engine.events.EventManager;
-import org.kakara.engine.item.ItemHandler;
-import org.kakara.engine.item.particles.ParticleHandler;
-import org.kakara.engine.item.SkyBox;
+import org.kakara.engine.gameitems.ItemHandler;
+import org.kakara.engine.gameitems.SkyBox;
+import org.kakara.engine.gameitems.particles.ParticleHandler;
 import org.kakara.engine.lighting.LightHandler;
-import org.kakara.engine.ui.HUD;
+import org.kakara.engine.physics.collision.CollisionManager;
+import org.kakara.engine.ui.UserInterface;
 import org.kakara.engine.weather.Fog;
 
 public interface Scene {
@@ -35,18 +35,18 @@ public interface Scene {
     void update(float interval);
 
     /**
-     * Set if the cursor should be enabled.
-     *
-     * @param status Cursor enabled.
-     */
-    void setCurserStatus(boolean status);
-
-    /**
      * Check if the cursor is enabled.
      *
      * @return If the cursor is enabled.
      */
     boolean getCurserStatus();
+
+    /**
+     * Set if the cursor should be enabled.
+     *
+     * @param status Cursor enabled.
+     */
+    void setCurserStatus(boolean status);
 
     /**
      * Get the ItemHandler
@@ -63,17 +63,21 @@ public interface Scene {
     @Nullable LightHandler getLightHandler();
 
     /**
-     * Get the HUD for this scene.
+     * Get the UserInterface for this scene.
      *
-     * @return The hud.
+     * @return The user interface for the scene.
      */
-    HUD getHUD();
+    UserInterface getUserInterface();
 
     /**
      * Get the particle handler for the scene.
+     *
      * @return The particle handler.
      */
     @Nullable ParticleHandler getParticleHandler();
+
+
+    void handleException(Exception exception);
 
     /**
      *
@@ -82,45 +86,60 @@ public interface Scene {
 
     /**
      * Get the skybox.
+     *
      * @return The skybox
      */
     SkyBox getSkyBox();
 
     /**
      * Set the skybox.
+     *
      * @param skyBox The skybox.
      */
     void setSkyBox(SkyBox skyBox);
 
     /**
      * get the fog
+     *
      * @return The fog
      */
     Fog getFog();
 
     /**
      * Set the fog
+     *
      * @param fog The fog
      */
     void setFog(Fog fog);
 
     /**
      * Get the camera
+     *
      * @return The camera
      */
     Camera getCamera();
 
     /**
      * Get the event manager for the scene.
-     * @since 1.0-Pre1
+     *
      * @return The event manager.
+     * @since 1.0-Pre1
      */
     EventManager getEventManager();
 
     /**
      * Get the collision manager.
-     * @since 1.0-Pre1
+     *
      * @return The collision manager.
+     * @since 1.0-Pre1
      */
     @Nullable CollisionManager getCollisionManager();
+
+    /**
+     * Get the delta time.
+     *
+     * @return The delta time.
+     * @since 1.0-Pre3
+     */
+    float getDeltaTime();
 }

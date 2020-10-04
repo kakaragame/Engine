@@ -2,16 +2,12 @@ package org.kakara.engine.test;
 
 import org.kakara.engine.Game;
 import org.kakara.engine.GameHandler;
-import org.kakara.engine.events.EventHandler;
-import org.kakara.engine.events.event.KeyPressEvent;
-import org.kakara.engine.events.event.MouseClickEvent;
 import org.kakara.engine.scene.Scene;
-
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_TAB;
 
 public class KakaraTest implements Game {
 
     private GameHandler gInst;
+
     @Override
     public void start(GameHandler handler) throws Exception {
         gInst = handler;
@@ -38,14 +34,15 @@ public class KakaraTest implements Game {
     }
 
     @Override
-    public Scene firstScene(GameHandler handler) throws Exception{
+    public Scene firstScene(GameHandler handler) throws Exception {
         TitleScreenScene tss = new TitleScreenScene(handler, this);
         return tss;
     }
 
 
     @Override
-    public void update() {}
+    public void update() {
+    }
 
     @Override
     public void exit() {

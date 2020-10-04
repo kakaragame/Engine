@@ -3,7 +3,7 @@ package org.kakara.engine.render;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
-import org.kakara.engine.item.Material;
+import org.kakara.engine.gameitems.Material;
 import org.kakara.engine.lighting.DirectionalLight;
 import org.kakara.engine.lighting.PointLight;
 import org.kakara.engine.lighting.SpotLight;
@@ -23,15 +23,13 @@ import static org.lwjgl.opengl.GL20.*;
  */
 public class Shader {
     private final int programId;
-
-    private int vertexShaderId;
-
-    private int fragmentShaderId;
-
     private final Map<String, Integer> uniforms;
+    private int vertexShaderId;
+    private int fragmentShaderId;
 
     /**
      * Create a new shader.
+     *
      * @throws Exception
      */
     public Shader() throws Exception {
@@ -44,6 +42,7 @@ public class Shader {
 
     /**
      * Create a vertex shader.
+     *
      * @param shaderCode The shader code.
      * @throws Exception
      */
@@ -53,6 +52,7 @@ public class Shader {
 
     /**
      * Create a fragment shader.
+     *
      * @param shaderCode The shader code.
      * @throws Exception
      */
@@ -63,6 +63,7 @@ public class Shader {
     /**
      * Create a shader
      * <p>Same as doing {@link #createVertexShader(String)} and {@link #createFragmentShader(String)}.</p>
+     *
      * @param shaderCode The shader code
      * @param shaderType The shader type
      * @return The shader id.
@@ -88,6 +89,7 @@ public class Shader {
 
     /**
      * Link the shader to OpenGL
+     *
      * @throws Exception
      */
     public void link() throws Exception {
@@ -112,12 +114,13 @@ public class Shader {
 
     /**
      * Create a new uniform
+     *
      * @param uniformName The uniform name
      * @throws Exception If the uniform could not be found.
      */
     public void createUniform(String uniformName) throws Exception {
         int uniformLocation = glGetUniformLocation(programId, uniformName);
-        if(uniformLocation < 0){
+        if (uniformLocation < 0) {
             throw new Exception("Could not find uniform:" + uniformName);
         }
         uniforms.put(uniformName, uniformLocation);
@@ -125,11 +128,12 @@ public class Shader {
 
     /**
      * set a Matrix4f uniform
+     *
      * @param uniformName The uniform name
-     * @param value The value
+     * @param value       The value
      */
-    public void setUniform(String uniformName, Matrix4f value){
-        try(MemoryStack stack = MemoryStack.stackPush()){
+    public void setUniform(String uniformName, Matrix4f value) {
+        try (MemoryStack stack = MemoryStack.stackPush()) {
             FloatBuffer fb = stack.mallocFloat(16);
             value.get(fb);
             glUniformMatrix4fv(uniforms.get(uniformName), false, fb);
@@ -138,10 +142,11 @@ public class Shader {
 
     /**
      * Set an int uniform
+     *
      * @param uniformName The uniform name
-     * @param value The uniform value.
+     * @param value       The uniform value.
      */
-    public void setUniform(String uniformName, int value){
+    public void setUniform(String uniformName, int value) {
         glUniform1i(uniforms.get(uniformName), value);
     }
 
@@ -152,8 +157,9 @@ public class Shader {
 
     /**
      * Set a float uniform
+     *
      * @param uniformName The uniform name
-     * @param value The value
+     * @param value       The value
      */
     public void setUniform(String uniformName, float value) {
         glUniform1f(uniforms.get(uniformName), value);
@@ -161,8 +167,9 @@ public class Shader {
 
     /**
      * Set a vector3f uniform
+     *
      * @param uniformName The uniform name
-     * @param value The uniform value.
+     * @param value       The uniform value.
      */
     public void setUniform(String uniformName, Vector3f value) {
         glUniform3f(uniforms.get(uniformName), value.x, value.y, value.z);
@@ -170,18 +177,20 @@ public class Shader {
 
     /**
      * Set a vector3 uniform
-     * @since 1.0-pre1
+     *
      * @param uniformName The uniform name
-     * @param value The uniform value
+     * @param value       The uniform value
+     * @since 1.0-pre1
      */
-    public void setUniform(String uniformName, Vector3 value){
+    public void setUniform(String uniformName, Vector3 value) {
         glUniform3f(uniforms.get(uniformName), value.x, value.y, value.z);
     }
 
     /**
      * Set a vector4f uniform
+     *
      * @param uniformName The uniform name
-     * @param value The uniform value.
+     * @param value       The uniform value.
      */
     public void setUniform(String uniformName, Vector4f value) {
         glUniform4f(uniforms.get(uniformName), value.x, value.y, value.z, value.w);
@@ -189,8 +198,9 @@ public class Shader {
 
     /**
      * Create the point light uniform
+     *
      * @param uniformName The uniform name
-     * @param size The amount of point lights allowed.
+     * @param size        The amount of point lights allowed.
      * @throws Exception
      */
     public void createPointLightListUniform(String uniformName, int size) throws Exception {
@@ -201,6 +211,7 @@ public class Shader {
 
     /**
      * Creates a point light uniform
+     *
      * @param uniformName The uniform name.
      * @throws Exception
      */
@@ -215,8 +226,9 @@ public class Shader {
 
     /**
      * Creates a spot light list uniform
+     *
      * @param uniformName The uniform name
-     * @param size The amount of spot lights allowed.
+     * @param size        The amount of spot lights allowed.
      * @throws Exception
      */
     public void createSpotLightListUniform(String uniformName, int size) throws Exception {
@@ -227,6 +239,7 @@ public class Shader {
 
     /**
      * Create spot light uniforms
+     *
      * @param uniformName The uniform name
      * @throws Exception
      */
@@ -238,6 +251,7 @@ public class Shader {
 
     /**
      * Create a directional light uniform
+     *
      * @param uniformName The uniform name
      * @throws Exception
      */
@@ -249,6 +263,7 @@ public class Shader {
 
     /**
      * Create a material uniform
+     *
      * @param uniformName The uniform name.
      * @throws Exception
      */
@@ -259,7 +274,7 @@ public class Shader {
         createUniform(uniformName + ".hasTexture");
         createUniform(uniformName + ".reflectance");
 
-        for(int i = 0; i < 5; i++)
+        for (int i = 0; i < 5; i++)
             createUniform(uniformName + ".overlayTextures[" + i + "]");
         createUniform(uniformName + ".numberOfOverlays");
     }
@@ -269,6 +284,7 @@ public class Shader {
 
     /**
      * Set the point light uniform
+     *
      * @param uniformName The uniform name
      * @param pointLights The list of point lights.
      */
@@ -281,9 +297,10 @@ public class Shader {
 
     /**
      * Set the point light list at a certain position.
+     *
      * @param uniformName The uniform name
-     * @param spotLight The point light.
-     * @param pos The position to insert at.
+     * @param spotLight   The point light.
+     * @param pos         The position to insert at.
      */
     public void setUniform(String uniformName, PointLight spotLight, int pos) {
         setUniform(uniformName + "[" + pos + "]", spotLight);
@@ -291,8 +308,9 @@ public class Shader {
 
     /**
      * Set the point light uniform
+     *
      * @param uniformName The uniform name
-     * @param pointLight The point light.
+     * @param pointLight  The point light.
      */
     public void setUniform(String uniformName, PointLight pointLight) {
         setUniform(uniformName + ".color", pointLight.getColor().toVector());
@@ -306,27 +324,29 @@ public class Shader {
 
     /**
      * Set the material uniform
+     *
      * @param uniformName The uniform name
-     * @param material The material uniform.
+     * @param material    The material uniform.
      */
     public void setUniform(String uniformName, Material material) {
-        setUniform(uniformName + ".ambient", material.getAmbientColor());
-        setUniform(uniformName + ".diffuse", material.getDiffuseColor());
-        setUniform(uniformName + ".specular", material.getSpecularColor());
+        setUniform(uniformName + ".ambient", material.getAmbientColor().getVectorColor());
+        setUniform(uniformName + ".diffuse", material.getDiffuseColor().getVectorColor());
+        setUniform(uniformName + ".specular", material.getSpecularColor().getVectorColor());
         setUniform(uniformName + ".hasTexture", material.isTextured() ? 1 : 0);
         setUniform(uniformName + ".reflectance", material.getReflectance());
 
-        for(int i = 0; i < 5; i++)
+        for (int i = 0; i < 5; i++)
             setUniform(uniformName + ".overlayTextures[" + i + "]", i + 3);
         setUniform(uniformName + ".numberOfOverlays", material.getOverlayTextures().size());
     }
 
     /**
      * Set the directional light uniform
+     *
      * @param uniformName The uniform name
-     * @param dirLight The directional light uniform.
+     * @param dirLight    The directional light uniform.
      */
-    public void setUniform(String uniformName, DirectionalLight dirLight){
+    public void setUniform(String uniformName, DirectionalLight dirLight) {
         setUniform(uniformName + ".color", dirLight.getColor().toVector());
         setUniform(uniformName + ".direction", dirLight.getDirection().toJoml());
         setUniform(uniformName + ".intensity", dirLight.getIntensity());
@@ -334,8 +354,9 @@ public class Shader {
 
     /**
      * Set the list of spot lights uniform
+     *
      * @param uniformName The uniform name
-     * @param spotLights The list of spot lights.
+     * @param spotLights  The list of spot lights.
      */
     public void setUniform(String uniformName, List<SpotLight> spotLights) {
         int numLights = spotLights != null ? spotLights.size() : 0;
@@ -346,9 +367,10 @@ public class Shader {
 
     /**
      * Set the spot light at a position.
+     *
      * @param uniformName The uniform name for the spot light list.
-     * @param spotLight The spot light
-     * @param pos The position value.
+     * @param spotLight   The spot light
+     * @param pos         The position value.
      */
     public void setUniform(String uniformName, SpotLight spotLight, int pos) {
         setUniform(uniformName + "[" + pos + "]", spotLight);
@@ -356,8 +378,9 @@ public class Shader {
 
     /**
      * Set the spotlight uniform
+     *
      * @param uniformName The uniform name.
-     * @param spotLight The spot light
+     * @param spotLight   The spot light
      */
     public void setUniform(String uniformName, SpotLight spotLight) {
         setUniform(uniformName + ".pl", spotLight.getPointLight());
@@ -367,10 +390,11 @@ public class Shader {
 
     /**
      * Create a new fog uniform.
+     *
      * @param uniformName The uniform name
      * @throws Exception
      */
-    public void createFogUniform(String uniformName) throws Exception{
+    public void createFogUniform(String uniformName) throws Exception {
         createUniform(uniformName + ".activeFog");
         createUniform(uniformName + ".color");
         createUniform(uniformName + ".density");
@@ -378,8 +402,9 @@ public class Shader {
 
     /**
      * Set the fog uniform
+     *
      * @param uniformName The uniform name
-     * @param fog The fog.
+     * @param fog         The fog.
      */
     public void setUniform(String uniformName, Fog fog) {
         setUniform(uniformName + ".activeFog", fog.isActive() ? 1 : 0);

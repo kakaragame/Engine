@@ -8,9 +8,14 @@ import java.util.List;
  */
 public interface Indices {
     List<Integer> getFront(int startingIndex);
+
     List<Integer> getBack(int startingIndex);
+
     List<Integer> getTop(int startingIndex);
+
     List<Integer> getBottom(int startingIndex);
+
     List<Integer> getRight(int startingIndex);
+
     List<Integer> getLeft(int startingIndex);
 }

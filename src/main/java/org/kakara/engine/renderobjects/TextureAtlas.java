@@ -1,8 +1,7 @@
 package org.kakara.engine.renderobjects;
 
 import org.kakara.engine.GameEngine;
-import org.kakara.engine.item.Texture;
-import org.kakara.engine.resources.ResourceManager;
+import org.kakara.engine.gameitems.Texture;
 import org.kakara.engine.scene.Scene;
 
 import javax.imageio.ImageIO;
@@ -11,7 +10,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,8 +18,8 @@ import java.util.stream.Collectors;
  * <p>The textures on the texture atlas are put together at runtime.</p>
  */
 public class TextureAtlas {
-    private String output;
-    private List<RenderTexture> textures;
+    private final String output;
+    private final List<RenderTexture> textures;
 
     private int textureWidth;
     private int textureHeight;
@@ -30,28 +28,30 @@ public class TextureAtlas {
 
     private int numberOfRows;
 
-    private Scene currentScene;
+    private final Scene currentScene;
 
     /**
      * Create the texture atlas.
-     * @param textures The list of render textures.
-     * @param output The location of where the texture atlas is to be outputted.
+     *
+     * @param textures     The list of render textures.
+     * @param output       The location of where the texture atlas is to be outputted.
      * @param currentScene The current scene
      */
-    public TextureAtlas(List<RenderTexture> textures, String output, Scene currentScene){
+    public TextureAtlas(List<RenderTexture> textures, String output, Scene currentScene) {
         this(textures, output, currentScene, 400, 300);
     }
 
     /**
      * Create the texture atlas.
-     * @param textures The list of render textures.
-     * @param output The location of where the texture atlas is to be outputted.
-     * @param currentScene The current scene
-     * @param textureWidth The width of each texture
+     *
+     * @param textures      The list of render textures.
+     * @param output        The location of where the texture atlas is to be outputted.
+     * @param currentScene  The current scene
+     * @param textureWidth  The width of each texture
      * @param textureHeight The height of each texture.
      * @since 1.0-Pre1
      */
-    public TextureAtlas(List<RenderTexture> textures, String output, Scene currentScene, int textureWidth, int textureHeight){
+    public TextureAtlas(List<RenderTexture> textures, String output, Scene currentScene, int textureWidth, int textureHeight) {
         this.textures = textures;
         this.output = output;
         this.currentScene = currentScene;
@@ -59,52 +59,57 @@ public class TextureAtlas {
         this.textureHeight = textureHeight;
         try {
             calculateTextureAtlas(this.textures);
-        }catch(IOException ex){
+        } catch (IOException ex) {
             GameEngine.LOGGER.error("Could not create texture atlas. Missing texture files?", ex);
         }
     }
 
     /**
      * Get the list of render textures.
+     *
      * @return The list of render textures.
      */
-    public List<RenderTexture> getTextures(){
+    public List<RenderTexture> getTextures() {
         return textures;
     }
 
     /**
      * Get the number of rows
+     *
      * @return The number of rows.
      */
-    public int getNumberOfRows(){
+    public int getNumberOfRows() {
         return numberOfRows;
     }
 
     /**
      * Get the x offset
+     *
      * @param id The id of the texture
      * @return The x offset
      */
-    public float getXOffset(int id){
-        return ((float) id % numberOfRows)/numberOfRows;
+    public float getXOffset(int id) {
+        return ((float) id % numberOfRows) / numberOfRows;
     }
 
     /**
      * Get the y offset
+     *
      * @param id The id of the texture
      * @return The y offset
      */
-    public float getYOffset(int id){
-        return (float) Math.floor((double) id / (double) numberOfRows)/numberOfRows;
+    public float getYOffset(int id) {
+        return (float) Math.floor((double) id / (double) numberOfRows) / numberOfRows;
     }
 
     /**
      * Combine all of the textures into a single image file.
+     *
      * @param textures The list of textures
      * @throws IOException If the file could not be read / created.
      */
     private void calculateTextureAtlas(List<RenderTexture> textures) throws IOException {
-        if(texture != null)
+        if (texture != null)
             texture.cleanup();
 
         List<InputStream> tempFiles = textures.stream().map(text -> text.getResource().getInputStream()).collect(Collectors.toList());
@@ -119,9 +124,9 @@ public class TextureAtlas {
         Graphics g = combined.getGraphics();
 
         int i = 0;
-        for(int y = 0; y < h; y += textureHeight){
-            for(int x = 0; x < w; x+=textureWidth){
-                if(i >= tempFiles.size()) break;
+        for (int y = 0; y < h; y += textureHeight) {
+            for (int x = 0; x < w; x += textureWidth) {
+                if (i >= tempFiles.size()) break;
                 g.drawImage(resize(ImageIO.read(tempFiles.get(i)), textureWidth, textureHeight), x, y, null);
                 this.textures.get(i).init(i, this.getXOffset(i), this.getYOffset(i));
                 i++;
@@ -135,9 +140,10 @@ public class TextureAtlas {
 
     /**
      * Scale the images to be the same size.
+     *
      * @param imageToScale The image to scale
-     * @param dWidth The width
-     * @param dHeight The height
+     * @param dWidth       The width
+     * @param dHeight      The height
      * @return The image
      * @deprecated Use {@link #resize(BufferedImage, int, int)} instead. To be removed in a future update.
      */
@@ -159,12 +165,13 @@ public class TextureAtlas {
      * Resize the image to the desired size
      * <p>This method replaces {@link #scale(BufferedImage, int, int)}, but is most likely slower.</p>
      * <p>This method does not have artifacts.</p>
+     *
      * @param imageToScale The image to scale
-     * @param newW The new width
-     * @param newH The new height
+     * @param newW         The new width
+     * @param newH         The new height
      * @return The scaled image.
      */
-    private BufferedImage resize(BufferedImage imageToScale, int newW, int newH){
+    private BufferedImage resize(BufferedImage imageToScale, int newW, int newH) {
         Image tmp = imageToScale.getScaledInstance(newW, newH, Image.SCALE_SMOOTH);
         BufferedImage dimg = new BufferedImage(newW, newH, BufferedImage.TYPE_INT_ARGB);
 
@@ -178,59 +185,65 @@ public class TextureAtlas {
     /**
      * Get the actual game texture for the texture atlas.
      * <p>This is the texture to be used by OpenGL</p>
+     *
      * @return The texture.
      */
-    public Texture getTexture(){
+    public Texture getTexture() {
         return texture;
     }
 
     /**
      * Recalculate the texture atlas to include new textures!
      * <p>The previous Texture is automatically cleared from memory.</p>
+     *
      * @since 1.0-Pre1
      */
-    public void recalculateTextureAtlas(){
+    public void recalculateTextureAtlas() {
         try {
             calculateTextureAtlas(textures);
-        }catch(IOException ex){
+        } catch (IOException ex) {
             GameEngine.LOGGER.error("Cannot recalculate the texture atlas!", ex);
         }
     }
 
     /**
      * Scrub the TextureAtlas from memory.
+     *
      * @since 1.0-Pre1
      */
-    public void cleanup(){
-        if(texture != null)
+    public void cleanup() {
+        if (texture != null)
             texture.cleanup();
     }
 
     /**
      * Get the width of a texture.
-     * @since 1.0-Pre1
+     *
      * @return The width.
+     * @since 1.0-Pre1
      */
-    public int getTextureWidth(){
+    public int getTextureWidth() {
         return textureWidth;
     }
 
     /**
      * Get the height of a texture.
-     * @since 1.0-Pre1
+     *
      * @return The height.
+     * @since 1.0-Pre1
      */
-    public int getTextureHeight(){
+    public int getTextureHeight() {
         return textureHeight;
     }
 
     /**
      * Change the resolution of the textures.
      * <p>{@link #recalculateTextureAtlas()} is automatically called by this method.</p>
-     * @param width The width
+     *
+     * @param width  The width
      * @param height The height.
      */
-    public void setTextureSize(int width, int height){
+    public void setTextureSize(int width, int height) {
         this.textureWidth = width;
         this.textureHeight = height;
         recalculateTextureAtlas();

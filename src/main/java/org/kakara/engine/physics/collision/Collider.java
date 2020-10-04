@@ -1,9 +1,7 @@
 package org.kakara.engine.physics.collision;
 
-import org.kakara.engine.item.GameItem;
 import org.kakara.engine.math.Vector3;
 import org.kakara.engine.physics.OnTriggerEnter;
-import org.kakara.engine.utils.Pair;
 
 import java.util.function.Predicate;
 
@@ -22,6 +20,13 @@ public interface Collider {
     void onRegister(Collidable item);
 
     /**
+     * If the collider is a trigger.
+     *
+     * @return If the collider is a trigger.
+     */
+    boolean isTrigger();
+
+    /**
      * Set if the collider is a trigger.
      * <p>A trigger means that other objects will not collide with it but it will still call {@link OnTriggerEnter}.</p>
      * <p>As of 1.0-Pre2 the old functionality has been replaced by {@link #setResolvable(boolean)}</p>
@@ -32,11 +37,11 @@ public interface Collider {
     Collider setTrigger(boolean value);
 
     /**
-     * If the collider is a trigger.
+     * Get if the engine should attempt to move this object to fix collisions.
      *
-     * @return If the collider is a trigger.
+     * @return If the engine should attempt to move this object to fix collisions.
      */
-    boolean isTrigger();
+    boolean isResolvable();
 
     /**
      * If the engine it to attempt and move this object to fix collisions.
@@ -45,13 +50,6 @@ public interface Collider {
      * @param value If the engine is to move this object to fix collisions.
      */
     void setResolvable(boolean value);
-
-    /**
-     * Get if the engine should attempt to move this object to fix collisions.
-     *
-     * @return If the engine should attempt to move this object to fix collisions.
-     */
-    boolean isResolvable();
 
     /**
      * Get the first relative point for a collider.
@@ -92,12 +90,14 @@ public interface Collider {
 
     /**
      * Handle the collision correction for the y axis.
+     *
      * @since 1.0-Pre2
      */
     void updateY();
 
     /**
      * Handle the collision for the x and z axis.
+     *
      * @since 1.0-Pre2
      */
     void updateZ();
@@ -105,23 +105,26 @@ public interface Collider {
     /**
      * Add an event to be triggered when this collidable comes in contact with a trigger.
      * <p>Important note: This triggers every physics update that the object is colliding with a trigger.</p>
-     * @since 1.0-Pre2
+     *
      * @param enter The event to be triggered.
+     * @since 1.0-Pre2
      */
     void addOnTriggerEnter(OnTriggerEnter enter);
 
     /**
-     * Add a condition for collision.
-     * <p>This can be used to prevent a collision; for example, if a gameitem has a certain tag.</p>
-     * @since 1.0-Pre2
-     * @param gameItemPredicate The predicate to use.
-     */
-    void setPredicate(Predicate<Collidable> gameItemPredicate);
-
-    /**
      * Get this collider's predicate.
-     * @since 1.0-Pre2
+     *
      * @return The predicate.
+     * @since 1.0-Pre2
      */
     Predicate<Collidable> getPredicate();
+
+    /**
+     * Add a condition for collision.
+     * <p>This can be used to prevent a collision; for example, if a gameitem has a certain tag.</p>
+     *
+     * @param gameItemPredicate The predicate to use.
+     * @since 1.0-Pre2
+     */
+    void setPredicate(Predicate<Collidable> gameItemPredicate);
 }

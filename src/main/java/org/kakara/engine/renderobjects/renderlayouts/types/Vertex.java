@@ -8,9 +8,14 @@ import java.util.List;
  */
 public interface Vertex {
     List<Float> getFront();
+
     List<Float> getBack();
+
     List<Float> getTop();
+
     List<Float> getBottom();
+
     List<Float> getRight();
+
     List<Float> getLeft();
 }

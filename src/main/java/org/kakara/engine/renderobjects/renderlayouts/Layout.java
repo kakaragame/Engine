@@ -13,7 +13,10 @@ import org.kakara.engine.renderobjects.renderlayouts.types.Vertex;
  */
 public interface Layout {
     Vertex getVertex(Vector3 pos);
+
     Texture getTextureCords();
+
     Normal getNormal();
+
     Indices getIndices();
 }

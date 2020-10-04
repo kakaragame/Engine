@@ -10,8 +10,8 @@ import java.net.MalformedURLException;
  * Manages the resources of the game.
  */
 public class ResourceManager {
-    private String internalLocation;
-    private File externalLocation;
+    private final String internalLocation;
+    private final File externalLocation;
 
     public ResourceManager() {
         this("/resources/", new File(Utils.getCurrentDirectory(), "resources"));
@@ -19,6 +19,7 @@ public class ResourceManager {
 
     /**
      * Creates the resource manager
+     *
      * @param internalLocation The internal location of the jar. (Ex: resources)
      * @param externalLocation The external location. (Ex: Utils.getCurrentDirectory()).
      */
@@ -30,6 +31,7 @@ public class ResourceManager {
     /**
      * Get a resource from the specified file path.
      * <p>Use '/' as the path separator. The separator will automatically be changed to match other operating system formats.</p>
+     *
      * @param resourcePath Path to the resource (Can be inside or outside of the jar).
      * @return path to the resource. (This will return null if the MalformedURLException occurs. Aka: if the path is not correct).
      */
@@ -39,7 +41,7 @@ public class ResourceManager {
         if (externalResource.exists()) {
             try {
                 return new FileResource(externalResource.toURI().toURL(), resourcePath);
-            }catch(MalformedURLException ex){
+            } catch (MalformedURLException ex) {
                 return null;
             }
         } else {

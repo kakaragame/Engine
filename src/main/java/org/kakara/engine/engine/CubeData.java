@@ -6,9 +6,6 @@ package org.kakara.engine.engine;
  */
 public final class CubeData {
 
-    private static float ONE_THIRD = 1f/3f;
-    private static float TWO_THIRD = 2f/3f;
-
     public static final float[] vertex = {
             -0.5f, 0.5f, 0.5f,
             -0.5f, -0.5f, 0.5f,
@@ -41,39 +38,6 @@ public final class CubeData {
             -0.5f, -0.5f, 0.5f,
             -0.5f, 0.5f, 0.5f
     };
-
-    public static final float[] texture = {
-            0.25f, ONE_THIRD,
-            0.25f, TWO_THIRD,
-            0.5f, TWO_THIRD,
-            0.5f, ONE_THIRD,
-            //back
-            1f, ONE_THIRD,
-            1f, TWO_THIRD,
-            0.75f, TWO_THIRD,
-            0.75f, ONE_THIRD,
-            //top
-            0.25f, 0,
-            0.25f, ONE_THIRD,
-            0.5f, ONE_THIRD,
-            0.5f, 0,
-            // bottom
-            0.25f, TWO_THIRD,
-            0.25f, 1,
-            0.5f, 1,
-            0.5f, TWO_THIRD,
-            // right
-            0.5f, ONE_THIRD,
-            0.5f, TWO_THIRD,
-            0.75f, TWO_THIRD,
-            0.75f, ONE_THIRD,
-            // left
-            0, ONE_THIRD,
-            0, TWO_THIRD,
-            0.25f, TWO_THIRD,
-            0.25f, ONE_THIRD
-    };
-
     public static final float[] normal = {
             0, 0, 1,
             0, 0, 1,
@@ -105,7 +69,6 @@ public final class CubeData {
             -1, 0, 0,
             -1, 0, 0
     };
-
     public static final int[] indices = {
             0, 1, 2, 2, 3, 0,
             // back
@@ -119,7 +82,6 @@ public final class CubeData {
             // left
             20, 21, 22, 22, 23, 20
     };
-
     public static final float[] skyboxVertex = {
             -100f, 100f, 100f,
             -100f, -100f, 100f,
@@ -151,5 +113,40 @@ public final class CubeData {
             -100f, -100f, -100f,
             -100f, -100f, 100f,
             -100f, 100f, 100f
+    };
+
+    private final static float ONE_THIRD = 1f / 3f;
+    private final static float TWO_THIRD = 2f / 3f;
+
+    public static final float[] texture = {
+            0.25f, ONE_THIRD,
+            0.25f, TWO_THIRD,
+            0.5f, TWO_THIRD,
+            0.5f, ONE_THIRD,
+            //back
+            1f, ONE_THIRD,
+            1f, TWO_THIRD,
+            0.75f, TWO_THIRD,
+            0.75f, ONE_THIRD,
+            //top
+            0.25f, 0,
+            0.25f, ONE_THIRD,
+            0.5f, ONE_THIRD,
+            0.5f, 0,
+            // bottom
+            0.25f, TWO_THIRD,
+            0.25f, 1,
+            0.5f, 1,
+            0.5f, TWO_THIRD,
+            // right
+            0.5f, ONE_THIRD,
+            0.5f, TWO_THIRD,
+            0.75f, TWO_THIRD,
+            0.75f, ONE_THIRD,
+            // left
+            0, ONE_THIRD,
+            0, TWO_THIRD,
+            0.25f, TWO_THIRD,
+            0.25f, ONE_THIRD
     };
 }

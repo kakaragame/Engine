@@ -1,16 +1,16 @@
 package org.kakara.engine.models;
 
-import org.joml.Vector4f;
 import org.kakara.engine.GameEngine;
 import org.kakara.engine.exceptions.ModelLoadException;
-import org.kakara.engine.item.Material;
-import org.kakara.engine.item.mesh.Mesh;
-import org.kakara.engine.item.Texture;
+import org.kakara.engine.gameitems.Material;
+import org.kakara.engine.gameitems.Texture;
+import org.kakara.engine.gameitems.mesh.Mesh;
 import org.kakara.engine.resources.FileResource;
 import org.kakara.engine.resources.JarResource;
 import org.kakara.engine.resources.Resource;
 import org.kakara.engine.resources.ResourceManager;
 import org.kakara.engine.scene.Scene;
+import org.kakara.engine.utils.RGBA;
 import org.kakara.engine.utils.Utils;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.assimp.*;
@@ -26,35 +26,37 @@ import static org.lwjgl.system.MemoryUtil.NULL;
  * A model loader for static Models
  */
 public class StaticModelLoader {
-    private StaticModelLoader(){
+    private StaticModelLoader() {
 
     }
 
     /**
      * Load a model
-     * @param resource The resource for the model file (.obj)
-     * @param texturesDir The location of the texture directory
-     * @param scene The current scene
+     *
+     * @param resource        The resource for the model file (.obj)
+     * @param texturesDir     The location of the texture directory
+     * @param scene           The current scene
      * @param resourceManager The resource manager.
      * @return The Array of meshes.
      * @throws Exception
      */
     public static Mesh[] load(Resource resource, String texturesDir, Scene scene, ResourceManager resourceManager) throws Exception {
-        return load(resource, texturesDir, resourceManager, scene,aiProcess_GenSmoothNormals | aiProcess_JoinIdenticalVertices | aiProcess_Triangulate
+        return load(resource, texturesDir, resourceManager, scene, aiProcess_GenSmoothNormals | aiProcess_JoinIdenticalVertices | aiProcess_Triangulate
                 | aiProcess_FixInfacingNormals);
     }
 
     /**
      * Loads a model
-     * @param resource The resource for the model file
-     * @param texturesDir The location of the Texture directory
+     *
+     * @param resource        The resource for the model file
+     * @param texturesDir     The location of the Texture directory
      * @param resourceManager The resource manager
-     * @param scene The current scene
-     * @param flags Flags to load the object by.
+     * @param scene           The current scene
+     * @param flags           Flags to load the object by.
      * @return The array of meshes.
      * @throws Exception
      */
-    public static Mesh[] load(Resource resource, String texturesDir, ResourceManager resourceManager, Scene scene, int flags) throws Exception {
+    public static Mesh[] load(Resource resource, String texturesDir, ResourceManager resourceManager, Scene scene, int flags) throws ModelLoadException {
         GameEngine.LOGGER.debug(String.format("Loading Model %s With Textures in %s", resource.toString(), texturesDir));
 
         AIScene aiScene = null;
@@ -77,7 +79,11 @@ public class StaticModelLoader {
         List<Material> materials = new ArrayList<>();
         for (int i = 0; i < numMaterials; i++) {
             AIMaterial aiMaterial = AIMaterial.create(aiMaterials.get(i));
-            processMaterial(aiMaterial, materials, texturesDir, resourceManager,scene);
+            try {
+                processMaterial(aiMaterial, materials, texturesDir, resourceManager, scene);
+            } catch (Exception e) {
+                throw new ModelLoadException(e);
+            }
         }
 
         int numMeshes = aiScene.mNumMeshes();
@@ -105,38 +111,37 @@ public class StaticModelLoader {
     }
 
     protected static void processMaterial(AIMaterial aiMaterial, List<Material> materials,
-                                          String texturesDir, ResourceManager resourceManager,Scene scene) throws Exception {
+                                          String texturesDir, ResourceManager resourceManager, Scene scene) throws Exception {
         // File.separator. File.pathSeparator is for the PATH variable.
         String separator = "/";
         AIColor4D colour = AIColor4D.create();
-
-            AIString path = AIString.calloc();
-            Assimp.aiGetMaterialTexture(aiMaterial, aiTextureType_DIFFUSE, 0, path, (IntBuffer) null,
-                    null, null, null, null, null);
-            String textPath = path.dataString();
-            Texture texture = null;
-            if (textPath != null && textPath.length() > 0) {
-                TextureCache textCache = TextureCache.getInstance(resourceManager);
-                String textureFile = texturesDir + separator + textPath;
-                textureFile = textureFile.replace("//", separator);
-                GameEngine.LOGGER.debug(String.format("Getting Texture from %s", textureFile));
-                texture = textCache.getTexture(textureFile, scene);
-            }
+        AIString path = AIString.calloc();
+        Assimp.aiGetMaterialTexture(aiMaterial, aiTextureType_DIFFUSE, 0, path, (IntBuffer) null,
+                null, null, null, null, null);
+        String textPath = path.dataString();
+        Texture texture = null;
+        if (textPath != null && textPath.length() > 0) {
+            TextureCache textCache = TextureCache.getInstance(resourceManager);
+            String textureFile = texturesDir + separator + textPath;
+            textureFile = textureFile.replace("//", separator);
+            GameEngine.LOGGER.debug(String.format("Getting Texture from %s", textureFile));
+            texture = textCache.getTexture(textureFile, scene);
+        }
 
 //            int result = aiGetMaterialColor(aiMaterial, AI_MATKEY_COLOR_AMBIENT, aiTextureType_NONE, 0,
 //                    colour);
 
 
-            Vector4f specular = Material.DEFAULT_COLOUR;
-            int result = aiGetMaterialColor(aiMaterial, AI_MATKEY_COLOR_SPECULAR, aiTextureType_NONE, 0,
-                    colour);
-            if (result == 0) {
-                specular = new Vector4f(colour.r(), colour.g(), colour.b(), colour.a());
-            }
+        RGBA specular = Material.DEFAULT_COLOUR;
+        int result = aiGetMaterialColor(aiMaterial, AI_MATKEY_COLOR_SPECULAR, aiTextureType_NONE, 0,
+                colour);
+        if (result == 0) {
+            specular = new RGBA(colour.r(), colour.g(), colour.b(), colour.a());
+        }
 
-            Material material = new Material(specular, 1.0f);
-            material.setTexture(texture);
-            materials.add(material);
+        Material material = new Material(specular, 1.0f);
+        material.setTexture(texture);
+        materials.add(material);
     }
 
     private static Mesh processMesh(AIMesh aiMesh, List<Material> materials) {

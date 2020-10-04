@@ -1,11 +1,8 @@
 package org.kakara.engine.physics.collision;
 
 import org.kakara.engine.GameHandler;
-import org.kakara.engine.item.GameItem;
-import org.kakara.engine.item.MeshGameItem;
 import org.kakara.engine.math.Vector3;
 import org.kakara.engine.physics.OnTriggerEnter;
-import org.kakara.engine.utils.Time;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,15 +18,15 @@ public class ObjectBoxCollider implements Collider {
     private boolean isTrigger;
     private boolean resolveable;
 
-    private boolean isInAir = false;
+    private final boolean isInAir = false;
     private float timeInAir;
 
     private Vector3 lastPosition;
     private Vector3 deltaPosition;
     private Collidable item;
-    private GameHandler handler;
+    private final GameHandler handler;
     private Predicate<Collidable> predicate = gameItem -> false;
-    private List<OnTriggerEnter> triggerEvents;
+    private final List<OnTriggerEnter> triggerEvents;
 
     public ObjectBoxCollider(boolean isTrigger, boolean resolveable) {
         this.isTrigger = isTrigger;
@@ -131,17 +128,17 @@ public class ObjectBoxCollider implements Collider {
     }
 
     @Override
+    public Predicate<Collidable> getPredicate() {
+        return predicate;
+    }
+
+    @Override
     public void setPredicate(Predicate<Collidable> gameItemPredicate) {
         if (gameItemPredicate == null) {
             predicate = gameItem -> false;
             return;
         }
         predicate = gameItemPredicate;
-    }
-
-    @Override
-    public Predicate<Collidable> getPredicate() {
-        return predicate;
     }
 
     public Collider setTrigger(boolean value) {
@@ -154,13 +151,13 @@ public class ObjectBoxCollider implements Collider {
     }
 
     @Override
-    public void setResolvable(boolean value) {
-        this.resolveable = value;
+    public boolean isResolvable() {
+        return resolveable;
     }
 
     @Override
-    public boolean isResolvable() {
-        return resolveable;
+    public void setResolvable(boolean value) {
+        this.resolveable = value;
     }
 
     @Override

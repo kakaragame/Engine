@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
@@ -13,6 +13,7 @@
         <swt.version>4.6.1</swt.version>
         <joml.version>1.9.25</joml.version>
         <pngdecoder.version>1.0</pngdecoder.version>
+        <!--        <engine.classremoval>**/org/kakara/engine/debug/*.java</engine.classremoval>-->
     </properties>
     <distributionManagement>
         <repository>
@@ -35,6 +36,9 @@
                 <configuration>
                     <source>11</source>
                     <target>11</target>
+                    <excludes>
+                        <!--                        <exclude>${engine.classremoval}</exclude>-->
+                    </excludes>
                 </configuration>
             </plugin>
             <plugin>
@@ -70,6 +74,36 @@
 
 
     <profiles>
+        <!--
+            Debug Profiles
+            This doesn't quite work right now.
+        -->
+        <profile>
+            <id>Engine-Debug</id>
+            <activation>
+                <property>
+                    <name>!debug</name>
+                </property>
+            </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>io.imgui.java</groupId>
+                    <artifactId>binding</artifactId>
+                    <version>1.77-0.17</version>
+                </dependency>
+                <dependency>
+                    <groupId>io.imgui.java</groupId>
+                    <artifactId>lwjgl3</artifactId>
+                    <version>1.77-0.17</version>
+                </dependency>
+                <dependency>
+                    <groupId>io.imgui.java</groupId>
+                    <artifactId>${lwjgl.natives}</artifactId>
+                    <version>1.77-0.17</version>
+                </dependency>
+            </dependencies>
+        </profile>
+        <!--   LWJGL Profiles     -->
         <profile>
             <id>lwjgl-natives-linux-amd64</id>
             <activation>
@@ -184,8 +218,12 @@
 
     <repositories>
         <repository>
-            <id>thevideogamevillage.com</id>
-            <url>https://repo.thevideogamevillage.com/repository/maven-releases/</url>
+            <id>jcenter</id>
+            <url>https://jcenter.bintray.com/</url>
+        </repository>
+        <repository>
+            <id>Ryandw11</id>
+            <url>https://repo.ryandw11.com/repository/maven-releases/</url>
         </repository>
     </repositories>
 
@@ -194,6 +232,11 @@
             <groupId>me.ryandw11</groupId>
             <artifactId>Octree</artifactId>
             <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <version>3.11</version>
+            <artifactId>commons-lang3</artifactId>
         </dependency>
         <dependency>
             <groupId>org.jetbrains</groupId>

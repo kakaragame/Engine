@@ -1,6 +1,6 @@
 package org.kakara.engine.utils;
 
-import org.kakara.engine.item.Texture;
+import org.kakara.engine.gameitems.Texture;
 import org.lwjgl.system.MemoryUtil;
 
 import java.io.File;
@@ -12,6 +12,7 @@ import java.nio.ByteBuffer;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.channels.SeekableByteChannel;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -27,7 +28,7 @@ public class Utils {
     public static String loadResource(String fileName) throws Exception {
         String result;
         try (InputStream in = Class.forName(Utils.class.getName()).getResourceAsStream(fileName);
-             Scanner scanner = new Scanner(in, "UTF-8")) {
+             Scanner scanner = new Scanner(in, StandardCharsets.UTF_8)) {
             result = scanner.useDelimiter("\\A").next();
         }
         return result;
@@ -35,6 +36,7 @@ public class Utils {
 
     /**
      * Convert a resource into a File.
+     *
      * @param url The resource
      * @return The file
      * @throws URISyntaxException
@@ -46,15 +48,17 @@ public class Utils {
     /**
      * Such a hacky thing. We need to fix this.
      * TODO fix this
+     *
      * @param url The url to remove
      * @return The removal of file:/ and jar:
      */
-    public static String removeFile(String url){
+    public static String removeFile(String url) {
         return url.replace("file:/", "").replace("jar:", "");
     }
 
     /**
      * Convert a list into an int array
+     *
      * @param list The list
      * @return The array
      */
@@ -65,6 +69,7 @@ public class Utils {
 
     /**
      * Convert a float list to a float array
+     *
      * @param list The list
      * @return The array
      */
@@ -79,9 +84,10 @@ public class Utils {
 
     /**
      * Check if a resource file exists
-     * @deprecated unused
+     *
      * @param fileName The file name
      * @return if it exists
+     * @deprecated unused
      */
     public static boolean existsResourceFile(String fileName) {
         boolean result;
@@ -95,7 +101,8 @@ public class Utils {
 
     /**
      * Convert a resource ot byte buffer
-     * @param resource The file path
+     *
+     * @param resource   The file path
      * @param bufferSize The buffer size
      * @return The byte buffer.
      * @throws IOException If the file can't be read or does not exist.
@@ -133,7 +140,8 @@ public class Utils {
 
     /**
      * Resize a buffer.
-     * @param buffer The buffer to resize
+     *
+     * @param buffer      The buffer to resize
      * @param newCapacity The new capacity
      * @return The new buffer.
      */
@@ -146,6 +154,7 @@ public class Utils {
 
     /**
      * Convert an inputstream into a texture.
+     *
      * @param io The input stream.
      * @return The texture.
      * @throws IOException If a file does not exist or can't be read.
@@ -160,6 +169,7 @@ public class Utils {
 
     /**
      * Convert an inputstream into a bytebuffer.
+     *
      * @param io The input stream.
      * @return The byte buffer.
      * @throws IOException If a file does not exist or can't be read.
@@ -174,6 +184,7 @@ public class Utils {
 
     /**
      * Get the current directory
+     *
      * @return The current directory.
      */
     public static File getCurrentDirectory() {

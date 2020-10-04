@@ -17,9 +17,10 @@ public class SpotLight implements Comparable<SpotLight> {
 
     /**
      * Define a spot light.
-     * @param pointLight The light the that this light will inherit its properties from.
+     *
+     * @param pointLight    The light the that this light will inherit its properties from.
      * @param coneDirection The direction of the cone
-     * @param cutOffAngle The angle of cutoff.
+     * @param cutOffAngle   The angle of cutoff.
      */
     public SpotLight(PointLight pointLight, Vector3f coneDirection, float cutOffAngle) {
         this.pointLight = pointLight;
@@ -29,6 +30,7 @@ public class SpotLight implements Comparable<SpotLight> {
 
     /**
      * Make a spot light off of another one
+     *
      * @param spotLight Clone a spot light.
      */
     public SpotLight(SpotLight spotLight) {
@@ -40,6 +42,7 @@ public class SpotLight implements Comparable<SpotLight> {
 
     /**
      * Get the point light
+     *
      * @return The point light
      */
     public PointLight getPointLight() {
@@ -48,6 +51,7 @@ public class SpotLight implements Comparable<SpotLight> {
 
     /**
      * Set the point light
+     *
      * @param pointLight The point light
      */
     public void setPointLight(PointLight pointLight) {
@@ -56,6 +60,7 @@ public class SpotLight implements Comparable<SpotLight> {
 
     /**
      * Get the cone direction
+     *
      * @return the cone direction.
      */
     public Vector3f getConeDirection() {
@@ -64,6 +69,7 @@ public class SpotLight implements Comparable<SpotLight> {
 
     /**
      * Set the cone direction
+     *
      * @param coneDirection Set the cone direction
      */
     public void setConeDirection(Vector3f coneDirection) {
@@ -72,6 +78,7 @@ public class SpotLight implements Comparable<SpotLight> {
 
     /**
      * Get the cut off angle.
+     *
      * @return The cutoff
      */
     public float getCutOff() {
@@ -80,6 +87,7 @@ public class SpotLight implements Comparable<SpotLight> {
 
     /**
      * Set the cut off
+     *
      * @param cutOff the cute off.
      */
     public void setCutOff(float cutOff) {
@@ -88,10 +96,11 @@ public class SpotLight implements Comparable<SpotLight> {
 
     /**
      * Set the cut off angle.
+     *
      * @param cutOffAngle The angle
      */
     public final void setCutOffAngle(float cutOffAngle) {
-        this.setCutOff((float)Math.cos(Math.toRadians(cutOffAngle)));
+        this.setCutOff((float) Math.cos(Math.toRadians(cutOffAngle)));
     }
 
     @Override

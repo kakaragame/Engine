@@ -11,17 +11,18 @@ import static org.lwjgl.glfw.GLFW.*;
  */
 public class KeyInput {
 
-    private GameEngine engine;
-    public KeyInput(GameEngine engine){
+    private final GameEngine engine;
+
+    public KeyInput(GameEngine engine) {
         this.engine = engine;
     }
 
     /**
      * When the engine is first started.
      */
-    public void init(){
-        glfwSetKeyCallback(engine.getWindow().getWindowHandler(), (window, key, scancode, action, mods)->{
-            if(action != GLFW_PRESS) return;
+    public void init() {
+        glfwSetKeyCallback(engine.getWindow().getWindowHandler(), (window, key, scancode, action, mods) -> {
+            if (action != GLFW_PRESS) return;
             engine.getGameHandler().getSceneManager().getCurrentScene().getEventManager().fireHandler(new KeyPressEvent(key));
         });
         glfwSetCharCallback(engine.getWindow().getWindowHandler(), (window, codepoint) -> {
@@ -31,10 +32,11 @@ public class KeyInput {
 
     /**
      * If a key is currently pressed.
+     *
      * @param keycode The keycode value.
      * @return If it is pressed.
      */
-    public boolean isKeyPressed(int keycode){
+    public boolean isKeyPressed(int keycode) {
         return engine.getWindow().isKeyPressed(keycode);
     }
 }

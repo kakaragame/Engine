@@ -3,11 +3,13 @@ package org.kakara.engine.ui.components;
 import org.kakara.engine.GameHandler;
 import org.kakara.engine.events.EventHandler;
 import org.kakara.engine.events.event.MouseClickEvent;
+import org.kakara.engine.events.event.MouseReleaseEvent;
 import org.kakara.engine.math.Vector2;
-import org.kakara.engine.ui.HUD;
-import org.kakara.engine.ui.events.HUDClickEvent;
-import org.kakara.engine.ui.events.HUDHoverEnterEvent;
-import org.kakara.engine.ui.events.HUDHoverLeaveEvent;
+import org.kakara.engine.ui.UserInterface;
+import org.kakara.engine.ui.events.UIClickEvent;
+import org.kakara.engine.ui.events.UIHoverEnterEvent;
+import org.kakara.engine.ui.events.UIHoverLeaveEvent;
+import org.kakara.engine.ui.events.UIReleaseEvent;
 
 /**
  * An empty UI Component to contain other components.
@@ -15,37 +17,45 @@ import org.kakara.engine.ui.events.HUDHoverLeaveEvent;
 public class Panel extends GeneralComponent {
 
     private boolean isHovering;
-    public Panel(){
+
+    public Panel() {
         super();
         isHovering = false;
     }
 
     @Override
-    public void init(HUD hud, GameHandler handler) {
-        pollInit(hud, handler);
-        hud.getScene().getEventManager().registerHandler(this);
+    public void init(UserInterface userInterface, GameHandler handler) {
+        pollInit(userInterface, handler);
+        userInterface.getScene().getEventManager().registerHandler(this);
     }
 
     @Override
-    public void render(Vector2 relative, HUD hud, GameHandler handler){
-        if(!isVisible()) return;
+    public void render(Vector2 relative, UserInterface userInterface, GameHandler handler) {
+        if (!isVisible()) return;
 
-        pollRender(relative, hud, handler);
+        pollRender(relative, userInterface, handler);
 
-        boolean isColliding = HUD.isColliding(getTruePosition(), getTrueScale(), new Vector2(handler.getMouseInput().getPosition()));
-        if(isColliding && !isHovering){
+        boolean isColliding = UserInterface.isColliding(getTruePosition(), getTrueScale(), new Vector2(handler.getMouseInput().getPosition()));
+        if (isColliding && !isHovering) {
             isHovering = true;
-            triggerEvent(HUDHoverEnterEvent.class, handler.getMouseInput().getCurrentPosition());
-        }else if(!isColliding && isHovering){
+            triggerEvent(UIHoverEnterEvent.class, handler.getMouseInput().getCurrentPosition());
+        } else if (!isColliding && isHovering) {
             isHovering = false;
-            triggerEvent(HUDHoverLeaveEvent.class, handler.getMouseInput().getCurrentPosition());
+            triggerEvent(UIHoverLeaveEvent.class, handler.getMouseInput().getCurrentPosition());
         }
     }
 
     @EventHandler
-    public void onClick(MouseClickEvent evt){
-        if(HUD.isColliding(position, scale, new Vector2(evt.getMousePosition()))){
-            triggerEvent(HUDClickEvent.class, position, evt.getMouseClickType());
+    public void onClick(MouseClickEvent evt) {
+        if (UserInterface.isColliding(position, scale, new Vector2(evt.getMousePosition()))) {
+            triggerEvent(UIClickEvent.class, position, evt.getMouseClickType());
+        }
+    }
+
+    @EventHandler
+    public void onRelease(MouseReleaseEvent evt){
+        if(UserInterface.isColliding(getTruePosition(), scale, new Vector2(evt.getMousePosition()))){
+            triggerEvent(UIReleaseEvent.class, position, evt.getMouseClickType());
         }
     }
 }

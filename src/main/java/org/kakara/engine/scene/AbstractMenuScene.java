@@ -3,19 +3,20 @@ package org.kakara.engine.scene;
 import org.kakara.engine.Camera;
 import org.kakara.engine.GameEngine;
 import org.kakara.engine.GameHandler;
-import org.kakara.engine.physics.collision.CollisionManager;
 import org.kakara.engine.events.EventManager;
-import org.kakara.engine.item.ItemHandler;
-import org.kakara.engine.item.particles.ParticleHandler;
-import org.kakara.engine.item.SkyBox;
-import org.kakara.engine.item.Texture;
+import org.kakara.engine.gameitems.ItemHandler;
+import org.kakara.engine.gameitems.SkyBox;
+import org.kakara.engine.gameitems.Texture;
+import org.kakara.engine.gameitems.particles.ParticleHandler;
 import org.kakara.engine.lighting.LightHandler;
 import org.kakara.engine.math.Vector2;
-import org.kakara.engine.ui.HUD;
-import org.kakara.engine.ui.HUDItem;
+import org.kakara.engine.physics.collision.CollisionManager;
+import org.kakara.engine.ui.UICanvas;
+import org.kakara.engine.ui.UserInterface;
 import org.kakara.engine.ui.components.GeneralComponent;
 import org.kakara.engine.ui.components.Sprite;
 import org.kakara.engine.ui.items.ComponentCanvas;
+import org.kakara.engine.utils.Time;
 import org.kakara.engine.weather.Fog;
 
 import static org.lwjgl.opengl.GL11.glViewport;
@@ -26,22 +27,21 @@ import static org.lwjgl.opengl.GL11.glViewport;
  */
 public abstract class AbstractMenuScene implements Scene {
 
-    protected final HUD hud = new HUD(this);
+    protected final UserInterface userInterface = new UserInterface(this);
     private final EventManager eventManager = new EventManager();
     private final Camera camera = new Camera();
-
-    private boolean mouseStatus;
     protected GameHandler gameHandler;
+    private boolean mouseStatus;
     private ComponentCanvas cc;
 
-    public AbstractMenuScene(GameHandler gameHandler){
+    public AbstractMenuScene(GameHandler gameHandler) {
         this.gameHandler = gameHandler;
         this.eventManager.registerHandler(this);
-        try{
-            hud.init(gameHandler.getWindow());
+        try {
+            userInterface.init(gameHandler.getWindow());
             cc = new ComponentCanvas(this);
-            hud.addItem(cc);
-        }catch(Exception ex){
+            userInterface.addItem(cc);
+        } catch (Exception ex) {
             GameEngine.LOGGER.error("Unable to load HUD", ex);
         }
     }
@@ -53,18 +53,18 @@ public abstract class AbstractMenuScene implements Scene {
             glViewport(0, 0, gameHandler.getWindow().getWidth(), gameHandler.getWindow().getHeight());
             gameHandler.getWindow().setResized(false);
         }
-        hud.render(gameHandler.getWindow());
+        userInterface.render(gameHandler.getWindow());
+    }
+
+    @Override
+    public boolean getCurserStatus() {
+        return mouseStatus;
     }
 
     @Override
     public void setCurserStatus(boolean status) {
         mouseStatus = status;
         gameHandler.getWindow().setCursorVisibility(status);
-    }
-
-    @Override
-    public boolean getCurserStatus() {
-        return mouseStatus;
     }
 
     @Override
@@ -80,13 +80,13 @@ public abstract class AbstractMenuScene implements Scene {
     }
 
     @Override
-    public HUD getHUD() {
-        return hud;
+    public UserInterface getUserInterface() {
+        return userInterface;
     }
 
     @Override
     public void unload() {
-        hud.cleanup();
+        userInterface.cleanup();
     }
 
     @Override
@@ -101,12 +101,12 @@ public abstract class AbstractMenuScene implements Scene {
     }
 
     @Override
-    public EventManager getEventManager(){
+    public EventManager getEventManager() {
         return this.eventManager;
     }
 
     @Override
-    public CollisionManager getCollisionManager(){
+    public CollisionManager getCollisionManager() {
         GameEngine.LOGGER.warn("There is not collision manager in this implementation of scene! Did you mean to use AbstractGameScene?");
         return null;
     }
@@ -114,11 +114,12 @@ public abstract class AbstractMenuScene implements Scene {
     /**
      * Register an object to the scene event manager.
      * <p>Scenes are automatically added. Do not add the scene to this list.</p>
-     * @since 1.0-Pre1
+     *
      * @param obj The object to handle.
+     * @since 1.0-Pre1
      */
-    public void registerEventObject(Object obj){
-        if(obj instanceof Scene){
+    public void registerEventObject(Object obj) {
+        if (obj instanceof Scene) {
             GameEngine.LOGGER.warn("Unable to register event object: Scenes are automatically added to the event list.");
             return;
         }
@@ -127,71 +128,86 @@ public abstract class AbstractMenuScene implements Scene {
 
     /**
      * Add a hud item to the scene.
-     * @param hudItem The hud item to add.
+     *
+     * @param UICanvas The hud item to add.
      */
-    public void add(HUDItem hudItem){
-        hud.addItem(hudItem);
+    public void add(UICanvas UICanvas) {
+        userInterface.addItem(UICanvas);
     }
 
     /**
      * Set the background image of the scene.
+     *
      * @param texture the texture to use.
      */
-    public void setBackground(Texture texture){
-        if(cc.getComponents().size() > 0)
+    public void setBackground(Texture texture) {
+        if (cc.getComponents().size() > 0)
             cc.getComponents().get(0).cleanup(gameHandler);
         cc.clearComponents();
         cc.add(new BackgroundImage(texture, gameHandler));
     }
 
-
     @Override
-    public void setFog(Fog fog){
-        GameEngine.LOGGER.warn("There is no fog in this implementation of scene! Did you mean to use AbstractGameScene?");
-    }
-
-    @Override
-    public Fog getFog(){
+    public Fog getFog() {
         GameEngine.LOGGER.warn("There is no fog in this implementation of scene! Did you mean to use AbstractGameScene?");
         return null;
     }
 
     @Override
-    public ParticleHandler getParticleHandler(){
+    public void setFog(Fog fog) {
+        GameEngine.LOGGER.warn("There is no fog in this implementation of scene! Did you mean to use AbstractGameScene?");
+    }
+
+    @Override
+    public ParticleHandler getParticleHandler() {
         GameEngine.LOGGER.warn("There are no particle in this implementation of scene! Did you mean to use AbstractGameScene?");
         return null;
     }
 
     @Override
-    public Camera getCamera(){
+    public Camera getCamera() {
         return camera;
+    }
+
+    @Override
+    public float getDeltaTime() {
+        return Time.getDeltaTime();
+    }
+
+    @Override
+    public void handleException(Exception exception) {
+        GameEngine.LOGGER.error(String.format("Exception Thrown inside %s", getClass().getName()), exception);
+        //End the Game...
+        gameHandler.exit();
     }
 }
 
 /**
  * INTERNAL USE ONLY
  */
-class BackgroundImage extends GeneralComponent{
+class BackgroundImage extends GeneralComponent {
 
-    private Sprite sprite;
+    private final Sprite sprite;
 
-    public BackgroundImage(Texture texture, GameHandler handler){
+    public BackgroundImage(Texture texture, GameHandler handler) {
         sprite = new Sprite(texture, new Vector2(0, 0), new Vector2(handler.getWindow().getWidth(), handler.getWindow().getHeight()));
         this.add(sprite);
     }
 
     @Override
-    public void init(HUD hud, GameHandler handler) {
-        pollInit(hud, handler);
+    public void init(UserInterface userInterface, GameHandler handler) {
+        pollInit(userInterface, handler);
     }
 
     @Override
-    public void render(Vector2 relative, HUD hud, GameHandler handler){
-        pollRender(relative, hud, handler);
+    public void render(Vector2 relative, UserInterface userInterface, GameHandler handler) {
+        pollRender(relative, userInterface, handler);
+        sprite.scale = new Vector2(handler.getWindow().getWidth(), handler.getWindow().getHeight());
     }
 
     @Override
-    public void cleanup(GameHandler handler){
+    public void cleanup(GameHandler handler) {
         sprite.cleanup(handler);
     }
+
 }

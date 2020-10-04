@@ -9,10 +9,16 @@ import java.nio.IntBuffer;
  */
 public interface MeshLayout {
     FloatBuffer getVertex();
+
     FloatBuffer getTextCoords();
+
     FloatBuffer getOverlayCoords();
+
     IntBuffer getHasOverlay();
+
     FloatBuffer getNormals();
+
     IntBuffer getIndices();
+
     int getVertexLength();
 }

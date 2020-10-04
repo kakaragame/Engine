@@ -5,20 +5,25 @@ import org.joml.Vector3f;
 import org.joml.Vector4f;
 import org.kakara.engine.Camera;
 import org.kakara.engine.GameHandler;
-import org.kakara.engine.gui.Window;
-import org.kakara.engine.item.*;
-import org.kakara.engine.item.mesh.IMesh;
-import org.kakara.engine.item.mesh.InstancedMesh;
-import org.kakara.engine.item.mesh.Mesh;
-import org.kakara.engine.item.particles.ParticleEmitter;
+import org.kakara.engine.gameitems.GameItem;
+import org.kakara.engine.gameitems.MeshGameItem;
+import org.kakara.engine.gameitems.Texture;
+import org.kakara.engine.gameitems.mesh.IMesh;
+import org.kakara.engine.gameitems.mesh.InstancedMesh;
+import org.kakara.engine.gameitems.mesh.Mesh;
+import org.kakara.engine.gameitems.particles.ParticleEmitter;
 import org.kakara.engine.lighting.*;
 import org.kakara.engine.math.Vector3;
+import org.kakara.engine.render.culling.FrustumCullingFilter;
 import org.kakara.engine.renderobjects.RenderChunk;
+import org.kakara.engine.renderobjects.mesh.RenderMesh;
 import org.kakara.engine.scene.AbstractGameScene;
 import org.kakara.engine.scene.Scene;
 import org.kakara.engine.ui.objectcanvas.UIObject;
 import org.kakara.engine.utils.Utils;
+import org.kakara.engine.window.Window;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -31,11 +36,13 @@ import static org.lwjgl.opengl.GL30.glBindFramebuffer;
  * Handles the rendering pipeline of the game.
  */
 public class Renderer {
-    private Transformation transformation;
+    private final Transformation transformation;
+    private final FrustumCullingFilter frustumFilter;
 
     public Renderer() {
         transformation = new Transformation();
         specularPower = 10f;
+        frustumFilter = new FrustumCullingFilter();
     }
 
     private Shader shaderProgram;
@@ -90,6 +97,7 @@ public class Renderer {
         transformation.updateProjectionMatrix(FOV, window.getWidth(), window.getHeight(), Z_NEAR, Z_FAR);
         scene.getCamera().updateViewMatrix();
 
+        frustumFilter.updateFrustum(transformation.getProjectionMatrix(), camera.getViewMatrix());
 
         renderScene(window, camera, scene);
         renderChunk(window, camera, scene, false);
@@ -103,10 +111,13 @@ public class Renderer {
      *
      * @param window  The window of the current game.
      * @param objects The list of objects.
+     * @param isAuto  If the engine will scale the objects automatically.
      */
-    public void renderHUD(Window window, List<UIObject> objects) {
+    public void renderHUD(Window window, List<UIObject> objects, boolean isAuto) {
         hudShaderProgram.bind();
-        Matrix4f orthoProjection = transformation.buildOrtho(0, window.initalWidth, window.initalHeight, 0);
+        int width = isAuto ? window.initalWidth : window.getWidth();
+        int height = isAuto ? window.initalHeight : window.getHeight();
+        Matrix4f orthoProjection = transformation.buildOrtho(0, width, height, 0);
         for (UIObject object : objects) {
             IMesh mesh = object.getMesh();
             hudShaderProgram.setUniform("ortho", orthoProjection);
@@ -149,9 +160,24 @@ public class Renderer {
 
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, ags.getTextureAtlas().getTexture().getId());
-        glDisable(GL_CULL_FACE);
+
+        // TODO one day reimplement occlusion culling.
+        //doOcclusionTest(renderChunks, chunkShaderProgram, viewMatrix, lightViewMatrix);
+
         for (RenderChunk renderChunk : renderChunks) {
             if (renderChunk == null) continue;
+            if (renderChunk.getBlockCount() < 1) continue;
+
+            if (!frustumFilter.testRenderObject(renderChunk.getPosition(), 16, 16, 16))
+                continue;
+            RenderMesh mesh = renderChunk.getRenderMesh();
+            if (mesh == null || mesh.getQuery() == null)
+                continue;
+            int i = mesh.getQuery().pollPreviousResult();
+
+            if (i == GL_FALSE)
+                continue;
+
             Matrix4f modelMatrix = transformation.buildModelMatrix(renderChunk);
 
             if (!depthMap) {
@@ -163,15 +189,52 @@ public class Renderer {
             Matrix4f modelLightViewMatrix = transformation.buildModelLightViewMatrix(modelMatrix, lightViewMatrix);
             chunkShaderProgram.setUniform("modelLightViewMatrix", modelLightViewMatrix);
 
+
             renderChunk.render();
         }
-        glEnable(GL_CULL_FACE);
 
 
         glBindTexture(GL_TEXTURE_2D, 0);
 
 
         chunkShaderProgram.unbind();
+    }
+
+    /**
+     * Test the queries to see if they are culled.
+     *
+     * @param chunks             Render Chunks.
+     * @param chunkShaderProgram The ShaderProgram for the chunk
+     * @param viewMatrix         The view matrix.
+     * @param lightViewMatrix    The lightViewMatrix
+     */
+    private void doOcclusionTest(List<RenderChunk> chunks, Shader chunkShaderProgram, Matrix4f viewMatrix, Matrix4f lightViewMatrix) {
+        if (chunks == null || chunks.isEmpty() || chunks.get(0).getRenderMesh() == null) return;
+        if (chunks.get(0).getRenderMesh().getQuery() == null) return;
+        glColorMask(false, false, false, false);
+        glDepthMask(false);
+        for (RenderChunk chunk : new ArrayList<>(chunks)) {
+            // If the chunk is out of the frustum then don't bother testing.
+            if (!frustumFilter.testRenderObject(chunk.getPosition(), 16, 16, 16))
+                continue;
+            RenderMesh mesh = chunk.getRenderMesh();
+            if (mesh == null) continue;
+            if (mesh.getQuery() != null) {
+                // Calculate the Matrix for the chunk so it is tested in the right spot
+                Matrix4f modelMatrix = transformation.buildModelMatrix(chunk);
+                Matrix4f modelViewMatrix = transformation.buildModelViewMatrix(modelMatrix, viewMatrix);
+                chunkShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+                Matrix4f modelLightViewMatrix = transformation.buildModelLightViewMatrix(modelMatrix, lightViewMatrix);
+                chunkShaderProgram.setUniform("modelLightViewMatrix", modelLightViewMatrix);
+
+                // Do the query
+                mesh.getQuery().start();
+                mesh.render();
+                mesh.getQuery().end();
+            }
+        }
+        glColorMask(true, true, true, true);
+        glDepthMask(true);
     }
 
     /**
@@ -221,29 +284,26 @@ public class Renderer {
         Map<IMesh, List<GameItem>> mapMeshes = scene.getItemHandler().getNonInstancedMeshMap();
         for (IMesh mesh : mapMeshes.keySet()) {
             if (!depthMap) {
-                if(mesh.getMaterial().isPresent())
+                if (mesh.getMaterial().isPresent())
                     shader.setUniform("material", mesh.getMaterial().get());
                 glActiveTexture(GL_TEXTURE2);
                 glBindTexture(GL_TEXTURE_2D, shadowMap.getDepthMapTexture().getId());
             }
 
-            mesh.renderList(mapMeshes.get(mesh), (GameItem gameItem) -> {
-                        MeshGameItem meshGameItem = ((MeshGameItem) gameItem);
-                        if (meshGameItem.isVisible()) {
-                            Matrix4f modelMatrix = transformation.buildModelMatrix(gameItem);
-                            if (!depthMap) {
-                                Matrix4f modelViewMatrix = transformation.buildModelViewMatrix(modelMatrix, viewMatrix);
-                                shaderProgram.setUniform("modelViewNonInstancedMatrix", modelViewMatrix);
-                            }
-                            Matrix4f modelLightViewMatrix = transformation.buildModelLightViewMatrix(modelMatrix, lightViewMatrix);
-                            shaderProgram.setUniform("modelLightViewNonInstancedMatrix", modelLightViewMatrix);
-                            // Render every mesh (some game items can have more than one)
-                            for (IMesh m : meshGameItem.getMeshes()) {
-                                m.render();
-                            }
-                        }
-                    }
-            );
+            mesh.renderList(mapMeshes.get(mesh), frustumFilter, (GameItem gameItem) -> {
+                MeshGameItem meshGameItem = ((MeshGameItem) gameItem);
+                Matrix4f modelMatrix = transformation.buildModelMatrix(gameItem);
+                if (!depthMap) {
+                    Matrix4f modelViewMatrix = transformation.buildModelViewMatrix(modelMatrix, viewMatrix);
+                    shaderProgram.setUniform("modelViewNonInstancedMatrix", modelViewMatrix);
+                }
+                Matrix4f modelLightViewMatrix = transformation.buildModelLightViewMatrix(modelMatrix, lightViewMatrix);
+                shaderProgram.setUniform("modelLightViewNonInstancedMatrix", modelLightViewMatrix);
+                // Render every mesh (some game items can have more than one)
+                for (IMesh m : meshGameItem.getMeshes()) {
+                    m.render();
+                }
+            });
         }
     }
 
@@ -413,7 +473,7 @@ public class Renderer {
             particleShaderProgram.setUniform("numCols", text.getNumCols());
             particleShaderProgram.setUniform("numRows", text.getNumRows());
 
-            mesh.renderList((emitter.getParticles()), (GameItem gameItem) -> {
+            mesh.renderList((emitter.getParticles()), frustumFilter, (GameItem gameItem) -> {
                         int col = gameItem.getTextPos() % text.getNumCols();
                         int row = gameItem.getTextPos() / text.getNumCols();
                         float textXOffset = (float) col / text.getNumCols();
@@ -614,5 +674,14 @@ public class Renderer {
      */
     public Transformation getTransformation() {
         return transformation;
+    }
+
+    /**
+     * Get the FrustumCullingFilter for the Renderer.
+     *
+     * @return The Frustum Culling Filter.
+     */
+    public FrustumCullingFilter getFrustumFilter() {
+        return frustumFilter;
     }
 }

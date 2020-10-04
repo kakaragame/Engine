@@ -10,8 +10,8 @@ import java.nio.ByteBuffer;
  * <p>See {@link JarResource} for the jar code.</p>
  */
 public class FileResource implements Resource {
-    private URL url;
-    private String path;
+    private final URL url;
+    private final String path;
 
     public FileResource(URL url, String path) {
         this.url = url;

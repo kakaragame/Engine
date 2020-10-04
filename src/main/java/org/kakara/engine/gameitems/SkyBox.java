@@ -1,0 +1,53 @@
+package org.kakara.engine.gameitems;
+
+import org.kakara.engine.GameHandler;
+import org.kakara.engine.engine.CubeData;
+import org.kakara.engine.gameitems.mesh.Mesh;
+import org.kakara.engine.models.StaticModelLoader;
+
+/**
+ * Handles the skybox
+ */
+public class SkyBox extends MeshGameItem {
+
+    /**
+     * Create the skybox
+     *
+     * @param skyBoxTexture  The texture to be used for the skybox
+     * @param useUniqueModel If the skybox uses the same texture layout as cube (false) or if it uses the skybox texture layout (true).
+     */
+    public SkyBox(Texture skyBoxTexture, boolean useUniqueModel) {
+        super();
+        try{
+            GameHandler gm = GameHandler.getInstance();
+            if (useUniqueModel) {
+                Mesh[] skyBoxMesh = StaticModelLoader.load(gm.getResourceManager().getResource("skybox.obj"), "/player", gm.getSceneManager().getCurrentScene(),
+                        gm.getResourceManager());
+                for (Mesh m : skyBoxMesh) {
+                    m.setMaterial(new Material(skyBoxTexture, 0f));
+                }
+
+                setMeshes(skyBoxMesh);
+                setScale(100);
+            } else {
+                Mesh skyBoxMesh = new Mesh(CubeData.skyboxVertex, CubeData.texture, CubeData.normal, CubeData.indices);
+                skyBoxMesh.setMaterial(new Material(skyBoxTexture, 0f));
+                setMesh(skyBoxMesh);
+            }
+            setPosition(0, 0, 0);
+        }catch(Exception ex){
+            throw new RuntimeException("Error: unable to load skybox object!");
+        }
+    }
+
+    /**
+     * Change the current texture of the skybox
+     *
+     * @param tx The texture to change to.
+     */
+    public void setTexture(Texture tx) {
+        this.getMesh().getMaterial().ifPresent(mat -> mat.getTexture().cleanup());
+        ((Mesh) this.getMesh()).setMaterial(new Material(tx, 0f));
+    }
+
+}

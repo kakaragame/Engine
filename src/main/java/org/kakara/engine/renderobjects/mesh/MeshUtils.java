@@ -14,6 +14,7 @@ import java.util.List;
 
 /**
  * A utility class that handles methods that all render meshes need.
+ *
  * @since 1.0-Pre2
  */
 public class MeshUtils {
@@ -33,11 +34,11 @@ public class MeshUtils {
         List<Integer> hasOverlay = new ArrayList<>();
         int count = 0;
         for (RenderBlock rb : renderBlocks) {
-            int initial = positions.size()/3;
+            int initial = positions.size() / 3;
             rb.getVertexFromFaces(positions);
             rb.getTextureFromFaces(texCoords, textureAtlas);
             rb.getOverlayFromFaces(overlayCoords, textureAtlas);
-            hasOverlay.addAll(Collections.nCopies((positions.size()/3 - initial), rb.getOverlay() == null ? 0 : 1));
+            hasOverlay.addAll(Collections.nCopies((positions.size() / 3 - initial), rb.getOverlay() == null ? 0 : 1));
             rb.getNormalsFromFaces(normals);
             rb.getIndicesFromFaces(indicies, count);
             count += rb.getVisibleFaces().size() * 4;

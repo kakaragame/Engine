@@ -3,6 +3,7 @@ package org.kakara.engine.renderobjects.mesh;
 import org.jetbrains.annotations.Nullable;
 import org.kakara.engine.GameEngine;
 import org.kakara.engine.GameHandler;
+import org.kakara.engine.render.culling.RenderQuery;
 import org.kakara.engine.renderobjects.ChunkHandler;
 import org.kakara.engine.renderobjects.RenderBlock;
 import org.kakara.engine.renderobjects.RenderChunk;
@@ -20,34 +21,40 @@ import java.util.concurrent.CompletableFuture;
 import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.*;
+import static org.lwjgl.opengl.GL33.GL_ANY_SAMPLES_PASSED;
 
 /**
  * This calculates the data for the Mesh on a different thread.
+ *
  * @since 1.0-Pre2
  */
 public class AsyncMesh implements RenderMesh {
 
-    protected int vaoId;
     protected final List<Integer> vboIdList;
+    protected int vaoId;
     private int vertexCount;
     private boolean finished;
+
+    private RenderQuery query;
 
     /**
      * Create a render mesh
      *
-     * @param blocks       The list of render blocks
      * @param renderChunk  renderchunk
      * @param textureAtlas The texture atlas to use
      * @param future       The completable future that is to be completed once the generation is complete.
      */
-    public AsyncMesh(List<RenderBlock> blocks, RenderChunk renderChunk, TextureAtlas textureAtlas, @Nullable CompletableFuture<AsyncMesh> future) {
+    public AsyncMesh(RenderChunk renderChunk, TextureAtlas textureAtlas, @Nullable CompletableFuture<AsyncMesh> future) {
         vboIdList = new ArrayList<>();
         AsyncMesh instance = this;
 
-        GameHandler.getInstance().getGameEngine().addQueueItem(() -> vaoId = glGenVertexArrays());
+        GameHandler.getInstance().getGameEngine().addQueueItem(() -> {
+            vaoId = glGenVertexArrays();
+            query = new RenderQuery(GL_ANY_SAMPLES_PASSED);
+        });
 
         ChunkHandler.EXECUTORS.submit(() -> {
-            List<RenderBlock> renderBlocks = renderChunk.calculateVisibleBlocks(blocks);
+            List<RenderBlock> renderBlocks = renderChunk.calculateVisibleBlocks();
             MeshLayout layout = null;
             try {
                 layout = MeshUtils.setupLayout(renderBlocks, textureAtlas);
@@ -125,9 +132,9 @@ public class AsyncMesh implements RenderMesh {
                             MemoryUtil.memFree(finalLayout.getNormals());
                         if (finalLayout.getIndices() != null)
                             MemoryUtil.memFree(finalLayout.getIndices());
-                        if(finalLayout.getOverlayCoords() != null)
+                        if (finalLayout.getOverlayCoords() != null)
                             MemoryUtil.memFree(finalLayout.getOverlayCoords());
-                        if(finalLayout.getHasOverlay() != null)
+                        if (finalLayout.getHasOverlay() != null)
                             MemoryUtil.memFree(finalLayout.getHasOverlay());
                     }
                     if (future != null)
@@ -189,6 +196,7 @@ public class AsyncMesh implements RenderMesh {
 
         glBindVertexArray(0);
         glDeleteVertexArrays(vaoId);
+        query.delete();
     }
 
     @Override
@@ -197,9 +205,9 @@ public class AsyncMesh implements RenderMesh {
         List<Integer> hasOverlay = new ArrayList<>();
 
         for (RenderBlock rb : blocks) {
-            int initial = overlayCoords.size()/2;
+            int initial = overlayCoords.size() / 2;
             rb.getOverlayFromFaces(overlayCoords, textureAtlas);
-            hasOverlay.addAll(Collections.nCopies((overlayCoords.size()/2 - initial), rb.getOverlay() == null ? 0 : 1));
+            hasOverlay.addAll(Collections.nCopies((overlayCoords.size() / 2 - initial), rb.getOverlay() == null ? 0 : 1));
         }
 
         FloatBuffer overlayCoordsBuffer = MemoryUtil.memAllocFloat(overlayCoords.size());
@@ -212,8 +220,8 @@ public class AsyncMesh implements RenderMesh {
             hasOverlayBuffer.put(f);
         hasOverlayBuffer.flip();
 
-        if(Thread.currentThread() == GameEngine.currentThread){
-            try{
+        if (Thread.currentThread() == GameEngine.currentThread) {
+            try {
                 glBindVertexArray(vaoId);
                 int pid = vboIdList.get(3);
                 glBindBuffer(GL_ARRAY_BUFFER, pid);
@@ -227,13 +235,13 @@ public class AsyncMesh implements RenderMesh {
 
                 glBindBuffer(GL_ARRAY_BUFFER, 0);
                 glBindVertexArray(0);
-            }finally {
+            } finally {
                 MemoryUtil.memFree(overlayCoordsBuffer);
                 MemoryUtil.memFree(hasOverlayBuffer);
             }
-        }else{
+        } else {
             GameHandler.getInstance().getGameEngine().addQueueItem(() -> {
-                try{
+                try {
                     glBindVertexArray(vaoId);
                     int pid = vboIdList.get(3);
                     glBindBuffer(GL_ARRAY_BUFFER, pid);
@@ -247,12 +255,17 @@ public class AsyncMesh implements RenderMesh {
 
                     glBindBuffer(GL_ARRAY_BUFFER, 0);
                     glBindVertexArray(0);
-                }finally {
+                } finally {
                     MemoryUtil.memFree(overlayCoordsBuffer);
                     MemoryUtil.memFree(hasOverlayBuffer);
                 }
             });
         }
+    }
+
+    @Override
+    public RenderQuery getQuery() {
+        return query;
     }
 
 

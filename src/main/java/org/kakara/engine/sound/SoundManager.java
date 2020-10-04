@@ -13,7 +13,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.lwjgl.openal.AL10.alDistanceModel;
 import static org.lwjgl.openal.ALC10.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
@@ -24,11 +23,11 @@ import static org.lwjgl.system.MemoryUtil.NULL;
  */
 public class SoundManager {
 
+    private final List<SoundBuffer> soundBufferList = new ArrayList<>();
+    private final Map<String, SoundSource> soundSourceMap = new HashMap<>();
     private long device;
     private long context;
     private SoundListener listener;
-    private final List<SoundBuffer> soundBufferList = new ArrayList<>();
-    private final Map<String, SoundSource> soundSourceMap = new HashMap<>();
 
     /**
      * Load the sound player device.

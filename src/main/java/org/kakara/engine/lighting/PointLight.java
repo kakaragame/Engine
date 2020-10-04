@@ -16,8 +16,9 @@ public class PointLight implements Comparable<PointLight> {
 
     /**
      * Create a point light
-     * @param color The color of the light
-     * @param position The position of the light
+     *
+     * @param color     The color of the light
+     * @param position  The position of the light
      * @param intensity The intensity of the light.
      */
     public PointLight(LightColor color, Vector3 position, float intensity) {
@@ -39,6 +40,7 @@ public class PointLight implements Comparable<PointLight> {
 
     /**
      * Get the light color of the light
+     *
      * @return The color.
      */
     public LightColor getColor() {
@@ -47,6 +49,7 @@ public class PointLight implements Comparable<PointLight> {
 
     /**
      * Set the color of the light.
+     *
      * @param color The color of the light.
      */
     public void setColor(LightColor color) {
@@ -55,16 +58,18 @@ public class PointLight implements Comparable<PointLight> {
 
     /**
      * Set the color of the light
+     *
      * @param r Red (0-255)
      * @param g Green (0-255)
      * @param b Blue (0-255)
      */
-    public void setColor(int r, int g, int b){
+    public void setColor(int r, int g, int b) {
         this.color = new LightColor(r, g, b);
     }
 
     /**
      * Get the position of the light
+     *
      * @return The position
      */
     public Vector3 getPosition() {
@@ -73,6 +78,7 @@ public class PointLight implements Comparable<PointLight> {
 
     /**
      * Set the position of the light
+     *
      * @param position The position
      */
     public void setPosition(Vector3 position) {
@@ -81,16 +87,18 @@ public class PointLight implements Comparable<PointLight> {
 
     /**
      * Set the position of the light.
+     *
      * @param x X pos
      * @param y Y pos
      * @param z Z pos
      */
-    public void setPosition(float x, float y, float z){
+    public void setPosition(float x, float y, float z) {
         this.position = new Vector3(x, y, z);
     }
 
     /**
      * Get the intensity of the light
+     *
      * @return The intensity
      */
     public float getIntensity() {
@@ -99,6 +107,7 @@ public class PointLight implements Comparable<PointLight> {
 
     /**
      * Set the intensity of the light
+     *
      * @param intensity The intensity
      */
     public void setIntensity(float intensity) {
@@ -107,6 +116,7 @@ public class PointLight implements Comparable<PointLight> {
 
     /**
      * Get the attenuation of the light
+     *
      * @return The attenuation
      */
     public Attenuation getAttenuation() {
@@ -115,6 +125,7 @@ public class PointLight implements Comparable<PointLight> {
 
     /**
      * Set the attenuation of the light
+     *
      * @param attenuation The attenuation.
      */
     public void setAttenuation(Attenuation attenuation) {
@@ -130,38 +141,38 @@ public class PointLight implements Comparable<PointLight> {
     /**
      * Handles the Attenuation information of the light.
      */
-    public static class Attenuation{
+    public static class Attenuation {
         private float constant;
         private float linear;
         private float exponent;
 
-        public Attenuation(float constant, float linear, float exponent){
+        public Attenuation(float constant, float linear, float exponent) {
             this.constant = constant;
             this.linear = linear;
             this.exponent = exponent;
         }
 
-        public float getConstant(){
-            return  constant;
+        public float getConstant() {
+            return constant;
         }
 
-        public void setConstant(float constant){
+        public void setConstant(float constant) {
             this.constant = constant;
         }
 
-        public float getLinear(){
+        public float getLinear() {
             return linear;
         }
 
-        public void setLinear(float linear){
+        public void setLinear(float linear) {
             this.linear = linear;
         }
 
-        public float getExponent(){
+        public float getExponent() {
             return exponent;
         }
 
-        public void setExponent(float exponent){
+        public void setExponent(float exponent) {
             this.exponent = exponent;
         }
     }
