@@ -23,7 +23,8 @@ import java.util.Stack;
 /**
  * Debug Canvas for debugging only.
  *
- * TODO Remove this class from builds.
+ * @deprecated Will be removed in next version.
+ * TODO remove this.
  */
 public class DebugCanvas implements UICanvas {
 
