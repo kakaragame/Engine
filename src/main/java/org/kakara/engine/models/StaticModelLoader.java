@@ -11,6 +11,7 @@ import org.kakara.engine.resources.JarResource;
 import org.kakara.engine.resources.Resource;
 import org.kakara.engine.resources.ResourceManager;
 import org.kakara.engine.scene.Scene;
+import org.kakara.engine.utils.RGBA;
 import org.kakara.engine.utils.Utils;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.assimp.*;
@@ -128,11 +129,11 @@ public class StaticModelLoader {
 //                    colour);
 
 
-        Vector4f specular = Material.DEFAULT_COLOUR;
+        RGBA specular = Material.DEFAULT_COLOUR;
         int result = aiGetMaterialColor(aiMaterial, AI_MATKEY_COLOR_SPECULAR, aiTextureType_NONE, 0,
                 colour);
         if (result == 0) {
-            specular = new Vector4f(colour.r(), colour.g(), colour.b(), colour.a());
+            specular = new RGBA(colour.r(), colour.g(), colour.b(), colour.a());
         }
 
         Material material = new Material(specular, 1.0f);

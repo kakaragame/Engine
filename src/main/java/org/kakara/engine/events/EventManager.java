@@ -36,14 +36,13 @@ public class EventManager {
      */
     public void fireHandler(Object eventInstance) {
         for (Object event : handlers) {
-            Object obj = event;
-            List<Method> mtd = new ArrayList<>(Arrays.asList(obj.getClass().getDeclaredMethods()));
+            List<Method> mtd = new ArrayList<>(Arrays.asList(event.getClass().getDeclaredMethods()));
             for (Method msd : mtd) {
                 if (msd.getParameterCount() != 1) continue;
                 if (msd.isAnnotationPresent(EventHandler.class)) {
                     if (msd.getParameters()[0].getType().isInstance(eventInstance)) {
                         try {
-                            msd.invoke(obj, eventInstance);
+                            msd.invoke(event, eventInstance);
                         } catch (IllegalAccessException | InvocationTargetException ex) {
                             GameEngine.LOGGER.error("Cannot fire event specified : " + eventInstance.getClass().getName(), ex);
                         }
@@ -52,14 +51,5 @@ public class EventManager {
             }
         }
 
-    }
-
-    /**
-     * Used to debug the game.
-     *
-     * @deprecated Not to be used in final release.
-     */
-    public void debug() {
-        GameEngine.LOGGER.debug(handlers.toString());
     }
 }

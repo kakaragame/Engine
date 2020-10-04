@@ -137,7 +137,7 @@ public class ItemHandler {
     }
 
     /**
-     * Update features within gameitems.
+     * Update features within game items.
      * <p>Internal use only.</p>
      */
     public void update() {

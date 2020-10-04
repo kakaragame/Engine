@@ -5,6 +5,8 @@ import org.kakara.engine.engine.CubeData;
 import org.kakara.engine.exceptions.InvalidThreadException;
 import org.kakara.engine.gameitems.GameItem;
 import org.kakara.engine.gameitems.Material;
+import org.kakara.engine.gameitems.MeshGameItem;
+import org.kakara.engine.render.culling.FrustumCullingFilter;
 import org.kakara.engine.renderobjects.RenderTexture;
 import org.kakara.engine.renderobjects.TextureAtlas;
 import org.kakara.engine.renderobjects.renderlayouts.Layout;
@@ -60,8 +62,6 @@ public class AtlasMesh implements IMesh {
         textCords.addAll(layout.getTextureCords().getRight(texture.getXOffset(), texture.getYOffset(), atlas.getNumberOfRows()));
         textCords.addAll(layout.getTextureCords().getLeft(texture.getXOffset(), texture.getYOffset(), atlas.getNumberOfRows()));
 
-        System.out.println(textCords.size());
-
         float[] data = new float[textCords.size()];
         int i = 0;
         for (Float f : textCords) {
@@ -73,6 +73,7 @@ public class AtlasMesh implements IMesh {
         FloatBuffer textCoordsBuffer = null;
         FloatBuffer vecNormalsBuffer = null;
         IntBuffer indicesBuffer = null;
+
         try {
 
             if (indices != null)
@@ -206,11 +207,19 @@ public class AtlasMesh implements IMesh {
      * @param consumer  The consumer
      */
     @Override
-    public void renderList(List<GameItem> gameItems, Consumer<GameItem> consumer) {
+    public void renderList(List<GameItem> gameItems, FrustumCullingFilter filter, Consumer<GameItem> consumer) {
         initRender();
         for (GameItem gameItem : gameItems) {
-            consumer.accept(gameItem);
-            glDrawElements(GL_TRIANGLES, getVertexCount(), GL_UNSIGNED_INT, 0);
+            if(gameItem instanceof MeshGameItem){
+                MeshGameItem meshGameItem = (MeshGameItem) gameItem;
+                if (meshGameItem.isVisible() && filter.testCollider(meshGameItem.getCollider())) {
+                    consumer.accept(gameItem);
+                    glDrawElements(GL_TRIANGLES, getVertexCount(), GL_UNSIGNED_INT, 0);
+                }
+            }else{
+                consumer.accept(gameItem);
+                glDrawElements(GL_TRIANGLES, getVertexCount(), GL_UNSIGNED_INT, 0);
+            }
         }
         endRender();
     }

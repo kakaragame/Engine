@@ -6,11 +6,13 @@ import org.joml.Vector3f;
 import org.kakara.engine.GameHandler;
 import org.kakara.engine.events.EventHandler;
 import org.kakara.engine.events.event.MouseClickEvent;
+import org.kakara.engine.events.event.MouseReleaseEvent;
 import org.kakara.engine.math.Vector3;
 import org.kakara.engine.scene.Scene;
 import org.kakara.engine.ui.UICanvas;
 import org.kakara.engine.ui.UserInterface;
 import org.kakara.engine.ui.events.UIClickEvent;
+import org.kakara.engine.ui.events.UIReleaseEvent;
 import org.kakara.engine.ui.objectcanvas.UIObject;
 import org.kakara.engine.window.Window;
 
@@ -104,6 +106,14 @@ public class ObjectCanvas implements UICanvas {
         UIObject obj = selectGameItems(scene, new Vector3(evt.getMousePosition().x, evt.getMousePosition().y, 0));
         if (obj != null) {
             obj.triggerEvent(UIClickEvent.class, obj.getPosition(), evt.getMouseClickType());
+        }
+    }
+
+    @EventHandler
+    public void onRelease(MouseReleaseEvent evt){
+        UIObject obj = selectGameItems(scene, new Vector3(evt.getMousePosition().x, evt.getMousePosition().y, 0));
+        if (obj != null) {
+            obj.triggerEvent(UIReleaseEvent.class, obj.getPosition(), evt.getMouseClickType());
         }
     }
 

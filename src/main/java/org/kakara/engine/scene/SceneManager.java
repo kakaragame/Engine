@@ -36,10 +36,18 @@ public class SceneManager {
             ex.printStackTrace();
         }
         // Continue loading the next scene.
-        scene.work();
+        try {
+            scene.work();
+        } catch (Exception e) {
+            scene.handleException(e);
+        }
         try {
             handler.getGameEngine().resetRender();
-            scene.loadGraphics(handler);
+            try {
+                scene.loadGraphics(handler);
+            } catch (Exception e) {
+                scene.handleException(e);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -49,7 +57,11 @@ public class SceneManager {
      * Render the current scene.
      */
     public void renderCurrentScene() {
-        currentScene.render();
+        try {
+            currentScene.render();
+        } catch (Exception e) {
+            currentScene.handleException(e);
+        }
     }
 
     /**

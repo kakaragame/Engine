@@ -76,6 +76,9 @@ public interface Scene {
      */
     @Nullable ParticleHandler getParticleHandler();
 
+
+    void handleException(Exception exception);
+
     /**
      *
      */

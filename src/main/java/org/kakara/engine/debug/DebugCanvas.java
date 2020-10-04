@@ -20,6 +20,11 @@ import org.kakara.engine.weather.Fog;
 import java.util.List;
 import java.util.Stack;
 
+/**
+ * Debug Canvas for debugging only.
+ *
+ * TODO Remove this class from builds.
+ */
 public class DebugCanvas implements UICanvas {
 
     private final ImGuiImplGlfw imGuiGlfw = new ImGuiImplGlfw();

@@ -5,7 +5,9 @@ import org.kakara.engine.GameEngine;
 import org.kakara.engine.exceptions.InvalidThreadException;
 import org.kakara.engine.gameitems.GameItem;
 import org.kakara.engine.gameitems.Material;
+import org.kakara.engine.gameitems.MeshGameItem;
 import org.kakara.engine.gameitems.Texture;
+import org.kakara.engine.render.culling.FrustumCullingFilter;
 import org.lwjgl.system.MemoryUtil;
 
 import java.nio.FloatBuffer;
@@ -188,7 +190,7 @@ public class Mesh implements IMesh {
      * @return The material
      */
     public Optional<Material> getMaterial() {
-        return Optional.of(material);
+        return Optional.ofNullable(material);
     }
 
     /**
@@ -261,14 +263,16 @@ public class Mesh implements IMesh {
 //            glBindTexture(GL_TEXTURE_2D, specMap.getId());
 //        }
 
-        int[] textures = {GL_TEXTURE3, GL_TEXTURE4, GL_TEXTURE5, GL_TEXTURE6, GL_TEXTURE7};
-        for (int i = 0; i < material.getOverlayTextures().size(); i++) {
-            Texture ovText = material != null ? material.getOverlayTextures().get(i) : null;
-            if (ovText != null) {
-                // Activate i texture bank
-                glActiveTexture(textures[i]);
-                // Bind the texture
-                glBindTexture(GL_TEXTURE_2D, ovText.getId());
+        if(material != null){
+            int[] textures = {GL_TEXTURE3, GL_TEXTURE4, GL_TEXTURE5, GL_TEXTURE6, GL_TEXTURE7};
+            for (int i = 0; i < material.getOverlayTextures().size(); i++) {
+                Texture ovText = material != null ? material.getOverlayTextures().get(i) : null;
+                if (ovText != null) {
+                    // Activate i texture bank
+                    glActiveTexture(textures[i]);
+                    // Bind the texture
+                    glBindTexture(GL_TEXTURE_2D, ovText.getId());
+                }
             }
         }
 
@@ -320,11 +324,19 @@ public class Mesh implements IMesh {
      * @param consumer  The consumer
      */
     @Override
-    public void renderList(List<GameItem> gameItems, Consumer<GameItem> consumer) {
+    public void renderList(List<GameItem> gameItems, FrustumCullingFilter filter, Consumer<GameItem> consumer) {
         initRender();
         for (GameItem gameItem : gameItems) {
-            consumer.accept(gameItem);
-            glDrawElements(GL_TRIANGLES, getVertexCount(), GL_UNSIGNED_INT, 0);
+            if(gameItem instanceof MeshGameItem){
+                MeshGameItem meshGameItem = (MeshGameItem) gameItem;
+                if (meshGameItem.isVisible() && filter.testCollider(meshGameItem.getCollider())) {
+                    consumer.accept(gameItem);
+                    glDrawElements(GL_TRIANGLES, getVertexCount(), GL_UNSIGNED_INT, 0);
+                }
+            }else{
+                consumer.accept(gameItem);
+                glDrawElements(GL_TRIANGLES, getVertexCount(), GL_UNSIGNED_INT, 0);
+            }
         }
         endRender();
     }
@@ -341,33 +353,16 @@ public class Mesh implements IMesh {
             glDeleteBuffers(vboId);
         }
 
-        // Delete the texture
-        Texture texture = material.getTexture();
-        if (texture != null) {
-            texture.cleanup();
-        }
+        if(material != null){
+            // Delete the texture
+            Texture texture = material.getTexture();
+            if (texture != null) {
+                texture.cleanup();
+            }
 
-        for (int i = 0; i < material.getOverlayTextures().size(); i++) {
-            material.getOverlayTextures().get(i).cleanup();
-        }
-
-        // Delete the VAO
-        glBindVertexArray(0);
-        glDeleteVertexArrays(vaoId);
-    }
-
-    /**
-     * Delete buffers
-     *
-     * @deprecated Use {@link #cleanUp()}
-     */
-    public void deleteBuffers() {
-        glDisableVertexAttribArray(0);
-
-        // Delete the VBOs
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-        for (int vboId : vboIdList) {
-            glDeleteBuffers(vboId);
+            for (int i = 0; i < material.getOverlayTextures().size(); i++) {
+                material.getOverlayTextures().get(i).cleanup();
+            }
         }
 
         // Delete the VAO

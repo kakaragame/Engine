@@ -329,9 +329,9 @@ public class Shader {
      * @param material    The material uniform.
      */
     public void setUniform(String uniformName, Material material) {
-        setUniform(uniformName + ".ambient", material.getAmbientColor());
-        setUniform(uniformName + ".diffuse", material.getDiffuseColor());
-        setUniform(uniformName + ".specular", material.getSpecularColor());
+        setUniform(uniformName + ".ambient", material.getAmbientColor().getVectorColor());
+        setUniform(uniformName + ".diffuse", material.getDiffuseColor().getVectorColor());
+        setUniform(uniformName + ".specular", material.getSpecularColor().getVectorColor());
         setUniform(uniformName + ".hasTexture", material.isTextured() ? 1 : 0);
         setUniform(uniformName + ".reflectance", material.getReflectance());
 

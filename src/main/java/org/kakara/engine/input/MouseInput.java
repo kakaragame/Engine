@@ -3,6 +3,7 @@ package org.kakara.engine.input;
 import org.joml.Vector2d;
 import org.kakara.engine.GameHandler;
 import org.kakara.engine.events.event.MouseClickEvent;
+import org.kakara.engine.events.event.MouseReleaseEvent;
 import org.kakara.engine.input.callbacks.ScrollInput;
 import org.kakara.engine.math.Vector2;
 import org.kakara.engine.window.Window;
@@ -62,25 +63,18 @@ public class MouseInput {
             inWindow = entered;
         });
         glfwSetMouseButtonCallback(window.getWindowHandler(), (windowHandle, button, action, mode) -> {
-            leftButtonPressed = button == GLFW_MOUSE_BUTTON_1 && action == GLFW_PRESS;
-            rightButtonPressed = button == GLFW_MOUSE_BUTTON_2 && action == GLFW_PRESS;
-            if (action != GLFW_PRESS) return;
-            MouseClickType mct;
-            switch (button) {
-                case GLFW_MOUSE_BUTTON_1:
-                    mct = MouseClickType.LEFT_CLICK;
-                    break;
-                case GLFW_MOUSE_BUTTON_2:
-                    mct = MouseClickType.RIGHT_CLICK;
-                    break;
-                case GLFW_MOUSE_BUTTON_3:
-                    mct = MouseClickType.MIDDLE_CLICK;
-                    break;
-                default:
-                    mct = MouseClickType.OTHER;
-                    break;
+            if(action == GLFW_PRESS){
+                leftButtonPressed = button == GLFW_MOUSE_BUTTON_1;
+                rightButtonPressed = button == GLFW_MOUSE_BUTTON_2;
+
+                MouseClickType mct = MouseClickType.valueOf(button);
+                handler.getSceneManager().getCurrentScene().getEventManager().fireHandler(new MouseClickEvent(this.getPosition(), mct));
+            }else if(action == GLFW_RELEASE){
+                leftButtonPressed = !leftButtonPressed || button != GLFW_MOUSE_BUTTON_1;
+                rightButtonPressed = !rightButtonPressed || button != GLFW_MOUSE_BUTTON_2;
+                MouseClickType mct = MouseClickType.valueOf(button);
+                handler.getSceneManager().getCurrentScene().getEventManager().fireHandler(new MouseReleaseEvent(this.getPosition(), mct));
             }
-            handler.getSceneManager().getCurrentScene().getEventManager().fireHandler(new MouseClickEvent(this.getPosition(), mct));
         });
         // This handles when the user uses the scrollbar.
         glfwSetScrollCallback(window.getWindowHandler(), (windowHandle, xoffset, yoffset) -> {

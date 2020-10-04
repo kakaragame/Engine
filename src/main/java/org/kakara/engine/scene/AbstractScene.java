@@ -260,5 +260,10 @@ public abstract class AbstractScene implements Scene {
         this.fog = fog;
     }
 
-
+    @Override
+    public void handleException(Exception exception) {
+        GameEngine.LOGGER.error(String.format("Exception Thrown inside %s", getClass().getName()), exception);
+        //End the Game...
+        gameHandler.exit();
+    }
 }

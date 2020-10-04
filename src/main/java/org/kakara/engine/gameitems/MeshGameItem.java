@@ -18,6 +18,7 @@ import java.util.UUID;
  * The most basic implementation of the GameItem.
  * <p>
  * This is a Collidable GameItem. That uses meshes to create an item
+ * </p>
  */
 public class MeshGameItem implements GameItem {
     private final UUID uuid;
@@ -32,9 +33,9 @@ public class MeshGameItem implements GameItem {
     /*
         The physics section.
      */
-    private Vector3 position;
-    private Vector3 velocity;
-    private Vector3 acceleration;
+    private final Vector3 position;
+    private final Vector3 velocity;
+    private final Vector3 acceleration;
     private Collider collider;
 
     /*
@@ -98,7 +99,7 @@ public class MeshGameItem implements GameItem {
      * @return The instance of the Game Item.
      */
     public GameItem setPosition(Vector3 position) {
-        this.position = position;
+        this.position.set(position);
         //features.forEach(feature -> feature.updateValues(this));
         return this;
     }
@@ -466,7 +467,7 @@ public class MeshGameItem implements GameItem {
 
     @Override
     public void setVelocity(Vector3 velocity) {
-        this.velocity = velocity;
+        this.velocity.set(velocity);
     }
 
     @Override
@@ -481,7 +482,7 @@ public class MeshGameItem implements GameItem {
 
     @Override
     public void setAcceleration(Vector3 acceleration) {
-        this.acceleration = acceleration;
+        this.acceleration.set(acceleration);
     }
 
     @Override
