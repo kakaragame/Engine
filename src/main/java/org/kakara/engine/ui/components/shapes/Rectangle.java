@@ -3,7 +3,9 @@ package org.kakara.engine.ui.components.shapes;
 import org.kakara.engine.GameHandler;
 import org.kakara.engine.events.EventHandler;
 import org.kakara.engine.events.event.MouseClickEvent;
+import org.kakara.engine.events.event.MouseReleaseEvent;
 import org.kakara.engine.math.Vector2;
+import org.kakara.engine.ui.events.UIReleaseEvent;
 import org.kakara.engine.utils.RGBA;
 import org.kakara.engine.ui.UserInterface;
 import org.kakara.engine.ui.components.GeneralComponent;
@@ -68,6 +70,13 @@ public class Rectangle extends GeneralComponent {
     public void onClick(MouseClickEvent evt) {
         if (UserInterface.isColliding(getTruePosition(), getTrueScale(), new Vector2(evt.getMousePosition()))) {
             triggerEvent(UIClickEvent.class, new Vector2(evt.getMousePosition()), evt.getMouseClickType());
+        }
+    }
+
+    @EventHandler
+    public void onRelease(MouseReleaseEvent evt){
+        if(UserInterface.isColliding(getTruePosition(), scale, new Vector2(evt.getMousePosition()))){
+            triggerEvent(UIReleaseEvent.class, position, evt.getMouseClickType());
         }
     }
 
