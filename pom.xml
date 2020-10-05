@@ -99,7 +99,7 @@
                 <dependency>
                     <groupId>io.imgui.java</groupId>
                     <artifactId>${lwjgl.natives}</artifactId>
-                    <version>1.77-0.17</version>
+                    <version>1.77-0.17.2</version>
                 </dependency>
             </dependencies>
         </profile>
