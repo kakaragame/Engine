@@ -47,15 +47,14 @@ public abstract class GeneralComponent implements Component {
         isVisible = true;
     }
 
-    /**
-     * Add an event to a component.
-     *
-     * @param uae   An anonymous class.
-     * @param clazz The event interface that the event is for.
-     */
     @Override
-    public void addUActionEvent(UActionEvent uae, Class<? extends UActionEvent> clazz) {
+    public void addUActionEvent(Class<? extends UActionEvent> clazz, UActionEvent uae) {
         events.put(uae, clazz);
+    }
+
+    @Override
+    public Map<UActionEvent, Class<? extends UActionEvent>> getEvents() {
+        return events;
     }
 
     @Override

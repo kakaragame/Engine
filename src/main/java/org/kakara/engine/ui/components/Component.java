@@ -4,6 +4,7 @@ import org.jetbrains.annotations.Nullable;
 import org.kakara.engine.GameHandler;
 import org.kakara.engine.math.Vector2;
 import org.kakara.engine.properties.Tagable;
+import org.kakara.engine.ui.UIListener;
 import org.kakara.engine.ui.UserInterface;
 import org.kakara.engine.ui.constraints.Constraint;
 import org.kakara.engine.ui.events.UActionEvent;
@@ -13,8 +14,16 @@ import java.util.List;
 /**
  * The main UI component
  */
-public interface Component extends Tagable {
-    void addUActionEvent(UActionEvent uae, Class<? extends UActionEvent> clazz);
+public interface Component extends Tagable, UIListener {
+    @Deprecated
+    /**
+     * Please use {@link UIListener#addUActionEvent(Class, UActionEvent)}
+     * Deprecated to use a consistent method
+     * @deprecated
+     */
+    default void addUActionEvent(UActionEvent uae, Class<? extends UActionEvent> clazz) {
+        addUActionEvent(clazz, uae);
+    }
 
     /**
      * Add a child component to this component
