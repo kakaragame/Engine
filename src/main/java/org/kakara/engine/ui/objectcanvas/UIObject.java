@@ -5,6 +5,7 @@ import org.kakara.engine.gameitems.mesh.IMesh;
 import org.kakara.engine.math.Vector2;
 import org.kakara.engine.math.Vector3;
 import org.kakara.engine.properties.Tagable;
+import org.kakara.engine.ui.UIListener;
 import org.kakara.engine.ui.events.UActionEvent;
 
 import java.lang.reflect.InvocationTargetException;
@@ -18,7 +19,7 @@ import java.util.Map;
  *
  * @since 1.0-Pre1
  */
-public class UIObject implements Tagable {
+public class UIObject implements Tagable, UIListener {
     private final Vector2 position;
     private final Quaternionf rotation;
     private final IMesh mesh;
@@ -174,6 +175,11 @@ public class UIObject implements Tagable {
         } catch (InvocationTargetException | IllegalAccessException ex) {
             ex.printStackTrace();
         }
+    }
+
+    @Override
+    public Map<UActionEvent, Class<? extends UActionEvent>> getEvents() {
+        return events;
     }
 
     /**
