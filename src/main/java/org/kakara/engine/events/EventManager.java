@@ -39,15 +39,15 @@ public class EventManager {
             List<Method> mtd = new ArrayList<>(Arrays.asList(event.getClass().getDeclaredMethods()));
             for (Method msd : mtd) {
                 if (msd.getParameterCount() != 1) continue;
-                if (msd.isAnnotationPresent(EventHandler.class)) {
-                    if (msd.getParameters()[0].getType().isInstance(eventInstance)) {
-                        try {
-                            msd.invoke(event, eventInstance);
-                        } catch (IllegalAccessException | InvocationTargetException ex) {
-                            GameEngine.LOGGER.error("Cannot fire event specified : " + eventInstance.getClass().getName(), ex);
-                        }
+                if (!msd.isAnnotationPresent(EventHandler.class)) continue;
+                if (msd.getParameters()[0].getType().isInstance(eventInstance)) {
+                    try {
+                        msd.invoke(event, eventInstance);
+                    } catch (IllegalAccessException | InvocationTargetException ex) {
+                        GameEngine.LOGGER.error("Cannot fire event specified : " + eventInstance.getClass().getName(), ex);
                     }
                 }
+
             }
         }
 

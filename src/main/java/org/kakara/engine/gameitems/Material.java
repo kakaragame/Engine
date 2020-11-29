@@ -206,7 +206,7 @@ public class Material {
      * Set the list of overlay textures.
      * <p>A maximum of 5 textures are allowed. IllegalArgumentException is thrown if over 5.</p>
      *
-     * @param overlayTextures The list
+     * @param overlayTextures The list of overlaw textures.
      */
     public void setOverlayTextures(List<Texture> overlayTextures) {
         if (overlayTextures.size() >= 5)

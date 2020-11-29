@@ -21,7 +21,7 @@ public class BoxCollider implements Collider {
     private Vector3 offset;
     private boolean relative;
     private boolean isTrigger;
-    private boolean resolveable;
+    private boolean resolvable;
 
     private Vector3 lastPosition;
     private Collidable item;
@@ -43,7 +43,7 @@ public class BoxCollider implements Collider {
         this.relative = relative;
         this.offset = new Vector3(0, 0, 0);
         this.isTrigger = false;
-        this.resolveable = true;
+        this.resolvable = true;
         this.triggerEvents = new ArrayList<>();
     }
 
@@ -64,12 +64,12 @@ public class BoxCollider implements Collider {
 
     @Override
     public boolean isResolvable() {
-        return resolveable;
+        return resolvable;
     }
 
     @Override
     public void setResolvable(boolean value) {
-        this.resolveable = value;
+        this.resolvable = value;
     }
 
     /**
@@ -139,7 +139,7 @@ public class BoxCollider implements Collider {
 
     @Override
     public void updateX() {
-        if (isTrigger || !resolveable) return;
+        if (isTrigger || !resolvable) return;
         this.lastPosition = item.getColPosition().clone();
 
         CollisionManager cm = handler.getCurrentScene().getCollisionManager();
@@ -159,7 +159,7 @@ public class BoxCollider implements Collider {
 
     @Override
     public void updateY() {
-        if (isTrigger || !resolveable) return;
+        if (isTrigger || !resolvable) return;
         this.lastPosition = item.getColPosition().clone();
 
         CollisionManager cm = handler.getCurrentScene().getCollisionManager();
@@ -179,7 +179,7 @@ public class BoxCollider implements Collider {
 
     @Override
     public void updateZ() {
-        if (isTrigger || !resolveable) return;
+        if (isTrigger || !resolvable) return;
         this.lastPosition = item.getColPosition().clone();
 
         CollisionManager cm = handler.getCurrentScene().getCollisionManager();
@@ -254,7 +254,7 @@ public class BoxCollider implements Collider {
 
     @Override
     public void update() {
-        if (isTrigger || !resolveable) return;
+        if (isTrigger || !resolvable) return;
 
         CollisionManager cm = handler.getCurrentScene().getCollisionManager();
         assert cm != null;

@@ -16,7 +16,7 @@ import java.util.function.Predicate;
 public class ObjectBoxCollider implements Collider {
 
     private boolean isTrigger;
-    private boolean resolveable;
+    private boolean resolvable;
 
     private final boolean isInAir = false;
     private float timeInAir;
@@ -28,9 +28,9 @@ public class ObjectBoxCollider implements Collider {
     private Predicate<Collidable> predicate = gameItem -> false;
     private final List<OnTriggerEnter> triggerEvents;
 
-    public ObjectBoxCollider(boolean isTrigger, boolean resolveable) {
+    public ObjectBoxCollider(boolean isTrigger, boolean resolvable) {
         this.isTrigger = isTrigger;
-        this.resolveable = resolveable;
+        this.resolvable = resolvable;
         this.handler = GameHandler.getInstance();
         this.triggerEvents = new ArrayList<>();
     }
@@ -61,7 +61,7 @@ public class ObjectBoxCollider implements Collider {
 
     @Override
     public void updateX() {
-        if (isTrigger || !resolveable) return;
+        if (isTrigger || !resolvable) return;
         this.deltaPosition = item.getColPosition().clone().subtract(this.lastPosition);
         this.lastPosition = item.getColPosition().clone();
 
@@ -82,7 +82,7 @@ public class ObjectBoxCollider implements Collider {
 
     @Override
     public void updateY() {
-        if (isTrigger || !resolveable) return;
+        if (isTrigger || !resolvable) return;
         this.deltaPosition = item.getColPosition().clone().subtract(this.lastPosition);
         this.lastPosition = item.getColPosition().clone();
 
@@ -103,7 +103,7 @@ public class ObjectBoxCollider implements Collider {
 
     @Override
     public void updateZ() {
-        if (isTrigger || !resolveable) return;
+        if (isTrigger || !resolvable) return;
         this.deltaPosition = item.getColPosition().clone().subtract(this.lastPosition);
         this.lastPosition = item.getColPosition().clone();
 
@@ -152,17 +152,17 @@ public class ObjectBoxCollider implements Collider {
 
     @Override
     public boolean isResolvable() {
-        return resolveable;
+        return resolvable;
     }
 
     @Override
     public void setResolvable(boolean value) {
-        this.resolveable = value;
+        this.resolvable = value;
     }
 
     @Override
     public void update() {
-        if (isTrigger || !resolveable) return;
+        if (isTrigger || !resolvable) return;
         this.lastPosition = item.getColPosition().clone();
 
         CollisionManager cm = handler.getCurrentScene().getCollisionManager();

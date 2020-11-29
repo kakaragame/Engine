@@ -26,6 +26,7 @@ import org.kakara.engine.window.Window;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL13.*;
@@ -54,19 +55,17 @@ public class Renderer {
 
     private ShadowMap shadowMap;
 
+    // FOV information.
     private static final float FOV = (float) Math.toRadians(60.0f);
-
     private static final float Z_NEAR = 0.01f;
-
     private static final float Z_FAR = 1000.0f;
-
     private final float specularPower;
 
 
     /**
      * Setup shaders
      *
-     * @throws Exception
+     * @throws Exception An exception is thrown when the setup of the shaders fail.
      */
     public void init() throws Exception {
         shadowMap = new ShadowMap();
@@ -81,7 +80,7 @@ public class Renderer {
     }
 
     /**
-     * Render the game
+     * Render the game.
      *
      * @param window The window
      * @param camera The camera
@@ -150,7 +149,8 @@ public class Renderer {
         Matrix4f viewMatrix = scene.getCamera().getViewMatrix();
 
         // Render Lighting
-        LightHandler lh = GameHandler.getInstance().getSceneManager().getCurrentScene().getLightHandler();
+        LightHandler lh = ags.getLightHandler();
+        assert lh != null;
         renderLights(viewMatrix, lh.getAmbientLight().toVector(), lh.getDisplayPointLights(), lh.getDisplaySpotLights(), lh.getDirectionalLight(), chunkShaderProgram);
 
         chunkShaderProgram.setUniform("fog", scene.getFog());
@@ -170,13 +170,13 @@ public class Renderer {
 
             if (!frustumFilter.testRenderObject(renderChunk.getPosition(), 16, 16, 16))
                 continue;
-            RenderMesh mesh = renderChunk.getRenderMesh();
-            if (mesh == null || mesh.getQuery() == null)
-                continue;
-            int i = mesh.getQuery().pollPreviousResult();
-
-            if (i == GL_FALSE)
-                continue;
+//            RenderMesh mesh = renderChunk.getRenderMesh();
+//            if (mesh == null || mesh.getQuery() == null)
+//                continue;
+//            int i = mesh.getQuery().pollPreviousResult();
+//
+//            if (i == GL_FALSE)
+//                continue;
 
             Matrix4f modelMatrix = transformation.buildModelMatrix(renderChunk);
 
@@ -207,6 +207,7 @@ public class Renderer {
      * @param chunkShaderProgram The ShaderProgram for the chunk
      * @param viewMatrix         The view matrix.
      * @param lightViewMatrix    The lightViewMatrix
+     * @deprecated Unused
      */
     private void doOcclusionTest(List<RenderChunk> chunks, Shader chunkShaderProgram, Matrix4f viewMatrix, Matrix4f lightViewMatrix) {
         if (chunks == null || chunks.isEmpty() || chunks.get(0).getRenderMesh() == null) return;
@@ -256,6 +257,7 @@ public class Renderer {
 
         // Render Lighting
         LightHandler lh = GameHandler.getInstance().getSceneManager().getCurrentScene().getLightHandler();
+        assert lh != null;
         renderLights(viewMatrix, lh.getAmbientLight().toVector(), lh.getDisplayPointLights(), lh.getDisplaySpotLights(), lh.getDirectionalLight(), shaderProgram);
 
         shaderProgram.setUniform("fog", scene.getFog());
@@ -334,9 +336,9 @@ public class Renderer {
     /**
      * Render the depth map.
      *
-     * @param window
-     * @param camera
-     * @param scene
+     * @param window The window.
+     * @param camera The camera.
+     * @param scene  The scene.
      */
     private void renderDepthMap(Window window, Camera camera, Scene scene) {
         glBindFramebuffer(GL_FRAMEBUFFER, shadowMap.getDepthMapFBO());
@@ -345,7 +347,7 @@ public class Renderer {
 
         depthShaderProgram.bind();
 
-        DirectionalLight light = scene.getLightHandler().getDirectionalLight();
+        DirectionalLight light = Objects.requireNonNull(scene.getLightHandler()).getDirectionalLight();
         Vector3f lightDirection = light.getDirection().toJoml();
 
         float lightAngleX = (float) Math.toDegrees(Math.acos(lightDirection.z));

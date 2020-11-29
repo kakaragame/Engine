@@ -22,11 +22,10 @@ import java.util.function.Consumer;
 import static org.lwjgl.opengl.GL30.*;
 
 /**
- * The normal mesh for game items.
- * If a ton of objects use this mesh, than consider changing to {@link InstancedMesh}.
+ * This mesh uses a Texture Atlas to obtain its texture.
  * <p>This class is <b>not</b> thread safe.</p>
  *
- * @since 1.0-Pre1
+ * @since 1.0-Pre3
  */
 public class AtlasMesh implements IMesh {
 
