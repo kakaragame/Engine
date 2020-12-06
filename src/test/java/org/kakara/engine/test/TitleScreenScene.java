@@ -5,17 +5,15 @@ import org.kakara.engine.engine.CubeData;
 import org.kakara.engine.gameitems.Material;
 import org.kakara.engine.gameitems.Texture;
 import org.kakara.engine.gameitems.mesh.Mesh;
-import org.kakara.engine.input.MouseClickType;
 import org.kakara.engine.math.Vector2;
 import org.kakara.engine.resources.ResourceManager;
 import org.kakara.engine.scene.AbstractMenuScene;
-import org.kakara.engine.test.components.LoadingBar;
-import org.kakara.engine.test.components.LoadingBarCompleteEvent;
 import org.kakara.engine.ui.components.shapes.Rectangle;
-import org.kakara.engine.ui.components.text.BoundedColoredText;
 import org.kakara.engine.ui.components.text.BoundedText;
 import org.kakara.engine.ui.components.text.Text;
-import org.kakara.engine.ui.constraints.*;
+import org.kakara.engine.ui.constraints.ComponentSide;
+import org.kakara.engine.ui.constraints.GeneralConstraint;
+import org.kakara.engine.ui.constraints.HorizontalCenterConstraint;
 import org.kakara.engine.ui.events.UIClickEvent;
 import org.kakara.engine.ui.events.UIHoverEnterEvent;
 import org.kakara.engine.ui.events.UIHoverLeaveEvent;
@@ -36,19 +34,17 @@ import java.io.InputStream;
  * Example of how to make a proper UI Scene.
  */
 public class TitleScreenScene extends AbstractMenuScene {
-    UIObject obj;
     private final KakaraTest kakaraTest;
     private Text fps;
-    private LoadingBar lb;
+    private UIObject obj;
 
-    public TitleScreenScene(GameHandler gameHandler, KakaraTest kakaraTest) throws Exception {
+    public TitleScreenScene(GameHandler gameHandler, KakaraTest kakaraTest) {
         super(gameHandler);
         this.kakaraTest = kakaraTest;
     }
 
     @Override
     public void work() {
-
     }
 
     @Override
@@ -61,180 +57,148 @@ public class TitleScreenScene extends AbstractMenuScene {
         // Make a new font. It is (fontName, the resource for the font)
         Font roboto = new Font("Roboto-Regular", resourceManager.getResource("Roboto-Regular.ttf"), this);
 
-        // Create a new componentcanvas. This holds the components for the UI.
+        // Create a new component canvas. This holds the components for the UI.
         ComponentCanvas cc = new ComponentCanvas(this);
 
-        // Make some more text for the title screen.
-        Text title = new Text("Kakara", roboto);
-        title.setSize(200);
-        title.setLineWidth(500);
-        title.setPosition(0, 200);
-        title.addConstraint(new HorizontalCenterConstraint());
+        /*
 
-        // Create the play button from a rectangle.
+            Create the title for the menu.
+
+         */
+        Text title = new Text("Kakara Engine", roboto);
+        title.setSize(200);
+        title.setLineWidth(handler.getWindow().getWidth());
+        title.setPosition(0, 200);
+        title.setTextAlign(TextAlign.CENTER);
+        cc.add(title);
+
+        /*
+
+            Create the play button for the menu.
+
+         */
         Rectangle playButton = new Rectangle(new Vector2(0, gameHandler.getWindow().getHeight() - 300),
                 new Vector2(100, 100));
-        playButton.addConstraint(new GridConstraint(4, 7, 1, 4));
         playButton.setColor(new RGBA(0, 150, 150, 1));
+        playButton.addConstraint(new HorizontalCenterConstraint(-100));
         // Setup the events for the button.
-        playButton.addUActionEvent(new UIHoverEnterEvent() {
-            @Override
-            public void OnHudHoverEnter(Vector2 location) {
-                playButton.setColor(new RGBA(0, 150, 200, 1));
+        playButton.addUActionEvent(UIHoverEnterEvent.class, (UIHoverEnterEvent) location -> playButton.setColor(new RGBA(0, 150, 200, 1)));
+        playButton.addUActionEvent(UIHoverLeaveEvent.class, (UIHoverLeaveEvent) location -> playButton.setColor(new RGBA(0, 150, 150, 1)));
+        playButton.addUActionEvent(UIClickEvent.class, (UIClickEvent) (location, clickType) -> {
+            if (!playButton.isVisible()) return;
+            try {
+                MainGameScene mgs = new MainGameScene(gameHandler, kakaraTest);
+                gameHandler.getSceneManager().setScene(mgs);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                System.out.println("Could not switch to the main scene!");
             }
-        }, UIHoverEnterEvent.class);
-        playButton.addUActionEvent(new UIHoverLeaveEvent() {
-            @Override
-            public void OnHudHoverLeave(Vector2 location) {
-                playButton.setColor(new RGBA(0, 150, 150, 1));
-            }
-        }, UIHoverLeaveEvent.class);
-        playButton.addUActionEvent(new UIClickEvent() {
-            @Override
-            public void OnHUDClick(Vector2 location, MouseClickType clickType) {
-                if (!playButton.isVisible()) return;
-                try {
-                    MainGameScene mgs = new MainGameScene(gameHandler, kakaraTest);
-                    gameHandler.getSceneManager().setScene(mgs);
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                    System.out.println("Could not switch to the main scene!");
-                }
-            }
-        }, UIClickEvent.class);
+        });
+
         Text txt = new Text("Play Game!", roboto);
-        txt.setPosition(0, playButton.scale.y / 2);
+        txt.setPosition(0, playButton.getScale().getY() / 2);
         txt.setTextAlign(TextAlign.CENTER);
-        txt.setLineWidth(playButton.scale.x);
+        txt.setLineWidth(playButton.getScale().getX());
         playButton.add(txt);
-        cc.add(title);
+
         cc.add(playButton);
 
-        // Custom Component
-        LoadingBar lb = new LoadingBar(new Vector2(300, 300), new Vector2(300, 30), roboto);
-        lb.addConstraint(new HorizontalCenterConstraint());
-        cc.add(lb);
-        this.lb = lb;
+        /*
 
-        this.lb.addUActionEvent(new LoadingBarCompleteEvent() {
-            @Override
-            public void LoadingBarCompleteEvent(float percent) {
-                System.out.println("hit 100%!");
-                lb.setPercent(0);
-            }
-        }, LoadingBarCompleteEvent.class);
+            Create the Popup Information Menu
 
-        //end
-
-        Rectangle popupMenu = new Rectangle(new Vector2(gameHandler.getWindow().getWidth() / 2 - 150, 100), new Vector2(300, 500));
+         */
+        Rectangle popupMenu = new Rectangle(new Vector2(0, 100), new Vector2(600, 500));
         popupMenu.setColor(new RGBA(181, 181, 181, 1));
         popupMenu.setVisible(false);
-        Text popupTitle = new Text("Popup Menu!", roboto);
-        popupTitle.setLineWidth(popupMenu.scale.x);
+        popupMenu.addConstraint(new HorizontalCenterConstraint());
+        Text popupTitle = new Text("The Kakara Engine!", roboto);
+        popupTitle.setLineWidth(popupMenu.getScale().getX());
         popupTitle.setPosition(0, 50);
         popupTitle.setSize(40);
         popupTitle.setTextAlign(TextAlign.CENTER);
         popupMenu.add(popupTitle);
 
-        Text popupText = new Text("This here is a very cool popup menu! A menu like this has a ton of uses! Maybe a pause menu?", roboto);
-        popupText.setLineWidth(popupMenu.scale.x);
-        popupText.setPosition(10, 150);
+        BoundedText popupText = new BoundedText("Welcome to the Kakara Game Engine!\n" +
+                "This demo is to demonstrate the functionality of the engine. Please click the play button to view" +
+                "to play the demo! Feel free to look through the demo code to see how this was made!", roboto);
+        popupText.setMaximumBound(new Vector2(600, 500));
+        popupText.setPosition(300, 150);
+        popupText.setLineHeight(5);
         popupText.setSize(25);
-        popupText.setTextAlign(TextAlign.LEFT);
+        popupText.setTextAlign(TextAlign.CENTER);
         popupMenu.add(popupText);
 
-        Rectangle popupClose = new Rectangle(new Vector2(popupMenu.getScale().x / 2 - 50, popupMenu.getScale().y - 100), new Vector2(100, 70));
+        Rectangle popupClose = new Rectangle(new Vector2(0, 0), new Vector2(100, 70));
         popupClose.setColor(new RGBA(0, 150, 150, 1));
+        popupClose.addConstraint(new HorizontalCenterConstraint());
+        popupClose.addConstraint(new GeneralConstraint(ComponentSide.BOTTOM, popupMenu, ComponentSide.BOTTOM, 100));
+
         Text popupCloseTxt = new Text("Close Menu!", roboto);
-        popupCloseTxt.setPosition(0, popupClose.scale.y / 2 - 10);
+        popupCloseTxt.setPosition(0, popupClose.getScale().getY() / 2 - 10);
         popupCloseTxt.setTextAlign(TextAlign.CENTER);
         popupCloseTxt.setSize(30);
-        popupCloseTxt.setLineWidth(popupClose.scale.x);
-        popupClose.add(popupCloseTxt);
+        popupCloseTxt.setLineWidth(popupClose.getScale().getX());
 
+        popupClose.add(popupCloseTxt);
         popupMenu.add(popupClose);
 
-        popupClose.addUActionEvent(new UIHoverEnterEvent() {
-            @Override
-            public void OnHudHoverEnter(Vector2 location) {
-                popupClose.setColor(new RGBA(0, 150, 200, 1));
-            }
-        }, UIHoverEnterEvent.class);
-        popupClose.addUActionEvent(new UIHoverLeaveEvent() {
-            @Override
-            public void OnHudHoverLeave(Vector2 location) {
-                popupClose.setColor(new RGBA(0, 150, 150, 1));
-            }
-        }, UIHoverLeaveEvent.class);
+        popupClose.addUActionEvent(UIHoverEnterEvent.class,
+                (UIHoverEnterEvent) location -> popupClose.setColor(new RGBA(0, 150, 200, 1)));
+        popupClose.addUActionEvent(UIHoverLeaveEvent.class, (UIHoverLeaveEvent) location -> popupClose.setColor(new RGBA(0, 150, 150, 1)));
 
-        Rectangle openMenuButton = new Rectangle(new Vector2(gameHandler.getWindow().getWidth() / 2 + 100, gameHandler.getWindow().getHeight() - 300),
+        /*
+
+            Create the open menu button.
+
+         */
+        Rectangle openMenuButton = new Rectangle(new Vector2(gameHandler.getWindow().getWidth() / 2f + 100, gameHandler.getWindow().getHeight() - 300),
                 new Vector2(100, 100));
         openMenuButton.setColor(new RGBA(0, 150, 150, 1));
-        openMenuButton.addConstraint(new GridConstraint(4, 7, 2, 4));
-        openMenuButton.addUActionEvent(new UIHoverEnterEvent() {
-            @Override
-            public void OnHudHoverEnter(Vector2 location) {
-                openMenuButton.setColor(new RGBA(0, 150, 200, 1));
-            }
-        }, UIHoverEnterEvent.class);
-        openMenuButton.addUActionEvent(new UIHoverLeaveEvent() {
-            @Override
-            public void OnHudHoverLeave(Vector2 location) {
-                openMenuButton.setColor(new RGBA(0, 150, 150, 1));
-            }
-        }, UIHoverLeaveEvent.class);
-        openMenuButton.addUActionEvent(new UIClickEvent() {
-            @Override
-            public void OnHUDClick(Vector2 location, MouseClickType clickType) {
-                popupMenu.setVisible(true);
-                openMenuButton.setVisible(false);
-                playButton.setVisible(false);
-            }
-        }, UIClickEvent.class);
-        Text openMenuTxt = new Text("Open Menu!", roboto);
-        openMenuTxt.setPosition(0, openMenuButton.scale.y / 2);
+        openMenuButton.addConstraint(new HorizontalCenterConstraint(100));
+        openMenuButton.addUActionEvent(UIHoverEnterEvent.class, (UIHoverEnterEvent) location -> openMenuButton.setColor(new RGBA(0, 150, 200, 1)));
+        openMenuButton.addUActionEvent(UIHoverLeaveEvent.class, (UIHoverLeaveEvent) location -> openMenuButton.setColor(new RGBA(0, 150, 150, 1)));
+        openMenuButton.addUActionEvent(UIClickEvent.class, (UIClickEvent) (location, clickType) -> {
+            popupMenu.setVisible(true);
+            openMenuButton.setVisible(false);
+            playButton.setVisible(false);
+        });
+
+        Text openMenuTxt = new Text("Open Info!", roboto);
+        openMenuTxt.setPosition(0, openMenuButton.getScale().getY() / 2f);
         openMenuTxt.setTextAlign(TextAlign.CENTER);
-        openMenuTxt.setLineWidth(openMenuButton.scale.x);
+        openMenuTxt.setLineWidth(openMenuButton.getScale().getX());
         openMenuButton.add(openMenuTxt);
         cc.add(openMenuButton);
 
-        popupClose.addUActionEvent(new UIClickEvent() {
-            @Override
-            public void OnHUDClick(Vector2 location, MouseClickType clickType) {
-                popupMenu.setVisible(false);
-                openMenuButton.setVisible(true);
-                playButton.setVisible(true);
-            }
-        }, UIClickEvent.class);
+        popupClose.addUActionEvent(UIClickEvent.class, (UIClickEvent) (location, clickType) -> {
+            popupMenu.setVisible(false);
+            openMenuButton.setVisible(true);
+            playButton.setVisible(true);
+        });
 
         cc.add(popupMenu);
 
+        // Create the FPS counter.
         Text fps = new Text("FPS: 000", roboto);
         fps.setPosition(20, 20);
         cc.add(fps);
         this.fps = fps;
 
-        BoundedText btxt = new BoundedText("This is a test. I really need to make this string super long and stuff just so you know!", roboto);
-        btxt.setPosition(300, 60);
-        btxt.setMaximumBound(new Vector2(350, 90));
-        btxt.addConstraint(new GeneralConstraint(ComponentSide.LEFT, playButton, ComponentSide.RIGHT, 0));
-//        btxt.addConstraint(new GeneralConstraint(ComponentSide.TOP, playButton, ComponentSide.TOP, 1));
-        btxt.addConstraint(new GeneralConstraint(ComponentSide.BOTTOM, null, ComponentSide.BOTTOM, 0));
-        cc.add(btxt);
+//        TODO This needs to be fixed in pre-4
+//        BoundedColoredText nTxt = new BoundedColoredText("{#5BE0D5}Yeet {#5BE06D} Am I right? {#F54FFFF}No you are not!{#ED4725}I really love this " +
+//                "stuff you know!sdfsdfsdffsdf{#F54FFFF}sddffdssfd{#F54FFFF}sfdsfd{#7e55e6}fdfsdsfdfs", roboto);
+//        nTxt.addConstraint(new HorizontalCenterConstraint());
+//        nTxt.addConstraint(new VerticalCenterConstraint(200));
+//        nTxt.setMaximumBound(new Vector2(400, 400));
+//        cc.add(nTxt);
 
-        title.setVisible(true);
+        /*
 
-        BoundedColoredText nTxt = new BoundedColoredText("{#5BE0D5}Yeet {#5BE06D} Am I right? {#F54FFFF}No you are not!{#ED4725}I really love this " +
-                "stuff you know!sdfsdfsdffsdf{#F54FFFF}sddffdssfd{#F54FFFF}sfdsfd{#7e55e6}fdfsdsfdfs", roboto);
-        nTxt.addConstraint(new HorizontalCenterConstraint());
-        nTxt.addConstraint(new VerticalCenterConstraint(200));
-        nTxt.setMaximumBound(new Vector2(400, 400));
-        cc.add(nTxt);
+            Create the Rotating Cube in the background.
 
-
-        // Make sure to add the component canvas to the hud!
-        add(cc);
-
+         */
+        // First a special object canvas is created.
         ObjectCanvas oc = new ObjectCanvas(this);
         Mesh m = new Mesh(CubeData.vertex, CubeData.texture, CubeData.normal, CubeData.indices);
         InputStream io = Texture.class.getResourceAsStream("/example_texture.png");
@@ -244,43 +208,32 @@ public class TitleScreenScene extends AbstractMenuScene {
         mt.addOverlayTexture(Utils.inputStreamToTexture(Texture.class.getResourceAsStream("/ovly2.png")));
         m.setMaterial(mt);
 
+        // The the actual cube is created.
         UIObject ui = new UIObject(m);
-        ui.setPosition((float) 200, (float) 200);
-        ui.setScale(100);
+        ui.setPosition(handler.getWindow().getWidth() / 2f, handler.getWindow().getHeight() / 2f);
+        ui.setScale(300);
         obj = ui;
         obj.getRotation().rotateX((float) Math.toRadians(40));
         obj.getRotation().rotateY((float) Math.toRadians(50));
-        obj.addUActionEvent(UIClickEvent.class, (UIClickEvent) (location, clickType) -> {
-            System.out.println("I got clicked!");
-        });
         oc.add(ui);
         add(oc);
 
-        ComponentCanvas ontop = new ComponentCanvas(this);
-        Rectangle on = new Rectangle();
-        on.setPosition(200, 200);
-        on.setScale(40, 40);
-        ontop.add(on);
-        add(ontop);
+        // The main canvas is added after the object canvas.
+        add(cc);
+
 
         setCurserStatus(true);
-
+        // Set the background of the menu.
         setBackground(Utils.inputStreamToTexture(Texture.class.getResourceAsStream("/oa.png")));
-
         getUserInterface().setAutoScale(false);
 
-//        add(new DebugCanvas());
     }
 
     @Override
     public void update(float interval) {
         fps.setText("FPS: " + Math.round(1 / Time.getDeltaTime()));
-
-        lb.setPercent(lb.getPercent() + Time.getDeltaTime());
-
-//        obj.setPosition(gameHandler.getMouseInput().getCurrentPosition().x, gameHandler.getMouseInput().getCurrentPosition().y);
-
-//        getCamera().setPosition(getCamera().getPosition().add(1,0,0));
-//        System.out.println(getCamera().getPosition());
+        // Update the object rotation.
+        obj.getRotation().rotateY(0.03f);
+        obj.getRotation().rotateX(0.03f);
     }
 }
