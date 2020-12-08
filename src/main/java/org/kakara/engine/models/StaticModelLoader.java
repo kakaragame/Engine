@@ -15,6 +15,7 @@ import org.kakara.engine.utils.Utils;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.assimp.*;
 
+import java.net.MalformedURLException;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
@@ -111,7 +112,7 @@ public class StaticModelLoader {
     }
 
     protected static void processMaterial(AIMaterial aiMaterial, List<Material> materials,
-                                          String texturesDir, ResourceManager resourceManager, Scene scene) throws Exception {
+                                          String texturesDir, ResourceManager resourceManager, Scene scene) throws MalformedURLException {
         // File.separator. File.pathSeparator is for the PATH variable.
         String separator = "/";
         AIColor4D colour = AIColor4D.create();
@@ -120,17 +121,13 @@ public class StaticModelLoader {
                 null, null, null, null, null);
         String textPath = path.dataString();
         Texture texture = null;
-        if (textPath != null && textPath.length() > 0) {
+        if (textPath.length() > 0) {
             TextureCache textCache = TextureCache.getInstance(resourceManager);
             String textureFile = texturesDir + separator + textPath;
             textureFile = textureFile.replace("//", separator);
             GameEngine.LOGGER.debug(String.format("Getting Texture from %s", textureFile));
             texture = textCache.getTexture(textureFile, scene);
         }
-
-//            int result = aiGetMaterialColor(aiMaterial, AI_MATKEY_COLOR_AMBIENT, aiTextureType_NONE, 0,
-//                    colour);
-
 
         RGBA specular = Material.DEFAULT_COLOUR;
         int result = aiGetMaterialColor(aiMaterial, AI_MATKEY_COLOR_SPECULAR, aiTextureType_NONE, 0,
@@ -148,7 +145,7 @@ public class StaticModelLoader {
         List<Float> vertices = new ArrayList<>();
         List<Float> textures = new ArrayList<>();
         List<Float> normals = new ArrayList<>();
-        List<Integer> indices = new ArrayList();
+        List<Integer> indices = new ArrayList<>();
 
         processVertices(aiMesh, vertices);
         processNormals(aiMesh, normals);

@@ -100,7 +100,6 @@ public class MeshGameItem implements GameItem {
      */
     public GameItem setPosition(Vector3 position) {
         this.position.set(position);
-        //features.forEach(feature -> feature.updateValues(this));
         return this;
     }
 
@@ -320,8 +319,6 @@ public class MeshGameItem implements GameItem {
             for (IMesh mesh : meshes) {
                 mesh.render();
             }
-        } else {
-            System.out.println("Invisible");
         }
     }
 

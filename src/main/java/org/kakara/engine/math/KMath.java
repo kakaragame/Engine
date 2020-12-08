@@ -11,6 +11,8 @@ import java.math.RoundingMode;
  */
 public class KMath {
 
+    private KMath() {}
+
     /**
      * The maximum error a float could reasonably have. (Not to be used for exact calculations.) <br>
      * Use the following instead:
@@ -60,7 +62,7 @@ public class KMath {
      * @return The truncated float.
      */
     public static float truncate(float input, int places) {
-        BigDecimal bd = new BigDecimal(input).setScale(places, RoundingMode.DOWN).stripTrailingZeros();
+        BigDecimal bd = BigDecimal.valueOf(input).setScale(places, RoundingMode.DOWN).stripTrailingZeros();
         return bd.floatValue();
     }
 

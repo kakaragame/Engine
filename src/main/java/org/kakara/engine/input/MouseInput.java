@@ -59,9 +59,7 @@ public class MouseInput {
         glfwSetCursorPosCallback(window.getWindowHandler(), (windowHandle, xpos, ypos) -> {
 
         });
-        glfwSetCursorEnterCallback(window.getWindowHandler(), (windowHandle, entered) -> {
-            inWindow = entered;
-        });
+        glfwSetCursorEnterCallback(window.getWindowHandler(), (windowHandle, entered) -> inWindow = entered);
         glfwSetMouseButtonCallback(window.getWindowHandler(), (windowHandle, button, action, mode) -> {
             if(action == GLFW_PRESS){
                 leftButtonPressed = button == GLFW_MOUSE_BUTTON_1;
@@ -146,7 +144,6 @@ public class MouseInput {
      */
     public Vector2d getDeltaPosition() {
         return new Vector2d(currentPos.x - previousPos.x, currentPos.y - previousPos.y);
-//        return currentPos.min(previousPos);
     }
 
     /**

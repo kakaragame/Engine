@@ -2,6 +2,7 @@ package org.kakara.engine.ui.components;
 
 import org.jetbrains.annotations.Nullable;
 import org.kakara.engine.GameHandler;
+import org.kakara.engine.exceptions.ui.HierarchyException;
 import org.kakara.engine.math.Vector2;
 import org.kakara.engine.ui.UserInterface;
 import org.kakara.engine.ui.constraints.Constraint;
@@ -74,7 +75,7 @@ public abstract class GeneralComponent implements Component {
     @Override
     public void add(Component component) {
         if (component.getParent() != null)
-            throw new RuntimeException("Error: That UI component already has a parent!");
+            throw new HierarchyException("That UI component already has a parent!");
         this.components.add(component);
         component.setParent(this);
         if (init)
@@ -246,7 +247,7 @@ public abstract class GeneralComponent implements Component {
     @Override
     public void removeConstraint(Class<Constraint> constraintClass) {
         List<Constraint> props = constraints.stream().filter(prop -> prop.getClass() == constraintClass).collect(Collectors.toList());
-        if (props.size() > 0) {
+        if (!props.isEmpty()) {
             Constraint prop = props.get(0);
             prop.onRemove(this);
             constraints.remove(prop);

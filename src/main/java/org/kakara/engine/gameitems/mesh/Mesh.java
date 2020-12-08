@@ -49,7 +49,7 @@ public class Mesh implements IMesh {
      *                   So indices one will indicate position # 1 and texture # 1 and normal # 1.
      *                   See the code at {@link org.kakara.engine.engine.CubeData#texture} for an example.
      */
-    public Mesh(@NotNull float[] positions, @NotNull float[] textCoords, @NotNull float[] normals, @NotNull int[] indices) {
+    public Mesh(@NotNull float[] positions, @NotNull float[] textCoords, @NotNull float[] normals, int[] indices) {
         this(positions, textCoords, normals, indices, createEmptyIntArray(MAX_WEIGHTS * positions.length / 3, 0), createEmptyFloatArray(MAX_WEIGHTS * positions.length / 3, 0));
     }
 
@@ -61,7 +61,7 @@ public class Mesh implements IMesh {
      * @param jointIndices Not implemented
      * @param weights      Not implemented
      */
-    public Mesh(@NotNull float[] positions, @NotNull float[] textCoords, @NotNull float[] normals, @NotNull int[] indices, @NotNull int[] jointIndices, @NotNull float[] weights) {
+    public Mesh(@NotNull float[] positions, @NotNull float[] textCoords, @NotNull float[] normals, int[] indices, @NotNull int[] jointIndices, @NotNull float[] weights) {
         if (Thread.currentThread() != GameEngine.currentThread)
             throw new InvalidThreadException("This class can only be constructed on the main thread.");
 
@@ -79,7 +79,7 @@ public class Mesh implements IMesh {
             else {
                 vertexCount = positions.length / 3;
             }
-            vboIdList = new ArrayList();
+            vboIdList = new ArrayList<>();
 
             vaoId = glGenVertexArrays();
             glBindVertexArray(vaoId);
@@ -254,14 +254,6 @@ public class Mesh implements IMesh {
             // Bind the texture
             glBindTexture(GL_TEXTURE_2D, normalMap.getId());
         }
-
-//        Texture specMap = material != null ? material.getSpecularMap() : null;
-//        if (specMap != null) {
-//            // Activate third texture bank
-//            glActiveTexture(GL_TEXTURE2);
-//            // Bind the texture
-//            glBindTexture(GL_TEXTURE_2D, specMap.getId());
-//        }
 
         if(material != null){
             int[] textures = {GL_TEXTURE3, GL_TEXTURE4, GL_TEXTURE5, GL_TEXTURE6, GL_TEXTURE7};

@@ -3,6 +3,7 @@ package org.kakara.engine.gameitems;
 
 import org.apache.commons.lang3.SystemUtils;
 import org.jetbrains.annotations.NotNull;
+import org.kakara.engine.exceptions.GenericLoadException;
 import org.kakara.engine.resources.JarResource;
 import org.kakara.engine.resources.Resource;
 import org.kakara.engine.scene.Scene;
@@ -126,7 +127,7 @@ public class Texture {
 
             }
             if (decodedImage == null) {
-                throw new RuntimeException("Error: Cannot load specified image. " + stbi_failure_reason());
+                throw new GenericLoadException("Error: Cannot load specified image. " + stbi_failure_reason());
             }
             this.width = w.get();
             this.height = h.get();
@@ -178,7 +179,7 @@ public class Texture {
             ByteBuffer decodedImage = stbi_load_from_memory(imageData, w, h, avChannels, 4);
 
             if(decodedImage == null){
-                throw new RuntimeException("Error: Cannot load specified image. " + stbi_failure_reason());
+                throw new GenericLoadException("Error: Cannot load specified image. " + stbi_failure_reason());
             }
 
             this.width = w.get();
@@ -249,6 +250,7 @@ public class Texture {
      *
      * @deprecated This is now handled by the engine.
      */
+    @Deprecated
     public void bind() {
         glBindTexture(GL_TEXTURE_2D, id);
     }
