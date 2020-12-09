@@ -13,6 +13,9 @@
         <swt.version>4.6.1</swt.version>
         <joml.version>1.9.25</joml.version>
         <pngdecoder.version>1.0</pngdecoder.version>
+        <sonar.projectKey>kakaragame_Engine</sonar.projectKey>
+        <sonar.organization>kakaragame</sonar.organization>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
         <!--        <engine.classremoval>**/org/kakara/engine/debug/*.java</engine.classremoval>-->
     </properties>
     <distributionManagement>
