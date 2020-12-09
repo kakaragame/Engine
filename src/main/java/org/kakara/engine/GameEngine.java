@@ -20,7 +20,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class GameEngine implements Runnable {
     public static final Thread currentThread = Thread.currentThread();
     //WE will change this to the games logger in the impl.
-    public static Logger LOGGER = LoggerFactory.getLogger(GameEngine.class);
+    public static final Logger LOGGER = LoggerFactory.getLogger(GameEngine.class);
     public final int TARGET_FPS = 75;
     public final int TARGET_UPS = 30;
     private final Window window;
@@ -116,18 +116,25 @@ public class GameEngine implements Runnable {
             try {
                 Thread.sleep(1);
             } catch (InterruptedException ie) {
-                ie.printStackTrace();
+                LOGGER.error("An error has occurred when attempting to sleep the thread: ", ie);
+                Thread.currentThread().interrupt();
             }
         }
     }
 
+    /**
+     * Separate method to handle input.
+     * <p>
+     * This is currently not implemented.
+     */
     protected void input() {
+
     }
 
     /**
      * Updates for the game logic.
      *
-     * @param interval
+     * @param interval The interval.
      */
     protected void update(float interval) {
         gameHandler.update();
@@ -135,7 +142,6 @@ public class GameEngine implements Runnable {
             gameHandler.getSceneManager().getCurrentScene().getItemHandler().update();
         gameHandler.getSceneManager().getCurrentScene().update(interval);
         game.update();
-//        collide();
     }
 
     /**
@@ -191,14 +197,6 @@ public class GameEngine implements Runnable {
     }
 
     /**
-     * Handles collision updates.
-     */
-    protected void collide() {
-        if (!(gameHandler.getCurrentScene() instanceof AbstractScene)) return;
-
-    }
-
-    /**
      * Get the window for the game.
      *
      * @return The window
@@ -217,9 +215,9 @@ public class GameEngine implements Runnable {
     }
 
     /**
-     * Get the gamehandler for the engine
+     * Get the game handler for the engine
      *
-     * @return
+     * @return The game handler for the engine.
      */
     public GameHandler getGameHandler() {
         return gameHandler;
@@ -228,7 +226,7 @@ public class GameEngine implements Runnable {
     /**
      * Reset the render. (To be used when the scene is changed).
      *
-     * @throws Exception
+     * @throws Exception Throws an exception if the renderer cannot initialize.
      */
     public void resetRender() throws Exception {
         renderer = new Renderer();
@@ -243,7 +241,7 @@ public class GameEngine implements Runnable {
      */
     public void addQueueItem(Runnable run) {
         if (run == null)
-            throw new RuntimeException("NULL!!");
+            throw new IllegalArgumentException("A null runnable cannot be added to the list");
         mainThreadQueue.add(run);
     }
 

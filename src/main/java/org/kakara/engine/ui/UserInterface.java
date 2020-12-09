@@ -1,6 +1,7 @@
 package org.kakara.engine.ui;
 
 import org.kakara.engine.GameHandler;
+import org.kakara.engine.exceptions.InitializationException;
 import org.kakara.engine.math.Vector2;
 import org.kakara.engine.scene.Scene;
 import org.kakara.engine.ui.components.Component;
@@ -55,11 +56,11 @@ public class UserInterface {
     /**
      * Internal Use Only
      */
-    public void init(Window window) throws Exception {
+    public void init(Window window) throws InitializationException {
         this.vg = window.getOptions().isAntialiasing() ? nvgCreate(NVG_ANTIALIAS | NVG_STENCIL_STROKES) : nvgCreate(NVG_STENCIL_STROKES);
 
         if (this.vg == NULL) {
-            throw new Exception("Could not init hud");
+            throw new InitializationException("Could not initialize the user interface! Is the OpenGL context correct?");
         }
 
         for (UICanvas it : uiCanvas) {

@@ -99,7 +99,6 @@ public class AtlasMesh implements IMesh {
             vboIdList.add(vboId);
             textCoordsBuffer = MemoryUtil.memAllocFloat(data.length);
             textCoordsBuffer.put(data).flip();
-            System.out.println(CubeData.texture.length);
             glBindBuffer(GL_ARRAY_BUFFER, vboId);
             glBufferData(GL_ARRAY_BUFFER, textCoordsBuffer, GL_STATIC_DRAW);
             glVertexAttribPointer(1, 2, GL_FLOAT, false, 0, 0);

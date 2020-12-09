@@ -138,6 +138,14 @@ public class PointLight implements Comparable<PointLight> {
         return Math.round(KMath.distance(cameraPos, getPosition()) - KMath.distance(cameraPos, o.getPosition()));
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if(!(obj instanceof PointLight)) return false;
+        PointLight other = (PointLight) obj;
+        return position.equals(other.position) && color.equals(other.color)
+                && attenuation.equals(other.attenuation) && intensity == other.intensity;
+    }
+
     /**
      * Handles the Attenuation information of the light.
      */
