@@ -252,12 +252,12 @@ public class MeshGameItem implements GameItem {
 
     @Override
     public final Vector3 getColPosition() {
-        return getPosition().clone();
+        return getPosition();
     }
 
     @Override
     public void setColPosition(Vector3 vec) {
-        setPosition(vec.clone());
+        setPosition(vec);
     }
 
     @Override

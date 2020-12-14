@@ -60,13 +60,13 @@ public class ChunkHandler {
         List<Collidable> collisionList = new ArrayList<>();
         for (RenderChunk chunk : new ArrayList<>(renderChunkList)) {
             if (chunk == null) continue;
-            if (KMath.distance(new Vector3(0, chunk.getPosition().y, 0), new Vector3(0, pos.y, 0)) > 16) continue;
-            if (KMath.distance(new Vector3(chunk.getPosition().x, 0, 0), new Vector3(pos.x, 0, 0)) < 17
-                    && KMath.distance(new Vector3(0, 0, chunk.getPosition().z), new Vector3(0, 0, pos.z)) < 17) {
+            if (KMath.distance(0, chunk.getPosition().y, 0, 0, pos.y, 0) > 16) continue;
+            if (KMath.distance(chunk.getPosition().x, 0, 0, pos.x, 0, 0) < 17
+                    && KMath.distance(0, 0, chunk.getPosition().z, 0, 0, pos.z) < 17) {
                 for (int x = -1; x < 2; x++) {
                     for (int y = -2; y < 3; y++) {
                         for (int z = -1; z < 2; z++) {
-                            Vector3 coords = coordsToRenderCoords(chunk.getPosition(), pos.clone().add(x, y, z));
+                            Vector3 coords = coordsToRenderCoords(chunk.getPosition(), pos.add(x, y, z));
                             RenderBlock blck;
                             // This might be a bad idea.
                             try{
@@ -95,12 +95,12 @@ public class ChunkHandler {
         Vector3 pos = new Vector3((int) Math.floor(position.x), (int) Math.floor(position.y), (int) Math.floor(position.z));
         List<Collidable> collisionList = new ArrayList<>();
         for (RenderChunk chunk : new ArrayList<>(renderChunkList)) {
-            if (KMath.distance(new Vector3(0, chunk.getPosition().y, 0), new Vector3(0, pos.y, 0)) > 17) continue;
-            if (KMath.distance(new Vector3(chunk.getPosition().x, 0, chunk.getPosition().z), new Vector3(pos.x, 0, pos.z)) < 25) {
+            if (KMath.distance(0, chunk.getPosition().y, 0, 0, pos.y, 0) > 17) continue;
+            if (KMath.distance(chunk.getPosition().x, 0, chunk.getPosition().z, pos.x, 0, pos.z) < 25) {
                 for (int x = -10; x < 10; x++) {
                     for (int y = -10; y < 10; y++) {
                         for (int z = -10; z < 10; z++) {
-                            Vector3 coords = coordsToRenderCoords(chunk.getPosition(), pos.clone().add(x, y, z));
+                            Vector3 coords = coordsToRenderCoords(chunk.getPosition(), pos.add(x, y, z));
                             RenderBlock blck;
                             // This might also be a bad idea.
                             try{
@@ -141,11 +141,12 @@ public class ChunkHandler {
      * Convert normal positions to render positions (Which can only be 0-16 for x, y, and z).
      *
      * @param chunkpos The chunk position
-     * @param input    The input position
+     * @param input    The input position (Mutated)
      * @return The render position.
      */
     public Vector3 coordsToRenderCoords(Vector3 chunkpos, Vector3 input) {
-        return input.clone().subtract(chunkpos);
+        // Mutate the input
+        return input.subtractMut(chunkpos);
     }
 
 

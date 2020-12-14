@@ -314,7 +314,7 @@ public class Shader {
      */
     public void setUniform(String uniformName, PointLight pointLight) {
         setUniform(uniformName + ".color", pointLight.getColor().toVector());
-        setUniform(uniformName + ".position", pointLight.getPosition().toJoml());
+        setUniform(uniformName + ".position", pointLight.getPosition());
         setUniform(uniformName + ".intensity", pointLight.getIntensity());
         PointLight.Attenuation att = pointLight.getAttenuation();
         setUniform(uniformName + ".att.constant", att.getConstant());
@@ -348,7 +348,7 @@ public class Shader {
      */
     public void setUniform(String uniformName, DirectionalLight dirLight) {
         setUniform(uniformName + ".color", dirLight.getColor().toVector());
-        setUniform(uniformName + ".direction", dirLight.getDirection().toJoml());
+        setUniform(uniformName + ".direction", dirLight.getDirection());
         setUniform(uniformName + ".intensity", dirLight.getIntensity());
     }
 
@@ -408,7 +408,7 @@ public class Shader {
      */
     public void setUniform(String uniformName, Fog fog) {
         setUniform(uniformName + ".activeFog", fog.isActive() ? 1 : 0);
-        setUniform(uniformName + ".color", fog.getColor().toJoml());
+        setUniform(uniformName + ".color", fog.getColor());
         setUniform(uniformName + ".density", fog.getDensity());
     }
 

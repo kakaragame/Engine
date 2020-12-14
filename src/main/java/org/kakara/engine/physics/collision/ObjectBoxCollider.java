@@ -28,11 +28,22 @@ public class ObjectBoxCollider implements Collider {
     private Predicate<Collidable> predicate = gameItem -> false;
     private final List<OnTriggerEnter> triggerEvents;
 
+    // This actually conserves memory since it acts as a cache.
+    private final Vector3 relativePointOne;
+    private final Vector3 relativePointTwo;
+    private final Vector3 absolutePointOne;
+    private final Vector3 absolutePointTwo;
+
     public ObjectBoxCollider(boolean isTrigger, boolean resolvable) {
         this.isTrigger = isTrigger;
         this.resolvable = resolvable;
         this.handler = GameHandler.getInstance();
         this.triggerEvents = new ArrayList<>();
+
+        this.relativePointOne = new Vector3();
+        this.relativePointTwo = new Vector3();
+        this.absolutePointOne = new Vector3();
+        this.absolutePointTwo = new Vector3();
     }
 
     public ObjectBoxCollider() {
@@ -41,22 +52,25 @@ public class ObjectBoxCollider implements Collider {
 
     @Override
     public Vector3 getRelativePoint1() {
-        return new Vector3(0, 0, 0);
+        return relativePointOne;
     }
 
     @Override
     public Vector3 getAbsolutePoint1() {
-        return item.getColPosition();
+        absolutePointOne.set(item.getColPosition());
+        return absolutePointOne;
     }
 
     @Override
     public Vector3 getRelativePoint2() {
-        return new Vector3(item.getColScale(), item.getColScale(), item.getColScale());
+        relativePointTwo.set(item.getColScale(), item.getColScale(), item.getColScale());
+        return relativePointTwo;
     }
 
     @Override
     public Vector3 getAbsolutePoint2() {
-        return item.getColPosition().add(item.getColScale(), item.getColScale(), item.getColScale());
+        absolutePointTwo.set(item.getColPosition().getX() + item.getColScale(), item.getColPosition().getY() + item.getColScale(), item.getColPosition().getZ() + item.getColScale());
+        return absolutePointTwo;
     }
 
     @Override
@@ -75,7 +89,7 @@ public class ObjectBoxCollider implements Collider {
             CollisionManager.Contact contact = cm.isCollidingX(gi.getCollider(), item.getCollider());
             while (contact.isIntersecting()) {
                 contact = cm.isCollidingX(gi.getCollider(), item.getCollider());
-                item.setColPosition(item.getColPosition().add(new Vector3(contact.getnEnter().mul(-1).mul(contact.getPenetration()))));
+                item.getColPosition().addMut(contact.getnEnter().mul(-1).mul(contact.getPenetration()));
             }
         }
     }
@@ -96,7 +110,7 @@ public class ObjectBoxCollider implements Collider {
             CollisionManager.Contact contact = cm.isCollidingY(gi.getCollider(), item.getCollider());
             while (contact.isIntersecting()) {
                 contact = cm.isCollidingY(gi.getCollider(), item.getCollider());
-                item.setColPosition(item.getColPosition().add(new Vector3(contact.getnEnter().mul(-1).mul(contact.getPenetration()))));
+                item.getColPosition().addMut(contact.getnEnter().mul(-1).mul(contact.getPenetration()));
             }
         }
     }
@@ -117,7 +131,7 @@ public class ObjectBoxCollider implements Collider {
             CollisionManager.Contact contact = cm.isCollidingZ(gi.getCollider(), item.getCollider());
             while (contact.isIntersecting()) {
                 contact = cm.isCollidingZ(gi.getCollider(), item.getCollider());
-                item.setColPosition(item.getColPosition().add(new Vector3(contact.getnEnter().mul(-1).mul(contact.getPenetration()))));
+                item.getColPosition().addMut(contact.getnEnter().mul(-1).mul(contact.getPenetration()));
             }
         }
     }

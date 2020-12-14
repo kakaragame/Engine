@@ -46,6 +46,13 @@ public class Vector3 {
     }
 
     /**
+     * Creates a zero vector.
+     */
+    public Vector3(){
+        this(0, 0, 0);
+    }
+
+    /**
      * Creates a vector 3 using a 2d vector.
      *
      * @param vec The 2d vector to get the x and y values from.
@@ -231,6 +238,15 @@ public class Vector3 {
     }
 
     /**
+     * Add a vector with mutation.
+     * @param other The other vector.
+     * @return An instance of the current vector.
+     */
+    public Vector3 addMut(Vector3f other){
+        return addMut(other.x, other.y, other.z);
+    }
+
+    /**
      * Add a vector without mutating the current vector.
      *
      * @param x x value
@@ -249,6 +265,15 @@ public class Vector3 {
      * @return The vector after addition
      */
     public Vector3 add(Vector3 other) {
+        return add(other.x, other.y, other.z);
+    }
+
+    /**
+     * Add a vector without mutating the current vector.
+     * @param other The other vector.
+     * @return The vector after addition.
+     */
+    public Vector3 add(Vector3f other){
         return add(other.x, other.y, other.z);
     }
 
