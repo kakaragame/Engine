@@ -4,12 +4,13 @@ import org.kakara.engine.render.Renderer;
 import org.kakara.engine.renderobjects.ChunkHandler;
 import org.kakara.engine.scene.AbstractGameScene;
 import org.kakara.engine.scene.AbstractMenuScene;
-import org.kakara.engine.scene.AbstractScene;
 import org.kakara.engine.utils.Time;
 import org.kakara.engine.window.Window;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+import java.util.Properties;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -30,6 +31,15 @@ public class GameEngine implements Runnable {
     private final Queue<Runnable> mainThreadQueue = new LinkedBlockingQueue<>();
     protected boolean running = true;
     private Renderer renderer;
+    private static final Properties engineProperties = new Properties();
+
+    static {
+        try {
+            engineProperties.load(GameEngine.class.getResourceAsStream("/engine.properties"));
+        } catch (IOException e) {
+            LOGGER.warn("Unable to load engine.properties", e);
+        }
+    }
 
     /**
      * Create a new game.
@@ -249,5 +259,8 @@ public class GameEngine implements Runnable {
         running = false;
     }
 
+    public static String getEngineVersion() {
+        return engineProperties.getProperty("engine.version");
+    }
 
 }
