@@ -24,6 +24,7 @@ public class RenderBlock implements Collidable, Tagable {
     private final Layout layout;
     private final RenderTexture texture;
     private RenderTexture overlay;
+    private boolean isOpaque;
 
     private Vector3 position;
 
@@ -59,8 +60,15 @@ public class RenderBlock implements Collidable, Tagable {
         this.data = new ArrayList<>();
         this.tag = "";
         this.uuid = UUID.randomUUID();
+        this.isOpaque = true;
     }
 
+    /**
+     * Create a RenderBlock using the default layout.
+     *
+     * @param texture The texture to use.
+     * @param position The position to use.
+     */
     public RenderBlock(RenderTexture texture, Vector3 position) {
         this(new BlockLayout(), texture, position);
     }
@@ -162,6 +170,24 @@ public class RenderBlock implements Collidable, Tagable {
      */
     public void setOverlay(@Nullable RenderTexture texture) {
         this.overlay = texture;
+    }
+
+    /**
+     * Set if the render block is opaque.
+     * @param opaque If the render block is opaque.
+     * @since 1.0-Pre4
+     */
+    public void setOpaque(boolean opaque){
+        this.isOpaque = opaque;
+    }
+
+    /**
+     * Get if the render block is opaque.
+     * @return If the render block is opaque.
+     * @since 1.0-Pre4
+     */
+    public boolean isOpaque(){
+        return isOpaque;
     }
 
     /**

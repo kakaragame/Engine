@@ -106,35 +106,37 @@ public class RenderChunk extends MeshGameItem {
                     if(block == null) continue;
                     block.clearFaces();
                     boolean found = false;
-                    if (z + 1 > 15 || octChunk[x][y][z + 1] == null) {
+
+                    // Remove && block.isOpaque() to see other faces.
+                    if (z + 1 > 15 || octChunk[x][y][z + 1] == null || (!octChunk[x][y][z + 1].isOpaque() && block.isOpaque())) {
                         block.addFace(Face.FRONT);
                         output.add(block);
                         found = true;
                     }
-                    if (z - 1 < 0 || octChunk[x][y][z - 1] == null) {
+                    if (z - 1 < 0 || octChunk[x][y][z - 1] == null || !octChunk[x][y][z - 1].isOpaque() && block.isOpaque()) {
                         block.addFace(Face.BACK);
                         if (!found)
                             output.add(block);
                     }
-                    if (y + 1 > 15 || octChunk[x][y+1][z] == null) {
+                    if (y + 1 > 15 || octChunk[x][y+1][z] == null || !octChunk[x][y+1][z].isOpaque() && block.isOpaque()) {
                         block.addFace(Face.TOP);
                         if (!found)
                             output.add(block);
                         found = true;
                     }
-                    if (y - 1 < 0 || octChunk[x][y - 1][z] == null) {
+                    if (y - 1 < 0 || octChunk[x][y - 1][z] == null || !octChunk[x][y-1][z].isOpaque() && block.isOpaque()) {
                         block.addFace(Face.BOTTOM);
                         if (!found)
                             output.add(block);
                         found = true;
                     }
-                    if (x + 1 > 15 || octChunk[x + 1][y][z] == null) {
+                    if (x + 1 > 15 || octChunk[x + 1][y][z] == null || !octChunk[x+1][y][z].isOpaque() && block.isOpaque()) {
                         block.addFace(Face.RIGHT);
                         if (!found)
                             output.add(block);
                         found = true;
                     }
-                    if (x - 1 < 0 || octChunk[x - 1][y][z] == null) {
+                    if (x - 1 < 0 || octChunk[x - 1][y][z] == null || !octChunk[x-1][y][z].isOpaque() && block.isOpaque()) {
                         block.addFace(Face.LEFT);
                         if (!found)
                             output.add(block);

@@ -151,7 +151,7 @@ void calculateOverlayTextures()
     vec4 tempDiffuse = ambientC;
     if(outHasTexture[0] == 1){
         vec4 overlay = texture(textureAtlas, outOverlayCoord);
-        tempDiffuse = vec4(mix(tempDiffuse, overlay, overlay.a).xyz, 1.0);
+        tempDiffuse = vec4(mix(tempDiffuse, overlay, overlay.a));
     }
     ambientC = tempDiffuse;
     specularC = tempDiffuse;
@@ -189,6 +189,10 @@ float calcShadow(vec4 position)
 void main()
 {
     setupColors(material, outTexCoord);
+
+    // Discard transparent pixels.
+    if(ambientC.a < 0.1)
+        discard;
 
     calculateOverlayTextures();
 
