@@ -8,27 +8,23 @@ import org.kakara.engine.ui.objectcanvas.UIObject;
 
 /**
  * The transformation handler.
+ * <p>
+ * This class handles the transformation math for GameObjects so that they can be rendered.
  */
 public class Transformation {
     private final Matrix4f projectionMatrix;
     private final Matrix4f modelViewMatrix;
     private final Matrix4f modelMatrix;
-    private final Matrix4f modelLightMatrix;
     private final Matrix4f modelLightViewMatrix;
     private final Matrix4f lightViewMatrix;
     private final Matrix4f orthoProjMatrix;
-    private final Matrix4f ortho2DMatrix;
-    private final Matrix4f orthoModelMatrix;
 
     public Transformation() {
         modelViewMatrix = new Matrix4f();
         modelMatrix = new Matrix4f();
         projectionMatrix = new Matrix4f();
-        modelLightMatrix = new Matrix4f();
         modelLightViewMatrix = new Matrix4f();
         orthoProjMatrix = new Matrix4f();
-        ortho2DMatrix = new Matrix4f();
-        orthoModelMatrix = new Matrix4f();
         lightViewMatrix = new Matrix4f();
     }
 
@@ -82,19 +78,6 @@ public class Transformation {
     }
 
     /**
-     * Get the matrix for the model position, rotation, and scale.
-     *
-     * @param gameItem The game item to get the matrix for
-     * @return The matrix.
-     */
-    public Matrix4f getModelMatrix(GameItem gameItem) {
-        Quaternionf rotation = gameItem.getRotation();
-        modelViewMatrix.translationRotateScale(gameItem.getPosition().x, gameItem.getPosition().y, gameItem.getPosition().z, rotation.x, rotation.y, rotation.z, rotation.w, gameItem.getScale(),
-                gameItem.getScale(), gameItem.getScale());
-        return modelViewMatrix;
-    }
-
-    /**
      * Get the otho projection
      *
      * @return The otho projection
@@ -130,15 +113,6 @@ public class Transformation {
     }
 
     /**
-     * Set the light view matrix.
-     *
-     * @param lightViewMatrix The light view matrix.
-     */
-    public void setLightViewMatrix(Matrix4f lightViewMatrix) {
-        this.lightViewMatrix.set(lightViewMatrix);
-    }
-
-    /**
      * Update the light view matrix
      *
      * @param position The position
@@ -147,21 +121,6 @@ public class Transformation {
      */
     public Matrix4f updateLightViewMatrix(Vector3f position, Vector3f rotation) {
         return updateGenericViewMatrix(position, rotation, lightViewMatrix);
-    }
-
-    /**
-     * Get the 2d projection matrix.
-     *
-     * @param left   -
-     * @param right  -
-     * @param bottom -
-     * @param top    -
-     * @return The orth 2d projection matrix.
-     */
-    public final Matrix4f getOrtho2DProjectionMatrix(float left, float right, float bottom, float top) {
-        ortho2DMatrix.identity();
-        ortho2DMatrix.setOrtho2D(left, right, bottom, top);
-        return ortho2DMatrix;
     }
 
 
@@ -221,21 +180,6 @@ public class Transformation {
     }
 
     /**
-     * Build the light view matrix.
-     *
-     * @param gameItem The game item
-     * @param matrix   The light view matrix.
-     * @return The model light view matrix.
-     */
-    public Matrix4f buildModelLightViewMatrix(GameItem gameItem, Matrix4f matrix) {
-        Quaternionf rotation = gameItem.getRotation();
-        modelLightMatrix.translationRotateScale(gameItem.getPosition().x, gameItem.getPosition().y, gameItem.getPosition().z, rotation.x, rotation.y, rotation.z, rotation.w, gameItem.getScale(),
-                gameItem.getScale(), gameItem.getScale());
-        modelLightViewMatrix.set(matrix);
-        return modelLightViewMatrix.mul(modelLightMatrix);
-    }
-
-    /**
      * Build the model light view matrix
      *
      * @param modelMatrix     The model matrix
@@ -244,21 +188,5 @@ public class Transformation {
      */
     public Matrix4f buildModelLightViewMatrix(Matrix4f modelMatrix, Matrix4f lightViewMatrix) {
         return lightViewMatrix.mulAffine(modelMatrix, modelLightViewMatrix);
-    }
-
-    /**
-     * Build the ortho projection model matrix
-     *
-     * @param gameItem    The game item
-     * @param orthoMatrix The ortho matrix
-     * @return The otho project model matrix.
-     */
-    public Matrix4f buildOrthoProjModelMatrix(GameItem gameItem, Matrix4f orthoMatrix) {
-        Quaternionf rotation = gameItem.getRotation();
-        modelMatrix.identity().translationRotateScale(gameItem.getPosition().x, gameItem.getPosition().y, gameItem.getPosition().z, rotation.x, rotation.y, rotation.z, rotation.w, gameItem.getScale(),
-                gameItem.getScale(), gameItem.getScale());
-        orthoModelMatrix.set(orthoMatrix);
-        orthoModelMatrix.mul(modelMatrix);
-        return orthoModelMatrix;
     }
 }

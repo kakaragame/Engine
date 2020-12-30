@@ -190,6 +190,10 @@ void main()
 {
     setupColors(material, outTexCoord);
 
+    // Ignore transparent pixels
+    if(ambientC.a < 0.1)
+        discard;
+
     calculateOverlayTextures();
 
     vec4 diffuseSpecularComp = calcDirectionalLight(directionalLight, mvVertexPos, mvVertexNormal);
