@@ -10,6 +10,7 @@ import org.kakara.engine.renderobjects.mesh.MeshType;
 import org.kakara.engine.renderobjects.renderlayouts.BlockLayout;
 import org.kakara.engine.renderobjects.renderlayouts.Face;
 import org.kakara.engine.renderobjects.renderlayouts.Layout;
+import org.kakara.engine.utils.UUIDUtils;
 
 import java.util.*;
 
@@ -59,7 +60,7 @@ public class RenderBlock implements Collidable, Tagable {
         collider.onRegister(this);
         this.data = new ArrayList<>();
         this.tag = "";
-        this.uuid = UUID.randomUUID();
+        this.uuid = UUIDUtils.randomUUID();
         this.isOpaque = true;
     }
 
