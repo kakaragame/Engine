@@ -1,11 +1,6 @@
 package org.kakara.engine.render.preset.pipeline;
 
 import org.joml.Matrix4f;
-import org.kakara.engine.GameHandler;
-import org.kakara.engine.gameitems.GameItem;
-import org.kakara.engine.gameitems.MeshGameItem;
-import org.kakara.engine.gameitems.mesh.IMesh;
-import org.kakara.engine.gameitems.mesh.InstancedMesh;
 import org.kakara.engine.lighting.LightHandler;
 import org.kakara.engine.lighting.ShadowMap;
 import org.kakara.engine.render.*;
@@ -15,8 +10,6 @@ import org.kakara.engine.scene.AbstractGameScene;
 import org.kakara.engine.scene.Scene;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
 import static org.lwjgl.opengl.GL11.glBindTexture;
@@ -45,17 +38,39 @@ public class ChunkPipeline implements RenderPipeline {
 
     @Override
     public void render(Scene scene) {
-        renderChunk(scene, false);
+        renderChunk(scene);
     }
-
 
 
     @Override
     public void renderDepthMap(Scene scene, Shader depthShader, Matrix4f lightViewMatrix) {
-        renderChunk(scene, true);
+        AbstractGameScene ags = (AbstractGameScene) scene;
+        List<RenderChunk> renderChunks = ags.getChunkHandler().getRenderChunkList();
+        if (renderChunks == null) return;
+
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, ags.getTextureAtlas().getTexture().getId());
+
+        for (RenderChunk renderChunk : renderChunks) {
+            if (renderChunk == null) continue;
+            if (renderChunk.getBlockCount() < 1) continue;
+
+            if (!frustumFilter.testRenderObject(renderChunk.getPosition(), 16, 16, 16))
+                continue;
+
+            Matrix4f modelMatrix = transformation.buildModelMatrix(renderChunk);
+            Matrix4f modelLightViewMatrix = transformation.buildModelLightViewMatrix(modelMatrix, lightViewMatrix);
+            depthShader.setUniform("modelLightViewMatrix", modelLightViewMatrix);
+
+
+            renderChunk.render();
+        }
+
+
+        glBindTexture(GL_TEXTURE_2D, 0);
     }
 
-    private void renderChunk(Scene scene, boolean depthMap){
+    private void renderChunk(Scene scene) {
         if (!(scene instanceof AbstractGameScene)) return;
         AbstractGameScene ags = (AbstractGameScene) scene;
         List<RenderChunk> renderChunks = ags.getChunkHandler().getRenderChunkList();
@@ -101,12 +116,11 @@ public class ChunkPipeline implements RenderPipeline {
 
             Matrix4f modelMatrix = transformation.buildModelMatrix(renderChunk);
 
-            if (!depthMap) {
-                glActiveTexture(GL_TEXTURE2);
-                glBindTexture(GL_TEXTURE_2D, shadowMap.getDepthMapTexture().getId());
-                Matrix4f modelViewMatrix = transformation.buildModelViewMatrix(modelMatrix, viewMatrix);
-                chunkShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-            }
+            glActiveTexture(GL_TEXTURE2);
+            glBindTexture(GL_TEXTURE_2D, shadowMap.getDepthMapTexture().getId());
+            Matrix4f modelViewMatrix = transformation.buildModelViewMatrix(modelMatrix, viewMatrix);
+            chunkShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+
             Matrix4f modelLightViewMatrix = transformation.buildModelLightViewMatrix(modelMatrix, lightViewMatrix);
             chunkShaderProgram.setUniform("modelLightViewMatrix", modelLightViewMatrix);
 

@@ -138,6 +138,5 @@ public class StandardPipeline implements RenderPipeline {
 
         renderInstancedMeshes(scene, true, depthMap, null, lightViewMatrix);
 
-        shaderProgram.unbind();
     }
 }

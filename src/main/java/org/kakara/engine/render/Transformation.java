@@ -44,9 +44,13 @@ public class Transformation {
     }
 
     /**
-     * Update the projection matrix
-     *
-     * @return The project matrix.
+     * Update the projection matrix.
+     * @param fov The fov.
+     * @param width The width.
+     * @param height The height.
+     * @param zNear The z near
+     * @param zFar The z far.
+     * @return The updated projection matrix.
      */
     public Matrix4f updateProjectionMatrix(float fov, float width, float height, float zNear, float zFar) {
         projectionMatrix.identity();
@@ -56,7 +60,7 @@ public class Transformation {
     /**
      * Get the project matrix.
      *
-     * @return
+     * @return The projection matrix.
      */
     public Matrix4f getProjectionMatrix() {
         return projectionMatrix;

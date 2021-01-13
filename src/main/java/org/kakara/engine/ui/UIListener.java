@@ -16,8 +16,11 @@ public interface UIListener {
     /**
      * Process and call events.
      *
+     * TODO fix this.
+     *
      * @param clazz The type of event
      * @param objs  The parameters
+     * @param <T> The object types.
      */
     <T> void triggerEvent(Class<? extends UActionEvent> clazz, T... objs);
 
