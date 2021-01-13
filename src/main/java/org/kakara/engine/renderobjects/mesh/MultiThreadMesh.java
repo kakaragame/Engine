@@ -42,7 +42,6 @@ public class MultiThreadMesh implements RenderMesh {
     /**
      * Create a render mesh
      *
-     * @param blocks       The list of render blocks
      * @param renderChunk  renderchunk
      * @param textureAtlas The texture atlas to use
      * @param future       The completable future that is to be completed once the generation is complete.

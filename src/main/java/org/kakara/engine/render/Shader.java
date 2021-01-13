@@ -3,6 +3,9 @@ package org.kakara.engine.render;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
+import org.kakara.engine.exceptions.render.ShaderCreationException;
+import org.kakara.engine.exceptions.render.ShaderLinkException;
+import org.kakara.engine.exceptions.render.ShaderUniformException;
 import org.kakara.engine.gameitems.Material;
 import org.kakara.engine.lighting.DirectionalLight;
 import org.kakara.engine.lighting.PointLight;
@@ -30,13 +33,13 @@ public class Shader {
     /**
      * Create a new shader.
      *
-     * @throws Exception
+     * @throws ShaderCreationException If a shader could not be created
      */
-    public Shader() throws Exception {
+    public Shader() throws ShaderCreationException {
         programId = glCreateProgram();
         uniforms = new HashMap<>();
         if (programId == 0) {
-            throw new Exception("Could not create Shader");
+            throw new ShaderCreationException("Could not create Shader");
         }
     }
 
@@ -44,9 +47,9 @@ public class Shader {
      * Create a vertex shader.
      *
      * @param shaderCode The shader code.
-     * @throws Exception
+     * @throws ShaderCreationException If a shader could not be created
      */
-    public void createVertexShader(String shaderCode) throws Exception {
+    public void createVertexShader(String shaderCode) throws ShaderCreationException {
         vertexShaderId = createShader(shaderCode, GL_VERTEX_SHADER);
     }
 
@@ -54,7 +57,7 @@ public class Shader {
      * Create a fragment shader.
      *
      * @param shaderCode The shader code.
-     * @throws Exception
+     * @throws ShaderCreationException If a shader could not be created
      */
     public void createFragmentShader(String shaderCode) throws Exception {
         fragmentShaderId = createShader(shaderCode, GL_FRAGMENT_SHADER);
@@ -67,19 +70,19 @@ public class Shader {
      * @param shaderCode The shader code
      * @param shaderType The shader type
      * @return The shader id.
-     * @throws Exception
+     * @throws ShaderCreationException If an exception occurs while trying to create a shader.
      */
-    protected int createShader(String shaderCode, int shaderType) throws Exception {
+    protected int createShader(String shaderCode, int shaderType) throws ShaderCreationException {
         int shaderId = glCreateShader(shaderType);
         if (shaderId == 0) {
-            throw new Exception("Error creating shader. Type: " + shaderType);
+            throw new ShaderCreationException("Error creating shader. Type: " + shaderType);
         }
 
         glShaderSource(shaderId, shaderCode);
         glCompileShader(shaderId);
 
         if (glGetShaderi(shaderId, GL_COMPILE_STATUS) == 0) {
-            throw new Exception("Error compiling Shader code: " + glGetShaderInfoLog(shaderId, 1024));
+            throw new ShaderCreationException("Error compiling Shader code: " + glGetShaderInfoLog(shaderId, 1024));
         }
 
         glAttachShader(programId, shaderId);
@@ -90,12 +93,12 @@ public class Shader {
     /**
      * Link the shader to OpenGL
      *
-     * @throws Exception
+     * @throws ShaderLinkException If the shader could not be linked.
      */
-    public void link() throws Exception {
+    public void link() throws ShaderLinkException {
         glLinkProgram(programId);
         if (glGetProgrami(programId, GL_LINK_STATUS) == 0) {
-            throw new Exception("Error linking Shader code: " + glGetProgramInfoLog(programId, 1024));
+            throw new ShaderLinkException("Error linking Shader code: " + glGetProgramInfoLog(programId, 1024));
         }
 
         if (vertexShaderId != 0) {
@@ -116,12 +119,12 @@ public class Shader {
      * Create a new uniform
      *
      * @param uniformName The uniform name
-     * @throws Exception If the uniform could not be found.
+     * @throws ShaderUniformException If the uniform could not be found.
      */
-    public void createUniform(String uniformName) throws Exception {
+    public void createUniform(String uniformName) throws ShaderUniformException {
         int uniformLocation = glGetUniformLocation(programId, uniformName);
         if (uniformLocation < 0) {
-            throw new Exception("Could not find uniform:" + uniformName);
+            throw new ShaderUniformException("Could not find uniform:" + uniformName);
         }
         uniforms.put(uniformName, uniformLocation);
     }
@@ -201,9 +204,9 @@ public class Shader {
      *
      * @param uniformName The uniform name
      * @param size        The amount of point lights allowed.
-     * @throws Exception
+     * @throws ShaderUniformException If the uniform could not be created.
      */
-    public void createPointLightListUniform(String uniformName, int size) throws Exception {
+    public void createPointLightListUniform(String uniformName, int size) throws ShaderUniformException {
         for (int i = 0; i < size; i++) {
             createPointLightUniform(uniformName + "[" + i + "]");
         }
@@ -213,9 +216,9 @@ public class Shader {
      * Creates a point light uniform
      *
      * @param uniformName The uniform name.
-     * @throws Exception
+     * @throws ShaderUniformException If the uniform could not be created.
      */
-    public void createPointLightUniform(String uniformName) throws Exception {
+    public void createPointLightUniform(String uniformName) throws ShaderUniformException {
         createUniform(uniformName + ".color");
         createUniform(uniformName + ".position");
         createUniform(uniformName + ".intensity");
@@ -229,9 +232,9 @@ public class Shader {
      *
      * @param uniformName The uniform name
      * @param size        The amount of spot lights allowed.
-     * @throws Exception
+     * @throws ShaderUniformException If the uniform could not be created.
      */
-    public void createSpotLightListUniform(String uniformName, int size) throws Exception {
+    public void createSpotLightListUniform(String uniformName, int size) throws ShaderUniformException {
         for (int i = 0; i < size; i++) {
             createSpotLightUniform(uniformName + "[" + i + "]");
         }
@@ -241,9 +244,9 @@ public class Shader {
      * Create spot light uniforms
      *
      * @param uniformName The uniform name
-     * @throws Exception
+     * @throws ShaderUniformException If the uniform could not be created.
      */
-    public void createSpotLightUniform(String uniformName) throws Exception {
+    public void createSpotLightUniform(String uniformName) throws ShaderUniformException {
         createPointLightUniform(uniformName + ".pl");
         createUniform(uniformName + ".conedir");
         createUniform(uniformName + ".cutoff");
@@ -253,9 +256,9 @@ public class Shader {
      * Create a directional light uniform
      *
      * @param uniformName The uniform name
-     * @throws Exception
+     * @throws ShaderUniformException If the uniform could not be created.
      */
-    public void createDirectionalLightUniform(String uniformName) throws Exception {
+    public void createDirectionalLightUniform(String uniformName) throws ShaderUniformException {
         createUniform(uniformName + ".color");
         createUniform(uniformName + ".direction");
         createUniform(uniformName + ".intensity");
@@ -265,9 +268,9 @@ public class Shader {
      * Create a material uniform
      *
      * @param uniformName The uniform name.
-     * @throws Exception
+     * @throws ShaderUniformException If the uniform could not be created.
      */
-    public void createMaterialUniform(String uniformName) throws Exception {
+    public void createMaterialUniform(String uniformName) throws ShaderUniformException {
         createUniform(uniformName + ".ambient");
         createUniform(uniformName + ".diffuse");
         createUniform(uniformName + ".specular");
@@ -392,9 +395,9 @@ public class Shader {
      * Create a new fog uniform.
      *
      * @param uniformName The uniform name
-     * @throws Exception
+     * @throws ShaderUniformException If the uniform could not be created.
      */
-    public void createFogUniform(String uniformName) throws Exception {
+    public void createFogUniform(String uniformName) throws ShaderUniformException {
         createUniform(uniformName + ".activeFog");
         createUniform(uniformName + ".color");
         createUniform(uniformName + ".density");

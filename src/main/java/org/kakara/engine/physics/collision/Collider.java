@@ -15,7 +15,7 @@ public interface Collider {
     /**
      * When the collider is added to a game item.
      *
-     * @param item
+     * @param item The collidable that the collider was put on.
      */
     void onRegister(Collidable item);
 

@@ -68,7 +68,8 @@ public class SoundManager {
 
     /**
      * Players a sound source if found
-     * * @param name sound source to play
+     *
+     * @param name sound source to play
      */
     public void playSoundSource(String name) {
         if (listener == null) return;
