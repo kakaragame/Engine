@@ -1,6 +1,8 @@
 package org.kakara.engine;
 
+import org.kakara.engine.render.PipelineManager;
 import org.kakara.engine.render.Renderer;
+import org.kakara.engine.render.ShaderManager;
 import org.kakara.engine.renderobjects.ChunkHandler;
 import org.kakara.engine.scene.AbstractGameScene;
 import org.kakara.engine.scene.AbstractMenuScene;
@@ -31,6 +33,8 @@ public class GameEngine implements Runnable {
     private final Queue<Runnable> mainThreadQueue = new LinkedBlockingQueue<>();
     protected boolean running = true;
     private Renderer renderer;
+    private final PipelineManager pipelineManager;
+    private final ShaderManager shaderManager;
     private static final Properties engineProperties = new Properties();
 
     static {
@@ -54,8 +58,10 @@ public class GameEngine implements Runnable {
         this.window = new Window(windowTitle, width, height, true, vSync);
         time = new Time();
         this.game = game;
-        this.renderer = new Renderer();
+        this.renderer = new Renderer(this);
         this.gameHandler = new GameHandler(this);
+        this.shaderManager = new ShaderManager();
+        this.pipelineManager = new PipelineManager();
     }
 
     /**
@@ -239,7 +245,7 @@ public class GameEngine implements Runnable {
      * @throws Exception Throws an exception if the renderer cannot initialize.
      */
     public void resetRender() throws Exception {
-        renderer = new Renderer();
+        renderer = new Renderer(this);
         renderer.init();
     }
 
@@ -253,6 +259,26 @@ public class GameEngine implements Runnable {
         if (run == null)
             throw new IllegalArgumentException("A null runnable cannot be added to the list");
         mainThreadQueue.add(run);
+    }
+
+    /**
+     * Get the pipeline manager.
+     *
+     * @return The pipeline manager.
+     * @since 1.0-Pre4
+     */
+    public PipelineManager getPipelineManager() {
+        return pipelineManager;
+    }
+
+    /**
+     * Get the shader manager.
+     *
+     * @return The shader manager.
+     * @since 1.0-Pre4
+     */
+    public ShaderManager getShaderManager() {
+        return shaderManager;
     }
 
     protected void exit() {

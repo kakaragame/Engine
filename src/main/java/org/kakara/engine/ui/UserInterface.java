@@ -55,6 +55,8 @@ public class UserInterface {
 
     /**
      * Internal Use Only
+     * @param window The window.
+     * @throws InitializationException If the ui cannot be initialized.
      */
     public void init(Window window) throws InitializationException {
         this.vg = window.getOptions().isAntialiasing() ? nvgCreate(NVG_ANTIALIAS | NVG_STENCIL_STROKES) : nvgCreate(NVG_STENCIL_STROKES);
@@ -73,6 +75,7 @@ public class UserInterface {
 
     /**
      * Internal Use Only
+     * @param window The window.
      */
     public void render(Window window) {
         nvgBeginFrame(vg, window.getWidth(), window.getHeight(), 1);

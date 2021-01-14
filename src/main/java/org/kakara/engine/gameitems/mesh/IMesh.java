@@ -30,6 +30,7 @@ public interface IMesh {
 
     /**
      * Get the material used by a Mesh.
+     *
      * @return The Optional Material. (A mesh does not need a material.)
      */
     Optional<Material> getMaterial();
@@ -40,18 +41,21 @@ public interface IMesh {
      * <p>For internal use only.</p>
      *
      * @param gameItems The list of game items.
-     * @param consumer The consumer to trigger on render.
+     * @param filter    The FrustumFilter for to render against.
+     * @param consumer  The consumer to trigger on render.
      */
     void renderList(List<GameItem> gameItems, FrustumCullingFilter filter, Consumer<GameItem> consumer);
 
     /**
      * Get if the mesh has wireframe mode enabled.
+     *
      * @return If the mesh has wireframe mode enabled.
      */
     boolean isWireframe();
 
     /**
      * Set if wireframe mode is enabled for the mesh.
+     *
      * @param value If wireframe mode should be enabled.
      */
     void setWireframe(boolean value);

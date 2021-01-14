@@ -39,9 +39,9 @@ public class StaticModelLoader {
      * @param scene           The current scene
      * @param resourceManager The resource manager.
      * @return The Array of meshes.
-     * @throws Exception
+     * @throws ModelLoadException If an error occurs while loading the model.
      */
-    public static Mesh[] load(Resource resource, String texturesDir, Scene scene, ResourceManager resourceManager) throws Exception {
+    public static Mesh[] load(Resource resource, String texturesDir, Scene scene, ResourceManager resourceManager) throws ModelLoadException {
         return load(resource, texturesDir, resourceManager, scene, aiProcess_GenSmoothNormals | aiProcess_JoinIdenticalVertices | aiProcess_Triangulate
                 | aiProcess_FixInfacingNormals);
     }
@@ -55,7 +55,7 @@ public class StaticModelLoader {
      * @param scene           The current scene
      * @param flags           Flags to load the object by.
      * @return The array of meshes.
-     * @throws Exception
+     * @throws ModelLoadException If an error occurs while loading the model.
      */
     public static Mesh[] load(Resource resource, String texturesDir, ResourceManager resourceManager, Scene scene, int flags) throws ModelLoadException {
         GameEngine.LOGGER.debug(String.format("Loading Model %s With Textures in %s", resource.toString(), texturesDir));
