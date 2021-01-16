@@ -2,6 +2,7 @@ package org.kakara.engine.render.preset.pipeline;
 
 import org.joml.Matrix4f;
 import org.kakara.engine.GameHandler;
+import org.kakara.engine.exceptions.render.ShaderNotFoundException;
 import org.kakara.engine.gameitems.GameItem;
 import org.kakara.engine.gameitems.MeshGameItem;
 import org.kakara.engine.gameitems.mesh.IMesh;
@@ -29,6 +30,7 @@ import static org.lwjgl.opengl.GL13.glActiveTexture;
 public class StandardPipeline implements RenderPipeline {
 
     private Shader shaderProgram;
+    private ShaderManager manager;
     private Transformation transformation;
     private FrustumCullingFilter frustumFilter;
     private ShadowMap shadowMap;
@@ -36,9 +38,22 @@ public class StandardPipeline implements RenderPipeline {
     @Override
     public void init(ShaderManager manager, Transformation transformation, FrustumCullingFilter frustumFilter, ShadowMap shadowMap) {
         shaderProgram = manager.findShader("Standard").getShader();
+        this.manager = manager;
         this.transformation = transformation;
         this.frustumFilter = frustumFilter;
         this.shadowMap = shadowMap;
+    }
+
+    /**
+     * Set the shader of the Standard Pipeline.
+     *
+     * @param shader The name of the shader.
+     */
+    public void setShader(String shader) {
+        ShaderProgram program = manager.findShader(shader);
+        if (program == null)
+            throw new ShaderNotFoundException("Unable to find shader: " + shader);
+        this.shaderProgram = program.getShader();
     }
 
     @Override

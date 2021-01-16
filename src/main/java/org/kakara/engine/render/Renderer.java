@@ -28,7 +28,7 @@ import static org.lwjgl.opengl.GL30.glBindFramebuffer;
  * <p>As of 1.0-pre4, additional pipelines can be added: {@link PipelineManager} & {@link RenderPipeline}</p>
  * <p>Please note that the Skybox, Shadow System, and UI, are not apart of the pipeline system.</p>
  */
-public class Renderer {
+public final class Renderer {
     private final Transformation transformation;
     private final FrustumCullingFilter frustumFilter;
     private final GameEngine engine;

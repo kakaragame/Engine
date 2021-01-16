@@ -1,15 +1,13 @@
 package org.kakara.engine.render.preset.pipeline;
 
 import org.joml.Matrix4f;
+import org.kakara.engine.exceptions.render.ShaderNotFoundException;
 import org.kakara.engine.gameitems.GameItem;
 import org.kakara.engine.gameitems.Texture;
 import org.kakara.engine.gameitems.mesh.Mesh;
 import org.kakara.engine.gameitems.particles.ParticleEmitter;
 import org.kakara.engine.lighting.ShadowMap;
-import org.kakara.engine.render.RenderPipeline;
-import org.kakara.engine.render.Shader;
-import org.kakara.engine.render.ShaderManager;
-import org.kakara.engine.render.Transformation;
+import org.kakara.engine.render.*;
 import org.kakara.engine.render.culling.FrustumCullingFilter;
 import org.kakara.engine.scene.Scene;
 
@@ -26,14 +24,28 @@ import static org.lwjgl.opengl.GL13.*;
 public class ParticlesPipeline implements RenderPipeline {
 
     private Shader particleShaderProgram;
+    private ShaderManager manager;
     private Transformation transformation;
     private FrustumCullingFilter frustumFilter;
 
     @Override
     public void init(ShaderManager manager, Transformation transformation, FrustumCullingFilter frustumFilter, ShadowMap shadowMap) {
         particleShaderProgram = manager.findShader("Particle").getShader();
+        this.manager = manager;
         this.transformation = transformation;
         this.frustumFilter = frustumFilter;
+    }
+
+    /**
+     * Set the shader of the Particle Pipeline.
+     *
+     * @param shader The name of the shader.
+     */
+    public void setShader(String shader) {
+        ShaderProgram program = manager.findShader(shader);
+        if (program == null)
+            throw new ShaderNotFoundException("Unable to find shader: " + shader);
+        this.particleShaderProgram = program.getShader();
     }
 
     @Override

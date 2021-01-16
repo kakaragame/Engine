@@ -24,7 +24,7 @@ import static org.lwjgl.opengl.GL13.glActiveTexture;
  *
  * @since 1.0-Pre4
  */
-public class Graphics {
+public final class Graphics {
     /**
      * Render lights in a scene.
      * <p>The sole purpose of this method is the handle the light rendering, all other uniforms must be set.</p>

@@ -20,8 +20,8 @@ import java.util.Map;
  *
  * @since 1.0-Pre4
  */
-public class ShaderManager {
-    private Map<String, ShaderProgram> programs;
+public final class ShaderManager {
+    private final Map<String, ShaderProgram> programs;
     private boolean initialized;
 
     /**
@@ -64,7 +64,7 @@ public class ShaderManager {
      * Find a shader with a specified name.
      *
      * @param name The name of the shader to find.
-     * @return The shader.
+     * @return The shader. (returns null if not found)
      */
     public ShaderProgram findShader(String name) {
         return programs.get(name);

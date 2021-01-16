@@ -1,6 +1,7 @@
 package org.kakara.engine.render.preset.pipeline;
 
 import org.joml.Matrix4f;
+import org.kakara.engine.exceptions.render.ShaderNotFoundException;
 import org.kakara.engine.lighting.LightHandler;
 import org.kakara.engine.lighting.ShadowMap;
 import org.kakara.engine.render.*;
@@ -24,16 +25,30 @@ import static org.lwjgl.opengl.GL13.*;
 public class ChunkPipeline implements RenderPipeline {
 
     private Shader chunkShaderProgram;
+    private ShaderManager manager;
     private Transformation transformation;
     private FrustumCullingFilter frustumFilter;
     private ShadowMap shadowMap;
 
     @Override
     public void init(ShaderManager manager, Transformation transformation, FrustumCullingFilter frustumFilter, ShadowMap shadowMap) {
+        this.manager = manager;
         chunkShaderProgram = manager.findShader("Chunk").getShader();
         this.transformation = transformation;
         this.frustumFilter = frustumFilter;
         this.shadowMap = shadowMap;
+    }
+
+    /**
+     * Set the shader of the Chunk Pipeline.
+     *
+     * @param shader The name of the shader.
+     */
+    public void setShader(String shader) {
+        ShaderProgram program = manager.findShader(shader);
+        if (program == null)
+            throw new ShaderNotFoundException("Unable to find shader: " + shader);
+        this.chunkShaderProgram = program.getShader();
     }
 
     @Override

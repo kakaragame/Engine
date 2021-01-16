@@ -22,9 +22,12 @@ import java.util.Map;
 import static org.lwjgl.opengl.GL20.*;
 
 /**
- * Create custom shader programs.
+ * The engine's representation of a GLSL shader program.
+ *
+ * <p>See {@link ShaderProgram} and {@link ShaderManager} for creating custom shaders and implementing them into
+ * render pipelines.</p>
  */
-public class Shader {
+public final class Shader {
     private final int programId;
     private final Map<String, Integer> uniforms;
     private int vertexShaderId;

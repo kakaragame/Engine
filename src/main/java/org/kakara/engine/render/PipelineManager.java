@@ -14,9 +14,9 @@ import java.util.List;
  *
  * @since 1.0-Pre4
  */
-public class PipelineManager {
+public final class PipelineManager {
 
-    private List<RenderPipeline> pipelineList;
+    private final List<RenderPipeline> pipelineList;
 
     /**
      * Internal use only. Do not construct this class.
@@ -45,5 +45,32 @@ public class PipelineManager {
      */
     public List<RenderPipeline> getPipelines() {
         return pipelineList;
+    }
+
+    /**
+     * Get the standard pipeline.
+     *
+     * @return The standard pipeline.
+     */
+    public StandardPipeline getStandardPipeline() {
+        return (StandardPipeline) pipelineList.get(0);
+    }
+
+    /**
+     * Get the chunk pipeline.
+     *
+     * @return The chunk pipeline.
+     */
+    public ChunkPipeline getChunkPipeline() {
+        return (ChunkPipeline) pipelineList.get(1);
+    }
+
+    /**
+     * Get the particle pipeline.
+     *
+     * @return The particle pipeline.
+     */
+    public ParticlesPipeline getParticlePipeline() {
+        return (ParticlesPipeline) pipelineList.get(2);
     }
 }
