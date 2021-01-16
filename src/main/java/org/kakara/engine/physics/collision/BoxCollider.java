@@ -112,7 +112,7 @@ public class BoxCollider implements Collider {
     @Override
     public Vector3 getRelativePoint1() {
         if (!relative)
-            return point1.add(offset).subtract(item.getColPosition());
+            return point1.add(offset).subtractMut(item.getColPosition());
         return point1.add(offset);
     }
 
@@ -126,7 +126,7 @@ public class BoxCollider implements Collider {
     @Override
     public Vector3 getRelativePoint2() {
         if (!relative)
-            return point2.add(offset).subtract(item.getColPosition());
+            return point2.add(offset).subtractMut(item.getColPosition());
         return point2.add(offset);
     }
 
@@ -152,7 +152,7 @@ public class BoxCollider implements Collider {
             CollisionManager.Contact contact = cm.isCollidingX(gi.getCollider(), item.getCollider());
             while (contact.isIntersecting()) {
                 contact = cm.isCollidingX(gi.getCollider(), item.getCollider());
-                item.setColPosition(item.getColPosition().add(new Vector3(contact.getnEnter().mul(-1).mul(contact.getPenetration()))));
+                item.getColPosition().addMut(contact.getnEnter().mul(-1).mul(contact.getPenetration()));
             }
         }
     }
@@ -172,7 +172,7 @@ public class BoxCollider implements Collider {
             CollisionManager.Contact contact = cm.isCollidingY(gi.getCollider(), item.getCollider());
             while (contact.isIntersecting()) {
                 contact = cm.isCollidingY(gi.getCollider(), item.getCollider());
-                item.setColPosition(item.getColPosition().add(new Vector3(contact.getnEnter().mul(-1).mul(contact.getPenetration()))));
+                item.getColPosition().addMut(contact.getnEnter().mul(-1).mul(contact.getPenetration()));
             }
         }
     }
@@ -192,7 +192,7 @@ public class BoxCollider implements Collider {
             CollisionManager.Contact contact = cm.isCollidingXZ(gi.getCollider(), item.getCollider());
             while (contact.isIntersecting()) {
                 contact = cm.isCollidingXZ(gi.getCollider(), item.getCollider());
-                item.setColPosition(item.getColPosition().add(new Vector3(contact.getnEnter().mul(-1).mul(contact.getPenetration()))));
+                item.getColPosition().addMut(contact.getnEnter().mul(-1).mul(contact.getPenetration()));
             }
         }
     }

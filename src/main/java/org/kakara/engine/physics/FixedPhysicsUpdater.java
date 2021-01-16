@@ -40,7 +40,8 @@ public class FixedPhysicsUpdater extends TimerTask {
                     MeshGameItem meshItem = (MeshGameItem) item;
                     if (meshItem.getCollider() == null) continue;
                     Collider collider = meshItem.getCollider();
-                    meshItem.setVelocity(meshItem.getVelocity().add(meshItem.getAcceleration().getX() * deltaTime, meshItem.getAcceleration().getY() * deltaTime, meshItem.getAcceleration().getZ() * deltaTime));
+                    // Add by mutation to keep object creation down.
+                    meshItem.getVelocity().addMut(meshItem.getAcceleration().getX() * deltaTime, meshItem.getAcceleration().getY() * deltaTime, meshItem.getAcceleration().getZ() * deltaTime);
                     meshItem.translateBy(meshItem.getVelocity().getX() * deltaTime, 0, 0);
 
                     // Handles Triggers

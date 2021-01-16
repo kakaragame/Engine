@@ -57,6 +57,8 @@ public class MainGameScene extends AbstractGameScene {
     private GameItem collider;
     private KakaraTest test;
 
+    private boolean stopped = false;
+
     private float angleInc;
 
     private FlowParticleEmitter particleEmitter;
@@ -339,6 +341,7 @@ public class MainGameScene extends AbstractGameScene {
         }
         if (ki.isKeyPressed(GLFW_KEY_TAB)) {
             this.setCurserStatus(true);
+            stopped = !stopped;
         }
 
         Vector3 currentPos = collider.getPosition();
@@ -381,7 +384,8 @@ public class MainGameScene extends AbstractGameScene {
 //        getLightHandler().getSpotLight(0).setPosition(handler.getCamera().getPosition());
 
         MouseInput mi = handler.getMouseInput();
-        getCamera().moveRotation((float) (mi.getDeltaPosition().y), (float) mi.getDeltaPosition().x, 0);
+        if(!stopped)
+            getCamera().moveRotation((float) (mi.getDeltaPosition().y), (float) mi.getDeltaPosition().x, 0);
         if (handler.getSoundManager().getListener() != null)
             handler.getSoundManager().getListener().setPosition(getCamera().getPosition());
 
