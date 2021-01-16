@@ -54,6 +54,8 @@ public class ResourceManager {
 
     /**
      * @deprecated Not Implemented
+     * @param url the Url.
+     * @return the resource.
      */
     public Resource getExternalResource(String url) {
         return null;

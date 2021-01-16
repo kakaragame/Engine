@@ -287,7 +287,6 @@ public class MeshGameItem implements GameItem {
      * Set the collider for a game item
      *
      * @param collider The instance of the collider.
-     * @return The instance of the game item.
      */
     public void setCollider(Collider collider) {
         this.collider = collider;

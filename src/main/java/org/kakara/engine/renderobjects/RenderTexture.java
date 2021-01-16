@@ -52,7 +52,7 @@ public class RenderTexture {
     /**
      * Get the offset on the x side.
      *
-     * @return
+     * @return The x offset.
      */
     public float getXOffset() {
         return xOffset;
@@ -61,7 +61,7 @@ public class RenderTexture {
     /**
      * Get the offset on the y side.
      *
-     * @return
+     * @return The y offset.
      */
     public float getYOffset() {
         return yOffset;
