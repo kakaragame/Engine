@@ -4,13 +4,16 @@ import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 import org.kakara.engine.Camera;
-import org.kakara.engine.lighting.DirectionalLight;
-import org.kakara.engine.lighting.LightHandler;
-import org.kakara.engine.lighting.PointLight;
-import org.kakara.engine.lighting.SpotLight;
+import org.kakara.engine.lighting.*;
 import org.kakara.engine.math.Vector3;
+import org.kakara.engine.scene.Scene;
 
 import java.util.List;
+
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
+import static org.lwjgl.opengl.GL11.glBindTexture;
+import static org.lwjgl.opengl.GL13.GL_TEXTURE2;
+import static org.lwjgl.opengl.GL13.glActiveTexture;
 
 /**
  * This utility class allows easy rendering of basic information and makes up the rendering MAPI.
@@ -25,17 +28,19 @@ public class Graphics {
     /**
      * Render lights in a scene.
      * <p>The sole purpose of this method is the handle the light rendering, all other uniforms must be set.</p>
-     * <p>For most purposes, {@link #renderLights(Camera, LightHandler, Shader)} should be use. Only use this if you need to.</p>
-     * @param viewMatrix The view matrix for the camera.
-     * @param ambientLight The ambient lighting.
-     * @param pointLightList The point lighting list.
-     * @param spotLightList The spot light list.
+     * <p>For most purposes, {@link #renderLights(Scene, Camera, LightHandler, Shader)} should be use. Only use this if you need to.</p>
+     *
+     * @param scene            The scene.
+     * @param viewMatrix       The view matrix for the camera.
+     * @param ambientLight     The ambient lighting.
+     * @param pointLightList   The point lighting list.
+     * @param spotLightList    The spot light list.
      * @param directionalLight The directional light.
-     * @param specularPower The specular light list.
-     * @param program The shader program to use.
-     *                <p>Must follow the standard shading system.</p>
+     * @param specularPower    The specular light list.
+     * @param program          The shader program to use.
+     *                         <p>Must follow the standard shading system.</p>
      */
-    public static void renderLights(Matrix4f viewMatrix, Vector3f ambientLight, List<PointLight> pointLightList, List<SpotLight> spotLightList, DirectionalLight directionalLight, float specularPower, Shader program) {
+    public static void renderLights(Scene scene, Matrix4f viewMatrix, Vector3f ambientLight, List<PointLight> pointLightList, List<SpotLight> spotLightList, DirectionalLight directionalLight, float specularPower, Shader program) {
         program.setUniform("ambientLight", ambientLight);
         program.setUniform("specularPower", specularPower);
 
@@ -54,7 +59,7 @@ public class Graphics {
             program.setUniform("pointLights", currPointLight, i);
         }
 
-        // Process Spot Ligths
+        // Process Spot Lights
         numLights = spotLightList != null ? spotLightList.size() : 0;
         for (int i = 0; i < numLights; i++) {
             // Get a copy of the spot light object and transform its position and cone direction to view coordinates
@@ -79,17 +84,32 @@ public class Graphics {
         dir.mul(viewMatrix);
         currDirLight.setDirection(new Vector3(dir.x, dir.y, dir.z));
         program.setUniform("directionalLight", currDirLight);
+
+        program.setUniform("fog", scene.getFog());
+        program.setUniform("shadowMap", 2);
     }
 
     /**
      * Render lights in a scene.
      * <p>The sole purpose of this method is the handle the light rendering, all other uniforms must be set.</p>
-     * @param camera The camera.
+     *
+     * @param scene        The scene.
+     * @param camera       The camera.
      * @param lightHandler The light handler.
-     * @param shader The shader.
+     * @param shader       The shader.
      */
-    public static void renderLights(Camera camera, LightHandler lightHandler, Shader shader){
-        renderLights(camera.getViewMatrix(), lightHandler.getAmbientLight().toVector(), lightHandler.getPointLights(),
+    public static void renderLights(Scene scene, Camera camera, LightHandler lightHandler, Shader shader) {
+        renderLights(scene, camera.getViewMatrix(), lightHandler.getAmbientLight().toVector(), lightHandler.getPointLights(),
                 lightHandler.getSpotLights(), lightHandler.getDirectionalLight(), 10f, shader);
+    }
+
+    /**
+     * Bind the shadow map texture.
+     *
+     * @param shadowMap The shadow map.
+     */
+    public static void bindShadowMap(ShadowMap shadowMap) {
+        glActiveTexture(GL_TEXTURE2);
+        glBindTexture(GL_TEXTURE_2D, shadowMap.getDepthMapTexture().getId());
     }
 }

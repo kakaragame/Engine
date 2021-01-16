@@ -48,9 +48,6 @@ public class ChunkPipeline implements RenderPipeline {
         List<RenderChunk> renderChunks = ags.getChunkHandler().getRenderChunkList();
         if (renderChunks == null) return;
 
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, ags.getTextureAtlas().getTexture().getId());
-
         for (RenderChunk renderChunk : renderChunks) {
             if (renderChunk == null) continue;
             if (renderChunk.getBlockCount() < 1) continue;
@@ -61,6 +58,7 @@ public class ChunkPipeline implements RenderPipeline {
             Matrix4f modelMatrix = transformation.buildModelMatrix(renderChunk);
             Matrix4f modelLightViewMatrix = transformation.buildModelLightViewMatrix(modelMatrix, lightViewMatrix);
             depthShader.setUniform("modelLightViewMatrix", modelLightViewMatrix);
+            depthShader.setUniform("orthoProjectionMatrix", transformation.getOrthoProjectionMatrix());
 
 
             renderChunk.render();
@@ -87,10 +85,7 @@ public class ChunkPipeline implements RenderPipeline {
         // Render Lighting
         LightHandler lh = ags.getLightHandler();
         assert lh != null;
-        Graphics.renderLights(scene.getCamera(), lh, chunkShaderProgram);
-
-        chunkShaderProgram.setUniform("fog", scene.getFog());
-        chunkShaderProgram.setUniform("shadowMap", 2);
+        Graphics.renderLights(scene, scene.getCamera(), lh, chunkShaderProgram);
         chunkShaderProgram.setUniform("textureAtlas", 0);
         chunkShaderProgram.setUniform("reflectance", 1f);
 
@@ -116,8 +111,8 @@ public class ChunkPipeline implements RenderPipeline {
 
             Matrix4f modelMatrix = transformation.buildModelMatrix(renderChunk);
 
-            glActiveTexture(GL_TEXTURE2);
-            glBindTexture(GL_TEXTURE_2D, shadowMap.getDepthMapTexture().getId());
+            Graphics.bindShadowMap(shadowMap);
+
             Matrix4f modelViewMatrix = transformation.buildModelViewMatrix(modelMatrix, viewMatrix);
             chunkShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
 

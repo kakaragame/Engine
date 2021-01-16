@@ -53,13 +53,10 @@ public class StandardPipeline implements RenderPipeline {
         Matrix4f viewMatrix = scene.getCamera().getViewMatrix();
 
         // Render Lighting
-        LightHandler lh = GameHandler.getInstance().getSceneManager().getCurrentScene().getLightHandler();
+        LightHandler lh = scene.getLightHandler();
         assert lh != null;
 
-        Graphics.renderLights(scene.getCamera(), lh, shaderProgram);
-
-        shaderProgram.setUniform("fog", scene.getFog());
-        shaderProgram.setUniform("shadowMap", 2);
+        Graphics.renderLights(scene, scene.getCamera(), lh, shaderProgram);
 
         renderNonInstancedMeshes(scene, false, shaderProgram, viewMatrix, lightViewMatrix);
 
@@ -86,8 +83,7 @@ public class StandardPipeline implements RenderPipeline {
             if (!depthMap) {
                 if (mesh.getMaterial().isPresent())
                     shader.setUniform("material", mesh.getMaterial().get());
-                glActiveTexture(GL_TEXTURE2);
-                glBindTexture(GL_TEXTURE_2D, shadowMap.getDepthMapTexture().getId());
+                Graphics.bindShadowMap(shadowMap);
             }
 
             mesh.renderList(mapMeshes.get(mesh), frustumFilter, (GameItem gameItem) -> {
@@ -124,8 +120,7 @@ public class StandardPipeline implements RenderPipeline {
         for (InstancedMesh mesh : mapMeshes.keySet()) {
             if (!depthMap) {
                 shaderProgram.setUniform("material", mesh.getMaterial().get());
-                glActiveTexture(GL_TEXTURE2);
-                glBindTexture(GL_TEXTURE_2D, shadowMap.getDepthMapTexture().getId());
+                Graphics.bindShadowMap(shadowMap);
             }
             mesh.renderListInstanced(mapMeshes.get(mesh), depthMap, transformation, viewMatrix, lightViewMatrix);
         }
