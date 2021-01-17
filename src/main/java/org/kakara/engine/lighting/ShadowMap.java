@@ -1,5 +1,6 @@
 package org.kakara.engine.lighting;
 
+import org.kakara.engine.exceptions.render.GenericRenderException;
 import org.kakara.engine.gameitems.Texture;
 
 import static org.lwjgl.opengl.GL30.*;
@@ -16,7 +17,7 @@ public class ShadowMap {
 
     private final Texture depthMap;
 
-    public ShadowMap() throws Exception {
+    public ShadowMap() throws GenericRenderException {
         // Create a FBO to render the depth map
         depthMapFBO = glGenFramebuffers();
 
@@ -31,7 +32,7 @@ public class ShadowMap {
         glReadBuffer(GL_NONE);
 
         if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
-            throw new Exception("Could not create FrameBuffer");
+            throw new GenericRenderException("Could not create FrameBuffer");
         }
 
         // Unbind

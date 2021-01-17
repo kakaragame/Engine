@@ -12,6 +12,8 @@ public class KakaraTest implements Game {
     public void start(GameHandler handler) throws Exception {
         gInst = handler;
 
+        handler.getWindow().setClearColor(1, 0, 0, 1);
+
 //        TitleScreenScene tss = new TitleScreenScene(handler, this);
 ////        MainGameScene mgs = new MainGameScene(handler, this);
 //        gInst.getSceneManager().setScene(tss);

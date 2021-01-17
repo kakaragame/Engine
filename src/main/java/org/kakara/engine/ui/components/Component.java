@@ -15,12 +15,13 @@ import java.util.List;
  * The main UI component
  */
 public interface Component extends Tagable, UIListener {
-    @Deprecated
+
     /**
      * Please use {@link UIListener#addUActionEvent(Class, UActionEvent)}
      * Deprecated to use a consistent method
-     * @deprecated
+     * @deprecated To be removed in the future.
      */
+    @Deprecated
     default void addUActionEvent(UActionEvent uae, Class<? extends UActionEvent> clazz) {
         addUActionEvent(clazz, uae);
     }

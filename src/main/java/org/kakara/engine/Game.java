@@ -18,7 +18,9 @@ public interface Game {
     /**
      * The first scene of the game.
      *
+     * @param handler The game handler.
      * @return The first scene that should be loaded in.
+     * @throws Exception Exception if something breaks
      * @since 1.0-Pre1
      */
     Scene firstScene(GameHandler handler) throws Exception;

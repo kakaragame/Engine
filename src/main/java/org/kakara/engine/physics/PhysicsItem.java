@@ -34,7 +34,7 @@ public interface PhysicsItem {
 
     /**
      * Set the velocity according to the direction of the camera.
-     * <p>A velocity of <0, 0, 1> will move the object in the forward direction from the point of view of the camera.</p>
+     * <p>A velocity of &#60;0, 0, 1&#62; will move the object in the forward direction from the point of view of the camera.</p>
      *
      * @param velocity The velocity.
      * @param camera   The camera.

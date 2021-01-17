@@ -13,6 +13,8 @@ import org.kakara.engine.physics.collision.Collidable;
  */
 public class Intersection {
 
+    private Intersection() {}
+
     /**
      * Check to see if the collidable intersects with the ray from the camera.
      *

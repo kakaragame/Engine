@@ -1,6 +1,7 @@
 package org.kakara.engine.ui.items;
 
 import org.kakara.engine.GameHandler;
+import org.kakara.engine.exceptions.ui.HierarchyException;
 import org.kakara.engine.math.Vector2;
 import org.kakara.engine.scene.Scene;
 import org.kakara.engine.ui.UICanvas;
@@ -41,7 +42,7 @@ public class ComponentCanvas implements UICanvas {
      */
     public void add(Component component) {
         if (component.getParent() != null)
-            throw new RuntimeException("Error: That component already has a parent!");
+            throw new HierarchyException("Error: That component already has a parent!");
         components.add(component);
         if (init) {
             component.init(scene.getUserInterface(), GameHandler.getInstance());

@@ -1,15 +1,18 @@
 package org.kakara.engine;
 
+import org.kakara.engine.render.PipelineManager;
 import org.kakara.engine.render.Renderer;
+import org.kakara.engine.render.ShaderManager;
 import org.kakara.engine.renderobjects.ChunkHandler;
 import org.kakara.engine.scene.AbstractGameScene;
 import org.kakara.engine.scene.AbstractMenuScene;
-import org.kakara.engine.scene.AbstractScene;
 import org.kakara.engine.utils.Time;
 import org.kakara.engine.window.Window;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+import java.util.Properties;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -20,7 +23,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class GameEngine implements Runnable {
     public static final Thread currentThread = Thread.currentThread();
     //WE will change this to the games logger in the impl.
-    public static Logger LOGGER = LoggerFactory.getLogger(GameEngine.class);
+    public static final Logger LOGGER = LoggerFactory.getLogger(GameEngine.class);
     public final int TARGET_FPS = 75;
     public final int TARGET_UPS = 30;
     private final Window window;
@@ -30,6 +33,17 @@ public class GameEngine implements Runnable {
     private final Queue<Runnable> mainThreadQueue = new LinkedBlockingQueue<>();
     protected boolean running = true;
     private Renderer renderer;
+    private final PipelineManager pipelineManager;
+    private final ShaderManager shaderManager;
+    private static final Properties engineProperties = new Properties();
+
+    static {
+        try {
+            engineProperties.load(GameEngine.class.getResourceAsStream("/engine.properties"));
+        } catch (IOException e) {
+            LOGGER.warn("Unable to load engine.properties", e);
+        }
+    }
 
     /**
      * Create a new game.
@@ -44,8 +58,10 @@ public class GameEngine implements Runnable {
         this.window = new Window(windowTitle, width, height, true, vSync);
         time = new Time();
         this.game = game;
-        this.renderer = new Renderer();
+        this.renderer = new Renderer(this);
         this.gameHandler = new GameHandler(this);
+        this.shaderManager = new ShaderManager();
+        this.pipelineManager = new PipelineManager();
     }
 
     /**
@@ -116,18 +132,25 @@ public class GameEngine implements Runnable {
             try {
                 Thread.sleep(1);
             } catch (InterruptedException ie) {
-                ie.printStackTrace();
+                LOGGER.error("An error has occurred when attempting to sleep the thread: ", ie);
+                Thread.currentThread().interrupt();
             }
         }
     }
 
+    /**
+     * Separate method to handle input.
+     * <p>
+     * This is currently not implemented.
+     */
     protected void input() {
+
     }
 
     /**
      * Updates for the game logic.
      *
-     * @param interval
+     * @param interval The interval.
      */
     protected void update(float interval) {
         gameHandler.update();
@@ -135,7 +158,6 @@ public class GameEngine implements Runnable {
             gameHandler.getSceneManager().getCurrentScene().getItemHandler().update();
         gameHandler.getSceneManager().getCurrentScene().update(interval);
         game.update();
-//        collide();
     }
 
     /**
@@ -191,14 +213,6 @@ public class GameEngine implements Runnable {
     }
 
     /**
-     * Handles collision updates.
-     */
-    protected void collide() {
-        if (!(gameHandler.getCurrentScene() instanceof AbstractScene)) return;
-
-    }
-
-    /**
      * Get the window for the game.
      *
      * @return The window
@@ -217,9 +231,9 @@ public class GameEngine implements Runnable {
     }
 
     /**
-     * Get the gamehandler for the engine
+     * Get the game handler for the engine
      *
-     * @return
+     * @return The game handler for the engine.
      */
     public GameHandler getGameHandler() {
         return gameHandler;
@@ -228,10 +242,10 @@ public class GameEngine implements Runnable {
     /**
      * Reset the render. (To be used when the scene is changed).
      *
-     * @throws Exception
+     * @throws Exception Throws an exception if the renderer cannot initialize.
      */
     public void resetRender() throws Exception {
-        renderer = new Renderer();
+        renderer = new Renderer(this);
         renderer.init();
     }
 
@@ -243,13 +257,36 @@ public class GameEngine implements Runnable {
      */
     public void addQueueItem(Runnable run) {
         if (run == null)
-            throw new RuntimeException("NULL!!");
+            throw new IllegalArgumentException("A null runnable cannot be added to the list");
         mainThreadQueue.add(run);
+    }
+
+    /**
+     * Get the pipeline manager.
+     *
+     * @return The pipeline manager.
+     * @since 1.0-Pre4
+     */
+    public PipelineManager getPipelineManager() {
+        return pipelineManager;
+    }
+
+    /**
+     * Get the shader manager.
+     *
+     * @return The shader manager.
+     * @since 1.0-Pre4
+     */
+    public ShaderManager getShaderManager() {
+        return shaderManager;
     }
 
     protected void exit() {
         running = false;
     }
 
+    public static String getEngineVersion() {
+        return engineProperties.getProperty("engine.version");
+    }
 
 }

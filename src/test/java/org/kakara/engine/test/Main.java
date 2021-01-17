@@ -7,6 +7,7 @@ public class Main {
 
     public static void main(String[] args) {
         System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", "debug");
+        System.out.println("GameEngine.getEngineVersion() = " + GameEngine.getEngineVersion());
         KakaraTest kt = new KakaraTest();
 
         Configuration.DEBUG_MEMORY_ALLOCATOR.set(true);

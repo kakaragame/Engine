@@ -1,8 +1,9 @@
 package org.kakara.engine.engine;
 
 /**
- * Contains all of the data for a cube.
- * <p>Pre-made cube data for your pleasure.</p>
+ * This utility class contains the necessary information to form a basic cube mesh.
+ * <p>
+ * This is mainly used for {@link org.kakara.engine.gameitems.mesh.Mesh}.
  */
 public final class CubeData {
 

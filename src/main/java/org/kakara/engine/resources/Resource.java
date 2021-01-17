@@ -11,6 +11,8 @@ import java.nio.ByteBuffer;
 public interface Resource {
     /**
      * Returns the original path for the resource
+     *
+     * @return The original path for the resource.
      */
     String getOriginalPath();
 

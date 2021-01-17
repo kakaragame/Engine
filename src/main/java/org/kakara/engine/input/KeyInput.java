@@ -25,9 +25,7 @@ public class KeyInput {
             if (action != GLFW_PRESS) return;
             engine.getGameHandler().getSceneManager().getCurrentScene().getEventManager().fireHandler(new KeyPressEvent(key));
         });
-        glfwSetCharCallback(engine.getWindow().getWindowHandler(), (window, codepoint) -> {
-            engine.getGameHandler().getSceneManager().getCurrentScene().getEventManager().fireHandler(new CharacterPressEvent(codepoint));
-        });
+        glfwSetCharCallback(engine.getWindow().getWindowHandler(), (window, codepoint) -> engine.getGameHandler().getSceneManager().getCurrentScene().getEventManager().fireHandler(new CharacterPressEvent(codepoint)));
     }
 
     /**

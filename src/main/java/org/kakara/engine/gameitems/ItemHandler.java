@@ -153,14 +153,14 @@ public class ItemHandler {
      * <p>Internal Use Only.</p>
      */
     public void cleanup() {
-        for (Mesh m : instancedMeshMap.keySet()) {
-            for (GameItem gi : instancedMeshMap.get(m)) {
+        for (Map.Entry<InstancedMesh, List<GameItem>> m : instancedMeshMap.entrySet()) {
+            for (GameItem gi : m.getValue()) {
                 gi.cleanup();
             }
         }
 
-        for (IMesh m : nonInstancedMeshMap.keySet()) {
-            for (GameItem gi : nonInstancedMeshMap.get(m)) {
+        for (Map.Entry<IMesh, List<GameItem>> m : nonInstancedMeshMap.entrySet()) {
+            for (GameItem gi : m.getValue()) {
                 gi.cleanup();
             }
         }

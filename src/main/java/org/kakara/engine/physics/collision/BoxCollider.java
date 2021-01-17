@@ -21,7 +21,7 @@ public class BoxCollider implements Collider {
     private Vector3 offset;
     private boolean relative;
     private boolean isTrigger;
-    private boolean resolveable;
+    private boolean resolvable;
 
     private Vector3 lastPosition;
     private Collidable item;
@@ -43,7 +43,7 @@ public class BoxCollider implements Collider {
         this.relative = relative;
         this.offset = new Vector3(0, 0, 0);
         this.isTrigger = false;
-        this.resolveable = true;
+        this.resolvable = true;
         this.triggerEvents = new ArrayList<>();
     }
 
@@ -64,12 +64,12 @@ public class BoxCollider implements Collider {
 
     @Override
     public boolean isResolvable() {
-        return resolveable;
+        return resolvable;
     }
 
     @Override
     public void setResolvable(boolean value) {
-        this.resolveable = value;
+        this.resolvable = value;
     }
 
     /**
@@ -112,7 +112,7 @@ public class BoxCollider implements Collider {
     @Override
     public Vector3 getRelativePoint1() {
         if (!relative)
-            return point1.add(offset).subtract(item.getColPosition());
+            return point1.add(offset).subtractMut(item.getColPosition());
         return point1.add(offset);
     }
 
@@ -126,7 +126,7 @@ public class BoxCollider implements Collider {
     @Override
     public Vector3 getRelativePoint2() {
         if (!relative)
-            return point2.add(offset).subtract(item.getColPosition());
+            return point2.add(offset).subtractMut(item.getColPosition());
         return point2.add(offset);
     }
 
@@ -139,7 +139,7 @@ public class BoxCollider implements Collider {
 
     @Override
     public void updateX() {
-        if (isTrigger || !resolveable) return;
+        if (isTrigger || !resolvable) return;
         this.lastPosition = item.getColPosition().clone();
 
         CollisionManager cm = handler.getCurrentScene().getCollisionManager();
@@ -152,14 +152,14 @@ public class BoxCollider implements Collider {
             CollisionManager.Contact contact = cm.isCollidingX(gi.getCollider(), item.getCollider());
             while (contact.isIntersecting()) {
                 contact = cm.isCollidingX(gi.getCollider(), item.getCollider());
-                item.setColPosition(item.getColPosition().add(new Vector3(contact.getnEnter().mul(-1).mul(contact.getPenetration()))));
+                item.getColPosition().addMut(contact.getnEnter().mul(-1).mul(contact.getPenetration()));
             }
         }
     }
 
     @Override
     public void updateY() {
-        if (isTrigger || !resolveable) return;
+        if (isTrigger || !resolvable) return;
         this.lastPosition = item.getColPosition().clone();
 
         CollisionManager cm = handler.getCurrentScene().getCollisionManager();
@@ -172,14 +172,14 @@ public class BoxCollider implements Collider {
             CollisionManager.Contact contact = cm.isCollidingY(gi.getCollider(), item.getCollider());
             while (contact.isIntersecting()) {
                 contact = cm.isCollidingY(gi.getCollider(), item.getCollider());
-                item.setColPosition(item.getColPosition().add(new Vector3(contact.getnEnter().mul(-1).mul(contact.getPenetration()))));
+                item.getColPosition().addMut(contact.getnEnter().mul(-1).mul(contact.getPenetration()));
             }
         }
     }
 
     @Override
     public void updateZ() {
-        if (isTrigger || !resolveable) return;
+        if (isTrigger || !resolvable) return;
         this.lastPosition = item.getColPosition().clone();
 
         CollisionManager cm = handler.getCurrentScene().getCollisionManager();
@@ -192,7 +192,7 @@ public class BoxCollider implements Collider {
             CollisionManager.Contact contact = cm.isCollidingXZ(gi.getCollider(), item.getCollider());
             while (contact.isIntersecting()) {
                 contact = cm.isCollidingXZ(gi.getCollider(), item.getCollider());
-                item.setColPosition(item.getColPosition().add(new Vector3(contact.getnEnter().mul(-1).mul(contact.getPenetration()))));
+                item.getColPosition().addMut(contact.getnEnter().mul(-1).mul(contact.getPenetration()));
             }
         }
     }
@@ -254,7 +254,7 @@ public class BoxCollider implements Collider {
 
     @Override
     public void update() {
-        if (isTrigger || !resolveable) return;
+        if (isTrigger || !resolvable) return;
 
         CollisionManager cm = handler.getCurrentScene().getCollisionManager();
         assert cm != null;

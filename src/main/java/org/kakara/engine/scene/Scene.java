@@ -20,6 +20,9 @@ public interface Scene {
 
     /**
      * Load the graphics
+     *
+     * @param gameHandler The game handler.
+     * @throws Exception If an error occurs.
      */
     void loadGraphics(GameHandler gameHandler) throws Exception;
 
@@ -31,6 +34,8 @@ public interface Scene {
 
     /**
      * Called every time the game updates.
+     *
+     * @param interval The update interval.
      */
     void update(float interval);
 

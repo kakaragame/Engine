@@ -100,7 +100,6 @@ public class MeshGameItem implements GameItem {
      */
     public GameItem setPosition(Vector3 position) {
         this.position.set(position);
-        //features.forEach(feature -> feature.updateValues(this));
         return this;
     }
 
@@ -253,12 +252,12 @@ public class MeshGameItem implements GameItem {
 
     @Override
     public final Vector3 getColPosition() {
-        return getPosition().clone();
+        return getPosition();
     }
 
     @Override
     public void setColPosition(Vector3 vec) {
-        setPosition(vec.clone());
+        setPosition(vec);
     }
 
     @Override
@@ -288,7 +287,6 @@ public class MeshGameItem implements GameItem {
      * Set the collider for a game item
      *
      * @param collider The instance of the collider.
-     * @return The instance of the game item.
      */
     public void setCollider(Collider collider) {
         this.collider = collider;
@@ -320,8 +318,6 @@ public class MeshGameItem implements GameItem {
             for (IMesh mesh : meshes) {
                 mesh.render();
             }
-        } else {
-            System.out.println("Invisible");
         }
     }
 

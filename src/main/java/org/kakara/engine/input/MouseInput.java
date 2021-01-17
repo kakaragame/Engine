@@ -59,19 +59,22 @@ public class MouseInput {
         glfwSetCursorPosCallback(window.getWindowHandler(), (windowHandle, xpos, ypos) -> {
 
         });
-        glfwSetCursorEnterCallback(window.getWindowHandler(), (windowHandle, entered) -> {
-            inWindow = entered;
-        });
+        glfwSetCursorEnterCallback(window.getWindowHandler(), (windowHandle, entered) -> inWindow = entered);
         glfwSetMouseButtonCallback(window.getWindowHandler(), (windowHandle, button, action, mode) -> {
             if(action == GLFW_PRESS){
-                leftButtonPressed = button == GLFW_MOUSE_BUTTON_1;
-                rightButtonPressed = button == GLFW_MOUSE_BUTTON_2;
+                if(button == GLFW_MOUSE_BUTTON_1)
+                    leftButtonPressed = true;
+                else if(button == GLFW_MOUSE_BUTTON_2)
+                    rightButtonPressed = true;
 
                 MouseClickType mct = MouseClickType.valueOf(button);
                 handler.getSceneManager().getCurrentScene().getEventManager().fireHandler(new MouseClickEvent(this.getPosition(), mct));
             }else if(action == GLFW_RELEASE){
-                leftButtonPressed = !leftButtonPressed || button != GLFW_MOUSE_BUTTON_1;
-                rightButtonPressed = !rightButtonPressed || button != GLFW_MOUSE_BUTTON_2;
+                if(button == GLFW_MOUSE_BUTTON_1)
+                    leftButtonPressed = false;
+                else if(button == GLFW_MOUSE_BUTTON_2)
+                    rightButtonPressed = false;
+
                 MouseClickType mct = MouseClickType.valueOf(button);
                 handler.getSceneManager().getCurrentScene().getEventManager().fireHandler(new MouseReleaseEvent(this.getPosition(), mct));
             }
@@ -146,7 +149,6 @@ public class MouseInput {
      */
     public Vector2d getDeltaPosition() {
         return new Vector2d(currentPos.x - previousPos.x, currentPos.y - previousPos.y);
-//        return currentPos.min(previousPos);
     }
 
     /**

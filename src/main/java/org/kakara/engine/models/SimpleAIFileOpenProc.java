@@ -1,5 +1,6 @@
 package org.kakara.engine.models;
 
+import org.kakara.engine.exceptions.GenericLoadException;
 import org.lwjgl.assimp.*;
 
 import java.io.IOException;
@@ -19,7 +20,7 @@ public class SimpleAIFileOpenProc extends AIFileOpenProc {
         try {
             data = ioResourceToByteBuffer(fileNameUtf8, 8192);
         } catch (IOException e) {
-            throw new RuntimeException("Could not open file: " + fileNameUtf8);
+            throw new GenericLoadException("Could not open file: " + fileNameUtf8);
         }
         AIFileReadProcI fileReadProc = new AIFileReadProc() {
             public long invoke(long pFile, long pBuffer, long size, long count) {

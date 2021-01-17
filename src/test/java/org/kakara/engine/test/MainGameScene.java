@@ -57,6 +57,8 @@ public class MainGameScene extends AbstractGameScene {
     private GameItem collider;
     private KakaraTest test;
 
+    private boolean stopped = false;
+
     private float angleInc;
 
     private FlowParticleEmitter particleEmitter;
@@ -159,7 +161,8 @@ public class MainGameScene extends AbstractGameScene {
         RenderTexture txt2 = new RenderTexture(resourceManager.getResource("/oop.png"));
         RenderTexture txt3 = new RenderTexture(resourceManager.getResource("/ExampleBlock.png"));
         RenderTexture txt5 = new RenderTexture(resourceManager.getResource("/ovly2.png"));
-        TextureAtlas atlas = new TextureAtlas(Arrays.asList(txt1, txt2, txt3, txt5), Paths.get("").toAbsolutePath().toString(), this);
+        RenderTexture txt6 = new RenderTexture(resourceManager.getResource("/fewio.png"));
+        TextureAtlas atlas = new TextureAtlas(Arrays.asList(txt1, txt2, txt3, txt5, txt6), Paths.get("").toAbsolutePath().toString(), this);
         setTextureAtlas(atlas);
 
         System.out.println(txt3.getYOffset());
@@ -192,10 +195,17 @@ public class MainGameScene extends AbstractGameScene {
                         for(int x = 0; x < 16; x++){
                             for(int y = 0; y < 16; y++){
                                 for(int z = 0; z < 16; z++){
-                                    RenderBlock rb = new RenderBlock(new BlockLayout(), getTextureAtlas().getTextures().get(ThreadLocalRandom.current().nextInt(0, 3)), new Vector3(x, y, z));
+                                    RenderBlock rb;
+                                    if(x%3 == 0){
+                                        rb = new RenderBlock(new BlockLayout(), getTextureAtlas().getTextures().get(4), new Vector3(x, y, z));
+                                        rb.setOpaque(false);
+                                    }else{
+                                        rb = new RenderBlock(new BlockLayout(), getTextureAtlas().getTextures().get(ThreadLocalRandom.current().nextInt(0, 3)), new Vector3(x, y, z));
+                                    }
                                     if(x % 2 == 0){
                                         rb.setOverlay(getTextureAtlas().getTextures().get(3));
                                     }
+
                                     rc.addBlock(rb);
                                 }
                             }
@@ -331,6 +341,7 @@ public class MainGameScene extends AbstractGameScene {
         }
         if (ki.isKeyPressed(GLFW_KEY_TAB)) {
             this.setCurserStatus(true);
+            stopped = !stopped;
         }
 
         Vector3 currentPos = collider.getPosition();
@@ -373,7 +384,8 @@ public class MainGameScene extends AbstractGameScene {
 //        getLightHandler().getSpotLight(0).setPosition(handler.getCamera().getPosition());
 
         MouseInput mi = handler.getMouseInput();
-        getCamera().moveRotation((float) (mi.getDeltaPosition().y), (float) mi.getDeltaPosition().x, 0);
+        if(!stopped)
+            getCamera().moveRotation((float) (mi.getDeltaPosition().y), (float) mi.getDeltaPosition().x, 0);
         if (handler.getSoundManager().getListener() != null)
             handler.getSoundManager().getListener().setPosition(getCamera().getPosition());
 
