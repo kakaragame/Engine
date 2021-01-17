@@ -6,7 +6,7 @@ plugins {
     id("com.github.johnrengelman.shadow") version "6.1.0"
 }
 val lwjglVersion = "3.2.3"
-val jomlVersion = "1.10.0"
+val jomlVersion = "1.9.25"
 
 val lwjglNatives = when (OperatingSystem.current()) {
     OperatingSystem.LINUX -> "natives-linux"
@@ -17,7 +17,6 @@ val lwjglNatives = when (OperatingSystem.current()) {
 }
 
 group = "org.kakara"
-version = "1.0-SNAPSHOT"
 version = "1.0-SNAPSHOT"
 if (hasProperty("buildNumber")) {
     version = "1.0-" + properties.get("buildNumber") + "-SNAPSHOT";
@@ -31,10 +30,23 @@ java {
 repositories {
     mavenCentral()
     maven("https://repo.ryandw11.com/repository/maven-releases")
-
+    jcenter()
 }
 
 dependencies {
+    // Regular Depends
+    implementation(group = "me.ryandw11", name = "Octree", version = "1.0")
+    implementation("org.apache.commons:commons-lang3:3.11")
+    implementation("commons-io:commons-io:2.6")
+    implementation("org.jetbrains:annotations:20.1.0")
+    implementation("com.github.nifty-gui:nifty:1.4.3")
+    implementation("org.l33tlabs.twl:pngdecoder:1.0")
+    implementation("io.imgui.java:binding:1.77-0.17.2")
+    implementation("io.imgui.java:lwjgl3:1.77-0.17.2")
+    implementation("io.imgui.java:$lwjglNatives:1.77-0.17.2")
+    implementation("org.slf4j:slf4j-api:1.7.30")
+
+    //LWJGL
     implementation(platform("org.lwjgl:lwjgl-bom:$lwjglVersion"))
 
     implementation("org.lwjgl", "lwjgl")
@@ -110,5 +122,4 @@ dependencies {
     runtimeOnly("org.lwjgl", "lwjgl-yoga", classifier = lwjglNatives)
     runtimeOnly("org.lwjgl", "lwjgl-zstd", classifier = lwjglNatives)
     implementation("org.joml", "joml", jomlVersion)
-    implementation(group = "me.ryandw11", name = "Octree", version = "1.0")
 }
