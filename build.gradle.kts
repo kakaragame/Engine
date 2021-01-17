@@ -4,6 +4,8 @@ plugins {
     java
     `java-library`
     id("com.github.johnrengelman.shadow") version "6.1.0"
+    `maven-publish`
+    signing
 }
 val lwjglVersion = "3.2.3"
 val jomlVersion = "1.9.25"
@@ -18,19 +20,60 @@ val lwjglNatives = when (OperatingSystem.current()) {
 
 group = "org.kakara"
 version = "1.0-SNAPSHOT"
+val artifactName = "engine"
+
 if (hasProperty("buildNumber")) {
     version = "1.0-" + properties.get("buildNumber") + "-SNAPSHOT";
 }
 java {
     targetCompatibility = org.gradle.api.JavaVersion.VERSION_11
     sourceCompatibility = org.gradle.api.JavaVersion.VERSION_11
-
+    withJavadocJar()
+    withSourcesJar()
 }
 
 repositories {
     mavenCentral()
     maven("https://repo.ryandw11.com/repository/maven-releases")
     jcenter()
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("mavenJava") {
+
+            artifactId = artifactName
+            from(components["java"])
+            versionMapping {
+                usage("java-api") {
+                    fromResolutionOf("runtimeClasspath")
+                }
+                usage("java-runtime") {
+                    fromResolutionResult()
+                }
+            }
+            pom {
+                name.set(artifactName)
+            }
+        }
+    }
+    repositories {
+        maven {
+
+            val releasesRepoUrl = uri("https://repo.kingtux.me/storages/maven/kakara")
+            val snapshotsRepoUrl = uri("https://repo.kingtux.me/storages/maven/kakara")
+            url = if (version.toString().endsWith("SNAPSHOT")) snapshotsRepoUrl else releasesRepoUrl
+            credentials(PasswordCredentials::class)
+
+        }
+        mavenLocal()
+    }
+}
+
+tasks.javadoc {
+    if (JavaVersion.current().isJava9Compatible) {
+        (options as StandardJavadocDocletOptions).addBooleanOption("html5", true)
+    }
 }
 
 dependencies {
