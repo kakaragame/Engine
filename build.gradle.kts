@@ -9,21 +9,24 @@ plugins {
 }
 val lwjglVersion = "3.2.3"
 val jomlVersion = "1.9.25"
-
-val lwjglNatives = when (OperatingSystem.current()) {
+var lwjglNatives = when (OperatingSystem.current()) {
     OperatingSystem.LINUX -> "natives-linux"
     OperatingSystem.WINDOWS -> if (System.getProperty("os.arch")
             .contains("64")
     ) "natives-windows" else "natives-windows-x86"
     else -> throw Error("Unrecognized or unsupported Operating system. Please set \"lwjglNatives\" manually")
 }
-
+if (hasProperty("native")) {
+    lwjglNatives = properties.get("native").toString()
+}
 group = "org.kakara"
 version = "1.0-SNAPSHOT"
 val artifactName = "engine"
+var build = "0"
 
 if (hasProperty("buildNumber")) {
     version = "1.0-" + properties.get("buildNumber") + "-SNAPSHOT";
+    properties.get("buildNumber");
 }
 java {
     targetCompatibility = org.gradle.api.JavaVersion.VERSION_11
@@ -73,6 +76,14 @@ publishing {
 tasks.javadoc {
     if (JavaVersion.current().isJava9Compatible) {
         (options as StandardJavadocDocletOptions).addBooleanOption("html5", true)
+    }
+}
+tasks {
+    named<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar>("shadowJar") {
+        if (project.hasProperty("is-build")) {
+            //Used by Jenkins
+            archiveFileName.set("${project.name}-${project.version}-${project.property("native")}.jar")
+        }
     }
 }
 
