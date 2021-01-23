@@ -4,7 +4,7 @@ import org.jetbrains.annotations.Nullable;
 import org.joml.FrustumIntersection;
 import org.joml.Matrix4f;
 import org.kakara.engine.math.Vector3;
-import org.kakara.engine.physics.collision.Collider;
+import org.kakara.engine.physics.collision.ColliderComponent;
 
 /**
  * This class handles the Frustum Culling Code.
@@ -51,7 +51,7 @@ public class FrustumCullingFilter {
      * @param collider The collider to test.
      * @return If the collider is visible.
      */
-    public boolean testCollider(@Nullable Collider collider) {
+    public boolean testCollider(@Nullable ColliderComponent collider) {
         return collider == null ||
                 frustumInt.testAab(collider.getAbsolutePoint1().toJoml(), collider.getAbsolutePoint2().toJoml());
     }

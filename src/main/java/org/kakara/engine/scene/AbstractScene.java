@@ -7,6 +7,7 @@ import org.kakara.engine.GameEngine;
 import org.kakara.engine.GameHandler;
 import org.kakara.engine.events.EventManager;
 import org.kakara.engine.gameitems.GameItem;
+import org.kakara.engine.gameitems.old_GameItem;
 import org.kakara.engine.gameitems.ItemHandler;
 import org.kakara.engine.gameitems.SkyBox;
 import org.kakara.engine.gameitems.particles.ParticleEmitter;

@@ -3,7 +3,7 @@ package org.kakara.engine.renderobjects;
 import org.jetbrains.annotations.Nullable;
 import org.kakara.engine.math.Vector3;
 import org.kakara.engine.physics.collision.Collidable;
-import org.kakara.engine.physics.collision.Collider;
+import org.kakara.engine.physics.collision.ColliderComponent;
 import org.kakara.engine.physics.collision.ObjectBoxCollider;
 import org.kakara.engine.properties.Tagable;
 import org.kakara.engine.renderobjects.mesh.MeshType;
@@ -20,7 +20,7 @@ import java.util.*;
  * order for the changes to be shown.</p>
  * <p>This class <b>is</b> thread safe.</p>
  */
-public class RenderBlock implements Collidable, Tagable {
+public class RenderBlock implements Tagable {
 
     private final Layout layout;
     private final RenderTexture texture;
@@ -33,7 +33,7 @@ public class RenderBlock implements Collidable, Tagable {
     private final List<Face> visibleFaces;
     private boolean selected;
 
-    private Collider collider;
+    private ColliderComponent collider;
 
     private final UUID uuid;
 
@@ -56,8 +56,6 @@ public class RenderBlock implements Collidable, Tagable {
         this.position = position;
         this.visibleFaces = new ArrayList<>();
         this.selected = false;
-        collider = new ObjectBoxCollider(false, false);
-        collider.onRegister(this);
         this.data = new ArrayList<>();
         this.tag = "";
         this.uuid = UUIDUtils.randomUUID();
@@ -383,58 +381,6 @@ public class RenderBlock implements Collidable, Tagable {
     @Override
     public String toString() {
         return "{RenderBlock: " + position.x + ", " + position.y + ", " + position.z + "}";
-    }
-
-
-    @Override
-    public final Vector3 getColPosition() {
-        return getPosition().clone().add(parentChunk.getPosition().clone());
-    }
-
-    @Override
-    public void setColPosition(Vector3 vec) {
-        setPosition(vec.clone());
-    }
-
-    @Override
-    public float getColScale() {
-        return 1;
-    }
-
-    @Override
-    public void removeCollider() {
-        this.collider = null;
-    }
-
-    @Override
-    public void colTranslateBy(Vector3 vec) {
-        this.position = this.position.add(vec);
-    }
-
-    @Override
-    public Collider getCollider() {
-        return collider;
-    }
-
-    @Override
-    public void setCollider(Collider collider) {
-        this.collider = collider;
-        collider.onRegister(this);
-    }
-
-    @Override
-    public boolean isSelected() {
-        return selected;
-    }
-
-    @Override
-    public void setSelected(boolean selected) {
-        this.selected = selected;
-    }
-
-    @Override
-    public UUID getUUID() {
-        return uuid;
     }
 
     @Override

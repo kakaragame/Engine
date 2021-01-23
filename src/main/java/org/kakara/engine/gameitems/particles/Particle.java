@@ -1,7 +1,7 @@
 package org.kakara.engine.gameitems.particles;
 
 import org.joml.Quaternionf;
-import org.kakara.engine.gameitems.MeshGameItem;
+import org.kakara.engine.gameitems.GameItem;
 import org.kakara.engine.gameitems.Texture;
 import org.kakara.engine.gameitems.mesh.Mesh;
 import org.kakara.engine.math.Vector3;
@@ -9,7 +9,7 @@ import org.kakara.engine.math.Vector3;
 /**
  * Handles the particles.
  */
-public class Particle extends MeshGameItem {
+public class Particle extends GameItem {
 
     private Vector3 speed;
 
@@ -34,11 +34,11 @@ public class Particle extends MeshGameItem {
 
     public Particle(Particle baseParticle) {
         super(baseParticle.getMesh());
-        Vector3 aux = baseParticle.getPosition();
-        setPosition(aux.x, aux.y, aux.z);
-        Quaternionf rotation = new Quaternionf(baseParticle.getRotation());
-        setRotation(rotation);
-        setScale(baseParticle.getScale());
+        Vector3 aux = baseParticle.transform.getPosition();
+        transform.setPosition(aux.x, aux.y, aux.z);
+        Quaternionf rotation = new Quaternionf(baseParticle.transform.getRotation());
+        transform.setRotation(rotation);
+        transform.setScale(baseParticle.transform.getScale());
         this.speed = baseParticle.speed.clone();
         this.ttl = baseParticle.getTtl();
         this.updateTextureMillis = baseParticle.getUpdateTextureMillis();

@@ -1,10 +1,9 @@
 package org.kakara.engine.render.preset.pipeline;
 
 import org.joml.Matrix4f;
-import org.kakara.engine.GameHandler;
 import org.kakara.engine.exceptions.render.ShaderNotFoundException;
+import org.kakara.engine.gameitems.old_GameItem;
 import org.kakara.engine.gameitems.GameItem;
-import org.kakara.engine.gameitems.MeshGameItem;
 import org.kakara.engine.gameitems.mesh.IMesh;
 import org.kakara.engine.gameitems.mesh.InstancedMesh;
 import org.kakara.engine.lighting.LightHandler;
@@ -16,11 +15,6 @@ import org.kakara.engine.scene.Scene;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
-import static org.lwjgl.opengl.GL11.glBindTexture;
-import static org.lwjgl.opengl.GL13.GL_TEXTURE2;
-import static org.lwjgl.opengl.GL13.glActiveTexture;
 
 /**
  * The default render pipeline for the GameItem system.
@@ -102,7 +96,7 @@ public class StandardPipeline implements RenderPipeline {
             }
 
             mesh.renderList(mapMeshes.get(mesh), frustumFilter, (GameItem gameItem) -> {
-                MeshGameItem meshGameItem = ((MeshGameItem) gameItem);
+                GameItem meshGameItem = ((GameItem) gameItem);
                 Matrix4f modelMatrix = transformation.buildModelMatrix(gameItem);
                 if (!depthMap) {
                     Matrix4f modelViewMatrix = transformation.buildModelViewMatrix(modelMatrix, viewMatrix);

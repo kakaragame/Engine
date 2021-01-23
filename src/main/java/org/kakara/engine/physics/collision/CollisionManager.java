@@ -16,7 +16,7 @@ import java.util.List;
 public class CollisionManager {
 
     private final GameHandler handler;
-    private final List<Collidable> collidingItems = new ArrayList<>();
+    private final List<ColliderComponent> colliders = new ArrayList<>();
 
     public CollisionManager(GameHandler handler) {
         this.handler = handler;
@@ -27,8 +27,8 @@ public class CollisionManager {
      *
      * @param item The colliding item.
      */
-    public void addCollidingItem(Collidable item) {
-        collidingItems.add(item);
+    public void addCollidingItem(ColliderComponent item) {
+        colliders.add(item);
     }
 
     /**
@@ -36,8 +36,8 @@ public class CollisionManager {
      *
      * @param item The item to remove.
      */
-    public void removeCollidingItem(Collidable item) {
-        collidingItems.remove(item);
+    public void removeCollidingItem(ColliderComponent item) {
+        colliders.remove(item);
     }
 
     /**
@@ -46,8 +46,8 @@ public class CollisionManager {
      *
      * @return Get all colliding items.
      */
-    public List<Collidable> getNonChunkCollidingItems() {
-        return collidingItems;
+    public List<ColliderComponent> getNonChunkCollidingItems() {
+        return colliders;
     }
 
     /**
@@ -57,11 +57,11 @@ public class CollisionManager {
      * @param position The position of the current colliding object.
      * @return The list of collision objects.
      */
-    public List<Collidable> getCollidngItems(@Nullable Vector3 position) {
-        if (position == null) return collidingItems;
-        List<Collidable> colliders = new ArrayList<>(collidingItems);
-        if (handler.getSceneManager().getCurrentScene() instanceof AbstractGameScene)
-            colliders.addAll(((AbstractGameScene) handler.getSceneManager().getCurrentScene()).getChunkHandler().getChunkCollisions(position));
+    public List<ColliderComponent> getCollidngItems(@Nullable Vector3 position) {
+        if (position == null) return colliders;
+//        List<ColliderComponent> colliders = new ArrayList<>(colliders);
+//        if (handler.getSceneManager().getCurrentScene() instanceof AbstractGameScene)
+//            colliders.addAll(((AbstractGameScene) handler.getSceneManager().getCurrentScene()).getChunkHandler().getChunkCollisions(position));
         return colliders;
     }
 
@@ -71,11 +71,11 @@ public class CollisionManager {
      * @param position The position of the current object (Normally the player).
      * @return The valid collidables.
      */
-    public List<Collidable> getSelectionItems(Vector3 position) {
-        if (position == null) return collidingItems;
-        List<Collidable> colliders = new ArrayList<>(collidingItems);
-        if (handler.getSceneManager().getCurrentScene() instanceof AbstractGameScene)
-            colliders.addAll(((AbstractGameScene) handler.getSceneManager().getCurrentScene()).getChunkHandler().getChunkSelections(position));
+    public List<ColliderComponent> getSelectionItems(Vector3 position) {
+        if (position == null) return colliders;
+//        List<ColliderComponent> colliders = new ArrayList<>(colliders);
+//        if (handler.getSceneManager().getCurrentScene() instanceof AbstractGameScene)
+//            colliders.addAll(((AbstractGameScene) handler.getSceneManager().getCurrentScene()).getChunkHandler().getChunkSelections(position));
         return colliders;
     }
 
@@ -91,7 +91,7 @@ public class CollisionManager {
      * @param c2 The second collider.
      * @return The contact class.
      */
-    public Contact isCollidingXZ(Collider c1, Collider c2) {
+    public Contact isCollidingXZ(ColliderComponent c1, ColliderComponent c2) {
         FloatContainer mtvDistance = new FloatContainer(Float.MAX_VALUE);
         Vector3f mtvAxis = new Vector3f();
         Contact contact = new Contact();
@@ -111,7 +111,7 @@ public class CollisionManager {
         return contact;
     }
 
-    public Contact isColliding(Collider c1, Collider c2) {
+    public Contact isColliding(ColliderComponent c1, ColliderComponent c2) {
         FloatContainer mtvDistance = new FloatContainer(Float.MAX_VALUE);
         Vector3f mtvAxis = new Vector3f();
         Contact contact = new Contact();
@@ -131,7 +131,7 @@ public class CollisionManager {
         return contact;
     }
 
-    public Contact isCollidingY(Collider c1, Collider c2) {
+    public Contact isCollidingY(ColliderComponent c1, ColliderComponent c2) {
         FloatContainer mtvDistance = new FloatContainer(Float.MAX_VALUE);
         Vector3f mtvAxis = new Vector3f();
         Contact contact = new Contact();
@@ -152,7 +152,7 @@ public class CollisionManager {
         return contact;
     }
 
-    public Contact isCollidingX(Collider c1, Collider c2) {
+    public Contact isCollidingX(ColliderComponent c1, ColliderComponent c2) {
         FloatContainer mtvDistance = new FloatContainer(Float.MAX_VALUE);
         Vector3f mtvAxis = new Vector3f();
         Contact contact = new Contact();
@@ -173,7 +173,7 @@ public class CollisionManager {
         return contact;
     }
 
-    public Contact isCollidingZ(Collider c1, Collider c2) {
+    public Contact isCollidingZ(ColliderComponent c1, ColliderComponent c2) {
         FloatContainer mtvDistance = new FloatContainer(Float.MAX_VALUE);
         Vector3f mtvAxis = new Vector3f();
         Contact contact = new Contact();

@@ -1,6 +1,6 @@
 package org.kakara.engine.renderobjects;
 
-import org.kakara.engine.gameitems.MeshGameItem;
+import org.kakara.engine.gameitems.GameItem;
 import org.kakara.engine.math.Vector3;
 import org.kakara.engine.renderobjects.mesh.*;
 import org.kakara.engine.renderobjects.renderlayouts.Face;
@@ -14,7 +14,7 @@ import java.util.concurrent.CompletableFuture;
  * A singular 16 x 16 x 16 render chunk.
  * <p>This class <b>is</b> thread safe.</p>
  */
-public class RenderChunk extends MeshGameItem {
+public class RenderChunk extends GameItem {
     private RenderMesh mesh;
     private final RenderBlock[][][] octChunk;
     private final UUID chunkId;
@@ -30,7 +30,7 @@ public class RenderChunk extends MeshGameItem {
      */
     public RenderChunk(List<RenderBlock> blocks, TextureAtlas atlas) {
         super();
-        this.setPosition(new Vector3(0, 0, 0));
+        this.transform.setPosition(new Vector3(0, 0, 0));
         this.octChunk = new RenderBlock[16][16][16];
         for (RenderBlock blck : blocks) {
             blck.setParentChunk(this);

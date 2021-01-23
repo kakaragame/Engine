@@ -2,13 +2,14 @@ package org.kakara.engine.test;
 
 import org.joml.Vector3f;
 import org.kakara.engine.GameHandler;
+import org.kakara.engine.components.Transform;
 import org.kakara.engine.debug.DebugCanvas;
 import org.kakara.engine.engine.CubeData;
 import org.kakara.engine.events.EventHandler;
 import org.kakara.engine.events.event.MouseClickEvent;
-import org.kakara.engine.gameitems.GameItem;
+import org.kakara.engine.gameitems.old_GameItem;
 import org.kakara.engine.gameitems.Material;
-import org.kakara.engine.gameitems.MeshGameItem;
+import org.kakara.engine.gameitems.GameItem;
 import org.kakara.engine.gameitems.Texture;
 import org.kakara.engine.gameitems.mesh.AtlasMesh;
 import org.kakara.engine.gameitems.mesh.InstancedMesh;
@@ -25,6 +26,7 @@ import org.kakara.engine.math.Vector3;
 import org.kakara.engine.models.StaticModelLoader;
 import org.kakara.engine.physics.collision.BoxCollider;
 import org.kakara.engine.physics.collision.Collidable;
+import org.kakara.engine.physics.collision.ColliderComponent;
 import org.kakara.engine.renderobjects.RenderBlock;
 import org.kakara.engine.renderobjects.RenderChunk;
 import org.kakara.engine.renderobjects.RenderTexture;
@@ -87,64 +89,61 @@ public class MainGameScene extends AbstractGameScene {
 
     @Override
     public void loadGraphics(GameHandler gameHandler) throws Exception {
-        System.out.println("Started Loading");
-        long time = System.currentTimeMillis();
-        angleInc = 0.05f;
-        lightAngle = 45;
+        try{
+            System.out.println("Started Loading");
+            long time = System.currentTimeMillis();
+            angleInc = 0.05f;
+            lightAngle = 45;
 
-        this.test = test;
-        setCurserStatus(false);
-        getCamera().setPosition(0, 3, 0);
-        var resourceManager = gameHandler.getResourceManager();
-        Mesh[] mainPlayer = StaticModelLoader.load(resourceManager.getResource("player/steve.obj"), "/player",this,resourceManager);
-        MeshGameItem object = new MeshGameItem(mainPlayer);
-        object.setPosition(0, 20, 0);
-        object.setScale(0.3f);
-        object.getMesh().setWireframe(true);
+            this.test = test;
+            setCurserStatus(false);
+            getCamera().setPosition(0, 3, 0);
+            var resourceManager = gameHandler.getResourceManager();
+            Mesh[] mainPlayer = StaticModelLoader.load(resourceManager.getResource("player/steve.obj"), "/player",this,resourceManager);
+            GameItem object = new GameItem(mainPlayer);
+            object.transform.setPosition(0, 20, 0);
+            object.transform.setScale(0.3f);
+            object.getMesh().setWireframe(true);
 //        object.setCollider(new BoxCollider(new Vector3(0, 0, 0), new Vector3(1, 1.5f, 1)));
 //        object.getCollider().setUseGravity(true).setTrigger(false);
 //        ((BoxCollider) object.getCollider()).setOffset(new Vector3(0, 0.7f, 0));
 
-        add(object);
-        player = object;
-        //Load Blocks
+            add(object);
+            player = object;
+            //Load Blocks
 
-        InstancedMesh mesh = new InstancedMesh(CubeData.vertex, CubeData.texture, CubeData.normal, CubeData.indices, 10000);
-        InputStream io = Texture.class.getResourceAsStream("/example_texture.png");
-        Texture grass = Utils.inputStreamToTexture(io);
-        Material mt = new Material(grass);
+            InstancedMesh mesh = new InstancedMesh(CubeData.vertex, CubeData.texture, CubeData.normal, CubeData.indices, 10000);
+            InputStream io = Texture.class.getResourceAsStream("/example_texture.png");
+            Texture grass = Utils.inputStreamToTexture(io);
+            Material mt = new Material(grass);
 
-        mt.addOverlayTexture(Utils.inputStreamToTexture(Texture.class.getResourceAsStream("/oa.png")));
-        mt.addOverlayTexture(Utils.inputStreamToTexture(Texture.class.getResourceAsStream("/ovly2.png")));
+            mt.addOverlayTexture(Utils.inputStreamToTexture(Texture.class.getResourceAsStream("/oa.png")));
+            mt.addOverlayTexture(Utils.inputStreamToTexture(Texture.class.getResourceAsStream("/ovly2.png")));
 
-        mt.setReflectance(0.3f);
+            mt.setReflectance(0.3f);
 
-        mesh.setMaterial(mt);
+            mesh.setMaterial(mt);
 
-        MeshGameItem gi = new MeshGameItem(mesh);
+            GameItem gi = new GameItem(mesh);
+            gi.addComponent(BoxCollider.class);
 //        gi.getMesh().setWireframe(true);
-        add(gi);
-        gi.setPosition(3, 16*2 + 5, 3);
-        gi.setCollider(new BoxCollider(new Vector3(0, 0, 0), new Vector3(0.99, 2, 0.99)));
-        gi.setVelocity(new Vector3(0, -9.18f, 0));
-        collider = gi;
+            add(gi);
+            gi.transform.setPosition(3, 16*2 + 5, 3);
+            //gi.setVelocity(new Vector3(0, -9.18f, 0));
+            collider = gi;
 
-        MeshGameItem gi2 = new MeshGameItem(mesh);
-        add(gi2);
-        gi2.setPosition(6, 16*2, 6);
-        gi2.setCollider(new BoxCollider(new Vector3(0, 0, 0), new Vector3(0.99, 2, 0.99)));
-        gi2.getCollider().setResolvable(false);
-        gi2.getCollider().setTrigger(true);
+            GameItem gi2 = new GameItem(mesh);
+            add(gi2);
+            gi2.transform.setPosition(6, 16*2, 6);
+            gi2.addComponent(BoxCollider.class);
 
-        gi2.setTag("Test");
+            gi2.setTag("Test");
 
-        gi.getCollider().addOnTriggerEnter((Collidable other) -> {
-            if(other instanceof GameItem){
-                if(((GameItem) other).getTag().equals("Test")){
+            gi.getComponent(BoxCollider.class).addOnTriggerEnter((ColliderComponent other) -> {
+                if(other.getGameItem().getTag().equals("Test")){
                     remove(gi2);
                 }
-            }
-        });
+            });
 
 //        Texture skyb = Utils.inputStreamToTexture(Texture.class.getResourceAsStream("/skybox.png"));
 //        SkyBox skyBox = new SkyBox(skyb, true);
@@ -157,15 +156,15 @@ public class MainGameScene extends AbstractGameScene {
         ===================================================
 
          */
-        RenderTexture txt1 = new RenderTexture(resourceManager.getResource("/example_texture.png"));
-        RenderTexture txt2 = new RenderTexture(resourceManager.getResource("/oop.png"));
-        RenderTexture txt3 = new RenderTexture(resourceManager.getResource("/ExampleBlock.png"));
-        RenderTexture txt5 = new RenderTexture(resourceManager.getResource("/ovly2.png"));
-        RenderTexture txt6 = new RenderTexture(resourceManager.getResource("/fewio.png"));
-        TextureAtlas atlas = new TextureAtlas(Arrays.asList(txt1, txt2, txt3, txt5, txt6), Paths.get("").toAbsolutePath().toString(), this);
-        setTextureAtlas(atlas);
+            RenderTexture txt1 = new RenderTexture(resourceManager.getResource("/example_texture.png"));
+            RenderTexture txt2 = new RenderTexture(resourceManager.getResource("/oop.png"));
+            RenderTexture txt3 = new RenderTexture(resourceManager.getResource("/ExampleBlock.png"));
+            RenderTexture txt5 = new RenderTexture(resourceManager.getResource("/ovly2.png"));
+            RenderTexture txt6 = new RenderTexture(resourceManager.getResource("/fewio.png"));
+            TextureAtlas atlas = new TextureAtlas(Arrays.asList(txt1, txt2, txt3, txt5, txt6), Paths.get("").toAbsolutePath().toString(), this);
+            setTextureAtlas(atlas);
 
-        System.out.println(txt3.getYOffset());
+            System.out.println(txt3.getYOffset());
 
 //        for(int cx = 0; cx < 1; cx++){
 //            for(int cz = 0; cz < 1; cz++){
@@ -186,59 +185,59 @@ public class MainGameScene extends AbstractGameScene {
 //        }
 
 
-        new Thread(() -> {
-            for(int cx = 0; cx < 7; cx++){
-                for(int cy = 0; cy < 2; cy++){
-                    for(int cz = 0; cz < 7; cz++){
-                        RenderChunk rc = new RenderChunk(new ArrayList<>(), getTextureAtlas());
-                        rc.setPosition(cx * 16, cy*16, cz * 16);
-                        for(int x = 0; x < 16; x++){
-                            for(int y = 0; y < 16; y++){
-                                for(int z = 0; z < 16; z++){
-                                    RenderBlock rb;
-                                    if(x%3 == 0){
-                                        rb = new RenderBlock(new BlockLayout(), getTextureAtlas().getTextures().get(4), new Vector3(x, y, z));
-                                        rb.setOpaque(false);
-                                    }else{
-                                        rb = new RenderBlock(new BlockLayout(), getTextureAtlas().getTextures().get(ThreadLocalRandom.current().nextInt(0, 3)), new Vector3(x, y, z));
-                                    }
-                                    if(x % 2 == 0){
-                                        rb.setOverlay(getTextureAtlas().getTextures().get(3));
-                                    }
+            new Thread(() -> {
+                for(int cx = 0; cx < 7; cx++){
+                    for(int cy = 0; cy < 2; cy++){
+                        for(int cz = 0; cz < 7; cz++){
+                            RenderChunk rc = new RenderChunk(new ArrayList<>(), getTextureAtlas());
+                            rc.transform.setPosition(cx * 16, cy*16, cz * 16);
+                            for(int x = 0; x < 16; x++){
+                                for(int y = 0; y < 16; y++){
+                                    for(int z = 0; z < 16; z++){
+                                        RenderBlock rb;
+                                        if(x%3 == 0){
+                                            rb = new RenderBlock(new BlockLayout(), getTextureAtlas().getTextures().get(4), new Vector3(x, y, z));
+                                            rb.setOpaque(false);
+                                        }else{
+                                            rb = new RenderBlock(new BlockLayout(), getTextureAtlas().getTextures().get(ThreadLocalRandom.current().nextInt(0, 3)), new Vector3(x, y, z));
+                                        }
+                                        if(x % 2 == 0){
+                                            rb.setOverlay(getTextureAtlas().getTextures().get(3));
+                                        }
 
-                                    rc.addBlock(rb);
+                                        rc.addBlock(rb);
+                                    }
                                 }
                             }
+
+                            rc.regenerateChunk(getTextureAtlas(), MeshType.MULTITHREAD);
+
+                            getChunkHandler().addChunk(rc);
                         }
-
-                        rc.regenerateChunk(getTextureAtlas(), MeshType.MULTITHREAD);
-
-                        getChunkHandler().addChunk(rc);
                     }
                 }
-            }
-        }).start();
+            }).start();
 
 
 
 //        System.out.println(getChunkHandler().getRenderChunkList());
 
 
-        MeshGameItem sh = (MeshGameItem) gi.clone(false);
-        sh.setPosition(-4, 3, -4);
-        this.add(sh);
+            GameItem sh = (GameItem) gi.clone(false);
+            sh.transform.setPosition(-4, 3, -4);
+            this.add(sh);
 
 
-        PointLight pointLight = new PointLight(new LightColor(255, 255, 0), new Vector3(1, 1, 1), 1);
-        PointLight.Attenuation att = new PointLight.Attenuation(0.0f, 0.0f, 1.0f);
-        pointLight.setAttenuation(att);
-        this.add(pointLight);
+            PointLight pointLight = new PointLight(new LightColor(255, 255, 0), new Vector3(1, 1, 1), 1);
+            PointLight.Attenuation att = new PointLight.Attenuation(0.0f, 0.0f, 1.0f);
+            pointLight.setAttenuation(att);
+            this.add(pointLight);
 
 
-        DirectionalLight directionalLight = new DirectionalLight(new LightColor(255, 255, 255), new Vector3(0, 1, 0.5f), 0.5f);
-        directionalLight.setShadowPosMult(8);
-        directionalLight.setOrthoCords(-10.0f, 10.0f, -10.0f, 10.0f, -1.0f, 20.0f);
-        getLightHandler().setDirectionalLight(directionalLight);
+            DirectionalLight directionalLight = new DirectionalLight(new LightColor(255, 255, 255), new Vector3(0, 1, 0.5f), 0.5f);
+            directionalLight.setShadowPosMult(8);
+            directionalLight.setOrthoCords(-10.0f, 10.0f, -10.0f, 10.0f, -1.0f, 20.0f);
+            getLightHandler().setDirectionalLight(directionalLight);
 
         /*
 
@@ -246,70 +245,73 @@ public class MainGameScene extends AbstractGameScene {
 
          */
 
-        setFog(new Fog(true, new Vector3(1f, 1f, 1f), 0.005f));
+            setFog(new Fog(true, new Vector3(1f, 1f, 1f), 0.005f));
 
 
-        ComponentCanvas cc = new ComponentCanvas(this);
+            ComponentCanvas cc = new ComponentCanvas(this);
 
-        Font font = new Font("Roboto-Regular", resourceManager.getResource("Roboto-Regular.ttf"), this);
-        userInterface.addFont(font);
+            Font font = new Font("Roboto-Regular", resourceManager.getResource("Roboto-Regular.ttf"), this);
+            userInterface.addFont(font);
 
-        Text fps = new Text("FPS: 000", font);
-        fps.setColor(new RGBA(255,255,255,1));
+            Text fps = new Text("FPS: 000", font);
+            fps.setColor(new RGBA(255,255,255,1));
 
-        fps.setPosition(20, 20);
-        cc.add(fps);
-        this.fps = fps;
-        Rectangle rect = new Rectangle();
-        rect.setColor(new RGBA(0, 255, 0, 1));
-        rect.setScale(5, 5);
-        rect.setPosition((float)gameHandler.getWindow().getWidth()/2, (float)gameHandler.getWindow().getHeight()/2);
-        cc.add(rect);
+            fps.setPosition(20, 20);
+            cc.add(fps);
+            this.fps = fps;
+            Rectangle rect = new Rectangle();
+            rect.setColor(new RGBA(0, 255, 0, 1));
+            rect.setScale(5, 5);
+            rect.setPosition((float)gameHandler.getWindow().getWidth()/2, (float)gameHandler.getWindow().getHeight()/2);
+            cc.add(rect);
 
-        add(cc);
+            add(cc);
 
-        ObjectCanvas oc = new ObjectCanvas(this);
-        AtlasMesh m = new AtlasMesh(txt2, getTextureAtlas(), new BlockLayout(), CubeData.vertex, CubeData.normal, CubeData.indices);
+            ObjectCanvas oc = new ObjectCanvas(this);
+            AtlasMesh m = new AtlasMesh(txt2, getTextureAtlas(), new BlockLayout(), CubeData.vertex, CubeData.normal, CubeData.indices);
 
-        UIObject ui = new UIObject(m);
-        ui.setPosition((float)200, (float)200);
-        ui.setScale(100);
-        ui.getRotation().rotateX((float) Math.toRadians(50));
-        ui.getRotation().rotateY((float) Math.toRadians(40));
-        oc.add(ui);
-        add(oc);
+            UIObject ui = new UIObject(m);
+            ui.setPosition((float)200, (float)200);
+            ui.setScale(100);
+            ui.getRotation().rotateX((float) Math.toRadians(50));
+            ui.getRotation().rotateY((float) Math.toRadians(40));
+            oc.add(ui);
+            add(oc);
 
-        /**
-         * Particles
-         */
+            /**
+             * Particles
+             */
 
-        int maxParticles = 200;
-        Vector3f particleSpeed = new Vector3f(0, 1, 0);
-        particleSpeed.mul(2.5f);
-        long ttl = 4000;
-        long creationPeriodMillis = 300;
-        float range = 0.2f;
-        float scale = 1.0f;
+            int maxParticles = 200;
+            Vector3f particleSpeed = new Vector3f(0, 1, 0);
+            particleSpeed.mul(2.5f);
+            long ttl = 4000;
+            long creationPeriodMillis = 300;
+            float range = 0.2f;
+            float scale = 1.0f;
 //        Mesh partMesh = OBJLoader.loadMesh("/models/particle.obj", maxParticles);
-        Mesh partMesh = StaticModelLoader.load(resourceManager.getResource("particle.obj"), "", this, resourceManager)[0];
-        Texture particleTexture = new Texture(resourceManager.getResource("particle_anim.png"), 4, 4, this);
-        Material partMaterial = new Material(particleTexture, 1);
-        partMesh.setMaterial(partMaterial);
-        Particle particle = new Particle(partMesh, new Vector3(particleSpeed), ttl, 100);
-        particle.setScale(scale);
-        particleEmitter = new FlowParticleEmitter(particle, maxParticles, creationPeriodMillis);
-        particleEmitter.setActive(true);
-        particleEmitter.setPositionRndRange(range);
-        particleEmitter.setSpeedRndRange(range);
-        particleEmitter.setAnimRange(10);
-        this.add(particleEmitter);
+            Mesh partMesh = StaticModelLoader.load(resourceManager.getResource("particle.obj"), "", this, resourceManager)[0];
+            Texture particleTexture = new Texture(resourceManager.getResource("particle_anim.png"), 4, 4, this);
+            Material partMaterial = new Material(particleTexture, 1);
+            partMesh.setMaterial(partMaterial);
+            Particle particle = new Particle(partMesh, new Vector3(particleSpeed), ttl, 100);
+            particle.transform.setScale(scale);
+            particleEmitter = new FlowParticleEmitter(particle, maxParticles, creationPeriodMillis);
+            particleEmitter.setActive(true);
+            particleEmitter.setPositionRndRange(range);
+            particleEmitter.setSpeedRndRange(range);
+            particleEmitter.setAnimRange(10);
+            this.add(particleEmitter);
 
 
-        this.handler = gameHandler;
+            this.handler = gameHandler;
 
-        add(new DebugCanvas());
+            add(new DebugCanvas());
 
-        System.out.println("Done. Scene loaded in " + (time - System.currentTimeMillis()) + " ms");
+            System.out.println("Done. Scene loaded in " + (time - System.currentTimeMillis()) + " ms");
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
     }
 
     @Override
@@ -344,27 +346,27 @@ public class MainGameScene extends AbstractGameScene {
             stopped = !stopped;
         }
 
-        Vector3 currentPos = collider.getPosition();
-        MeshGameItem col = (MeshGameItem) collider;
-        col.setVelocityX(0);
-        col.setVelocityZ(0);
-        if (ki.isKeyPressed(GLFW_KEY_RIGHT)) {
-            col.setVelocityX(3f);
-        }
-        if (ki.isKeyPressed(GLFW_KEY_LEFT)) {
-            col.setVelocityX(-3f);
-        }
-        if (ki.isKeyPressed(GLFW_KEY_UP)) {
-            col.setVelocityZ(-3f);
-        }
-        if (ki.isKeyPressed(GLFW_KEY_DOWN)) {
-            col.setVelocityZ(3f);
-        }
+        Vector3 currentPos = collider.transform.getPosition();
+        GameItem col = (GameItem) collider;
+//        col.setVelocityX(0);
+//        col.setVelocityZ(0);
+//        if (ki.isKeyPressed(GLFW_KEY_RIGHT)) {
+//            col.setVelocityX(3f);
+//        }
+//        if (ki.isKeyPressed(GLFW_KEY_LEFT)) {
+//            col.setVelocityX(-3f);
+//        }
+//        if (ki.isKeyPressed(GLFW_KEY_UP)) {
+//            col.setVelocityZ(-3f);
+//        }
+//        if (ki.isKeyPressed(GLFW_KEY_DOWN)) {
+//            col.setVelocityZ(3f);
+//        }
         if(ki.isKeyPressed(GLFW_KEY_N)){
-            collider.translateBy(0, 0.1f,0);
+            collider.transform.translateBy(0, 0.1f,0);
         }
         if(ki.isKeyPressed(GLFW_KEY_M)){
-            collider.translateBy(0, -0.1f,0);
+            collider.transform.translateBy(0, -0.1f,0);
         }
 
 //        if (ki.isKeyPressed(GLFW_KEY_I)) {
@@ -410,21 +412,23 @@ public class MainGameScene extends AbstractGameScene {
 
     @EventHandler
     public void OnMouseClick(MouseClickEvent evt){
+        GameItem pl = (GameItem) player;
+        System.out.println(pl.getComponent(Transform.class));
         if(evt.getMouseClickType() == MouseClickType.LEFT_CLICK){
             System.out.println("Clicked!");
-            Collidable selected = this.selectGameItems(20);
-            if(selected instanceof RenderBlock){
-                RenderBlock block = (RenderBlock) selected;
-                RenderChunk parentChunk = block.getParentChunk();
-                parentChunk.removeBlock(block);
-//                block.setOverlay(getTextureAtlas().getTextures().get(ThreadLocalRandom.current().nextInt(0, 3)));
-//                long curTime = System.currentTimeMillis();
-                parentChunk.regenerateChunk(getTextureAtlas(), MeshType.SYNC);
-//                System.out.println("It took " + (System.currentTimeMillis() - curTime) + "ms to regenerate the entire chunk.");
-//                curTime = System.currentTimeMillis();
-//                parentChunk.regenerateOverlayTextures(getTextureAtlas());
-//                System.out.println("It took " + (System.currentTimeMillis() - curTime) + "ms to regenerate the overlay textures for the chunk.");
-            }
+//            Collidable selected = this.selectGameItems(20);
+//            if(selected instanceof RenderBlock){
+//                RenderBlock block = (RenderBlock) selected;
+//                RenderChunk parentChunk = block.getParentChunk();
+//                parentChunk.removeBlock(block);
+////                block.setOverlay(getTextureAtlas().getTextures().get(ThreadLocalRandom.current().nextInt(0, 3)));
+////                long curTime = System.currentTimeMillis();
+//                parentChunk.regenerateChunk(getTextureAtlas(), MeshType.SYNC);
+////                System.out.println("It took " + (System.currentTimeMillis() - curTime) + "ms to regenerate the entire chunk.");
+////                curTime = System.currentTimeMillis();
+////                parentChunk.regenerateOverlayTextures(getTextureAtlas());
+////                System.out.println("It took " + (System.currentTimeMillis() - curTime) + "ms to regenerate the overlay textures for the chunk.");
+//            }
         }
     }
 

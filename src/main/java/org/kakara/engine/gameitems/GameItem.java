@@ -1,110 +1,188 @@
 package org.kakara.engine.gameitems;
 
+import org.jetbrains.annotations.NotNull;
 import org.joml.Quaternionf;
+import org.kakara.engine.Camera;
+import org.kakara.engine.components.Component;
+import org.kakara.engine.components.MeshRenderer;
+import org.kakara.engine.components.Transform;
 import org.kakara.engine.gameitems.features.Feature;
 import org.kakara.engine.gameitems.mesh.IMesh;
+import org.kakara.engine.gameitems.mesh.Mesh;
 import org.kakara.engine.math.Vector3;
-import org.kakara.engine.physics.PhysicsItem;
-import org.kakara.engine.physics.collision.Collidable;
+import org.kakara.engine.physics.collision.ColliderComponent;
 import org.kakara.engine.properties.Tagable;
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
- * The main game item interface.
+ * The most basic implementation of the GameItem.
+ * <p>
+ * This is a Collidable GameItem. That uses meshes to create an item
+ * </p>
  */
-public interface GameItem extends Tagable, Collidable, PhysicsItem {
+public class GameItem implements Tagable {
+    private final UUID uuid;
+    private final List<Feature> features = new ArrayList<>();
+    private IMesh[] meshes;
+    private int textPos;
+    private boolean visible = true;
+
+    /*
+        The physics section.
+     */
+
+    /*
+        The tagable section
+     */
+    private String tag;
+    private List<Object> data;
+
+    /*
+        Components
+     */
+    private final List<Component> components = new ArrayList<>();
+    public final Transform transform;
+
+    public GameItem() {
+        uuid = UUID.randomUUID();
+        textPos = 0;
+        tag = "";
+        data = new ArrayList<>();
+        this.transform = addComponent(Transform.class);
+    }
+
+    public GameItem(IMesh mesh) {
+        this(new IMesh[]{mesh});
+    }
+
+    public GameItem(IMesh[] meshes) {
+        this.meshes = meshes;
+        uuid = UUID.randomUUID();
+        textPos = 0;
+        tag = "";
+        data = new ArrayList<>();
+        this.transform = addComponent(Transform.class);
+        addComponent(MeshRenderer.class).setMesh(meshes);
+    }
+
+    public <T extends Component> T addComponent(Class<T> component) {
+        if(components.stream().anyMatch(comp -> comp.getClass() == component))
+            throw new RuntimeException("This game item already has that component!");
+        T comp;
+        try {
+            comp = (T) component.getConstructors()[0].newInstance();
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | IndexOutOfBoundsException e) {
+            throw new RuntimeException("Cannot add illegal component!");
+        }
+        this.components.add(comp);
+
+        return comp;
+    }
+
+    public <T extends Component> T getComponent(Class<T> component){
+        List<Component> compLst = components.stream().filter(comp -> comp.getClass() == component)
+                .collect(Collectors.toList());
+        if(compLst.size() > 0)
+            return (T) compLst.get(0);
+
+        return null;
+    }
+
+    public boolean hasComponent(Class<Component> component){
+        return components.stream().anyMatch(comp -> comp.getClass() == component);
+    }
+
+    public List<Component> getComponents(){
+        return components;
+    }
+
+    public Transform getTransform(){
+        return transform;
+    }
 
     /**
-     * Get the current position.
+     * Get the mesh of the object
+     * <p>If there is more than one mesh, than the first one is returned.</p>
      *
-     * @return The current position.
+     * @return The mesh
      */
-    Vector3 getPosition();
+    public IMesh getMesh() {
+        if (meshes.length == 0) return null;
+        return meshes[0];
+    }
+
+    public void setMesh(@NotNull Mesh mesh) {
+        this.meshes = new Mesh[]{mesh};
+    }
+
+    public int getTextPos() {
+        return this.textPos;
+    }
+
+    public void setTextPos(int pos) {
+        this.textPos = pos;
+    }
+
+    public List<Feature> getFeatures() {
+        return features;
+    }
+
+    public void addFeature(Feature feature) {
+        features.add(feature);
+        feature.updateValues(this);
+    }
 
     /**
-     * Set the position of the item
+     * Get all of the meshes of the object.
      *
-     * @param position The position in vector form
-     * @return The instance of the Game Item.
+     * @return The array of meshes.
      */
-    GameItem setPosition(Vector3 position);
+    public IMesh[] getMeshes() {
+        return meshes;
+    }
 
     /**
-     * Set the position of the game item.
+     * Set the array of meshes.
      *
-     * @param x x value
-     * @param y y value
-     * @param z z value
-     * @return The instance of the game item.
+     * @param meshes The array of meshes
      */
-    GameItem setPosition(float x, float y, float z);
+    public void setMeshes(@NotNull Mesh[] meshes) {
+        this.meshes = meshes;
+    }
+
+
+
+    public UUID getUUID() {
+        return uuid;
+    }
 
     /**
-     * Change the position of the game item by x, y, and z values.
-     *
-     * @param x Change in x
-     * @param y Change in y
-     * @param z Change in z
-     * @return The instance of the game item.
+     * Render the item.
+     * <p>Internal Use Only</p>
      */
-    GameItem translateBy(float x, float y, float z);
+    public void render() {
+        if (isVisible()) {
+            for (IMesh mesh : meshes) {
+                mesh.render();
+            }
+        }
+    }
 
     /**
-     * Change the position of the game item by a vector.
-     *
-     * @param position The vector to change by.
-     * @return The instance of the game item.
+     * Cleanup the item.
+     * <p>Internal Use Only</p>
      */
-    GameItem translateBy(Vector3 position);
-
-    /**
-     * Get the scale of the item.
-     *
-     * @return The scale
-     */
-    float getScale();
-
-    /**
-     * Set the scale of the Game Item
-     *
-     * @param scale The scale value
-     * @return The instance of the game item.
-     */
-    GameItem setScale(float scale);
-
-    Quaternionf getRotation();
-
-    /**
-     * Set the rotation of the Object
-     *
-     * @param q The quaternion
-     * @return The instance of the game item.
-     */
-    GameItem setRotation(Quaternionf q);
-
-    /**
-     * Change the rotation by the angle on the axis.
-     *
-     * @param angle The angle to change by. (In radians)
-     * @param axis  The vector of the axis (without magnitude)
-     * @return The instance of the game item.
-     */
-    GameItem rotateAboutAxis(float angle, Vector3 axis);
-
-    /**
-     * Set the rotation to the angle on the axis.
-     *
-     * @param angle The angle to set to. (In Radians).
-     * @param axis  The vector of the axis (without magnitude)
-     * @return The instance of the game item.
-     */
-    GameItem setRotationAboutAxis(float angle, Vector3 axis);
-
-
-    void render();
-
-    void cleanup();
+    public void cleanup() {
+        int numMeshes = this.meshes != null ? this.meshes.length : 0;
+        for (int i = 0; i < numMeshes; i++) {
+            this.meshes[i].cleanUp();
+        }
+    }
 
 
     /**
@@ -113,44 +191,47 @@ public interface GameItem extends Tagable, Collidable, PhysicsItem {
      * @param exact If you want it to be an exact copy.
      * @return The clone of the gameobject.
      */
-    GameItem clone(boolean exact);
+    public GameItem clone(boolean exact) {
+        GameItem clone = new GameItem(this.meshes);
+        if (exact) {
+            clone.transform.setPosition(transform.getPosition().x, transform.getPosition().y, transform.getPosition().z);
+            clone.transform.setRotation(transform.getRotation());
+            clone.transform.setScale(transform.getScale());
+        }
+        return clone;
+    }
+
+    public boolean isVisible() {
+        return visible;
+    }
 
     /**
-     * Get the mesh of the game item.
+     * Sets weather the object is visible. The Collision Engine will continue to work
      *
-     * @return The mesh
+     * @param visible is the item visible
      */
-    IMesh getMesh();
+    public void setVisible(boolean visible) {
+        this.visible = visible;
+    }
 
-    /**
-     * Get the texture position
-     * <p>Mainly used by the particle system</p>
-     *
-     * @return The texture position
-     */
-    int getTextPos();
 
-    /**
-     * Set the texture position
-     * <p>Mainly used by the particle system</p>
-     *
-     * @param pos The position
-     */
-    void setTextPos(int pos);
+    @Override
+    public List<Object> getData() {
+        return data;
+    }
 
-    /**
-     * Get the features on this GameItem.
-     *
-     * @return The list of features.
-     * @since 1.0-Pre2
-     */
-    List<Feature> getFeatures();
+    @Override
+    public void setData(List<Object> data) {
+        this.data = data;
+    }
 
-    /**
-     * Add a feature to this GameItem.
-     *
-     * @param feature The feature to add.
-     * @since 1.0-Pre2
-     */
-    void addFeature(Feature feature);
+    @Override
+    public String getTag() {
+        return tag;
+    }
+
+    @Override
+    public void setTag(String tag) {
+        this.tag = tag;
+    }
 }

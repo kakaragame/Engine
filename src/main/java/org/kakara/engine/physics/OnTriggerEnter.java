@@ -1,9 +1,10 @@
 package org.kakara.engine.physics;
 
 import org.kakara.engine.physics.collision.Collidable;
+import org.kakara.engine.physics.collision.ColliderComponent;
 
 /**
- * This handle the OnTriggerEnter event for {@link org.kakara.engine.physics.collision.Collider}.
+ * This handle the OnTriggerEnter event for {@link ColliderComponent}.
  *
  * @since 1.0-Pre2
  */
@@ -13,5 +14,5 @@ public interface OnTriggerEnter {
      *
      * @param other The collidable that is collided with.
      */
-    void onTriggerEnter(Collidable other);
+    void onTriggerEnter(ColliderComponent other);
 }

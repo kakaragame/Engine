@@ -3,7 +3,6 @@ package org.kakara.engine.gameitems;
 import org.kakara.engine.gameitems.features.Feature;
 import org.kakara.engine.gameitems.mesh.IMesh;
 import org.kakara.engine.gameitems.mesh.InstancedMesh;
-import org.kakara.engine.gameitems.mesh.Mesh;
 
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;

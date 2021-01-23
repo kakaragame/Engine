@@ -2,6 +2,7 @@ package org.kakara.engine.gameitems.particles;
 
 import org.joml.Vector3f;
 import org.kakara.engine.gameitems.GameItem;
+import org.kakara.engine.gameitems.old_GameItem;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -129,9 +130,9 @@ public class FlowParticleEmitter implements ParticleEmitter {
         float posInc = sign * (float) Math.random() * this.positionRndRange;
         float scaleInc = sign * (float) Math.random() * this.scaleRndRange;
         long updateAnimInc = (long) sign * (long) (Math.random() * (float) this.animRange);
-        particle.getPosition().add(posInc, posInc, posInc);
+        particle.transform.getPosition().add(posInc, posInc, posInc);
         particle.getSpeed().add(speedInc, speedInc, speedInc);
-        particle.setScale(particle.getScale() + scaleInc);
+        particle.transform.setScale(particle.transform.getScale() + scaleInc);
         particle.setUpdateTextureMills(particle.getUpdateTextureMillis() + updateAnimInc);
         particles.add(particle);
     }
@@ -148,8 +149,8 @@ public class FlowParticleEmitter implements ParticleEmitter {
         float dx = speed.x * delta;
         float dy = speed.y * delta;
         float dz = speed.z * delta;
-        Vector3f pos = particle.getPosition().toJoml();
-        particle.setPosition(pos.x + dx, pos.y + dy, pos.z + dz);
+        Vector3f pos = particle.transform.getPosition().toJoml();
+        particle.transform.setPosition(pos.x + dx, pos.y + dy, pos.z + dz);
     }
 
     @Override

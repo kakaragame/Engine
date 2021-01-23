@@ -1,30 +1,27 @@
 package org.kakara.engine.physics.collision;
 
+import org.kakara.engine.GameHandler;
+import org.kakara.engine.components.Component;
 import org.kakara.engine.math.Vector3;
 import org.kakara.engine.physics.OnTriggerEnter;
 
+import java.util.Objects;
 import java.util.function.Predicate;
 
-public interface Collider {
+public abstract class ColliderComponent extends Component {
 
-    /**
-     * This will fire the colliding events.
-     */
-    void update();
-
-    /**
-     * When the collider is added to a game item.
-     *
-     * @param item The collidable that the collider was put on.
-     */
-    void onRegister(Collidable item);
+    @Override
+    public void afterInit() {
+        Objects.requireNonNull(GameHandler.getInstance().getCurrentScene().getCollisionManager())
+                .addCollidingItem(this);
+    }
 
     /**
      * If the collider is a trigger.
      *
      * @return If the collider is a trigger.
      */
-    boolean isTrigger();
+    abstract boolean isTrigger();
 
     /**
      * Set if the collider is a trigger.
@@ -34,14 +31,14 @@ public interface Collider {
      * @param value If it is a trigger.
      * @return The collider.
      */
-    Collider setTrigger(boolean value);
+    abstract ColliderComponent setTrigger(boolean value);
 
     /**
      * Get if the engine should attempt to move this object to fix collisions.
      *
      * @return If the engine should attempt to move this object to fix collisions.
      */
-    boolean isResolvable();
+    abstract boolean isResolvable();
 
     /**
      * If the engine it to attempt and move this object to fix collisions.
@@ -49,7 +46,7 @@ public interface Collider {
      *
      * @param value If the engine is to move this object to fix collisions.
      */
-    void setResolvable(boolean value);
+    abstract void setResolvable(boolean value);
 
     /**
      * Get the first relative point for a collider.
@@ -57,7 +54,7 @@ public interface Collider {
      *
      * @return The Vector of the point.
      */
-    Vector3 getRelativePoint1();
+    abstract Vector3 getRelativePoint1();
 
     /**
      * Get the first absolute point for a collider.
@@ -65,7 +62,7 @@ public interface Collider {
      *
      * @return The Vector of the point.
      */
-    Vector3 getAbsolutePoint1();
+    public abstract Vector3 getAbsolutePoint1();
 
     /**
      * Get the second relative point for a collider.
@@ -73,7 +70,7 @@ public interface Collider {
      *
      * @return The Vector of the point.
      */
-    Vector3 getRelativePoint2();
+    abstract Vector3 getRelativePoint2();
 
     /**
      * Get the second absolute point for a collider.
@@ -81,26 +78,26 @@ public interface Collider {
      *
      * @return The Vector of the point.
      */
-    Vector3 getAbsolutePoint2();
+    public abstract Vector3 getAbsolutePoint2();
 
     /**
      * @deprecated Currently unused
      */
-    void updateX();
+    abstract void updateX();
 
     /**
      * Handle the collision correction for the y axis.
      *
      * @since 1.0-Pre2
      */
-    void updateY();
+    abstract void updateY();
 
     /**
      * Handle the collision for the x and z axis.
      *
      * @since 1.0-Pre2
      */
-    void updateZ();
+    abstract void updateZ();
 
     /**
      * Add an event to be triggered when this collidable comes in contact with a trigger.
@@ -109,7 +106,7 @@ public interface Collider {
      * @param enter The event to be triggered.
      * @since 1.0-Pre2
      */
-    void addOnTriggerEnter(OnTriggerEnter enter);
+    public abstract void addOnTriggerEnter(OnTriggerEnter enter);
 
     /**
      * Get this collider's predicate.
@@ -117,7 +114,7 @@ public interface Collider {
      * @return The predicate.
      * @since 1.0-Pre2
      */
-    Predicate<Collidable> getPredicate();
+    abstract Predicate<ColliderComponent> getPredicate();
 
     /**
      * Add a condition for collision.
@@ -126,5 +123,5 @@ public interface Collider {
      * @param gameItemPredicate The predicate to use.
      * @since 1.0-Pre2
      */
-    void setPredicate(Predicate<Collidable> gameItemPredicate);
+    abstract void setPredicate(Predicate<ColliderComponent> gameItemPredicate);
 }

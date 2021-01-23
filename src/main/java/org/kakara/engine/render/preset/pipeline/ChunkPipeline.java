@@ -67,7 +67,7 @@ public class ChunkPipeline implements RenderPipeline {
             if (renderChunk == null) continue;
             if (renderChunk.getBlockCount() < 1) continue;
 
-            if (!frustumFilter.testRenderObject(renderChunk.getPosition(), 16, 16, 16))
+            if (!frustumFilter.testRenderObject(renderChunk.transform.getPosition(), 16, 16, 16))
                 continue;
 
             Matrix4f modelMatrix = transformation.buildModelMatrix(renderChunk);
@@ -114,7 +114,7 @@ public class ChunkPipeline implements RenderPipeline {
             if (renderChunk == null) continue;
             if (renderChunk.getBlockCount() < 1) continue;
 
-            if (!frustumFilter.testRenderObject(renderChunk.getPosition(), 16, 16, 16))
+            if (!frustumFilter.testRenderObject(renderChunk.transform.getPosition(), 16, 16, 16))
                 continue;
 //            RenderMesh mesh = renderChunk.getRenderMesh();
 //            if (mesh == null || mesh.getQuery() == null)

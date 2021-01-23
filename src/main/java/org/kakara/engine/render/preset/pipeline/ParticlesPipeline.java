@@ -3,6 +3,7 @@ package org.kakara.engine.render.preset.pipeline;
 import org.joml.Matrix4f;
 import org.kakara.engine.exceptions.render.ShaderNotFoundException;
 import org.kakara.engine.gameitems.GameItem;
+import org.kakara.engine.gameitems.old_GameItem;
 import org.kakara.engine.gameitems.Texture;
 import org.kakara.engine.gameitems.mesh.Mesh;
 import org.kakara.engine.gameitems.particles.ParticleEmitter;
@@ -82,10 +83,10 @@ public class ParticlesPipeline implements RenderPipeline {
                         Matrix4f modelMatrix = transformation.buildModelMatrix(gameItem);
 
                         viewMatrix.transpose3x3(modelMatrix);
-                        viewMatrix.scale(gameItem.getScale());
+                        viewMatrix.scale(gameItem.transform.getScale());
 
                         Matrix4f modelViewMatrix = transformation.buildModelViewMatrix(modelMatrix, viewMatrix);
-                        modelViewMatrix.scale(gameItem.getScale());
+                        modelViewMatrix.scale(gameItem.transform.getScale());
                         particleShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
                     }
             );

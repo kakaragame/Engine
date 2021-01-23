@@ -1,6 +1,7 @@
 package org.kakara.engine.gameitems.mesh;
 
 import org.kakara.engine.gameitems.GameItem;
+import org.kakara.engine.gameitems.old_GameItem;
 import org.kakara.engine.gameitems.Material;
 import org.kakara.engine.render.culling.FrustumCullingFilter;
 

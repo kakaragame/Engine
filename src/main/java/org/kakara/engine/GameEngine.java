@@ -72,7 +72,9 @@ public class GameEngine implements Runnable {
         try {
             init();
             gameLoop();
-        } finally {
+        }catch (Exception ex){
+            ex.printStackTrace();
+        } finally{
             cleanup();
         }
 

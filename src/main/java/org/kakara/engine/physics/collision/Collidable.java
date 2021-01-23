@@ -46,14 +46,14 @@ public interface Collidable extends Identifiable {
      *
      * @return The collider. (Null if there is none).
      */
-    Collider getCollider();
+    ColliderComponent getCollider();
 
     /**
      * Set the collider
      *
      * @param collider The collider
      */
-    void setCollider(Collider collider);
+    void setCollider(ColliderComponent collider);
 
     /**
      * If the collidable is selected.

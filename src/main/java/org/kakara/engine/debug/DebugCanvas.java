@@ -133,14 +133,14 @@ public class DebugCanvas implements UICanvas {
             if(ImGui.collapsingHeader("Abstract Game Scene Information")){
                 AbstractGameScene abstractGameScene = (AbstractGameScene) scene;
                 ImGui.text("# of Render Chunks: " + abstractGameScene.getChunkHandler().getRenderChunkList().size());
-                Collidable lookingAt = abstractGameScene.selectGameItems(30);
-                if(lookingAt instanceof RenderBlock){
-                    RenderBlock rb = (RenderBlock) lookingAt;
-                    ImGui.text("Facing Chunk Query Result: " + rb.getParentChunk().getRenderMesh().getQuery().pollPreviousResult());
-                    query.push(rb.getParentChunk().getRenderMesh().getQuery().pollPreviousResult());
-                }else{
-                    ImGui.text("Facing Chunk Query Result: NAN");
-                }
+//                Collidable lookingAt = abstractGameScene.selectGameItems(30);
+//                if(lookingAt instanceof RenderBlock){
+//                    RenderBlock rb = (RenderBlock) lookingAt;
+//                    ImGui.text("Facing Chunk Query Result: " + rb.getParentChunk().getRenderMesh().getQuery().pollPreviousResult());
+//                    query.push(rb.getParentChunk().getRenderMesh().getQuery().pollPreviousResult());
+//                }else{
+//                    ImGui.text("Facing Chunk Query Result: NAN");
+//                }
                 if(query.size() > 50)
                     query.remove(0);
                 float[] queryData = getQuery();

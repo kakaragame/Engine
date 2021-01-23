@@ -25,7 +25,7 @@ import static org.lwjgl.opengl.GL30.glBindFramebuffer;
 
 /**
  * Handles the rendering pipeline of the game.
- * <p>As of 1.0-pre4, additional pipelines can be added: {@link PipelineManager} & {@link RenderPipeline}</p>
+ * <p>As of 1.0-pre4, additional pipelines can be added: {@link PipelineManager} and {@link RenderPipeline}</p>
  * <p>Please note that the Skybox, Shadow System, and UI, are not apart of the pipeline system.</p>
  */
 public final class Renderer {
@@ -135,7 +135,7 @@ public final class Renderer {
         glDepthMask(false);
         for (RenderChunk chunk : new ArrayList<>(chunks)) {
             // If the chunk is out of the frustum then don't bother testing.
-            if (!frustumFilter.testRenderObject(chunk.getPosition(), 16, 16, 16))
+            if (!frustumFilter.testRenderObject(chunk.transform.getPosition(), 16, 16, 16))
                 continue;
             RenderMesh mesh = chunk.getRenderMesh();
             if (mesh == null) continue;

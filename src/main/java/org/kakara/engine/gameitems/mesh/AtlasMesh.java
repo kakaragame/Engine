@@ -1,11 +1,11 @@
 package org.kakara.engine.gameitems.mesh;
 
 import org.kakara.engine.GameEngine;
-import org.kakara.engine.engine.CubeData;
 import org.kakara.engine.exceptions.InvalidThreadException;
-import org.kakara.engine.gameitems.GameItem;
+import org.kakara.engine.gameitems.old_GameItem;
 import org.kakara.engine.gameitems.Material;
-import org.kakara.engine.gameitems.MeshGameItem;
+import org.kakara.engine.gameitems.GameItem;
+import org.kakara.engine.physics.collision.ColliderComponent;
 import org.kakara.engine.render.culling.FrustumCullingFilter;
 import org.kakara.engine.renderobjects.RenderTexture;
 import org.kakara.engine.renderobjects.TextureAtlas;
@@ -208,9 +208,9 @@ public class AtlasMesh implements IMesh {
     public void renderList(List<GameItem> gameItems, FrustumCullingFilter filter, Consumer<GameItem> consumer) {
         initRender();
         for (GameItem gameItem : gameItems) {
-            if(gameItem instanceof MeshGameItem){
-                MeshGameItem meshGameItem = (MeshGameItem) gameItem;
-                if (meshGameItem.isVisible() && filter.testCollider(meshGameItem.getCollider())) {
+            if(gameItem instanceof GameItem){
+                GameItem meshGameItem = (GameItem) gameItem;
+                if (meshGameItem.isVisible() && filter.testCollider(meshGameItem.getComponent(ColliderComponent.class))) {
                     consumer.accept(gameItem);
                     glDrawElements(GL_TRIANGLES, getVertexCount(), GL_UNSIGNED_INT, 0);
                 }

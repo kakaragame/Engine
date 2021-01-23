@@ -4,6 +4,7 @@ import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import org.kakara.engine.gameitems.GameItem;
+import org.kakara.engine.gameitems.old_GameItem;
 import org.kakara.engine.ui.objectcanvas.UIObject;
 
 /**
@@ -74,11 +75,11 @@ public class Transformation {
      */
     public Matrix4f buildModelMatrix(GameItem gameItem) {
 
-        Quaternionf rotation = gameItem.getRotation();
+        Quaternionf rotation = gameItem.transform.getRotation();
         return modelMatrix.translationRotateScale(
-                gameItem.getPosition().x, gameItem.getPosition().y, gameItem.getPosition().z,
+                gameItem.transform.getPosition().x, gameItem.transform.getPosition().y, gameItem.transform.getPosition().z,
                 rotation.x, rotation.y, rotation.z, rotation.w,
-                gameItem.getScale(), gameItem.getScale(), gameItem.getScale());
+                gameItem.transform.getScale(), gameItem.transform.getScale(), gameItem.transform.getScale());
     }
 
     /**
@@ -136,9 +137,9 @@ public class Transformation {
      * @return The model view matrix.
      */
     public Matrix4f buildModelViewMatrix(GameItem gameItem, Matrix4f matrix) {
-        Quaternionf rotation = gameItem.getRotation();
-        modelMatrix.translationRotateScale(gameItem.getPosition().x, gameItem.getPosition().y, gameItem.getPosition().z, rotation.x, rotation.y, rotation.z, rotation.w, gameItem.getScale(),
-                gameItem.getScale(), gameItem.getScale());
+        Quaternionf rotation = gameItem.transform.getRotation();
+        modelMatrix.translationRotateScale(gameItem.transform.getPosition().x, gameItem.transform.getPosition().y, gameItem.transform.getPosition().z, rotation.x, rotation.y, rotation.z, rotation.w, gameItem.transform.getScale(),
+                gameItem.transform.getScale(), gameItem.transform.getScale());
         modelViewMatrix.set(matrix);
         return modelViewMatrix.mul(modelMatrix);
     }

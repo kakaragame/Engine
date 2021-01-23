@@ -4,10 +4,11 @@ import org.joml.Intersectionf;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.kakara.engine.GameHandler;
-import org.kakara.engine.gameitems.MeshGameItem;
+import org.kakara.engine.gameitems.GameItem;
 import org.kakara.engine.math.Vector3;
 import org.kakara.engine.physics.FixedPhysicsUpdater;
 import org.kakara.engine.physics.collision.Collidable;
+import org.kakara.engine.physics.collision.ColliderComponent;
 import org.kakara.engine.physics.collision.CollisionManager;
 import org.kakara.engine.renderobjects.ChunkHandler;
 import org.kakara.engine.renderobjects.RenderChunk;
@@ -78,8 +79,8 @@ public abstract class AbstractGameScene extends AbstractScene {
      *                 <p>Note: This value is limited by the maximum distance set in {@link CollisionManager#getSelectionItems(Vector3)}</p>
      * @return The collidable that was found.
      */
-    public Collidable selectGameItems(float distance) {
-        Collidable selectedGameItem = null;
+    public ColliderComponent selectGameItems(float distance) {
+        ColliderComponent selectedGameItem = null;
         float closestDistance = distance;
 
         Vector3f dir = new Vector3f();
@@ -90,21 +91,17 @@ public abstract class AbstractGameScene extends AbstractScene {
         Vector3f min = new Vector3f();
         Vector2f nearFar = new Vector2f();
 
-        for (Collidable collidable : getCollisionManager().getSelectionItems(getCamera().getPosition())) {
-            collidable.setSelected(false);
-            min.set(collidable.getColPosition().toJoml());
-            max.set(collidable.getColPosition().toJoml());
-            min.add(-collidable.getColScale() / 2, -collidable.getColScale() / 2, -collidable.getColScale() / 2);
-            max.add(collidable.getColScale() / 2, collidable.getColScale() / 2, collidable.getColScale() / 2);
+        for (ColliderComponent collidable : getCollisionManager().getSelectionItems(getCamera().getPosition())) {
+            min.set(collidable.getGameItem().transform.getPosition().toJoml());
+            max.set(collidable.getGameItem().transform.getPosition().toJoml());
+            min.add(-collidable.getGameItem().transform.getScale() / 2, -collidable.getGameItem().transform.getScale() / 2, -collidable.getGameItem().transform.getScale() / 2);
+            max.add(collidable.getGameItem().transform.getScale() / 2, collidable.getGameItem().transform.getScale() / 2, collidable.getGameItem().transform.getScale() / 2);
             if (Intersectionf.intersectRayAab(getCamera().getPosition().toJoml(), dir, min, max, nearFar) && nearFar.x < closestDistance) {
                 closestDistance = nearFar.x;
                 selectedGameItem = collidable;
             }
         }
 
-        if (selectedGameItem != null) {
-            selectedGameItem.setSelected(true);
-        }
         return selectedGameItem;
     }
 
@@ -118,9 +115,9 @@ public abstract class AbstractGameScene extends AbstractScene {
      * @param ignoreIds The UUIDs to ignore.
      * @return The collidable that was found.
      */
-    public Collidable selectGameItems(float distance, UUID... ignoreIds) {
+    public ColliderComponent selectGameItems(float distance, UUID... ignoreIds) {
         List<UUID> ignore = new ArrayList<>(Arrays.asList(ignoreIds));
-        Collidable selectedGameItem = null;
+        ColliderComponent selectedGameItem = null;
         float closestDistance = distance;
 
         Vector3f dir = new Vector3f();
@@ -131,20 +128,16 @@ public abstract class AbstractGameScene extends AbstractScene {
         Vector3f min = new Vector3f();
         Vector2f nearFar = new Vector2f();
 
-        for (Collidable collidable : getCollisionManager().getSelectionItems(getCamera().getPosition())) {
-            if (ignore.contains(collidable.getUUID())) continue;
-            collidable.setSelected(false);
-            min.set(collidable.getColPosition().toJoml());
-            max.set(collidable.getColPosition().toJoml());
-            min.add(-collidable.getColScale() / 2, -collidable.getColScale() / 2, -collidable.getColScale() / 2);
-            max.add(collidable.getColScale() / 2, collidable.getColScale() / 2, collidable.getColScale() / 2);
+        for (ColliderComponent collidable : getCollisionManager().getSelectionItems(getCamera().getPosition())) {
+            if (ignore.contains(collidable.getGameItem().getUUID())) continue;
+            min.set(collidable.getGameItem().transform.getPosition().toJoml());
+            max.set(collidable.getGameItem().transform.getPosition().toJoml());
+            min.add(-collidable.getGameItem().transform.getScale() / 2, -collidable.getGameItem().transform.getScale() / 2, -collidable.getGameItem().transform.getScale() / 2);
+            max.add(collidable.getGameItem().transform.getScale() / 2, collidable.getGameItem().transform.getScale() / 2, collidable.getGameItem().transform.getScale() / 2);
             if (Intersectionf.intersectRayAab(getCamera().getPosition().toJoml(), dir, min, max, nearFar) && nearFar.x < closestDistance) {
                 closestDistance = nearFar.x;
                 selectedGameItem = collidable;
             }
-        }
-        if (selectedGameItem != null) {
-            selectedGameItem.setSelected(true);
         }
         return selectedGameItem;
     }
@@ -159,39 +152,39 @@ public abstract class AbstractGameScene extends AbstractScene {
      * @return The collidable that was selected.
      * @since 1.0-Pre3
      */
-    public Collidable selectGameItems(float distance, String... tags) {
-        List<String> ignoreTags = Arrays.asList(tags);
-        Collidable selectedGameItem = null;
-        float closestDistance = distance;
-
-        Vector3f dir = new Vector3f();
-
-        dir = getCamera().getViewMatrix().positiveZ(dir).negate();
-
-        Vector3f max = new Vector3f();
-        Vector3f min = new Vector3f();
-        Vector2f nearFar = new Vector2f();
-
-        for (Collidable collidable : getCollisionManager().getSelectionItems(getCamera().getPosition())) {
-            collidable.setSelected(false);
-            if (collidable instanceof MeshGameItem) {
-                if (ignoreTags.contains(((MeshGameItem) collidable).getTag())) continue;
-            }
-            min.set(collidable.getColPosition().toJoml());
-            max.set(collidable.getColPosition().toJoml());
-            min.add(-collidable.getColScale() / 2, -collidable.getColScale() / 2, -collidable.getColScale() / 2);
-            max.add(collidable.getColScale() / 2, collidable.getColScale() / 2, collidable.getColScale() / 2);
-            if (Intersectionf.intersectRayAab(getCamera().getPosition().toJoml(), dir, min, max, nearFar) && nearFar.x < closestDistance) {
-                closestDistance = nearFar.x;
-                selectedGameItem = collidable;
-            }
-        }
-
-        if (selectedGameItem != null) {
-            selectedGameItem.setSelected(true);
-        }
-        return selectedGameItem;
-    }
+//    public Collidable selectGameItems(float distance, String... tags) {
+//        List<String> ignoreTags = Arrays.asList(tags);
+//        Collidable selectedGameItem = null;
+//        float closestDistance = distance;
+//
+//        Vector3f dir = new Vector3f();
+//
+//        dir = getCamera().getViewMatrix().positiveZ(dir).negate();
+//
+//        Vector3f max = new Vector3f();
+//        Vector3f min = new Vector3f();
+//        Vector2f nearFar = new Vector2f();
+//
+//        for (Collidable collidable : getCollisionManager().getSelectionItems(getCamera().getPosition())) {
+//            collidable.setSelected(false);
+//            if (collidable instanceof GameItem) {
+//                if (ignoreTags.contains(((GameItem) collidable).getTag())) continue;
+//            }
+//            min.set(collidable.getColPosition().toJoml());
+//            max.set(collidable.getColPosition().toJoml());
+//            min.add(-collidable.getColScale() / 2, -collidable.getColScale() / 2, -collidable.getColScale() / 2);
+//            max.add(collidable.getColScale() / 2, collidable.getColScale() / 2, collidable.getColScale() / 2);
+//            if (Intersectionf.intersectRayAab(getCamera().getPosition().toJoml(), dir, min, max, nearFar) && nearFar.x < closestDistance) {
+//                closestDistance = nearFar.x;
+//                selectedGameItem = collidable;
+//            }
+//        }
+//
+//        if (selectedGameItem != null) {
+//            selectedGameItem.setSelected(true);
+//        }
+//        return selectedGameItem;
+//    }
 
     /**
      * Add a chunk to the scene

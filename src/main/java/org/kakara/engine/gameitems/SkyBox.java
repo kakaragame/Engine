@@ -3,14 +3,13 @@ package org.kakara.engine.gameitems;
 import org.kakara.engine.GameHandler;
 import org.kakara.engine.engine.CubeData;
 import org.kakara.engine.exceptions.GenericLoadException;
-import org.kakara.engine.exceptions.ModelLoadException;
 import org.kakara.engine.gameitems.mesh.Mesh;
 import org.kakara.engine.models.StaticModelLoader;
 
 /**
  * Handles the skybox
  */
-public class SkyBox extends MeshGameItem {
+public class SkyBox extends GameItem {
 
     /**
      * Create the skybox
@@ -30,13 +29,13 @@ public class SkyBox extends MeshGameItem {
                 }
 
                 setMeshes(skyBoxMesh);
-                setScale(100);
+                this.transform.setScale(100);
             } else {
                 Mesh skyBoxMesh = new Mesh(CubeData.skyboxVertex, CubeData.texture, CubeData.normal, CubeData.indices);
                 skyBoxMesh.setMaterial(new Material(skyBoxTexture, 0f));
                 setMesh(skyBoxMesh);
             }
-            setPosition(0, 0, 0);
+            this.transform.setPosition(0, 0, 0);
         }catch(Exception ex){
             throw new GenericLoadException("Error: unable to load sky box object!");
         }

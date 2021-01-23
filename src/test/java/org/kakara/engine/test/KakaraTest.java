@@ -10,6 +10,7 @@ public class KakaraTest implements Game {
 
     @Override
     public void start(GameHandler handler) throws Exception {
+
         gInst = handler;
 
         handler.getWindow().setClearColor(1, 0, 0, 1);
