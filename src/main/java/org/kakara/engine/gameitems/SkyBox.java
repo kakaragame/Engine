@@ -1,6 +1,7 @@
 package org.kakara.engine.gameitems;
 
 import org.kakara.engine.GameHandler;
+import org.kakara.engine.components.MeshRenderer;
 import org.kakara.engine.engine.CubeData;
 import org.kakara.engine.exceptions.GenericLoadException;
 import org.kakara.engine.gameitems.mesh.Mesh;
@@ -19,6 +20,7 @@ public class SkyBox extends GameItem {
      */
     public SkyBox(Texture skyBoxTexture, boolean useUniqueModel) {
         super();
+        addComponent(MeshRenderer.class);
         try{
             GameHandler gm = GameHandler.getInstance();
             if (useUniqueModel) {
@@ -28,12 +30,12 @@ public class SkyBox extends GameItem {
                     m.setMaterial(new Material(skyBoxTexture, 0f));
                 }
 
-                setMeshes(skyBoxMesh);
+                getMeshRenderer().get().setMesh(skyBoxMesh);
                 this.transform.setScale(100);
             } else {
                 Mesh skyBoxMesh = new Mesh(CubeData.skyboxVertex, CubeData.texture, CubeData.normal, CubeData.indices);
                 skyBoxMesh.setMaterial(new Material(skyBoxTexture, 0f));
-                setMesh(skyBoxMesh);
+                getMeshRenderer().get().setMesh(skyBoxMesh);
             }
             this.transform.setPosition(0, 0, 0);
         }catch(Exception ex){
@@ -47,8 +49,8 @@ public class SkyBox extends GameItem {
      * @param tx The texture to change to.
      */
     public void setTexture(Texture tx) {
-        this.getMesh().getMaterial().ifPresent(mat -> mat.getTexture().cleanup());
-        ((Mesh) this.getMesh()).setMaterial(new Material(tx, 0f));
+        getMeshRenderer().get().getMesh().getMaterial().ifPresent(mat -> mat.getTexture().cleanup());
+        ((Mesh) this.getMeshRenderer().get().getMesh()).setMaterial(new Material(tx, 0f));
     }
 
 }

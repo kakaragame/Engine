@@ -1,10 +1,8 @@
 package org.kakara.engine.gameitems.mesh;
 
 import org.jetbrains.annotations.NotNull;
-import org.kakara.engine.Game;
 import org.kakara.engine.GameEngine;
 import org.kakara.engine.exceptions.InvalidThreadException;
-import org.kakara.engine.gameitems.old_GameItem;
 import org.kakara.engine.gameitems.Material;
 import org.kakara.engine.gameitems.GameItem;
 import org.kakara.engine.gameitems.Texture;
@@ -321,7 +319,8 @@ public class Mesh implements IMesh {
     public void renderList(List<GameItem> gameItems, FrustumCullingFilter filter, Consumer<GameItem> consumer) {
         initRender();
         for (GameItem gameItem : gameItems) {
-            if (gameItem.isVisible() && filter.testCollider(gameItem.getComponent(ColliderComponent.class))) {
+            if(gameItem.getMeshRenderer().isEmpty()) continue;
+            if (gameItem.getMeshRenderer().get().isVisible() && filter.testCollider(gameItem.getComponent(ColliderComponent.class))) {
                 consumer.accept(gameItem);
                 glDrawElements(GL_TRIANGLES, getVertexCount(), GL_UNSIGNED_INT, 0);
             }

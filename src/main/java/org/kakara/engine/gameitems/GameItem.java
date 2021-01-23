@@ -3,6 +3,7 @@ package org.kakara.engine.gameitems;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Quaternionf;
 import org.kakara.engine.Camera;
+import org.kakara.engine.GameHandler;
 import org.kakara.engine.components.Component;
 import org.kakara.engine.components.MeshRenderer;
 import org.kakara.engine.components.Transform;
@@ -16,6 +17,7 @@ import org.kakara.engine.properties.Tagable;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -28,9 +30,7 @@ import java.util.stream.Collectors;
 public class GameItem implements Tagable {
     private final UUID uuid;
     private final List<Feature> features = new ArrayList<>();
-    private IMesh[] meshes;
     private int textPos;
-    private boolean visible = true;
 
     /*
         The physics section.
@@ -47,6 +47,7 @@ public class GameItem implements Tagable {
      */
     private final List<Component> components = new ArrayList<>();
     public final Transform transform;
+    private MeshRenderer meshRenderer;
 
     public GameItem() {
         uuid = UUID.randomUUID();
@@ -61,13 +62,13 @@ public class GameItem implements Tagable {
     }
 
     public GameItem(IMesh[] meshes) {
-        this.meshes = meshes;
         uuid = UUID.randomUUID();
         textPos = 0;
         tag = "";
         data = new ArrayList<>();
         this.transform = addComponent(Transform.class);
-        addComponent(MeshRenderer.class).setMesh(meshes);
+        this.meshRenderer = addComponent(MeshRenderer.class);
+        this.meshRenderer.setMesh(meshes);
     }
 
     public <T extends Component> T addComponent(Class<T> component) {
@@ -79,7 +80,19 @@ public class GameItem implements Tagable {
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | IndexOutOfBoundsException e) {
             throw new RuntimeException("Cannot add illegal component!");
         }
+
+        comp.init(this);
         this.components.add(comp);
+
+        if(component == MeshRenderer.class){
+            ItemHandler itemHandler = GameHandler.getInstance().getCurrentScene().getItemHandler();
+            assert itemHandler != null;
+            if(itemHandler.containsItem(this)){
+                itemHandler.removeItem(this);
+                this.meshRenderer = (MeshRenderer) comp;
+                itemHandler.addItem(this);
+            }
+        }
 
         return comp;
     }
@@ -91,6 +104,26 @@ public class GameItem implements Tagable {
             return (T) compLst.get(0);
 
         return null;
+    }
+
+    public <T extends Component> void removeComponent(Class<T> component){
+        if(component == Transform.class)
+            throw new IllegalArgumentException("Unable to remove required component!");
+
+        getComponent(component).onRemove();
+
+        components.removeIf(comp -> comp.getClass() == component);
+
+
+        if(component == MeshRenderer.class){
+            ItemHandler itemHandler = GameHandler.getInstance().getCurrentScene().getItemHandler();
+            assert itemHandler != null;
+            if(itemHandler.containsItem(this)){
+                itemHandler.removeItem(this);
+                this.meshRenderer = null;
+                itemHandler.addItem(this);
+            }
+        }
     }
 
     public boolean hasComponent(Class<Component> component){
@@ -105,19 +138,8 @@ public class GameItem implements Tagable {
         return transform;
     }
 
-    /**
-     * Get the mesh of the object
-     * <p>If there is more than one mesh, than the first one is returned.</p>
-     *
-     * @return The mesh
-     */
-    public IMesh getMesh() {
-        if (meshes.length == 0) return null;
-        return meshes[0];
-    }
-
-    public void setMesh(@NotNull Mesh mesh) {
-        this.meshes = new Mesh[]{mesh};
+    public Optional<MeshRenderer> getMeshRenderer(){
+        return Optional.ofNullable(meshRenderer);
     }
 
     public int getTextPos() {
@@ -137,51 +159,10 @@ public class GameItem implements Tagable {
         feature.updateValues(this);
     }
 
-    /**
-     * Get all of the meshes of the object.
-     *
-     * @return The array of meshes.
-     */
-    public IMesh[] getMeshes() {
-        return meshes;
-    }
-
-    /**
-     * Set the array of meshes.
-     *
-     * @param meshes The array of meshes
-     */
-    public void setMeshes(@NotNull Mesh[] meshes) {
-        this.meshes = meshes;
-    }
-
 
 
     public UUID getUUID() {
         return uuid;
-    }
-
-    /**
-     * Render the item.
-     * <p>Internal Use Only</p>
-     */
-    public void render() {
-        if (isVisible()) {
-            for (IMesh mesh : meshes) {
-                mesh.render();
-            }
-        }
-    }
-
-    /**
-     * Cleanup the item.
-     * <p>Internal Use Only</p>
-     */
-    public void cleanup() {
-        int numMeshes = this.meshes != null ? this.meshes.length : 0;
-        for (int i = 0; i < numMeshes; i++) {
-            this.meshes[i].cleanUp();
-        }
     }
 
 
@@ -192,26 +173,13 @@ public class GameItem implements Tagable {
      * @return The clone of the gameobject.
      */
     public GameItem clone(boolean exact) {
-        GameItem clone = new GameItem(this.meshes);
+        GameItem clone = new GameItem(this.meshRenderer.getMeshes());
         if (exact) {
             clone.transform.setPosition(transform.getPosition().x, transform.getPosition().y, transform.getPosition().z);
             clone.transform.setRotation(transform.getRotation());
             clone.transform.setScale(transform.getScale());
         }
         return clone;
-    }
-
-    public boolean isVisible() {
-        return visible;
-    }
-
-    /**
-     * Sets weather the object is visible. The Collision Engine will continue to work
-     *
-     * @param visible is the item visible
-     */
-    public void setVisible(boolean visible) {
-        this.visible = visible;
     }
 
 

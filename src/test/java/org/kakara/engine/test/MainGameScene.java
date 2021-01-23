@@ -7,7 +7,6 @@ import org.kakara.engine.debug.DebugCanvas;
 import org.kakara.engine.engine.CubeData;
 import org.kakara.engine.events.EventHandler;
 import org.kakara.engine.events.event.MouseClickEvent;
-import org.kakara.engine.gameitems.old_GameItem;
 import org.kakara.engine.gameitems.Material;
 import org.kakara.engine.gameitems.GameItem;
 import org.kakara.engine.gameitems.Texture;
@@ -25,7 +24,6 @@ import org.kakara.engine.lighting.PointLight;
 import org.kakara.engine.math.Vector3;
 import org.kakara.engine.models.StaticModelLoader;
 import org.kakara.engine.physics.collision.BoxCollider;
-import org.kakara.engine.physics.collision.Collidable;
 import org.kakara.engine.physics.collision.ColliderComponent;
 import org.kakara.engine.renderobjects.RenderBlock;
 import org.kakara.engine.renderobjects.RenderChunk;
@@ -103,7 +101,7 @@ public class MainGameScene extends AbstractGameScene {
             GameItem object = new GameItem(mainPlayer);
             object.transform.setPosition(0, 20, 0);
             object.transform.setScale(0.3f);
-            object.getMesh().setWireframe(true);
+            object.getMeshRenderer().get().getMesh().setWireframe(true);
 //        object.setCollider(new BoxCollider(new Vector3(0, 0, 0), new Vector3(1, 1.5f, 1)));
 //        object.getCollider().setUseGravity(true).setTrigger(false);
 //        ((BoxCollider) object.getCollider()).setOffset(new Vector3(0, 0.7f, 0));
@@ -123,6 +121,9 @@ public class MainGameScene extends AbstractGameScene {
             mt.setReflectance(0.3f);
 
             mesh.setMaterial(mt);
+
+            Mesh me = new Mesh(CubeData.vertex, CubeData.texture, CubeData.normal, CubeData.indices);
+            me.setMaterial(mt);
 
             GameItem gi = new GameItem(mesh);
             gi.addComponent(BoxCollider.class);

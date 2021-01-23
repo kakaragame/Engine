@@ -2,7 +2,6 @@ package org.kakara.engine.components;
 
 import org.joml.Quaternionf;
 import org.kakara.engine.Camera;
-import org.kakara.engine.gameitems.old_GameItem;
 import org.kakara.engine.math.Vector3;
 
 /**
@@ -13,7 +12,7 @@ import org.kakara.engine.math.Vector3;
 public class Transform extends Component{
     private final Vector3 position = new Vector3();
     private final Quaternionf rotation = new Quaternionf();
-    private float scale = 0f;
+    private float scale = 1f;
 
     @Override
     public void start() {}

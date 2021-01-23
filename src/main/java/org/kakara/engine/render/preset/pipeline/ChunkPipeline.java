@@ -129,6 +129,7 @@ public class ChunkPipeline implements RenderPipeline {
             Graphics.bindShadowMap(shadowMap);
 
             Matrix4f modelViewMatrix = transformation.buildModelViewMatrix(modelMatrix, viewMatrix);
+
             chunkShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
 
             Matrix4f modelLightViewMatrix = transformation.buildModelLightViewMatrix(modelMatrix, lightViewMatrix);

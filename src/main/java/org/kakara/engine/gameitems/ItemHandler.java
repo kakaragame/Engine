@@ -1,5 +1,6 @@
 package org.kakara.engine.gameitems;
 
+import org.kakara.engine.components.Component;
 import org.kakara.engine.gameitems.features.Feature;
 import org.kakara.engine.gameitems.mesh.IMesh;
 import org.kakara.engine.gameitems.mesh.InstancedMesh;
@@ -13,6 +14,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 public class ItemHandler {
     private final List<GameItem> items;
+
+    private final NullMesh nullMesh = new NullMesh();
 
     private final Map<IMesh, List<GameItem>> nonInstancedMeshMap;
     private final Map<InstancedMesh, List<GameItem>> instancedMeshMap;
@@ -30,14 +33,18 @@ public class ItemHandler {
      * @param obj The object to be added.
      */
     public void addItem(GameItem obj) {
-        IMesh mesh = obj.getMesh();
+        IMesh mesh;
+        if(obj.getMeshRenderer().isPresent())
+            mesh = obj.getMeshRenderer().get().getMesh();
+        else
+            mesh = nullMesh;
+        List<GameItem> list;
         if (mesh instanceof InstancedMesh) {
-            List<GameItem> list = instancedMeshMap.computeIfAbsent((InstancedMesh) mesh, k -> new ArrayList<>());
-            list.add(obj);
+            list = instancedMeshMap.computeIfAbsent((InstancedMesh) mesh, k -> new ArrayList<>());
         } else {
-            List<GameItem> list = nonInstancedMeshMap.computeIfAbsent(mesh, k -> new ArrayList<>());
-            list.add(obj);
+            list = nonInstancedMeshMap.computeIfAbsent(mesh, k -> new ArrayList<>());
         }
+        list.add(obj);
         items.add(obj);
     }
 
@@ -49,7 +56,12 @@ public class ItemHandler {
      * @since 1.0-Pre1
      */
     public void removeItem(GameItem obj) {
-        IMesh mesh = obj.getMesh();
+        IMesh mesh;
+        if(obj.getMeshRenderer().isPresent())
+            mesh = obj.getMeshRenderer().get().getMesh();
+        else
+            mesh = new NullMesh();
+
         if (mesh instanceof InstancedMesh) {
             instancedMeshMap.get(mesh).remove(obj);
         } else {
@@ -67,14 +79,23 @@ public class ItemHandler {
     public void removeItemWithTag(String tag) {
         for (GameItem item : new ArrayList<>(items)) {
             if (item.getTag().equals(tag)) {
-                if (item.getMesh() instanceof InstancedMesh) {
-                    instancedMeshMap.get(item.getMesh()).remove(item);
+                IMesh mesh;
+                if(item.getMeshRenderer().isPresent())
+                    mesh = item.getMeshRenderer().get().getMesh();
+                else
+                    mesh = new NullMesh();
+                if (mesh instanceof InstancedMesh) {
+                    instancedMeshMap.get(mesh).remove(item);
                 } else {
-                    nonInstancedMeshMap.get(item.getMesh()).remove(item);
+                    nonInstancedMeshMap.get(mesh).remove(item);
                 }
                 items.remove(item);
             }
         }
+    }
+
+    public boolean containsItem(GameItem item){
+        return items.contains(item);
     }
 
     /**
@@ -154,13 +175,17 @@ public class ItemHandler {
     public void cleanup() {
         for (Map.Entry<InstancedMesh, List<GameItem>> m : instancedMeshMap.entrySet()) {
             for (GameItem gi : m.getValue()) {
-                gi.cleanup();
+                for(Component component : gi.getComponents()){
+                    component.cleanup();
+                }
             }
         }
 
         for (Map.Entry<IMesh, List<GameItem>> m : nonInstancedMeshMap.entrySet()) {
             for (GameItem gi : m.getValue()) {
-                gi.cleanup();
+                for(Component component : gi.getComponents()){
+                    component.cleanup();
+                }
             }
         }
     }

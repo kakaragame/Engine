@@ -3,7 +3,6 @@ package org.kakara.engine.render.preset.pipeline;
 import org.joml.Matrix4f;
 import org.kakara.engine.exceptions.render.ShaderNotFoundException;
 import org.kakara.engine.gameitems.GameItem;
-import org.kakara.engine.gameitems.old_GameItem;
 import org.kakara.engine.gameitems.Texture;
 import org.kakara.engine.gameitems.mesh.Mesh;
 import org.kakara.engine.gameitems.particles.ParticleEmitter;
@@ -66,7 +65,7 @@ public class ParticlesPipeline implements RenderPipeline {
 
         for (int i = 0; i < numEmitters; i++) {
             ParticleEmitter emitter = emitters.get(i);
-            Mesh mesh = (Mesh) emitter.getBaseParticle().getMesh();
+            Mesh mesh = (Mesh) emitter.getBaseParticle().getMeshRenderer().get().getMesh();
 
             Texture text = mesh.getMaterial().get().getTexture();
             particleShaderProgram.setUniform("numCols", text.getNumCols());

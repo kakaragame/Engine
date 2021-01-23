@@ -2,7 +2,6 @@ package org.kakara.engine.render.preset.pipeline;
 
 import org.joml.Matrix4f;
 import org.kakara.engine.exceptions.render.ShaderNotFoundException;
-import org.kakara.engine.gameitems.old_GameItem;
 import org.kakara.engine.gameitems.GameItem;
 import org.kakara.engine.gameitems.mesh.IMesh;
 import org.kakara.engine.gameitems.mesh.InstancedMesh;
@@ -96,16 +95,16 @@ public class StandardPipeline implements RenderPipeline {
             }
 
             mesh.renderList(mapMeshes.get(mesh), frustumFilter, (GameItem gameItem) -> {
-                GameItem meshGameItem = ((GameItem) gameItem);
                 Matrix4f modelMatrix = transformation.buildModelMatrix(gameItem);
                 if (!depthMap) {
                     Matrix4f modelViewMatrix = transformation.buildModelViewMatrix(modelMatrix, viewMatrix);
+                    System.out.println(modelViewMatrix);
                     shaderProgram.setUniform("modelViewNonInstancedMatrix", modelViewMatrix);
                 }
                 Matrix4f modelLightViewMatrix = transformation.buildModelLightViewMatrix(modelMatrix, lightViewMatrix);
                 shaderProgram.setUniform("modelLightViewNonInstancedMatrix", modelLightViewMatrix);
                 // Render every mesh (some game items can have more than one)
-                for (IMesh m : meshGameItem.getMeshes()) {
+                for (IMesh m : gameItem.getMeshRenderer().orElseThrow().getMeshes()) {
                     m.render();
                 }
             });
@@ -131,6 +130,7 @@ public class StandardPipeline implements RenderPipeline {
                 shaderProgram.setUniform("material", mesh.getMaterial().get());
                 Graphics.bindShadowMap(shadowMap);
             }
+
             mesh.renderListInstanced(mapMeshes.get(mesh), depthMap, transformation, viewMatrix, lightViewMatrix);
         }
     }

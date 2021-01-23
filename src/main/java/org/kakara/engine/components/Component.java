@@ -7,6 +7,7 @@ public abstract class Component {
 
     private GameItem gameItem;
 
+    // TODO implement start and update.
     public abstract void start();
     public abstract void update();
 
@@ -14,9 +15,12 @@ public abstract class Component {
 
     public void cleanup(){}
 
+    public void onRemove() {}
+
     public void onCollision(ColliderComponent other){}
 
     public final void init(GameItem item){
+        // TODO implement non generic exception.
         if(gameItem != null)
             throw new RuntimeException("This component already has a GameItem!");
         this.gameItem = item;

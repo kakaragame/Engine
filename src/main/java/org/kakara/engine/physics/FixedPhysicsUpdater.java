@@ -1,9 +1,7 @@
 package org.kakara.engine.physics;
 
 import org.kakara.engine.components.Component;
-import org.kakara.engine.gameitems.old_GameItem;
 import org.kakara.engine.gameitems.GameItem;
-import org.kakara.engine.physics.collision.ColliderComponent;
 import org.kakara.engine.scene.Scene;
 
 import java.util.Objects;

@@ -2,7 +2,6 @@ package org.kakara.engine.gameitems.particles;
 
 import org.joml.Vector3f;
 import org.kakara.engine.gameitems.GameItem;
-import org.kakara.engine.gameitems.old_GameItem;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -155,8 +154,6 @@ public class FlowParticleEmitter implements ParticleEmitter {
 
     @Override
     public void cleanup() {
-        for (GameItem particle : getParticles()) {
-            particle.cleanup();
-        }
+
     }
 }

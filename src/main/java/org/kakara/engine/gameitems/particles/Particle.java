@@ -1,6 +1,7 @@
 package org.kakara.engine.gameitems.particles;
 
 import org.joml.Quaternionf;
+import org.kakara.engine.components.MeshRenderer;
 import org.kakara.engine.gameitems.GameItem;
 import org.kakara.engine.gameitems.Texture;
 import org.kakara.engine.gameitems.mesh.Mesh;
@@ -28,12 +29,12 @@ public class Particle extends GameItem {
         this.ttl = ttl;
         this.updateTextureMillis = updateTextureMillis;
         this.currentAnimTimeMillis = 0;
-        Texture texture = this.getMesh().getMaterial().get().getTexture();
+        Texture texture = this.getMeshRenderer().get().getMesh().getMaterial().get().getTexture();
         this.animFrames = texture.getNumCols() * texture.getNumRows();
     }
 
     public Particle(Particle baseParticle) {
-        super(baseParticle.getMesh());
+        super(baseParticle.getMeshRenderer().get().getMesh());
         Vector3 aux = baseParticle.transform.getPosition();
         transform.setPosition(aux.x, aux.y, aux.z);
         Quaternionf rotation = new Quaternionf(baseParticle.transform.getRotation());

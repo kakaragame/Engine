@@ -3,7 +3,6 @@ package org.kakara.engine.gameitems.mesh;
 import org.joml.Matrix4f;
 import org.kakara.engine.GameHandler;
 import org.kakara.engine.gameitems.GameItem;
-import org.kakara.engine.gameitems.old_GameItem;
 import org.kakara.engine.math.KMath;
 import org.kakara.engine.physics.collision.ColliderComponent;
 import org.kakara.engine.render.Transformation;

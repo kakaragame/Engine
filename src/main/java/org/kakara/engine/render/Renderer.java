@@ -214,7 +214,7 @@ public final class Renderer {
         skyBoxShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
         skyBoxShaderProgram.setUniform("ambientLight", scene.getLightHandler().getSkyBoxLight().toVector());
 
-        scene.getSkyBox().getMesh().render();
+        scene.getSkyBox().getMeshRenderer().get().getMesh().render();
 
         skyBoxShaderProgram.unbind();
     }
