@@ -110,6 +110,7 @@ dependencies {
     implementation("io.imgui.java:lwjgl3:1.77-0.17.2")
     implementation("io.imgui.java:$lwjglNatives:1.77-0.17.2")
     implementation("org.slf4j:slf4j-api:1.7.30")
+    testRuntimeOnly("org.slf4j:slf4j-simple:1.7.30")
     implementation("org.joml", "joml", jomlVersion)
 
     //LWJGL
