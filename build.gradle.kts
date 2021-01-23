@@ -102,7 +102,7 @@ dependencies {
     // Regular Depends
     implementation(group = "me.ryandw11", name = "Octree", version = "1.0")
     implementation("org.apache.commons:commons-lang3:3.11")
-    implementation("commons-io:commons-io:2.6")
+    implementation("commons-io:commons-io:2.8.0")
     implementation("org.jetbrains:annotations:20.1.0")
     implementation("com.github.nifty-gui:nifty:1.4.3")
     implementation("org.l33tlabs.twl:pngdecoder:1.0")
@@ -110,6 +110,7 @@ dependencies {
     implementation("io.imgui.java:lwjgl3:1.77-0.17.2")
     implementation("io.imgui.java:$lwjglNatives:1.77-0.17.2")
     implementation("org.slf4j:slf4j-api:1.7.30")
+    testRuntimeOnly("org.slf4j:slf4j-simple:1.7.30")
     implementation("org.joml", "joml", jomlVersion)
 
     //LWJGL
