@@ -2,7 +2,7 @@ package org.kakara.engine.renderobjects;
 
 import org.kakara.engine.math.KMath;
 import org.kakara.engine.math.Vector3;
-import org.kakara.engine.physics.collision.Collidable;
+import org.kakara.engine.physics.collision.ColliderComponent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,9 +55,9 @@ public class ChunkHandler {
      * @param position The position where the collider is to check around.
      * @return The list of colliders.
      */
-    public List<RenderBlock> getChunkCollisions(Vector3 position) {
+    public List<ColliderComponent> getChunkCollisions(Vector3 position) {
         Vector3 pos = new Vector3((int) Math.floor(position.x), (int) Math.floor(position.y), (int) Math.floor(position.z));
-        List<RenderBlock> collisionList = new ArrayList<>();
+        List<ColliderComponent> collisionList = new ArrayList<>();
         for (RenderChunk chunk : new ArrayList<>(renderChunkList)) {
             if (chunk == null) continue;
             if (KMath.distance(0, chunk.transform.getPosition().y, 0, 0, pos.y, 0) > 16) continue;
@@ -75,7 +75,7 @@ public class ChunkHandler {
                                 continue;
                             }
                             if (blck != null)
-                                collisionList.add(blck);
+                                collisionList.add(blck.getCollider());
                         }
                     }
                 }
@@ -89,11 +89,11 @@ public class ChunkHandler {
      * <p>This is separate from the method above for performance reasons.</p>
      *
      * @param position The position where the selector is to check around.
-     * @return The list of collidables
+     * @return The list of ColliderComponents {@link org.kakara.engine.physics.collision.RenderBlockCollider}.
      */
-    public List<RenderBlock> getChunkSelections(Vector3 position) {
+    public List<ColliderComponent> getChunkSelections(Vector3 position) {
         Vector3 pos = new Vector3((int) Math.floor(position.x), (int) Math.floor(position.y), (int) Math.floor(position.z));
-        List<RenderBlock> collisionList = new ArrayList<>();
+        List<ColliderComponent> collisionList = new ArrayList<>();
         for (RenderChunk chunk : new ArrayList<>(renderChunkList)) {
             if (KMath.distance(0, chunk.transform.getPosition().y, 0, 0, pos.y, 0) > 17) continue;
             if (KMath.distance(chunk.transform.getPosition().x, 0, chunk.transform.getPosition().z, pos.x, 0, pos.z) < 25) {
@@ -109,7 +109,7 @@ public class ChunkHandler {
                                 continue;
                             }
                             if (blck != null)
-                                collisionList.add(blck);
+                                collisionList.add(blck.getCollider());
                         }
                     }
                 }

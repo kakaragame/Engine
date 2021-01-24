@@ -1,19 +1,24 @@
 package org.kakara.engine.components;
 
-import org.kakara.engine.GameHandler;
-import org.kakara.engine.gameitems.ItemHandler;
 import org.kakara.engine.gameitems.mesh.IMesh;
-import org.kakara.engine.gameitems.mesh.Mesh;
 
+import java.util.Objects;
+
+/**
+ * The MeshRender component handles meshes for the GameItem.
+ * <p>Despite the name, it is up to Render Pipelines to render the mesh.</p>
+ */
 public class MeshRenderer extends Component {
     private IMesh[] mesh;
     private boolean visible = true;
 
     @Override
-    public void start() { }
+    public void start() {
+    }
 
     @Override
-    public void update() { }
+    public void update() {
+    }
 
     @Override
     public void afterInit() {
@@ -33,34 +38,65 @@ public class MeshRenderer extends Component {
 
     }
 
-    public void setMesh(IMesh mesh){
-        if(mesh != null)
+    /**
+     * Set the mesh for the component.
+     *
+     * @param mesh The mesh to set.
+     */
+    public void setMesh(IMesh mesh) {
+        Objects.requireNonNull(mesh);
+        if (this.mesh != null)
             this.mesh[0].cleanUp();
         this.mesh = new IMesh[1];
         this.mesh[0] = mesh;
     }
 
-    public void setMesh(IMesh[] mesh){
-        // TODO Fix this.
-//        if(mesh != null)
-//            for(IMesh m : mesh)
-//                m.cleanUp();
+    /**
+     * Set the meshes for the component.
+     *
+     * @param mesh The array of meshes to set.
+     */
+    public void setMesh(IMesh[] mesh) {
+        Objects.requireNonNull(mesh);
+        if (this.mesh != null)
+            for (IMesh m : this.mesh)
+                m.cleanUp();
         this.mesh = mesh;
     }
 
-    public IMesh getMesh(){
+    /**
+     * Get the mesh.
+     *
+     * @return The mesh.
+     */
+    public IMesh getMesh() {
         return mesh[0];
     }
 
-    public IMesh[] getMeshes(){
+    /**
+     * Get the meshes.
+     *
+     * @return The meshes.
+     */
+    public IMesh[] getMeshes() {
         return mesh;
     }
 
-    public boolean isVisible(){
+    /**
+     * If the mesh is visible.
+     *
+     * @return If the mesh is visible.
+     */
+    public boolean isVisible() {
         return visible;
     }
 
-    public void setVisible(boolean visible){
+    /**
+     * Set if the mesh is visible.
+     *
+     * @param visible if the mesh is visible.
+     */
+    public void setVisible(boolean visible) {
         this.visible = visible;
     }
 }

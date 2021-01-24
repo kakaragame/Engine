@@ -59,10 +59,10 @@ public class CollisionManager {
      */
     public List<ColliderComponent> getCollidngItems(@Nullable Vector3 position) {
         if (position == null) return colliders;
-//        List<ColliderComponent> colliders = new ArrayList<>(colliders);
-//        if (handler.getSceneManager().getCurrentScene() instanceof AbstractGameScene)
-//            colliders.addAll(((AbstractGameScene) handler.getSceneManager().getCurrentScene()).getChunkHandler().getChunkCollisions(position));
-        return colliders;
+        List<ColliderComponent> tempColliders = new ArrayList<>(colliders);
+        if (handler.getSceneManager().getCurrentScene() instanceof AbstractGameScene)
+            tempColliders.addAll(((AbstractGameScene) handler.getSceneManager().getCurrentScene()).getChunkHandler().getChunkCollisions(position));
+        return tempColliders;
     }
 
     /**
@@ -73,10 +73,10 @@ public class CollisionManager {
      */
     public List<ColliderComponent> getSelectionItems(Vector3 position) {
         if (position == null) return colliders;
-//        List<ColliderComponent> colliders = new ArrayList<>(colliders);
-//        if (handler.getSceneManager().getCurrentScene() instanceof AbstractGameScene)
-//            colliders.addAll(((AbstractGameScene) handler.getSceneManager().getCurrentScene()).getChunkHandler().getChunkSelections(position));
-        return colliders;
+        List<ColliderComponent> tempColliders = new ArrayList<>(colliders);
+        if (handler.getSceneManager().getCurrentScene() instanceof AbstractGameScene)
+            tempColliders.addAll(((AbstractGameScene) handler.getSceneManager().getCurrentScene()).getChunkHandler().getChunkSelections(position));
+        return tempColliders;
     }
 
     /*

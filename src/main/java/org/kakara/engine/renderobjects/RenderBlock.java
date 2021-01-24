@@ -2,9 +2,7 @@ package org.kakara.engine.renderobjects;
 
 import org.jetbrains.annotations.Nullable;
 import org.kakara.engine.math.Vector3;
-import org.kakara.engine.physics.collision.Collidable;
-import org.kakara.engine.physics.collision.ColliderComponent;
-import org.kakara.engine.physics.collision.ObjectBoxCollider;
+import org.kakara.engine.physics.collision.RenderBlockCollider;
 import org.kakara.engine.properties.Tagable;
 import org.kakara.engine.renderobjects.mesh.MeshType;
 import org.kakara.engine.renderobjects.renderlayouts.BlockLayout;
@@ -33,7 +31,7 @@ public class RenderBlock implements Tagable {
     private final List<Face> visibleFaces;
     private boolean selected;
 
-    private ColliderComponent collider;
+    private RenderBlockCollider collider;
 
     private final UUID uuid;
 
@@ -60,12 +58,14 @@ public class RenderBlock implements Tagable {
         this.tag = "";
         this.uuid = UUIDUtils.randomUUID();
         this.isOpaque = true;
+        this.collider = new RenderBlockCollider(this);
+        this.collider.start();
     }
 
     /**
      * Create a RenderBlock using the default layout.
      *
-     * @param texture The texture to use.
+     * @param texture  The texture to use.
      * @param position The position to use.
      */
     public RenderBlock(RenderTexture texture, Vector3 position) {
@@ -88,6 +88,15 @@ public class RenderBlock implements Tagable {
      */
     public Vector3 getPosition() {
         return position.clone();
+    }
+
+    /**
+     * Get the position in term of the normal engine units.
+     *
+     * @return The normal position
+     */
+    public Vector3 getWorldPosition() {
+        return position.add(parentChunk.transform.getPosition());
     }
 
     /**
@@ -173,20 +182,32 @@ public class RenderBlock implements Tagable {
 
     /**
      * Set if the render block is opaque.
+     *
      * @param opaque If the render block is opaque.
      * @since 1.0-Pre4
      */
-    public void setOpaque(boolean opaque){
+    public void setOpaque(boolean opaque) {
         this.isOpaque = opaque;
     }
 
     /**
      * Get if the render block is opaque.
+     *
      * @return If the render block is opaque.
      * @since 1.0-Pre4
      */
-    public boolean isOpaque(){
+    public boolean isOpaque() {
         return isOpaque;
+    }
+
+    /**
+     * Get the collider for this render block.
+     *
+     * @return The collider.
+     * @since 1.0-Pre5.
+     */
+    public RenderBlockCollider getCollider() {
+        return this.collider;
     }
 
     /**

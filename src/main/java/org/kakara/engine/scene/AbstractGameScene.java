@@ -4,10 +4,8 @@ import org.joml.Intersectionf;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.kakara.engine.GameHandler;
-import org.kakara.engine.gameitems.GameItem;
 import org.kakara.engine.math.Vector3;
 import org.kakara.engine.physics.FixedPhysicsUpdater;
-import org.kakara.engine.physics.collision.Collidable;
 import org.kakara.engine.physics.collision.ColliderComponent;
 import org.kakara.engine.physics.collision.CollisionManager;
 import org.kakara.engine.renderobjects.ChunkHandler;
@@ -92,10 +90,10 @@ public abstract class AbstractGameScene extends AbstractScene {
         Vector2f nearFar = new Vector2f();
 
         for (ColliderComponent collidable : getCollisionManager().getSelectionItems(getCamera().getPosition())) {
-            min.set(collidable.getGameItem().transform.getPosition().toJoml());
-            max.set(collidable.getGameItem().transform.getPosition().toJoml());
-            min.add(-collidable.getGameItem().transform.getScale() / 2, -collidable.getGameItem().transform.getScale() / 2, -collidable.getGameItem().transform.getScale() / 2);
-            max.add(collidable.getGameItem().transform.getScale() / 2, collidable.getGameItem().transform.getScale() / 2, collidable.getGameItem().transform.getScale() / 2);
+            min.set(collidable.getPosition().toJoml());
+            max.set(collidable.getPosition().toJoml());
+            min.add(-collidable.getScale() / 2, -collidable.getScale() / 2, -collidable.getScale() / 2);
+            max.add(collidable.getScale() / 2, collidable.getScale() / 2, collidable.getScale() / 2);
             if (Intersectionf.intersectRayAab(getCamera().getPosition().toJoml(), dir, min, max, nearFar) && nearFar.x < closestDistance) {
                 closestDistance = nearFar.x;
                 selectedGameItem = collidable;
@@ -130,10 +128,10 @@ public abstract class AbstractGameScene extends AbstractScene {
 
         for (ColliderComponent collidable : getCollisionManager().getSelectionItems(getCamera().getPosition())) {
             if (ignore.contains(collidable.getGameItem().getUUID())) continue;
-            min.set(collidable.getGameItem().transform.getPosition().toJoml());
-            max.set(collidable.getGameItem().transform.getPosition().toJoml());
-            min.add(-collidable.getGameItem().transform.getScale() / 2, -collidable.getGameItem().transform.getScale() / 2, -collidable.getGameItem().transform.getScale() / 2);
-            max.add(collidable.getGameItem().transform.getScale() / 2, collidable.getGameItem().transform.getScale() / 2, collidable.getGameItem().transform.getScale() / 2);
+            min.set(collidable.getPosition().toJoml());
+            max.set(collidable.getPosition().toJoml());
+            min.add(-collidable.getScale() / 2, -collidable.getScale() / 2, -collidable.getScale() / 2);
+            max.add(collidable.getScale() / 2, collidable.getScale() / 2, collidable.getScale() / 2);
             if (Intersectionf.intersectRayAab(getCamera().getPosition().toJoml(), dir, min, max, nearFar) && nearFar.x < closestDistance) {
                 closestDistance = nearFar.x;
                 selectedGameItem = collidable;

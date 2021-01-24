@@ -98,7 +98,6 @@ public class StandardPipeline implements RenderPipeline {
                 Matrix4f modelMatrix = transformation.buildModelMatrix(gameItem);
                 if (!depthMap) {
                     Matrix4f modelViewMatrix = transformation.buildModelViewMatrix(modelMatrix, viewMatrix);
-                    System.out.println(modelViewMatrix);
                     shaderProgram.setUniform("modelViewNonInstancedMatrix", modelViewMatrix);
                 }
                 Matrix4f modelLightViewMatrix = transformation.buildModelLightViewMatrix(modelMatrix, lightViewMatrix);

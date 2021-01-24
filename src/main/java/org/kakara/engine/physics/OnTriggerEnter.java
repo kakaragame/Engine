@@ -1,10 +1,11 @@
 package org.kakara.engine.physics;
 
-import org.kakara.engine.physics.collision.Collidable;
 import org.kakara.engine.physics.collision.ColliderComponent;
 
 /**
  * This handle the OnTriggerEnter event for {@link ColliderComponent}.
+ *
+ * <p>Maybe consider using {@link org.kakara.engine.components.Component#onCollision(ColliderComponent)} instead.</p>
  *
  * @since 1.0-Pre2
  */

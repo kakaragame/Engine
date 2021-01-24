@@ -1,43 +1,45 @@
 package org.kakara.engine.physics.collision;
 
 import org.kakara.engine.GameHandler;
-import org.kakara.engine.components.Component;
-import org.kakara.engine.gameitems.GameItem;
 import org.kakara.engine.math.Vector3;
 import org.kakara.engine.physics.OnTriggerEnter;
+import org.kakara.engine.renderobjects.RenderBlock;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
 /**
- * The BoxCollider class is to be used on non-primitive objects that are created using the model loader.
- * It is recommended to use the relative mode to define points.
- * To define the points pick two opposite corners.
- * <p>For a collider to fits around a cube see: {@link ObjectBoxCollider}</p>
+ * This is used to handle the RenderBlock collisions for voxels.
+ * <p>This component has special behavior and is not attached to a GameItem.</p>
+ * <p>{@link #getGameItem()} is null for this component. Please check that a {@link ColliderComponent}
+ * is not an instance of this class before using that method.</p>
  */
-public class BoxCollider extends ColliderComponent {
+public class RenderBlockCollider extends ColliderComponent {
 
     private Vector3 point1;
     private Vector3 point2;
     private Vector3 offset;
     private boolean isTrigger;
 
-    private Vector3 lastPosition;
-    private GameItem item;
+    private final RenderBlock renderBlock;
     private final GameHandler handler;
     private Predicate<ColliderComponent> predicate = gameItem -> false;
     private final List<OnTriggerEnter> triggerEvents;
 
-    public BoxCollider() {
+    /**
+     * Construct the render block collider.
+     *
+     * @param renderBlock The render block that this collider uses.
+     */
+    public RenderBlockCollider(RenderBlock renderBlock) {
         this.handler = GameHandler.getInstance();
         this.triggerEvents = new ArrayList<>();
+        this.renderBlock = renderBlock;
     }
 
     @Override
     public void start() {
-        this.item = getGameItem();
-        lastPosition = new Vector3(0, 0, 0);
         this.point1 = new Vector3();
         this.point2 = new Vector3(1, 1, 1);
         this.offset = new Vector3();
@@ -45,7 +47,16 @@ public class BoxCollider extends ColliderComponent {
     }
 
     @Override
-    public void update() {}
+    public void update() {
+    }
+
+    @Override
+    public void afterInit() {
+    }
+
+    @Override
+    public void onRemove() {
+    }
 
     @Override
     public ColliderComponent setTrigger(boolean value) {
@@ -84,7 +95,7 @@ public class BoxCollider extends ColliderComponent {
 
     @Override
     public Vector3 getAbsolutePoint1() {
-        return new Vector3(point1.x, point1.y, point1.z).addMut(offset).addMut(item.transform.getPosition());
+        return new Vector3(point1.x, point1.y, point1.z).addMut(offset).addMut(renderBlock.getWorldPosition());
     }
 
     @Override
@@ -94,67 +105,22 @@ public class BoxCollider extends ColliderComponent {
 
     @Override
     public Vector3 getAbsolutePoint2() {
-        return new Vector3(point2.x, point2.y, point2.z).addMut(offset).addMut(item.transform.getPosition());
+        return new Vector3(point2.x, point2.y, point2.z).addMut(offset).addMut(renderBlock.getWorldPosition());
     }
 
     @Override
     public void updateX() {
-        if (isTrigger) return;
-        this.lastPosition = item.transform.getPosition().clone();
 
-        CollisionManager cm = handler.getCurrentScene().getCollisionManager();
-        assert cm != null;
-
-        for (ColliderComponent gi : cm.getCollidngItems(item.transform.getPosition())) {
-            if (gi == this) continue;
-            if (gi.isTrigger()) continue;
-            if (getPredicate().test(gi)) continue;
-            CollisionManager.Contact contact = cm.isCollidingX(gi, item.getComponent(ColliderComponent.class));
-            while (contact.isIntersecting()) {
-                contact = cm.isCollidingX(gi, item.getComponent(ColliderComponent.class));
-                item.transform.getPosition().addMut(contact.getnEnter().mul(-1).mul(contact.getPenetration()));
-            }
-        }
     }
 
     @Override
     public void updateY() {
-        if (isTrigger) return;
-        this.lastPosition = item.transform.getPosition().clone();
 
-        CollisionManager cm = handler.getCurrentScene().getCollisionManager();
-        assert cm != null;
-
-        for (ColliderComponent gi : cm.getCollidngItems(item.transform.getPosition())) {
-            if (gi == this) continue;
-            if (gi.isTrigger()) continue;
-            if (getPredicate().test(gi)) continue;
-            CollisionManager.Contact contact = cm.isCollidingY(gi, item.getComponent(ColliderComponent.class));
-            while (contact.isIntersecting()) {
-                contact = cm.isCollidingY(gi, item.getComponent(ColliderComponent.class));
-                item.transform.getPosition().addMut(contact.getnEnter().mul(-1).mul(contact.getPenetration()));
-            }
-        }
     }
 
     @Override
     public void updateZ() {
-        if (isTrigger) return;
-        this.lastPosition = item.transform.getPosition().clone();
 
-        CollisionManager cm = handler.getCurrentScene().getCollisionManager();
-        assert cm != null;
-
-        for (ColliderComponent gi : cm.getCollidngItems(item.transform.getPosition())) {
-            if (gi == this) continue;
-            if (gi.isTrigger()) continue;
-            if (getPredicate().test(gi)) continue;
-            CollisionManager.Contact contact = cm.isCollidingXZ(gi, item.getComponent(ColliderComponent.class));
-            while (contact.isIntersecting()) {
-                contact = cm.isCollidingXZ(gi, item.getComponent(ColliderComponent.class));
-                item.transform.getPosition().addMut(contact.getnEnter().mul(-1).mul(contact.getPenetration()));
-            }
-        }
     }
 
     @Override
@@ -174,6 +140,20 @@ public class BoxCollider extends ColliderComponent {
             return;
         }
         this.predicate = gameItemPredicate;
+    }
+
+    @Override
+    public Vector3 getPosition() {
+        return renderBlock.getWorldPosition();
+    }
+
+    @Override
+    public float getScale() {
+        return 1;
+    }
+
+    public RenderBlock getRenderBlock() {
+        return renderBlock;
     }
 
     /**
@@ -219,13 +199,10 @@ public class BoxCollider extends ColliderComponent {
         CollisionManager cm = handler.getCurrentScene().getCollisionManager();
         assert cm != null;
 
-        for (ColliderComponent gi : cm.getCollidngItems(item.transform.getPosition())) {
+        for (ColliderComponent gi : cm.getCollidngItems(renderBlock.getWorldPosition())) {
             if (gi == this) continue;
             if (getPredicate().test(gi)) continue;
-            if (cm.isColliding(gi, item.getComponent(ColliderComponent.class)).isIntersecting()) {
-                for(Component component : item.getComponents()){
-                    component.onCollision(gi);
-                }
+            if (cm.isColliding(gi, this).isIntersecting()) {
                 // Fire the trigger event.
                 for (OnTriggerEnter evt : triggerEvents) {
                     evt.onTriggerEnter(gi);

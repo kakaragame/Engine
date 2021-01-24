@@ -157,13 +157,16 @@ public class ItemHandler {
     }
 
     /**
-     * Update features within game items.
+     * Update features within game items. (Features and Components).
      * <p>Internal use only.</p>
      */
     public void update() {
         for (GameItem item : items) {
             for (Feature feature : item.getFeatures()) {
                 feature.update(item);
+            }
+            for(Component component : item.getComponents()){
+                component.update();
             }
         }
     }

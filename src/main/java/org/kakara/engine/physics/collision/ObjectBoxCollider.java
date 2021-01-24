@@ -17,7 +17,6 @@ import java.util.function.Predicate;
 public class ObjectBoxCollider extends ColliderComponent {
 
     private boolean isTrigger;
-    private boolean resolvable;
 
     private Vector3 lastPosition;
     private GameItem item;
@@ -77,7 +76,7 @@ public class ObjectBoxCollider extends ColliderComponent {
 
     @Override
     public void updateX() {
-        if (isTrigger || !resolvable) return;
+        if (isTrigger) return;
         this.lastPosition = item.transform.getPosition().clone();
 
         CollisionManager cm = handler.getCurrentScene().getCollisionManager();
@@ -97,7 +96,7 @@ public class ObjectBoxCollider extends ColliderComponent {
 
     @Override
     public void updateY() {
-        if (isTrigger || !resolvable) return;
+        if (isTrigger) return;
         this.lastPosition = item.transform.getPosition().clone();
 
         CollisionManager cm = handler.getCurrentScene().getCollisionManager();
@@ -117,7 +116,7 @@ public class ObjectBoxCollider extends ColliderComponent {
 
     @Override
     public void updateZ() {
-        if (isTrigger || !resolvable) return;
+        if (isTrigger) return;
         this.lastPosition = item.transform.getPosition().clone();
 
         CollisionManager cm = handler.getCurrentScene().getCollisionManager();
@@ -164,18 +163,8 @@ public class ObjectBoxCollider extends ColliderComponent {
     }
 
     @Override
-    public boolean isResolvable() {
-        return resolvable;
-    }
-
-    @Override
-    public void setResolvable(boolean value) {
-        this.resolvable = value;
-    }
-
-    @Override
     public void physicsUpdate(float deltaTime) {
-        if (isTrigger || !resolvable) return;
+        if (isTrigger) return;
         this.lastPosition = item.transform.getPosition().clone();
 
         CollisionManager cm = handler.getCurrentScene().getCollisionManager();

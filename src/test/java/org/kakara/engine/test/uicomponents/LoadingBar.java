@@ -1,4 +1,4 @@
-package org.kakara.engine.test.components;
+package org.kakara.engine.test.uicomponents;
 
 import org.kakara.engine.GameHandler;
 import org.kakara.engine.math.Vector2;

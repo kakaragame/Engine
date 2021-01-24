@@ -5,8 +5,6 @@ import imgui.flag.ImGuiCond;
 import imgui.gl3.ImGuiImplGl3;
 import imgui.glfw.ImGuiImplGlfw;
 import org.kakara.engine.GameHandler;
-import org.kakara.engine.physics.collision.Collidable;
-import org.kakara.engine.renderobjects.RenderBlock;
 import org.kakara.engine.scene.AbstractGameScene;
 import org.kakara.engine.scene.AbstractScene;
 import org.kakara.engine.scene.Scene;

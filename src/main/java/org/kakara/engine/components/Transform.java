@@ -7,56 +7,115 @@ import org.kakara.engine.math.Vector3;
 /**
  * The Transform component stores the position, rotation, and scale of the GameItem.
  *
- * <p>This component is automatically added to all GameItems and is required.</p>
+ * <p>This component is required by all GameItems.</p>
  */
-public class Transform extends Component{
+public class Transform extends Component {
     private final Vector3 position = new Vector3();
     private final Quaternionf rotation = new Quaternionf();
     private float scale = 1f;
 
     @Override
-    public void start() {}
+    public void start() {
+    }
 
     @Override
-    public void update() {}
+    public void update() {
+    }
 
-    public void setPosition(float x, float y, float z){
+    /**
+     * Set the position.
+     *
+     * @param x The x position.
+     * @param y The y position.
+     * @param z The z position.
+     */
+    public void setPosition(float x, float y, float z) {
         this.position.set(x, y, z);
     }
 
-    public void setPosition(Vector3 position){
+    /**
+     * Set the position.
+     *
+     * @param position The position vector.
+     */
+    public void setPosition(Vector3 position) {
         this.position.set(position);
     }
 
-    public Vector3 getPosition(){
+    /**
+     * Get the position vector.
+     * <p>This is not a copy and is mutable.</p>
+     *
+     * @return The position vector.
+     */
+    public Vector3 getPosition() {
         return position;
     }
 
-    public void setRotation(Quaternionf rotation){
+    /**
+     * Set the rotation.
+     *
+     * @param rotation The Quaternion to set the rotation to.
+     */
+    public void setRotation(Quaternionf rotation) {
         this.rotation.set(rotation);
     }
 
-    public Quaternionf getRotation(){
+    /**
+     * Get the rotation.
+     *
+     * @return The rotation
+     */
+    public Quaternionf getRotation() {
         return rotation;
     }
 
+    /**
+     * Rotate about an axis.
+     *
+     * @param angle The angle.
+     * @param axis  The axis.
+     */
     public void rotateAboutAxis(float angle, Vector3 axis) {
         this.rotation.rotateAxis(angle, axis.toJoml());
     }
 
+    /**
+     * Set the rotation about an axis.
+     *
+     * @param angle The angle.
+     * @param axis  The axis.
+     */
     public void setRotationAboutAxis(float angle, Vector3 axis) {
         this.rotation.rotationAxis(angle, axis.toJoml());
     }
 
-    public void setScale(float scale){
+    /**
+     * Set the scale.
+     *
+     * @param scale The scale to set.
+     */
+    public void setScale(float scale) {
         this.scale = scale;
     }
 
-    public float getScale(){
+    /**
+     * Get the scale.
+     *
+     * @return The scale.
+     */
+    public float getScale() {
         return scale;
     }
 
-    public void translateBy(float x, float y, float z){
+    /**
+     * Translate the position by a value.
+     *
+     * @param x The x value.
+     * @param y The y value.
+     * @param z The z value.
+     */
+    public void translateBy(float x, float y, float z) {
         this.position.addMut(x, y, z);
     }
 

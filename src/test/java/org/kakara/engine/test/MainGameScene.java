@@ -2,6 +2,7 @@ package org.kakara.engine.test;
 
 import org.joml.Vector3f;
 import org.kakara.engine.GameHandler;
+import org.kakara.engine.components.MeshRenderer;
 import org.kakara.engine.components.Transform;
 import org.kakara.engine.debug.DebugCanvas;
 import org.kakara.engine.engine.CubeData;
@@ -23,8 +24,10 @@ import org.kakara.engine.lighting.LightColor;
 import org.kakara.engine.lighting.PointLight;
 import org.kakara.engine.math.Vector3;
 import org.kakara.engine.models.StaticModelLoader;
+import org.kakara.engine.physics.collision.PhysicsComponent;
 import org.kakara.engine.physics.collision.BoxCollider;
 import org.kakara.engine.physics.collision.ColliderComponent;
+import org.kakara.engine.physics.collision.RenderBlockCollider;
 import org.kakara.engine.renderobjects.RenderBlock;
 import org.kakara.engine.renderobjects.RenderChunk;
 import org.kakara.engine.renderobjects.RenderTexture;
@@ -32,6 +35,7 @@ import org.kakara.engine.renderobjects.TextureAtlas;
 import org.kakara.engine.renderobjects.mesh.MeshType;
 import org.kakara.engine.renderobjects.renderlayouts.BlockLayout;
 import org.kakara.engine.scene.AbstractGameScene;
+import org.kakara.engine.test.components.PlayerMovement;
 import org.kakara.engine.ui.components.shapes.Rectangle;
 import org.kakara.engine.ui.components.text.Text;
 import org.kakara.engine.ui.font.Font;
@@ -55,6 +59,7 @@ public class MainGameScene extends AbstractGameScene {
     private GameItem player;
     private GameHandler handler;
     private GameItem collider;
+    private PhysicsComponent physComp;
     private KakaraTest test;
 
     private boolean stopped = false;
@@ -127,20 +132,30 @@ public class MainGameScene extends AbstractGameScene {
 
             GameItem gi = new GameItem(mesh);
             gi.addComponent(BoxCollider.class);
+//            gi.addComponent(Resolver.class);
+            System.out.println("TEST:: " + gi.getComponent(ColliderComponent.class));
+            System.out.println(Transform.class.isAssignableFrom(MeshRenderer.class));
 //        gi.getMesh().setWireframe(true);
             add(gi);
             gi.transform.setPosition(3, 16*2 + 5, 3);
-            //gi.setVelocity(new Vector3(0, -9.18f, 0));
+
+            PhysicsComponent physicsComponent = gi.addComponent(PhysicsComponent.class);
+            // Add a component to handle player movement.
+            gi.addComponent(PlayerMovement.class);
+            physicsComponent.setVelocity(new Vector3(0, -9.18f, 0));
+            this.physComp = physicsComponent;
             collider = gi;
 
             GameItem gi2 = new GameItem(mesh);
             add(gi2);
             gi2.transform.setPosition(6, 16*2, 6);
-            gi2.addComponent(BoxCollider.class);
+            BoxCollider bc = gi2.addComponent(BoxCollider.class);
+            bc.setTrigger(true);
 
             gi2.setTag("Test");
 
             gi.getComponent(BoxCollider.class).addOnTriggerEnter((ColliderComponent other) -> {
+                if(other instanceof RenderBlockCollider) return;
                 if(other.getGameItem().getTag().equals("Test")){
                     remove(gi2);
                 }
@@ -347,44 +362,6 @@ public class MainGameScene extends AbstractGameScene {
             stopped = !stopped;
         }
 
-        Vector3 currentPos = collider.transform.getPosition();
-        GameItem col = (GameItem) collider;
-//        col.setVelocityX(0);
-//        col.setVelocityZ(0);
-//        if (ki.isKeyPressed(GLFW_KEY_RIGHT)) {
-//            col.setVelocityX(3f);
-//        }
-//        if (ki.isKeyPressed(GLFW_KEY_LEFT)) {
-//            col.setVelocityX(-3f);
-//        }
-//        if (ki.isKeyPressed(GLFW_KEY_UP)) {
-//            col.setVelocityZ(-3f);
-//        }
-//        if (ki.isKeyPressed(GLFW_KEY_DOWN)) {
-//            col.setVelocityZ(3f);
-//        }
-        if(ki.isKeyPressed(GLFW_KEY_N)){
-            collider.transform.translateBy(0, 0.1f,0);
-        }
-        if(ki.isKeyPressed(GLFW_KEY_M)){
-            collider.transform.translateBy(0, -0.1f,0);
-        }
-
-//        if (ki.isKeyPressed(GLFW_KEY_I)) {
-//            lightIndication.translateBy(0, 0, 1);
-//        }
-//        if (ki.isKeyPressed(GLFW_KEY_K)) {
-//            lightIndication.translateBy(0, 0, -1);
-//        }
-//        if (ki.isKeyPressed(GLFW_KEY_J)) {
-//            lightIndication.translateBy(-1, 0, 0);
-//        }
-//        if (ki.isKeyPressed(GLFW_KEY_L)) {
-//            lightIndication.translateBy(1, 0, 0);
-//        }
-
-//        light.setPosition(lightIndication.getPosition());
-//        getLightHandler().getSpotLight(0).setPosition(handler.getCamera().getPosition());
 
         MouseInput mi = handler.getMouseInput();
         if(!stopped)
@@ -413,23 +390,16 @@ public class MainGameScene extends AbstractGameScene {
 
     @EventHandler
     public void OnMouseClick(MouseClickEvent evt){
-        GameItem pl = (GameItem) player;
-        System.out.println(pl.getComponent(Transform.class));
         if(evt.getMouseClickType() == MouseClickType.LEFT_CLICK){
-            System.out.println("Clicked!");
-//            Collidable selected = this.selectGameItems(20);
-//            if(selected instanceof RenderBlock){
-//                RenderBlock block = (RenderBlock) selected;
-//                RenderChunk parentChunk = block.getParentChunk();
-//                parentChunk.removeBlock(block);
-////                block.setOverlay(getTextureAtlas().getTextures().get(ThreadLocalRandom.current().nextInt(0, 3)));
-////                long curTime = System.currentTimeMillis();
-//                parentChunk.regenerateChunk(getTextureAtlas(), MeshType.SYNC);
-////                System.out.println("It took " + (System.currentTimeMillis() - curTime) + "ms to regenerate the entire chunk.");
-////                curTime = System.currentTimeMillis();
-////                parentChunk.regenerateOverlayTextures(getTextureAtlas());
-////                System.out.println("It took " + (System.currentTimeMillis() - curTime) + "ms to regenerate the overlay textures for the chunk.");
-//            }
+            ColliderComponent selected = this.selectGameItems(20);
+            System.out.println(selected);
+            if(selected instanceof RenderBlockCollider){
+                System.out.println("Clicked!");
+                RenderBlock block = ((RenderBlockCollider) selected).getRenderBlock();
+                RenderChunk parentChunk = block.getParentChunk();
+                parentChunk.removeBlock(block);
+                parentChunk.regenerateChunk(getTextureAtlas(), MeshType.SYNC);
+            }
         }
     }
 

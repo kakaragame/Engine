@@ -7,6 +7,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 
+/**
+ * This mesh is used to store GameItems without a MeshRenderer component.
+ */
 public class NullMesh implements IMesh {
     @Override
     public void render() {

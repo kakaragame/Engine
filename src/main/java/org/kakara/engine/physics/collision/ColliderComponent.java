@@ -8,6 +8,14 @@ import org.kakara.engine.physics.OnTriggerEnter;
 import java.util.Objects;
 import java.util.function.Predicate;
 
+/**
+ * This is the parent components for colliders.
+ *
+ * <p>This class can be used to get any collider from a GameItem.</p>
+ * <code>
+ * ColliderComponent cc = gameItem.getComponent(ColliderComponent.class);
+ * </code>
+ */
 public abstract class ColliderComponent extends Component {
 
     @Override
@@ -16,37 +24,52 @@ public abstract class ColliderComponent extends Component {
                 .addCollidingItem(this);
     }
 
+    @Override
+    public void onRemove() {
+        Objects.requireNonNull(GameHandler.getInstance().getCurrentScene().getCollisionManager())
+                .removeCollidingItem(this);
+    }
+
+    /**
+     * Get the position for the collider.
+     * <p>For most colliders this is the same as gameItem.transform. (For an exception see
+     * {@link RenderBlockCollider})</p>
+     *
+     * @return The position of the collider.
+     */
+    public Vector3 getPosition() {
+        return getGameItem().transform.getPosition();
+    }
+
+    /**
+     * Get the scale for the collider.
+     * <p>For more colliders this is the same as gameItem.transfrom. (For an exception see
+     * {@link RenderBlockCollider}</p>
+     *
+     * @return The scale of the collider.
+     */
+    public float getScale() {
+        return getGameItem().transform.getScale();
+    }
+
     /**
      * If the collider is a trigger.
      *
+     * <p>A trigger means that the object will not trigger {@link PhysicsComponent} to resolve the collision</p>
+     *
      * @return If the collider is a trigger.
      */
-    abstract boolean isTrigger();
+    public abstract boolean isTrigger();
 
     /**
      * Set if the collider is a trigger.
-     * <p>A trigger means that other objects will not collide with it but it will still call {@link OnTriggerEnter}.</p>
-     * <p>As of 1.0-Pre2 the old functionality has been replaced by {@link #setResolvable(boolean)}</p>
+     * <p>A trigger means that other objects will not collide with it but it will still call {@link OnTriggerEnter}.
+     * This behavior is implemented in the {@link PhysicsComponent} component.</p>
      *
      * @param value If it is a trigger.
      * @return The collider.
      */
-    abstract ColliderComponent setTrigger(boolean value);
-
-    /**
-     * Get if the engine should attempt to move this object to fix collisions.
-     *
-     * @return If the engine should attempt to move this object to fix collisions.
-     */
-    abstract boolean isResolvable();
-
-    /**
-     * If the engine it to attempt and move this object to fix collisions.
-     * <p>As of 1.0-Pre2, this replaces the old functionality of {@link #setTrigger(boolean)}</p>
-     *
-     * @param value If the engine is to move this object to fix collisions.
-     */
-    abstract void setResolvable(boolean value);
+    public abstract ColliderComponent setTrigger(boolean value);
 
     /**
      * Get the first relative point for a collider.
@@ -54,7 +77,7 @@ public abstract class ColliderComponent extends Component {
      *
      * @return The Vector of the point.
      */
-    abstract Vector3 getRelativePoint1();
+    public abstract Vector3 getRelativePoint1();
 
     /**
      * Get the first absolute point for a collider.
@@ -70,7 +93,7 @@ public abstract class ColliderComponent extends Component {
      *
      * @return The Vector of the point.
      */
-    abstract Vector3 getRelativePoint2();
+    public abstract Vector3 getRelativePoint2();
 
     /**
      * Get the second absolute point for a collider.
@@ -83,25 +106,30 @@ public abstract class ColliderComponent extends Component {
     /**
      * @deprecated Currently unused
      */
-    abstract void updateX();
+    public abstract void updateX();
 
     /**
-     * Handle the collision correction for the y axis.
+     * Handle the collision resolution for the y axis.
+     * <p>This is used by the {@link PhysicsComponent}</p>
      *
      * @since 1.0-Pre2
      */
-    abstract void updateY();
+    public abstract void updateY();
 
     /**
-     * Handle the collision for the x and z axis.
+     * Handle the collision resolution for the x and z axis.
+     * <p>This is used by the {@link PhysicsComponent}</p>
      *
      * @since 1.0-Pre2
      */
-    abstract void updateZ();
+    public abstract void updateZ();
 
     /**
      * Add an event to be triggered when this collidable comes in contact with a trigger.
      * <p>Important note: This triggers every physics update that the object is colliding with a trigger.</p>
+     * 
+     * <p>This functionality has been replaced by the {@link Component#onCollision(ColliderComponent)}.
+     * Consider using that instead.</p>
      *
      * @param enter The event to be triggered.
      * @since 1.0-Pre2
@@ -114,7 +142,7 @@ public abstract class ColliderComponent extends Component {
      * @return The predicate.
      * @since 1.0-Pre2
      */
-    abstract Predicate<ColliderComponent> getPredicate();
+    public abstract Predicate<ColliderComponent> getPredicate();
 
     /**
      * Add a condition for collision.
@@ -123,5 +151,5 @@ public abstract class ColliderComponent extends Component {
      * @param gameItemPredicate The predicate to use.
      * @since 1.0-Pre2
      */
-    abstract void setPredicate(Predicate<ColliderComponent> gameItemPredicate);
+    public abstract void setPredicate(Predicate<ColliderComponent> gameItemPredicate);
 }
