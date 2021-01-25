@@ -4,6 +4,7 @@ plugins {
     java
     `java-library`
     id("com.github.johnrengelman.shadow") version "6.1.0"
+    id("org.kakara.versionfile") version "1.0.0"
     `maven-publish`
     signing
 }
@@ -19,7 +20,9 @@ var lwjglNatives = when (OperatingSystem.current()) {
         else
             "natives-linux"
     }
-    OperatingSystem.WINDOWS -> if (System.getProperty("os.arch").contains("64")) "natives-windows" else "natives-windows-x86"
+    OperatingSystem.WINDOWS -> if (System.getProperty("os.arch")
+            .contains("64")
+    ) "natives-windows" else "natives-windows-x86"
     OperatingSystem.MAC_OS -> "natives-macos"
     else -> throw Error("Unrecognized or unsupported Operating system. Please set \"lwjglNatives\" manually")
 }
@@ -95,9 +98,17 @@ tasks {
             //Used by Jenkins
             archiveFileName.set("${project.name}-${project.version}-${project.property("native")}.jar")
         }
+        dependsOn(project.tasks.getByName("vftask"));
+    }
+    "jar"{
+        dependsOn(project.tasks.getByName("vftask"));
     }
 }
 
+versionFileConfig {
+    isCompileIntoJar = true;
+    jarDirectory = "engine"
+}
 dependencies {
     // Regular Depends
     implementation(group = "me.ryandw11", name = "Octree", version = "1.0")
