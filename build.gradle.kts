@@ -56,10 +56,11 @@ repositories {
 
 publishing {
     publications {
+
         create<MavenPublication>("mavenJava") {
+            artifact(tasks["shadowJar"])
 
             artifactId = artifactName
-            from(components["java"])
             versionMapping {
                 usage("java-api") {
                     fromResolutionOf("runtimeClasspath")
