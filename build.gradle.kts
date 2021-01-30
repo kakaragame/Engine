@@ -32,12 +32,12 @@ if (hasProperty("native")) {
 }
 
 group = "org.kakara"
-version = "1.0-PRE5-SNAPSHOT"
+version = "1.0-SNAPSHOT"
 val artifactName = "engine"
 var build = "0"
 
 if (hasProperty("buildNumber")) {
-    version = "1.0-PRE5-" + properties.get("buildNumber") + "-SNAPSHOT";
+    version = "1.0-" + properties.get("buildNumber") + "-SNAPSHOT";
     properties.get("buildNumber");
 }
 
@@ -151,7 +151,6 @@ dependencies {
         implementation("io.imgui.java:$lwjglNatives:1.77-0.17.2")
 
     }
-
 
     if (lwjglNatives == "natives-macos") runtimeOnly("org.lwjgl", "lwjgl-vulkan", classifier = lwjglNatives)
 }
