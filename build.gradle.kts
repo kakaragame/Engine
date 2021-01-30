@@ -32,13 +32,13 @@ if (hasProperty("native")) {
 }
 
 group = "org.kakara"
-version = "1.0-SNAPSHOT"
 val artifactName = "engine"
 var build = "0"
 
 if (hasProperty("buildNumber")) {
-    version = "1.0-" + properties.get("buildNumber") + "-SNAPSHOT";
-    properties.get("buildNumber");
+    version = org.kakara.engine.Version.getEngineVersion(properties.get("buildNumber").toString());
+}else{
+    version = org.kakara.engine.Version.getEngineVersion("");
 }
 
 java {
