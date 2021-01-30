@@ -120,7 +120,6 @@ dependencies {
     implementation("org.l33tlabs.twl:pngdecoder:1.0")
     implementation("io.imgui.java:binding:1.77-0.17.2")
     implementation("io.imgui.java:lwjgl3:1.77-0.17.2")
-    implementation("io.imgui.java:$lwjglNatives:1.77-0.17.2")
     implementation("org.slf4j:slf4j-api:1.7.30")
     testRuntimeOnly("org.slf4j:slf4j-simple:1.7.30")
     implementation("org.joml", "joml", jomlVersion)
@@ -139,15 +138,19 @@ dependencies {
     implementation("org.lwjgl", "lwjgl-par")
     implementation("org.lwjgl", "lwjgl-stb")
     implementation("org.lwjgl", "lwjgl-vulkan")
-    runtimeOnly("org.lwjgl", "lwjgl", classifier = lwjglNatives)
-    runtimeOnly("org.lwjgl", "lwjgl-assimp", classifier = lwjglNatives)
-    runtimeOnly("org.lwjgl", "lwjgl-bgfx", classifier = lwjglNatives)
-    runtimeOnly("org.lwjgl", "lwjgl-glfw", classifier = lwjglNatives)
-    runtimeOnly("org.lwjgl", "lwjgl-nanovg", classifier = lwjglNatives)
-    runtimeOnly("org.lwjgl", "lwjgl-openal", classifier = lwjglNatives)
-    runtimeOnly("org.lwjgl", "lwjgl-opengl", classifier = lwjglNatives)
-    runtimeOnly("org.lwjgl", "lwjgl-par", classifier = lwjglNatives)
-    runtimeOnly("org.lwjgl", "lwjgl-stb", classifier = lwjglNatives)
+    if (!lwjglNatives.equals("build",true)) {
+        runtimeOnly("org.lwjgl", "lwjgl", classifier = lwjglNatives)
+        runtimeOnly("org.lwjgl", "lwjgl-assimp", classifier = lwjglNatives)
+        runtimeOnly("org.lwjgl", "lwjgl-bgfx", classifier = lwjglNatives)
+        runtimeOnly("org.lwjgl", "lwjgl-glfw", classifier = lwjglNatives)
+        runtimeOnly("org.lwjgl", "lwjgl-nanovg", classifier = lwjglNatives)
+        runtimeOnly("org.lwjgl", "lwjgl-openal", classifier = lwjglNatives)
+        runtimeOnly("org.lwjgl", "lwjgl-opengl", classifier = lwjglNatives)
+        runtimeOnly("org.lwjgl", "lwjgl-par", classifier = lwjglNatives)
+        runtimeOnly("org.lwjgl", "lwjgl-stb", classifier = lwjglNatives)
+        implementation("io.imgui.java:$lwjglNatives:1.77-0.17.2")
+
+    }
 
     if (lwjglNatives == "natives-macos") runtimeOnly("org.lwjgl", "lwjgl-vulkan", classifier = lwjglNatives)
 }
