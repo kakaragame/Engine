@@ -3,9 +3,11 @@ package org.kakara.engine;
 import java.io.IOException;
 import java.util.List;
 
+import org.gradle.api.GradleException;
+
 public class Version {
     public static final String ENGINE_VERSION = "1.0-SNAPSHOT";
-    public static final List<String> branchBlacklist = List.of("master", "HEAD");
+    public static final List<String> branchBlacklist = List.of("master");
 
     /**
      * Generates the engine version based on the current branch.
@@ -14,17 +16,20 @@ public class Version {
      *
      * @return the engine version.
      */
-    public static String getEngineVersion(String buildNumber) {
+    public static String getEngineVersion(String buildNumber) throws GradleException {
         String value = ENGINE_VERSION;
         if (ENGINE_VERSION.endsWith("-SNAPSHOT")) {
             try {
                 String branch = execCmd("git rev-parse --abbrev-ref HEAD").replace("\n", "");
+                if (branch.equals("HEAD")) {
+                    throw new GradleException("Can not work in HEAD");
+                }
                 if (!branchBlacklist.contains(branch)) {
                     value = ENGINE_VERSION.replace("-SNAPSHOT", String.format("-%s-SNAPSHOT", branch.replace("/", "-")));
 
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                throw new GradleException("Unable to execute git command", e);
             }
 
         }
