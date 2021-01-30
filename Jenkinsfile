@@ -6,14 +6,7 @@ pipeline {
     stages {
         stage ('Build') {
             steps {
-sh '''mkdir archives
-gradle clean shadowJar -PbuildNumber=${BUILD_NUMBER} -Pnative=natives-linux -Pis-build=true
-cp build/libs/*.jar archives/
-
-gradle clean shadowJar -PbuildNumber=${BUILD_NUMBER} -Pnative=natives-windows -Pis-build=true
-cp build/libs/*.jar archives/
-
-ls archives/ > files.txt'''
+              sh 'sh build.sh'
             }
             post {
                 success {
