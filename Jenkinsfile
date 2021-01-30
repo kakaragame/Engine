@@ -6,7 +6,7 @@ pipeline {
     stages {
         stage ('Build') {
             steps {
-              checkout([$class: 'GitSCM', branches: [[name: '**']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: '6afd91c6-972a-4903-9ba9-c1871c0deda1', url: 'https://github.com/kakaragame/Engine.git']]])
+              sh 'git checkout -b ${GIT_BRANCH} origin/${GIT_BRANCH}'
               sh 'sh build.sh'
             }
             post {
