@@ -13,6 +13,7 @@ pipeline {
                     archiveArtifacts artifacts: 'archives/*.jar, files.txt, build/version.properties', followSymlinks: false
                     javadoc javadocDir: 'build/docs/javadoc', keepAll: true
                 }
+                cleanWs()
             }
         }
     }
