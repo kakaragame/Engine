@@ -1,4 +1,5 @@
 #!/bin/bash
+rm -Rv archives
 mkdir archives
 gradle clean shadowJar -PbuildNumber=${BUILD_NUMBER} -Pnative=natives-linux -Pis-build=true
 cp build/libs/*.jar archives/
