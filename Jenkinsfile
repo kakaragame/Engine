@@ -11,7 +11,7 @@ pipeline {
             post {
                 success {
                     archiveArtifacts artifacts: 'archives/*.jar, files.txt, build/version.properties', followSymlinks: false
-                    javadoc javadocDir: 'target/site/apidocs', keepAll: true
+                    javadoc javadocDir: 'build/docs/javadoc', keepAll: true
                 }
             }
         }
