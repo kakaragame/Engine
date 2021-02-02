@@ -222,7 +222,7 @@ public class TitleScreenScene extends AbstractMenuScene {
         add(cc);
 
 
-        setCurserStatus(true);
+        setCursorStatus(true);
         // Set the background of the menu.
         setBackground(Utils.inputStreamToTexture(Texture.class.getResourceAsStream("/oa.png")));
         getUserInterface().setAutoScale(false);

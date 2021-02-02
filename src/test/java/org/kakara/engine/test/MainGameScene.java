@@ -99,7 +99,7 @@ public class MainGameScene extends AbstractGameScene {
             lightAngle = 45;
 
             this.test = test;
-            setCurserStatus(false);
+            setCursorStatus(false);
             getCamera().setPosition(0, 3, 0);
             var resourceManager = gameHandler.getResourceManager();
             Mesh[] mainPlayer = StaticModelLoader.load(resourceManager.getResource("player/steve.obj"), "/player",this,resourceManager);
@@ -358,7 +358,7 @@ public class MainGameScene extends AbstractGameScene {
             test.exit();
         }
         if (ki.isKeyPressed(GLFW_KEY_TAB)) {
-            this.setCurserStatus(true);
+            this.setCursorStatus(true);
             stopped = !stopped;
         }
 

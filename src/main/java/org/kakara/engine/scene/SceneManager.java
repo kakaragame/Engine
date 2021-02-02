@@ -24,6 +24,8 @@ public class SceneManager {
         if (currentScene != null)
             this.cleanupScenes();
         currentScene = null;
+        // TODO look further into this v
+        System.gc();
         currentScene = scene;
         // Continue loading the next scene.
         try {

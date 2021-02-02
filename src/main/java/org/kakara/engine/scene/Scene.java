@@ -44,14 +44,14 @@ public interface Scene {
      *
      * @return If the cursor is enabled.
      */
-    boolean getCurserStatus();
+    boolean getCursorStatus();
 
     /**
      * Set if the cursor should be enabled.
      *
      * @param status Cursor enabled.
      */
-    void setCurserStatus(boolean status);
+    void setCursorStatus(boolean status);
 
     /**
      * Get the ItemHandler

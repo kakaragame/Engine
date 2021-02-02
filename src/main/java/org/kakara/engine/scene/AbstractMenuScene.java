@@ -57,12 +57,12 @@ public abstract class AbstractMenuScene implements Scene {
     }
 
     @Override
-    public boolean getCurserStatus() {
+    public boolean getCursorStatus() {
         return mouseStatus;
     }
 
     @Override
-    public void setCurserStatus(boolean status) {
+    public void setCursorStatus(boolean status) {
         mouseStatus = status;
         gameHandler.getWindow().setCursorVisibility(status);
     }

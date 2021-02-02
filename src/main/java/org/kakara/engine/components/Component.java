@@ -1,5 +1,6 @@
 package org.kakara.engine.components;
 
+import org.kakara.engine.exceptions.UsedComponentException;
 import org.kakara.engine.gameitems.GameItem;
 import org.kakara.engine.physics.collision.ColliderComponent;
 
@@ -63,9 +64,8 @@ public abstract class Component {
      * @param item The item added.
      */
     public final void init(GameItem item) {
-        // TODO implement non generic exception.
         if (gameItem != null)
-            throw new RuntimeException("This component already has a GameItem!");
+            throw new UsedComponentException("This component already has a GameItem!");
         this.gameItem = item;
 
         afterInit();
