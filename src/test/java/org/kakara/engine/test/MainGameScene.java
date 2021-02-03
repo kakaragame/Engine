@@ -61,6 +61,7 @@ public class MainGameScene extends AbstractGameScene {
     private GameItem collider;
     private PhysicsComponent physComp;
     private KakaraTest test;
+    private GameItem blockSelector;
 
     private boolean stopped = false;
 
@@ -160,6 +161,13 @@ public class MainGameScene extends AbstractGameScene {
                     remove(gi2);
                 }
             });
+
+        Mesh ma = new Mesh(CubeData.vertex, CubeData.texture, CubeData.normal, CubeData.indices);
+        ma.setMaterial(new Material(new Texture(resourceManager.getResource("block_select.png").getByteBuffer())));
+        ma.setWireframe(true);
+        this.blockSelector = new MeshGameItem(ma);
+        this.blockSelector.setScale(1.01f);
+        add(this.blockSelector);
 
 //        Texture skyb = Utils.inputStreamToTexture(Texture.class.getResourceAsStream("/skybox.png"));
 //        SkyBox skyBox = new SkyBox(skyb, true);

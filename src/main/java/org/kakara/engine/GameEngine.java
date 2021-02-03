@@ -39,7 +39,8 @@ public class GameEngine implements Runnable {
 
     static {
         try {
-            engineProperties.load(GameEngine.class.getResourceAsStream("/engine.properties"));
+            if (GameEngine.class.getResource("/engine/version.properties") != null)
+                engineProperties.load(GameEngine.class.getResourceAsStream("/engine/version.properties"));
         } catch (IOException e) {
             LOGGER.warn("Unable to load engine.properties", e);
         }
@@ -288,7 +289,11 @@ public class GameEngine implements Runnable {
     }
 
     public static String getEngineVersion() {
-        return engineProperties.getProperty("engine.version");
+        return engineProperties.getProperty("version");
+    }
+
+    public static Properties getEngineProperties() {
+        return engineProperties;
     }
 
 }
