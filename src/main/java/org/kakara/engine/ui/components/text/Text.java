@@ -216,7 +216,7 @@ public class Text extends GeneralComponent {
     }
 
     /**
-     * Set the text align values. {@see ui.text.TextAlign}
+     * Set the text align values. {@link org.kakara.engine.ui.font.TextAlign}
      *
      * @param textAlign The text align values.
      */

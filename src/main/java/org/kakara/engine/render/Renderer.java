@@ -25,7 +25,7 @@ import static org.lwjgl.opengl.GL30.glBindFramebuffer;
 
 /**
  * Handles the rendering pipeline of the game.
- * <p>As of 1.0-pre4, additional pipelines can be added: {@link PipelineManager} & {@link RenderPipeline}</p>
+ * <p>As of 1.0-pre4, additional pipelines can be added: {@link PipelineManager} and {@link RenderPipeline}</p>
  * <p>Please note that the Skybox, Shadow System, and UI, are not apart of the pipeline system.</p>
  */
 public final class Renderer {
