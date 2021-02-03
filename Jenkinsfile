@@ -6,7 +6,7 @@ pipeline {
     stages {
         stage ('Build') {
             steps {
-              sh 'git checkout -b ${GIT_BRANCH} origin/${GIT_BRANCH}'
+              sh 'git checkout -b ${GIT_BRANCH}'
               sh 'sh build.sh'
             }
             post {
