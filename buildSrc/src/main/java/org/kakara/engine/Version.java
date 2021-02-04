@@ -16,16 +16,19 @@ public class Version {
      *
      * @return the engine version.
      */
-    public static String getEngineVersion(String buildNumber) throws GradleException {
+    public static String getEngineVersion(String buildNumber, String branch) throws GradleException {
         String value = ENGINE_VERSION;
         if (ENGINE_VERSION.endsWith("-SNAPSHOT")) {
             try {
-                String branch = execCmd("git rev-parse --abbrev-ref HEAD").replace("\n", "");
-                if (branch.equals("HEAD")) {
+                String finalBranch = branch;
+                if (branch.isEmpty()) {
+                    finalBranch = execCmd("git rev-parse --abbrev-ref HEAD").replace("\n", "");
+                }
+                if (finalBranch.equals("HEAD")) {
                     throw new GradleException("Can not work in HEAD");
                 }
                 if (!branchBlacklist.contains(branch)) {
-                    value = ENGINE_VERSION.replace("-SNAPSHOT", String.format("-%s-SNAPSHOT", branch.replace("/", "-")));
+                    value = ENGINE_VERSION.replace("-SNAPSHOT", String.format("-%s-SNAPSHOT", finalBranch.replace("/", "-")));
 
                 }
             } catch (IOException e) {
