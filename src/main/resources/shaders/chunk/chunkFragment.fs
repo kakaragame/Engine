@@ -145,13 +145,24 @@ vec4 calcDirectionalLight(DirectionalLight light, vec3 position, vec3 normal)
     return calcLightColor(light.color, light.intensity, position, normalize(light.direction), normal);
 }
 
+vec4 overlayTexture(vec4 tex1, vec4 tex2){
+    return vec4(
+            tex2.x < 0.5 ? ( 2.0 * tex2.x * tex1.x ) : ( 1.0 - 2.0 * ( 1.0 - tex2.x ) * ( 1.0 - tex1.x ) ),
+            tex2.y < 0.5 ? ( 2.0 * tex2.y * tex1.y ) : ( 1.0 - 2.0 * ( 1.0 - tex2.y ) * ( 1.0 - tex1.y ) ),
+            tex2.z < 0.5 ? ( 2.0 * tex2.z * tex1.z ) : ( 1.0 - 2.0 * ( 1.0 - tex2.z ) * ( 1.0 - tex1.z ) ),
+            tex2.a < 0.5 ? ( 2.0 * tex2.a * tex1.a ) : ( 1.0 - 2.0 * ( 1.0 - tex2.a ) * ( 1.0 - tex1.a ) )
+        );
+}
+
 //Calculate the overlay textures for each block.
 void calculateOverlayTextures()
 {
     vec4 tempDiffuse = ambientC;
     if(outHasTexture[0] == 1){
         vec4 overlay = texture(textureAtlas, outOverlayCoord);
-        tempDiffuse = vec4(mix(tempDiffuse, overlay, overlay.a));
+        //tempDiffuse = vec4(mix(tempDiffuse, overlay, overlay.a));
+
+        tempDiffuse = overlay * overlay.a + tempDiffuse * (1.0 - overlay.a);
     }
     ambientC = tempDiffuse;
     specularC = tempDiffuse;

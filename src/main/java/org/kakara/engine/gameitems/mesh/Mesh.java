@@ -276,9 +276,14 @@ public class Mesh implements IMesh {
         glEnableVertexAttribArray(2);
         glEnableVertexAttribArray(3);
         glEnableVertexAttribArray(4);
+
+        if (isWireframe())
+            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     }
 
     protected void endRender() {
+        if (isWireframe())
+            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
         // Restore state
         glDisableVertexAttribArray(0);
         glDisableVertexAttribArray(1);
@@ -297,13 +302,7 @@ public class Mesh implements IMesh {
     public void render() {
         initRender();
 
-        if (isWireframe())
-            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
         glDrawElements(GL_TRIANGLES, getVertexCount(), GL_UNSIGNED_INT, 0);
-
-        if (isWireframe())
-            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
         endRender();
     }
@@ -317,15 +316,17 @@ public class Mesh implements IMesh {
      */
     @Override
     public void renderList(List<GameItem> gameItems, FrustumCullingFilter filter, Consumer<GameItem> consumer) {
-        initRender();
+
         for (GameItem gameItem : gameItems) {
             if(gameItem.getMeshRenderer().isEmpty()) continue;
             if (gameItem.getMeshRenderer().get().isVisible() && filter.testCollider(gameItem.getComponent(ColliderComponent.class))) {
                 consumer.accept(gameItem);
+                // TODO Improve this, This is no longer as performance efficient.
+                initRender();
                 glDrawElements(GL_TRIANGLES, getVertexCount(), GL_UNSIGNED_INT, 0);
+                endRender();
             }
         }
-        endRender();
     }
 
     /**

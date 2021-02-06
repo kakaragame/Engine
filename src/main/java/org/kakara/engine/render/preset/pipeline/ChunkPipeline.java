@@ -14,7 +14,8 @@ import java.util.List;
 
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
 import static org.lwjgl.opengl.GL11.glBindTexture;
-import static org.lwjgl.opengl.GL13.*;
+import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
+import static org.lwjgl.opengl.GL13.glActiveTexture;
 
 /**
  * The default render pipeline for the RenderChunk system.
@@ -60,6 +61,8 @@ public class ChunkPipeline implements RenderPipeline {
     @Override
     public void renderDepthMap(Scene scene, Shader depthShader, Matrix4f lightViewMatrix) {
         AbstractGameScene ags = (AbstractGameScene) scene;
+        if (ags.getChunkHandler().getRenderChunkList().isEmpty())
+            return;
         List<RenderChunk> renderChunks = ags.getChunkHandler().getRenderChunkList();
         if (renderChunks == null) return;
 
@@ -86,6 +89,8 @@ public class ChunkPipeline implements RenderPipeline {
     private void renderChunk(Scene scene) {
         if (!(scene instanceof AbstractGameScene)) return;
         AbstractGameScene ags = (AbstractGameScene) scene;
+        if (ags.getChunkHandler().getRenderChunkList().isEmpty())
+            return;
         List<RenderChunk> renderChunks = ags.getChunkHandler().getRenderChunkList();
         if (renderChunks == null) return;
         chunkShaderProgram.bind();
@@ -141,7 +146,6 @@ public class ChunkPipeline implements RenderPipeline {
 
 
         glBindTexture(GL_TEXTURE_2D, 0);
-
 
         chunkShaderProgram.unbind();
     }
