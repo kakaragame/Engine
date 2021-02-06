@@ -19,7 +19,6 @@ public class Panel extends GeneralComponent {
     private boolean isHovering;
 
     public Panel() {
-        super();
         isHovering = false;
     }
 

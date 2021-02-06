@@ -24,6 +24,7 @@ public class ComponentCanvas implements UICanvas {
      */
     private List<Object> data;
     private String tag;
+    private boolean autoScaled = true;
 
     /**
      * Create a new canvas component
@@ -43,6 +44,7 @@ public class ComponentCanvas implements UICanvas {
     public void add(Component component) {
         if (component.getParent() != null)
             throw new HierarchyException("Error: That component already has a parent!");
+        component.setCanvas(this);
         components.add(component);
         if (init) {
             component.init(scene.getUserInterface(), GameHandler.getInstance());
@@ -69,6 +71,15 @@ public class ComponentCanvas implements UICanvas {
         for (Component component : components) {
             component.cleanup(handler);
         }
+    }
+
+    @Override
+    public boolean isAutoScaled() {
+        return autoScaled;
+    }
+
+    public void setAutoScaled(boolean autoScaled) {
+        this.autoScaled = autoScaled;
     }
 
     /**

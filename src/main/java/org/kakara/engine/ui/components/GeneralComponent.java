@@ -4,6 +4,7 @@ import org.jetbrains.annotations.Nullable;
 import org.kakara.engine.GameHandler;
 import org.kakara.engine.exceptions.ui.HierarchyException;
 import org.kakara.engine.math.Vector2;
+import org.kakara.engine.ui.UICanvas;
 import org.kakara.engine.ui.UserInterface;
 import org.kakara.engine.ui.constraints.Constraint;
 import org.kakara.engine.ui.events.UActionEvent;
@@ -30,7 +31,7 @@ public abstract class GeneralComponent implements Component {
     private Vector2 truePosition;
     private Vector2 trueScale;
     private boolean isVisible;
-
+    private UICanvas canvas;
     /*
      * Tagable data
      */
@@ -122,6 +123,7 @@ public abstract class GeneralComponent implements Component {
     @Override
     public void setParent(@Nullable Component parent) {
         this.parent = parent;
+        canvas = parent.getCanvas();
     }
 
     /**
@@ -134,7 +136,7 @@ public abstract class GeneralComponent implements Component {
      * @param handler       The handler.
      */
     public void pollRender(Vector2 relative, UserInterface userInterface, GameHandler handler) {
-        if (userInterface.isAutoScaled()) {
+        if (getCanvas().isAutoScaled()) {
             this.truePosition = position.clone().add(relative);
             this.truePosition = new Vector2(truePosition.x * ((float) handler.getWindow().getWidth() / (float) handler.getWindow().initalWidth),
                     truePosition.y * ((float) handler.getWindow().getHeight() / (float) handler.getWindow().initalHeight));
@@ -251,6 +253,19 @@ public abstract class GeneralComponent implements Component {
             Constraint prop = props.get(0);
             prop.onRemove(this);
             constraints.remove(prop);
+        }
+    }
+
+    @Override
+    public UICanvas getCanvas() {
+        return canvas;
+    }
+
+    @Override
+    public void setCanvas(UICanvas canvas) {
+        this.canvas = canvas;
+        for (Component component : components) {
+            component.setCanvas(canvas);
         }
     }
 

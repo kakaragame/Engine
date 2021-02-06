@@ -90,9 +90,9 @@ public class GeneralConstraint implements Constraint {
                 case LEFT:
                     return 0;
                 case BOTTOM:
-                    return userInterface.isAutoScaled() ? 720 : window.getHeight();
+                    return mainComponent.getCanvas().isAutoScaled() ? 720 : window.getHeight();
                 case RIGHT:
-                    return userInterface.isAutoScaled() ? 1080 : window.getWidth();
+                    return mainComponent.getCanvas().isAutoScaled() ? 1080 : window.getWidth();
             }
         }
         switch (side) {

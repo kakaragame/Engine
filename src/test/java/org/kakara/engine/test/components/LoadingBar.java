@@ -25,7 +25,6 @@ public class LoadingBar extends GeneralComponent {
      * components and add them to this component. (this.add())
      */
     public LoadingBar(Vector2 position, Vector2 scale, Font font) {
-        super();
         this.position = position;
         this.scale = scale;
 

@@ -59,7 +59,7 @@ public class TitleScreenScene extends AbstractMenuScene {
 
         // Create a new component canvas. This holds the components for the UI.
         ComponentCanvas cc = new ComponentCanvas(this);
-
+cc.setAutoScaled(false);
         /*
 
             Create the title for the menu.
@@ -200,6 +200,8 @@ public class TitleScreenScene extends AbstractMenuScene {
          */
         // First a special object canvas is created.
         ObjectCanvas oc = new ObjectCanvas(this);
+        oc.setAutoScaled(false);
+
         Mesh m = new Mesh(CubeData.vertex, CubeData.texture, CubeData.normal, CubeData.indices);
         InputStream io = Texture.class.getResourceAsStream("/example_texture.png");
         Texture grass = Utils.inputStreamToTexture(io);
@@ -225,7 +227,6 @@ public class TitleScreenScene extends AbstractMenuScene {
         setCurserStatus(true);
         // Set the background of the menu.
         setBackground(Utils.inputStreamToTexture(Texture.class.getResourceAsStream("/oa.png")));
-        getUserInterface().setAutoScale(false);
 
     }
 

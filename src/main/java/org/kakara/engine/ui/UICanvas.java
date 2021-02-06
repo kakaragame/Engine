@@ -27,4 +27,14 @@ public interface UICanvas extends Tagable {
      * @param handler The game handler.
      */
     void cleanup(GameHandler handler);
+
+    /**
+     * Is the Canvas Auto Scale
+     *
+     * @return the status
+     * @since 1.0
+     */
+    boolean isAutoScaled();
+
+
 }

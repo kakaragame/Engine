@@ -4,6 +4,7 @@ import org.jetbrains.annotations.Nullable;
 import org.kakara.engine.GameHandler;
 import org.kakara.engine.math.Vector2;
 import org.kakara.engine.properties.Tagable;
+import org.kakara.engine.ui.UICanvas;
 import org.kakara.engine.ui.UIListener;
 import org.kakara.engine.ui.UserInterface;
 import org.kakara.engine.ui.constraints.Constraint;
@@ -19,6 +20,7 @@ public interface Component extends Tagable, UIListener {
     /**
      * Please use {@link UIListener#addUActionEvent(Class, UActionEvent)}
      * Deprecated to use a consistent method
+     *
      * @deprecated To be removed in the future.
      */
     @Deprecated
@@ -157,5 +159,9 @@ public interface Component extends Tagable, UIListener {
      * @since 1.0-Pre1
      */
     void removeConstraint(Class<Constraint> constraint);
+
+    UICanvas getCanvas();
+
+    void setCanvas(UICanvas canvas);
 
 }

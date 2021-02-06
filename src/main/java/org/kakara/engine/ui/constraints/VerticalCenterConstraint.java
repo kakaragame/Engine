@@ -43,12 +43,12 @@ public class VerticalCenterConstraint implements Constraint {
     @Override
     public void update(Component component) {
         Vector2 scale = component.getParent() != null ? component.getParent().getScale()
-                : getWindowSize();
+                : getWindowSize(component);
         component.setPosition(component.getPosition().x, (scale.y / 2 - component.getScale().y / 2) + offset);
     }
 
-    private Vector2 getWindowSize() {
-        return userInterface.isAutoScaled() ? new Vector2(window.initalWidth, window.initalHeight)
+    private Vector2 getWindowSize(Component component) {
+        return component.getCanvas().isAutoScaled() ? new Vector2(window.initalWidth, window.initalHeight)
                 : new Vector2(window.getWidth(), window.getHeight());
     }
 }

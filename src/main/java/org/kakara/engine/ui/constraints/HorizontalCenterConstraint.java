@@ -44,12 +44,12 @@ public class HorizontalCenterConstraint implements Constraint {
     @Override
     public void update(Component component) {
         Vector2 scale = component.getParent() != null ? component.getParent().getScale()
-                : getWindowSize();
+                : getWindowSize(component);
         component.setPosition((scale.x / 2 - component.getScale().x / 2) + offset, component.getPosition().y);
     }
 
-    private Vector2 getWindowSize() {
-        return userInterface.isAutoScaled() ? new Vector2(window.initalWidth, window.initalHeight)
+    private Vector2 getWindowSize(Component component) {
+        return component.getCanvas().isAutoScaled() ? new Vector2(window.initalWidth, window.initalHeight)
                 : new Vector2(window.getWidth(), window.getHeight());
     }
 }

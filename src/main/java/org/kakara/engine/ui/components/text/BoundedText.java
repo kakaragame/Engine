@@ -164,7 +164,7 @@ public class BoundedText extends GeneralComponent {
      * @return The scaled size
      */
     protected float calculateSize(GameHandler handler) {
-        if (userInterface.isAutoScaled())
+        if (getCanvas().isAutoScaled())
             return this.getSize() * ((float) handler.getWindow().getWidth() / (float) handler.getWindow().initalWidth);
         else
             return this.getSize();
@@ -178,7 +178,7 @@ public class BoundedText extends GeneralComponent {
      * @return the scaled width
      */
     protected float calculateLineWidth(GameHandler handler) {
-        if (userInterface.isAutoScaled())
+        if (getCanvas().isAutoScaled())
             return this.getMaximumBound().x * ((float) handler.getWindow().getWidth() / (float) handler.getWindow().initalWidth);
         else
             return this.getMaximumBound().x;

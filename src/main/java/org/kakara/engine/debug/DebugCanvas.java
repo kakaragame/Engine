@@ -64,6 +64,11 @@ public class DebugCanvas implements UICanvas {
         ImGui.destroyContext();
     }
 
+    @Override
+    public boolean isAutoScaled() {
+        return false;
+    }
+
     private void renderFPSInfo(Scene scene){
         ImGui.setNextWindowSize(300, 300, ImGuiCond.Once);
         ImGui.setNextWindowPos(10, 300, ImGuiCond.Once);

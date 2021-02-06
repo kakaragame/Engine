@@ -35,6 +35,7 @@ public class ObjectCanvas implements UICanvas {
      */
     private List<Object> data;
     private String tag;
+    private boolean autoScaled = true;
 
     /**
      * Create a new canvas component
@@ -53,6 +54,7 @@ public class ObjectCanvas implements UICanvas {
      */
     public void add(UIObject object) {
         objects.add(object);
+
     }
 
     @Override
@@ -65,7 +67,7 @@ public class ObjectCanvas implements UICanvas {
         nvgEndFrame(userInterface.getVG());
         Window win = handler.getGameEngine().getWindow();
         win.restoreState();
-        handler.getGameEngine().getRenderer().renderHUD(win, objects, userInterface.isAutoScaled());
+        handler.getGameEngine().getRenderer().renderHUD(win, objects, autoScaled);
         nvgBeginFrame(userInterface.getVG(), win.getWidth(), win.getHeight(), 1);
     }
 
@@ -74,6 +76,15 @@ public class ObjectCanvas implements UICanvas {
         for (UIObject obj : objects) {
             obj.getMesh().cleanUp();
         }
+    }
+
+    @Override
+    public boolean isAutoScaled() {
+        return autoScaled;
+    }
+
+    public void setAutoScaled(boolean autoScaled) {
+        this.autoScaled = autoScaled;
     }
 
     /**

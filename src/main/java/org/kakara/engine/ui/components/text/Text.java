@@ -84,7 +84,7 @@ public class Text extends GeneralComponent {
      * @return The scaled size
      */
     protected float calculateSize(GameHandler handler) {
-        if (userInterface.isAutoScaled())
+        if (getCanvas().isAutoScaled())
             return this.getSize() * ((float) handler.getWindow().getWidth() / (float) handler.getWindow().initalWidth);
         else
             return this.getSize();
@@ -98,7 +98,7 @@ public class Text extends GeneralComponent {
      * @return the scaled width
      */
     protected float calculateLineWidth(GameHandler handler) {
-        if (userInterface.isAutoScaled())
+        if (getCanvas().isAutoScaled())
             return this.getLineWidth() * ((float) handler.getWindow().getWidth() / (float) handler.getWindow().initalWidth);
         else
             return this.getLineWidth();
