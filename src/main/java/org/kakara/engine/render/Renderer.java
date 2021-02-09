@@ -107,8 +107,8 @@ public final class Renderer {
      */
     public void renderHUD(Window window, List<UIObject> objects, boolean isAuto) {
         hudShaderProgram.bind();
-        int width = isAuto ? window.initalWidth : window.getWidth();
-        int height = isAuto ? window.initalHeight : window.getHeight();
+        int width = isAuto ? window.initialWidth : window.getWidth();
+        int height = isAuto ? window.initialHeight : window.getHeight();
         Matrix4f orthoProjection = transformation.buildOrtho(0, width, height, 0);
         for (UIObject object : objects) {
             IMesh mesh = object.getMesh();

@@ -165,7 +165,7 @@ public class BoundedText extends GeneralUIComponent {
      */
     protected float calculateSize(GameHandler handler) {
         if (userInterface.isAutoScaled())
-            return this.getSize() * ((float) handler.getWindow().getWidth() / (float) handler.getWindow().initalWidth);
+            return this.getSize() * ((float) handler.getWindow().getWidth() / (float) handler.getWindow().initialWidth);
         else
             return this.getSize();
     }
@@ -179,7 +179,7 @@ public class BoundedText extends GeneralUIComponent {
      */
     protected float calculateLineWidth(GameHandler handler) {
         if (userInterface.isAutoScaled())
-            return this.getMaximumBound().x * ((float) handler.getWindow().getWidth() / (float) handler.getWindow().initalWidth);
+            return this.getMaximumBound().x * ((float) handler.getWindow().getWidth() / (float) handler.getWindow().initialWidth);
         else
             return this.getMaximumBound().x;
     }

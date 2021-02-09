@@ -19,7 +19,7 @@ import java.util.List;
  *
  * <p>Example:</p>
  * <code>
- * ComponentCanvas canvas = new ComponentCanvas(); <br>
+ * ComponentCanvas canvas = new ComponentCanvas(this); <br>
  * Rectangle rectangle = new Rectangle(); <br>
  * canvas.add(rectangle); <br>
  * add(canvas); <br>

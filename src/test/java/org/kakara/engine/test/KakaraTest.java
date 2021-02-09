@@ -24,7 +24,6 @@ public class KakaraTest implements Game {
             e.printStackTrace();
         }
 
-
 //        gInst.getSoundManager().setAttenuationModel(AL11.AL_EXPONENT_DISTANCE);
 //        gInst.getSoundManager().setListener(new SoundListener());
 //

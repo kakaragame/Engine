@@ -1,11 +1,16 @@
 package org.kakara.engine.window;
 
 import org.kakara.engine.GameEngine;
+import org.kakara.engine.GameHandler;
+import org.kakara.engine.math.Vector2;
 import org.kakara.engine.ui.UserInterface;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWImage;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
+import org.lwjgl.system.MemoryStack;
+
+import java.nio.IntBuffer;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
@@ -13,22 +18,36 @@ import static org.lwjgl.opengl.GL14.glBlendFuncSeparate;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
 /**
- * Handles the physical GUI window.
+ * This class represents the actual window created by the engine.
+ *
+ * <p>Use {@link GameHandler#getWindow()} or {@link GameEngine#getWindow()} to obtain the instance of this class.</p>
  */
-public class Window {
+public final class Window {
 
-    public final int initalWidth;
-    public final int initalHeight;
-    private final String title;
+    public final int initialWidth;
+    public final int initialHeight;
+    private String title;
     private int width;
     private int height;
     private boolean resized;
     private boolean vSync;
-    private final boolean resizable;
+    private boolean resizable;
     private final WindowOptions options;
     private boolean cursor;
     private long window;
 
+    /**
+     * Create a GLFW window.
+     *
+     * <p>This is constructed internally by the Kakara Engine. Get the instance of this
+     * class from {@link GameHandler#getWindow()} or {@link GameEngine#getWindow()}.</p>
+     *
+     * @param title     The title of the window.
+     * @param width     The width of the window.
+     * @param height    The height of the window.
+     * @param resizable If the window is resizable.
+     * @param vSync     If vsync is enabled.
+     */
     public Window(String title, int width, int height, boolean resizable, boolean vSync) {
         this.title = title;
         this.width = width;
@@ -36,11 +55,11 @@ public class Window {
         this.vSync = vSync;
         this.resized = false;
         this.resizable = resizable;
-        cursor = true;
+        this.cursor = true;
         this.options = new WindowOptions();
 
-        this.initalWidth = width;
-        this.initalHeight = height;
+        this.initialWidth = width;
+        this.initialHeight = height;
     }
 
     /**
@@ -91,6 +110,7 @@ public class Window {
                 glfwSetWindowShouldClose(win, true);
             }
         });
+
         GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
         glfwSetWindowPos(window, (vidmode.width() - width) / 2, (vidmode.height() - height) / 2);
 
@@ -100,7 +120,6 @@ public class Window {
         }
 
         glfwShowWindow(window);
-        boolean y = true;
         GL.createCapabilities();
 //        Callback debugProc = GLUtil.setupDebugMessageCallback();
 
@@ -115,10 +134,10 @@ public class Window {
     /**
      * Set the clear color of the window.
      *
-     * @param r Red
-     * @param b Green
-     * @param g Blue
-     * @param a Alpha
+     * @param r Red (0-1)
+     * @param b Green (0-1)
+     * @param g Blue (0-1)
+     * @param a Alpha (0-1)
      */
     public void setClearColor(float r, float b, float g, float a) {
         glClearColor(r, b, g, a);
@@ -154,12 +173,55 @@ public class Window {
     }
 
     /**
+     * Set the title of the window.
+     *
+     * @param title What the title should be.
+     */
+    public void setTile(String title) {
+        this.title = title;
+        glfwSetWindowTitle(window, title);
+    }
+
+    /**
      * Get the title of the window.
      *
      * @return The title.
      */
     public String getTitle() {
         return title;
+    }
+
+    /**
+     * Set the size of the window.
+     * <p>This method calls {@link #setResized(boolean)}</p>
+     *
+     * @param width  The width of the window. (In screen coordinates).
+     * @param height The height of the window. (In screen coordinates).
+     */
+    public void setWindowSize(int width, int height) {
+        glfwSetWindowSize(window, width, height);
+        setResized(true);
+    }
+
+    /**
+     * Set the size limit of the window.
+     *
+     * <p>See {@link #resetWindowSizeLimit()} to remove any limits.</p>
+     *
+     * @param minWidth  The minimum width.
+     * @param minHeight The minimum height.
+     * @param maxWidth  The maximum width.
+     * @param maxHeight The maximum height.
+     */
+    public void setWindowSizeLimit(int minWidth, int minHeight, int maxWidth, int maxHeight) {
+        glfwSetWindowSizeLimits(window, minWidth, minHeight, maxWidth, maxHeight);
+    }
+
+    /**
+     * Reset the size limit of the window.
+     */
+    public void resetWindowSizeLimit() {
+        glfwSetWindowSizeLimits(window, GLFW_DONT_CARE, GLFW_DONT_CARE, GLFW_DONT_CARE, GLFW_DONT_CARE);
     }
 
     /**
@@ -191,6 +253,8 @@ public class Window {
 
     /**
      * Set if the window was resized
+     *
+     * <p>This method is set automatically when the window is resized.</p>
      *
      * @param resized If the window was resized
      */
@@ -231,8 +295,61 @@ public class Window {
      *
      * @return If it is enabled.
      */
-    public boolean isCursorVisable() {
+    public boolean isCursorVisible() {
         return cursor;
+    }
+
+    /**
+     * Set if the window is resizable.
+     *
+     * @param resizable If the window is resizable.
+     */
+    public void setResizable(boolean resizable) {
+        this.resizable = resizable;
+        glfwSetWindowAttrib(window, GLFW_RESIZABLE, resizable ? GLFW_TRUE : GLFW_FALSE);
+    }
+
+    /**
+     * Get if the window is resizable.
+     *
+     * @return If the window is resizable.
+     */
+    public boolean isResizable() {
+        return this.resizable;
+    }
+
+    /**
+     * Set the position of the window.
+     *
+     * @param x The x position.
+     * @param y The y position.
+     */
+    public void setWindowPosition(int x, int y) {
+        glfwSetWindowPos(window, x, y);
+    }
+
+    /**
+     * Get the position of the window.
+     *
+     * @return The position of the window.
+     */
+    public Vector2 getWindowPosition() {
+        try (MemoryStack memoryStack = MemoryStack.stackPush()) {
+            IntBuffer xPos = memoryStack.mallocInt(1);
+            IntBuffer yPos = memoryStack.mallocInt(1);
+            glfwGetWindowPos(window, xPos, yPos);
+
+            return new Vector2(xPos.get(), yPos.get());
+        }
+    }
+
+    /**
+     * Set the opacity of the window.
+     *
+     * @param opacity The opacity of the window. (0-1)
+     */
+    public void setWindowOpacity(float opacity) {
+        glfwSetWindowOpacity(window, opacity);
     }
 
     /**

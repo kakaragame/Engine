@@ -88,13 +88,12 @@ public abstract class GeneralUIComponent implements UIComponent {
      * When overriding the cleanup method {@link #pollCleanup(GameHandler)} should be used.
      *
      * <code>
-     *
-     * @param handler The instance of the game handler.
      * @Override <br>
      * public void cleanup(GameHandler handler) {<br>
      * pollCleanup(handler);<br>
      * }<br>
      * </code>
+     * @param handler The instance of the game handler.
      */
     @Override
     public void cleanup(GameHandler handler) {
@@ -169,10 +168,10 @@ public abstract class GeneralUIComponent implements UIComponent {
     public final void pollRender(Vector2 relative, UserInterface userInterface, GameHandler handler) {
         if (userInterface.isAutoScaled()) {
             this.globalPosition = position.clone().add(relative);
-            this.globalPosition = new Vector2(globalPosition.x * ((float) handler.getWindow().getWidth() / (float) handler.getWindow().initalWidth),
-                    globalPosition.y * ((float) handler.getWindow().getHeight() / (float) handler.getWindow().initalHeight));
-            this.globalScale = new Vector2(scale.x * ((float) handler.getWindow().getWidth() / (float) handler.getWindow().initalWidth),
-                    scale.y * ((float) handler.getWindow().getHeight() / (float) handler.getWindow().initalHeight));
+            this.globalPosition = new Vector2(globalPosition.x * ((float) handler.getWindow().getWidth() / (float) handler.getWindow().initialWidth),
+                    globalPosition.y * ((float) handler.getWindow().getHeight() / (float) handler.getWindow().initialHeight));
+            this.globalScale = new Vector2(scale.x * ((float) handler.getWindow().getWidth() / (float) handler.getWindow().initialWidth),
+                    scale.y * ((float) handler.getWindow().getHeight() / (float) handler.getWindow().initialHeight));
         } else {
             this.globalPosition = position.clone().add(relative);
             this.globalScale = scale;

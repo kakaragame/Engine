@@ -48,7 +48,7 @@ public class VerticalCenterConstraint implements Constraint {
     }
 
     private Vector2 getWindowSize() {
-        return userInterface.isAutoScaled() ? new Vector2(window.initalWidth, window.initalHeight)
+        return userInterface.isAutoScaled() ? new Vector2(window.initialWidth, window.initialHeight)
                 : new Vector2(window.getWidth(), window.getHeight());
     }
 }
