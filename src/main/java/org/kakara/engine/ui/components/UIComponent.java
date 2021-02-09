@@ -12,13 +12,53 @@ import org.kakara.engine.ui.events.UActionEvent;
 import java.util.List;
 
 /**
- * The main UI component
+ * Like the GameItem system, UIComponents are used to make up the User Interface.
+ *
+ * <p>UIComponents are attached to a Canvas instead of GameItems. Examples of UIComponents are: Text, Images,
+ * Squares, etc. The basic function of a UIComponent is implemented in {@link GeneralUIComponent}.</p>
+ *
+ * <p>UIComponents can also be added to each other as a hierarchy. Components attached to each other will be
+ * positioned and scale based upon their parent component.</p>
+ *
+ * <code>
+ * ComponentCanvas cc = new ComponentCanvas(); <br>
+ * <br>
+ * Panel panel = new Panel(); <br>
+ * Text text = new Text("This is my Text!", font); <br>
+ * panel.add(text); <br>
+ * cc.add(panel); <br>
+ * <br>
+ * add(cc); <br>
+ * </code>
+ *
+ * <p>Then the position of Text is based upon the position of Panel. So if panel is at (500, 500), The GLOBAL position
+ * of Text would also be (500, 500). Then setting text to a position of (10, 10) will make its GLOBAL position
+ * (510, 510).</p>
+ *
+ * <p>The scaling of a UIComponent depends of the Canvas's scale mode. The engine allows you to set a canvas
+ * to automatically scale with the size of the Window. This means that everything will scale up or down when the window
+ * scales up or down. When a Canvas is in scale mode the top-left corner is (0, 0) and the bottom-right corner
+ * is (1080, 720). That will ALWAYS be the case while in scale mode.</p>
+ *
+ * <p>If the Canvas's scale mode is set to none, then the UIComponents will not be automatically be scaled or repositioned
+ * based upon the the size of the Window. As such the coordinate system is then based upon the current size of the window.
+ * So if the size of the window is 1080 x 720, that means the top-left corner is (0, 0) and the bottom-right corner
+ * is (1080, 720). If the size of the windows if 500 x 500, that means the bottom-right corner is (500, 500).</p>
+ *
+ * <p>Sometimes it is useful to position Components based upon the position of other Components. Constraints can
+ * be used for that purpose. There are many types of constrains: {@link org.kakara.engine.ui.constraints.GeneralConstraint},
+ * {@link org.kakara.engine.ui.constraints.GridConstraint}, {@link org.kakara.engine.ui.constraints.HorizontalCenterConstraint},
+ * and {@link org.kakara.engine.ui.constraints.VerticalCenterConstraint}.</p>
+ *
+ * <p>{@link org.kakara.engine.ui.constraints.GeneralConstraint} is the major one that allows you to position a
+ * UIComponent based upon another one.</p>
  */
-public interface Component extends Tagable, UIListener {
+public interface UIComponent extends Tagable, UIListener {
 
     /**
      * Please use {@link UIListener#addUActionEvent(Class, UActionEvent)}
      * Deprecated to use a consistent method
+     *
      * @deprecated To be removed in the future.
      */
     @Deprecated
@@ -31,7 +71,7 @@ public interface Component extends Tagable, UIListener {
      *
      * @param component Child component
      */
-    void add(Component component);
+    void add(UIComponent component);
 
     /**
      * Internal Use Only
@@ -111,7 +151,7 @@ public interface Component extends Tagable, UIListener {
      *
      * @return The list of child components
      */
-    List<Component> getChildren();
+    List<UIComponent> getChildren();
 
     /**
      * Clear the component of all children.
@@ -123,7 +163,7 @@ public interface Component extends Tagable, UIListener {
      *
      * @param component The component to remove.
      */
-    void remove(Component component);
+    void remove(UIComponent component);
 
     /**
      * Get the parent of the component
@@ -131,7 +171,7 @@ public interface Component extends Tagable, UIListener {
      * @return The parent of the component (Null if none or the parent is the canvas component).
      * @since 1.0-Pre1
      */
-    Component getParent();
+    UIComponent getParent();
 
     /**
      * Set the parent of the component
@@ -140,7 +180,7 @@ public interface Component extends Tagable, UIListener {
      * @param parent The parent.
      * @since 1.0-Pre1
      */
-    void setParent(@Nullable Component parent);
+    void setParent(@Nullable UIComponent parent);
 
     /**
      * Add a constraint to the component

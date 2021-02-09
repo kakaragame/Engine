@@ -27,7 +27,7 @@ import static org.lwjgl.BufferUtils.createByteBuffer;
 public class Utils {
     public static String loadResource(String fileName) throws Exception {
         String result;
-        try (InputStream in = Class.forName(Utils.class.getName()).getResourceAsStream(fileName);
+        try (InputStream in = Utils.class.getResourceAsStream(fileName);
              Scanner scanner = new Scanner(in, StandardCharsets.UTF_8)) {
             result = scanner.useDelimiter("\\A").next();
         }
@@ -63,8 +63,7 @@ public class Utils {
      * @return The array
      */
     public static int[] listIntToArray(List<Integer> list) {
-        int[] result = list.stream().mapToInt((Integer v) -> v).toArray();
-        return result;
+        return list.stream().mapToInt((Integer v) -> v).toArray();
     }
 
     /**
@@ -90,13 +89,11 @@ public class Utils {
      * @deprecated unused
      */
     public static boolean existsResourceFile(String fileName) {
-        boolean result;
         try (InputStream is = Utils.class.getResourceAsStream(fileName)) {
-            result = is != null;
+            return is != null;
         } catch (Exception excp) {
-            result = false;
+            return false;
         }
-        return result;
     }
 
     /**

@@ -13,7 +13,7 @@ import org.kakara.engine.math.Vector2;
 import org.kakara.engine.physics.collision.CollisionManager;
 import org.kakara.engine.ui.UICanvas;
 import org.kakara.engine.ui.UserInterface;
-import org.kakara.engine.ui.components.GeneralComponent;
+import org.kakara.engine.ui.components.GeneralUIComponent;
 import org.kakara.engine.ui.components.Sprite;
 import org.kakara.engine.ui.items.ComponentCanvas;
 import org.kakara.engine.utils.Time;
@@ -185,7 +185,7 @@ public abstract class AbstractMenuScene implements Scene {
 /**
  * INTERNAL USE ONLY
  */
-class BackgroundImage extends GeneralComponent {
+class BackgroundImage extends GeneralUIComponent {
 
     private final Sprite sprite;
 
@@ -201,7 +201,7 @@ class BackgroundImage extends GeneralComponent {
 
     @Override
     public void render(Vector2 relative, UserInterface userInterface, GameHandler handler) {
-        pollRender(relative, userInterface, handler);
+        super.render(relative, userInterface, handler);
         sprite.scale = new Vector2(handler.getWindow().getWidth(), handler.getWindow().getHeight());
     }
 

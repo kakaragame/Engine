@@ -11,16 +11,64 @@ import org.kakara.engine.ui.events.UIHoverEnterEvent;
 import org.kakara.engine.ui.events.UIHoverLeaveEvent;
 import org.kakara.engine.ui.events.UIReleaseEvent;
 
+import static org.lwjgl.nanovg.NanoVG.nvgResetScissor;
+import static org.lwjgl.nanovg.NanoVG.nvgScissor;
+
 /**
  * An empty UI Component to contain other components.
+ *
+ * <p>This is meant to be a container that can holder multiple UIComponents. It also
+ * controls the overflow of the panel and can be used to hide content.</p>
+ *
+ * <code>
+ * Panel panel = new Panel(); <br>
+ * Rectangle rect = new Rectangle(); <br>
+ * panel.add(rect); <br>
+ * </code>
  */
-public class Panel extends GeneralComponent {
+public class Panel extends GeneralUIComponent {
 
     private boolean isHovering;
+    private boolean allowOverflow;
 
+    /**
+     * Create a panel using the default constructor.
+     * <p>Default scale of (100, 100)</p>
+     */
     public Panel() {
+        this(new Vector2(0, 0), new Vector2(100, 100));
+    }
+
+    /**
+     * Create a panel.
+     *
+     * @param position The position of the panel.
+     * @param scale    The scale of the panel.
+     */
+    public Panel(Vector2 position, Vector2 scale) {
         super();
         isHovering = false;
+        allowOverflow = false;
+        this.position = position;
+        this.scale = scale;
+    }
+
+    /**
+     * If the panel allows there to be overflow.
+     *
+     * @return If the panel allows overflow.
+     */
+    public boolean allowsOverflow() {
+        return allowOverflow;
+    }
+
+    /**
+     * Set if the panel allows overflow.
+     *
+     * @param allowOverflow If the panel allow overflow.
+     */
+    public void setAllowOverflow(boolean allowOverflow) {
+        this.allowOverflow = allowOverflow;
     }
 
     @Override
@@ -33,9 +81,15 @@ public class Panel extends GeneralComponent {
     public void render(Vector2 relative, UserInterface userInterface, GameHandler handler) {
         if (!isVisible()) return;
 
-        pollRender(relative, userInterface, handler);
+        if (!allowOverflow)
+            nvgScissor(userInterface.getVG(), relative.x, relative.y, getGlobalScale().x, getGlobalScale().y);
 
-        boolean isColliding = UserInterface.isColliding(getTruePosition(), getTrueScale(), new Vector2(handler.getMouseInput().getPosition()));
+        super.render(relative, userInterface, handler);
+
+        if (!allowOverflow)
+            nvgResetScissor(userInterface.getVG());
+
+        boolean isColliding = UserInterface.isColliding(getGlobalPosition(), getGlobalScale(), new Vector2(handler.getMouseInput().getPosition()));
         if (isColliding && !isHovering) {
             isHovering = true;
             triggerEvent(UIHoverEnterEvent.class, handler.getMouseInput().getCurrentPosition());
@@ -53,8 +107,8 @@ public class Panel extends GeneralComponent {
     }
 
     @EventHandler
-    public void onRelease(MouseReleaseEvent evt){
-        if(UserInterface.isColliding(getTruePosition(), scale, new Vector2(evt.getMousePosition()))){
+    public void onRelease(MouseReleaseEvent evt) {
+        if (UserInterface.isColliding(getGlobalPosition(), scale, new Vector2(evt.getMousePosition()))) {
             triggerEvent(UIReleaseEvent.class, position, evt.getMouseClickType());
         }
     }

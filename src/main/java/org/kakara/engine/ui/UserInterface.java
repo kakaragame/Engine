@@ -4,7 +4,7 @@ import org.kakara.engine.GameHandler;
 import org.kakara.engine.exceptions.InitializationException;
 import org.kakara.engine.math.Vector2;
 import org.kakara.engine.scene.Scene;
-import org.kakara.engine.ui.components.Component;
+import org.kakara.engine.ui.components.UIComponent;
 import org.kakara.engine.ui.font.Font;
 import org.kakara.engine.window.Window;
 
@@ -106,7 +106,7 @@ public class UserInterface {
 
     /**
      * Add an item to the HUD.
-     * <p>Components <b>do not</b> go here! They must go inside of a ComponentCanvas! See {@link org.kakara.engine.ui.items.ComponentCanvas#add(Component)}</p>
+     * <p>Components <b>do not</b> go here! They must go inside of a ComponentCanvas! See {@link org.kakara.engine.ui.items.ComponentCanvas#add(UIComponent)}</p>
      *
      * @param item The item to add.
      */

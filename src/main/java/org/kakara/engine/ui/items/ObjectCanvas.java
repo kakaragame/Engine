@@ -23,7 +23,7 @@ import static org.lwjgl.nanovg.NanoVG.nvgBeginFrame;
 import static org.lwjgl.nanovg.NanoVG.nvgEndFrame;
 
 /**
- * Allows 3d objects to be rendered to the UI.
+ * The ObjectCanvas allows 3D objects to be rendered on the User Interface.
  *
  * @since 1.0-Pre1
  */
@@ -110,7 +110,7 @@ public class ObjectCanvas implements UICanvas {
     }
 
     @EventHandler
-    public void onRelease(MouseReleaseEvent evt){
+    public void onRelease(MouseReleaseEvent evt) {
         UIObject obj = selectGameItems(scene, new Vector3(evt.getMousePosition().x, evt.getMousePosition().y, 0));
         if (obj != null) {
             obj.triggerEvent(UIReleaseEvent.class, obj.getPosition(), evt.getMouseClickType());

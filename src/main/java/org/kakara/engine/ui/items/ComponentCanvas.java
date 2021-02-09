@@ -6,18 +6,28 @@ import org.kakara.engine.math.Vector2;
 import org.kakara.engine.scene.Scene;
 import org.kakara.engine.ui.UICanvas;
 import org.kakara.engine.ui.UserInterface;
-import org.kakara.engine.ui.components.Component;
+import org.kakara.engine.ui.components.GeneralUIComponent;
+import org.kakara.engine.ui.components.UIComponent;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Holds all of the components.
- * <p>This is what is added directly to the hud.</p>
+ * The ComponentCanvas is a canvas that holders UIComponents.
+ *
+ * <p>See {@link UIComponent} and {@link GeneralUIComponent} for more information.</p>
+ *
+ * <p>Example:</p>
+ * <code>
+ * ComponentCanvas canvas = new ComponentCanvas(); <br>
+ * Rectangle rectangle = new Rectangle(); <br>
+ * canvas.add(rectangle); <br>
+ * add(canvas); <br>
+ * </code>
  */
 public class ComponentCanvas implements UICanvas {
     boolean init = false;
-    private final List<Component> components;
+    private final List<UIComponent> components;
     private final Scene scene;
     /*
      * Tagable data
@@ -40,7 +50,7 @@ public class ComponentCanvas implements UICanvas {
      *
      * @param component The component to add.
      */
-    public void add(Component component) {
+    public void add(UIComponent component) {
         if (component.getParent() != null)
             throw new HierarchyException("Error: That component already has a parent!");
         components.add(component);
@@ -52,21 +62,23 @@ public class ComponentCanvas implements UICanvas {
     @Override
     public void init(UserInterface userInterface, GameHandler handler) {
         init = true;
-        for (Component c : components) {
+        for (UIComponent c : components) {
             c.init(userInterface, handler);
         }
     }
 
     @Override
     public void render(UserInterface userInterface, GameHandler handler) {
-        for (Component component : components) {
+        for (UIComponent component : components) {
+            if (component instanceof GeneralUIComponent)
+                ((GeneralUIComponent) component).pollRender(new Vector2(0, 0), userInterface, handler);
             component.render(new Vector2(0, 0), userInterface, handler);
         }
     }
 
     @Override
     public void cleanup(GameHandler handler) {
-        for (Component component : components) {
+        for (UIComponent component : components) {
             component.cleanup(handler);
         }
     }
@@ -76,7 +88,7 @@ public class ComponentCanvas implements UICanvas {
      *
      * @return The child components
      */
-    public List<Component> getComponents() {
+    public List<UIComponent> getComponents() {
         return components;
     }
 
@@ -92,7 +104,7 @@ public class ComponentCanvas implements UICanvas {
      *
      * @param c The component
      */
-    public void removeComponent(Component c) {
+    public void removeComponent(UIComponent c) {
         components.remove(c);
     }
 

@@ -3,7 +3,7 @@ package org.kakara.engine.ui.constraints;
 import org.kakara.engine.GameHandler;
 import org.kakara.engine.math.Vector2;
 import org.kakara.engine.ui.UserInterface;
-import org.kakara.engine.ui.components.Component;
+import org.kakara.engine.ui.components.UIComponent;
 import org.kakara.engine.window.Window;
 
 /**
@@ -42,17 +42,17 @@ public class GridConstraint implements Constraint {
     }
 
     @Override
-    public void onAdd(Component component) {
+    public void onAdd(UIComponent component) {
         window = GameHandler.getInstance().getGameEngine().getWindow();
         userInterface = GameHandler.getInstance().getCurrentScene().getUserInterface();
     }
 
     @Override
-    public void onRemove(Component component) {
+    public void onRemove(UIComponent component) {
     }
 
     @Override
-    public void update(Component component) {
+    public void update(UIComponent component) {
         Vector2 scale = component.getParent() != null ? component.getParent().getScale()
                 : getWindowSize();
         component.setPosition((scale.x / columns) * xpos - component.getScale().x / 2, (scale.y / rows) * ypos - component.getScale().y / 2);

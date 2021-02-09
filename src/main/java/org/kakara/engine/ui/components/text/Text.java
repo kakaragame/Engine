@@ -3,7 +3,7 @@ package org.kakara.engine.ui.components.text;
 import org.kakara.engine.GameHandler;
 import org.kakara.engine.math.Vector2;
 import org.kakara.engine.ui.UserInterface;
-import org.kakara.engine.ui.components.GeneralComponent;
+import org.kakara.engine.ui.components.GeneralUIComponent;
 import org.kakara.engine.ui.font.Font;
 import org.kakara.engine.utils.RGBA;
 import org.lwjgl.nanovg.NVGColor;
@@ -15,7 +15,7 @@ import static org.lwjgl.nanovg.NanoVG.*;
  * <p>The scale of the text is the line width in the x position.</p>
  * <p>As of 1.0-Pre1, all text properties are implemented.</p>
  */
-public class Text extends GeneralComponent {
+public class Text extends GeneralUIComponent {
     private String text;
     private Font font;
     private float size;
@@ -61,7 +61,7 @@ public class Text extends GeneralComponent {
     public void render(Vector2 relative, UserInterface userInterface, GameHandler handler) {
         if (!isVisible()) return;
 
-        pollRender(relative, userInterface, handler);
+        super.render(relative, userInterface, handler);
 
         nvgBeginPath(userInterface.getVG());
         nvgFontSize(userInterface.getVG(), calculateSize(handler));
@@ -74,7 +74,7 @@ public class Text extends GeneralComponent {
         nvgRGBA((byte) color.r, (byte) color.g, (byte) color.b, (byte) color.aToNano(), nvgColor);
         nvgFillColor(userInterface.getVG(), nvgColor);
 
-        nvgTextBox(userInterface.getVG(), getTruePosition().x, getTruePosition().y, this.calculateLineWidth(handler), text);
+        nvgTextBox(userInterface.getVG(), getGlobalPosition().x, getGlobalPosition().y, this.calculateLineWidth(handler), text);
     }
 
     /**

@@ -3,7 +3,7 @@ package org.kakara.engine.ui.components.text;
 import org.kakara.engine.GameHandler;
 import org.kakara.engine.math.Vector2;
 import org.kakara.engine.ui.UserInterface;
-import org.kakara.engine.ui.components.GeneralComponent;
+import org.kakara.engine.ui.components.GeneralUIComponent;
 import org.kakara.engine.ui.constraints.Constraint;
 import org.kakara.engine.ui.font.Font;
 import org.kakara.engine.utils.RGBA;
@@ -23,7 +23,7 @@ import static org.lwjgl.nanovg.NanoVG.*;
  *
  * @since 1.0-Pre1
  */
-public class BoundedText extends GeneralComponent {
+public class BoundedText extends GeneralUIComponent {
     private String text;
     private ByteBuffer paragraph;
     private Font font;
@@ -73,7 +73,7 @@ public class BoundedText extends GeneralComponent {
     public void render(Vector2 relative, UserInterface userInterface, GameHandler handler) {
         if (!isVisible()) return;
 
-        pollRender(relative, userInterface, handler);
+        super.render(relative, userInterface, handler);
 
         displayText(userInterface, handler);
     }
@@ -112,7 +112,7 @@ public class BoundedText extends GeneralComponent {
 
         nvgTextMetrics(userInterface.getVG(), null, null, lineh);
 
-        float y = getTruePosition().y;
+        float y = getGlobalPosition().y;
 
 //        NVGTextRow.Buffer buf = NVGTextRow.create(3);
 //        nvgTextBreakLines(userInterface.getVG(), "This is a test", calculateLineWidth(handler), buf);
@@ -138,7 +138,7 @@ public class BoundedText extends GeneralComponent {
                 nvgRGBA((byte) color.r, (byte) color.g, (byte) color.b, (byte) color.aToNano(), nvgColor);
                 nvgFillColor(userInterface.getVG(), nvgColor);
 
-                nnvgText(userInterface.getVG(), getTruePosition().x, y, row.start(), row.end());
+                nnvgText(userInterface.getVG(), getGlobalPosition().x, y, row.start(), row.end());
 
                 lnum++;
                 y += lineh.get(0);
@@ -150,11 +150,11 @@ public class BoundedText extends GeneralComponent {
     }
 
     private float toRelativeX(float x) {
-        return x - getTruePosition().x;
+        return x - getGlobalPosition().x;
     }
 
     private float toRelativeY(float y) {
-        return y - getTruePosition().y;
+        return y - getGlobalPosition().y;
     }
 
     /**

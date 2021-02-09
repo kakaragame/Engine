@@ -3,7 +3,7 @@ package org.kakara.engine.ui.constraints;
 import org.jetbrains.annotations.Nullable;
 import org.kakara.engine.GameHandler;
 import org.kakara.engine.ui.UserInterface;
-import org.kakara.engine.ui.components.Component;
+import org.kakara.engine.ui.components.UIComponent;
 import org.kakara.engine.window.Window;
 
 /**
@@ -18,7 +18,7 @@ import org.kakara.engine.window.Window;
 public class GeneralConstraint implements Constraint {
 
     private final ComponentSide mySide;
-    private final Component otherComponent;
+    private final UIComponent otherComponent;
     private final ComponentSide otherComponentSide;
     private final float value;
 
@@ -33,7 +33,7 @@ public class GeneralConstraint implements Constraint {
      * @param otherComponentSide The side of the other component to compare.
      * @param value              The value
      */
-    public GeneralConstraint(ComponentSide mySide, @Nullable Component otherComponent, ComponentSide otherComponentSide, float value) {
+    public GeneralConstraint(ComponentSide mySide, @Nullable UIComponent otherComponent, ComponentSide otherComponentSide, float value) {
         this.mySide = mySide;
         this.otherComponent = otherComponent;
         this.otherComponentSide = otherComponentSide;
@@ -42,18 +42,18 @@ public class GeneralConstraint implements Constraint {
 
 
     @Override
-    public void onAdd(Component component) {
+    public void onAdd(UIComponent component) {
         this.window = GameHandler.getInstance().getWindow();
         this.userInterface = GameHandler.getInstance().getCurrentScene().getUserInterface();
     }
 
     @Override
-    public void onRemove(Component component) {
+    public void onRemove(UIComponent component) {
 
     }
 
     @Override
-    public void update(Component component) {
+    public void update(UIComponent component) {
         switch (mySide) {
             case TOP:
                 component.setPosition(component.getPosition().x, getSide(component, otherComponent, otherComponentSide) + value);
@@ -71,7 +71,7 @@ public class GeneralConstraint implements Constraint {
     }
 
 
-    private float getSide(Component mainComponent, Component otherComponent, ComponentSide side) {
+    private float getSide(UIComponent mainComponent, UIComponent otherComponent, ComponentSide side) {
         if (otherComponent != null) {
             switch (side) {
                 case TOP:

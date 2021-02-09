@@ -16,19 +16,31 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
- * The standard component template.
+ * This is the standard implementation of the {@link UIComponent} interface. You can extend
+ * this class to make your own components.
+ *
+ * <p>For a definition of what a UIComponent is see {@link UIComponent}.</p>
+ *
+ * <p>When overriding the render method you want to call super.render() in order to draw child objects.</p>
+ * <code>
+ *
+ * @Override <br>
+ * public void render(Vector2 relative, UserInterface userInterface, GameHandler handler) {<br>
+ * super.render(relative, userInterface, handler);<br>
+ * }<br>
+ * </code>
  */
-public abstract class GeneralComponent implements Component {
+public abstract class GeneralUIComponent implements UIComponent {
 
     public Vector2 position;
     public Vector2 scale;
     protected Map<UActionEvent, Class<? extends UActionEvent>> events;
-    protected List<Component> components;
+    protected List<UIComponent> components;
     protected List<Constraint> constraints;
     boolean init = false;
-    private Component parent;
-    private Vector2 truePosition;
-    private Vector2 trueScale;
+    private UIComponent parent;
+    private Vector2 globalPosition;
+    private Vector2 globalScale;
     private boolean isVisible;
 
     /*
@@ -37,43 +49,62 @@ public abstract class GeneralComponent implements Component {
     private List<Object> data;
     private String tag;
 
-    public GeneralComponent() {
+    /**
+     * The standard constructor for the GeneralUIComponent.
+     *
+     * <p>Both position and scale are initialized to 0,0.</p>
+     */
+    public GeneralUIComponent() {
         events = new HashMap<>();
         components = new ArrayList<>();
         constraints = new ArrayList<>();
         position = new Vector2(0, 0);
         scale = new Vector2(0, 0);
-        truePosition = new Vector2(0, 0);
-        trueScale = new Vector2(0, 0);
+        globalPosition = new Vector2(0, 0);
+        globalScale = new Vector2(0, 0);
         isVisible = true;
     }
 
     @Override
-    public void addUActionEvent(Class<? extends UActionEvent> clazz, UActionEvent uae) {
+    public final void addUActionEvent(Class<? extends UActionEvent> clazz, UActionEvent uae) {
         events.put(uae, clazz);
     }
 
     @Override
-    public Map<UActionEvent, Class<? extends UActionEvent>> getEvents() {
+    public final Map<UActionEvent, Class<? extends UActionEvent>> getEvents() {
         return events;
     }
 
     @Override
     public void render(Vector2 relative, UserInterface userInterface, GameHandler handler) {
-        for (Component c : components) {
+        for (UIComponent c : components) {
+            if (c instanceof GeneralUIComponent)
+                ((GeneralUIComponent) c).pollRender(relative.add(position), userInterface, handler);
             c.render(relative.add(position), userInterface, handler);
         }
     }
 
+    /**
+     * When overriding the cleanup method {@link #pollCleanup(GameHandler)} should be used.
+     *
+     * <code>
+     *
+     * @param handler The instance of the game handler.
+     * @Override <br>
+     * public void cleanup(GameHandler handler) {<br>
+     * pollCleanup(handler);<br>
+     * }<br>
+     * </code>
+     */
     @Override
     public void cleanup(GameHandler handler) {
-        for (Component c : components) {
+        for (UIComponent c : components) {
             c.cleanup(handler);
         }
     }
 
     @Override
-    public void add(Component component) {
+    public final void add(UIComponent component) {
         if (component.getParent() != null)
             throw new HierarchyException("That UI component already has a parent!");
         this.components.add(component);
@@ -83,84 +114,82 @@ public abstract class GeneralComponent implements Component {
     }
 
     @Override
-    public void setPosition(float x, float y) {
+    public final void setPosition(float x, float y) {
         this.position.x = x;
         this.position.y = y;
     }
 
     @Override
-    public Vector2 getPosition() {
+    public final Vector2 getPosition() {
         return position.clone();
     }
 
     @Override
-    public void setPosition(Vector2 pos) {
+    public final void setPosition(Vector2 pos) {
         setPosition(pos.x, pos.y);
     }
 
     @Override
-    public void setScale(float x, float y) {
+    public final void setScale(float x, float y) {
         this.scale.x = x;
         this.scale.y = y;
     }
 
     @Override
-    public Vector2 getScale() {
+    public final Vector2 getScale() {
         return scale;
     }
 
     @Override
-    public void setScale(Vector2 scale) {
+    public final void setScale(Vector2 scale) {
         setScale(scale.x, scale.y);
     }
 
     @Override
-    public Component getParent() {
+    public final UIComponent getParent() {
         return parent;
     }
 
     @Override
-    public void setParent(@Nullable Component parent) {
+    public final void setParent(@Nullable UIComponent parent) {
         this.parent = parent;
     }
 
     /**
-     * Tells the engine to update crucial information of the object for you.
-     * Not calling this means certain things, like events, won't work.
-     * Call this in the render method first.
+     * Operates the internals of a General Component.
      *
-     * @param relative      The relative position
-     * @param userInterface The hud
-     * @param handler       The handler.
+     * <p>This method: Updates the Global Position, Global Scale, and handles constraints.</p>
+     *
+     * <p>This method is called for you by the ComponentCanvas and other GeneralUIComponents.</p>
+     *
+     * @param relative      The global position of the item.
+     * @param userInterface The user interface instance.
+     * @param handler       The game handler.
      */
-    public void pollRender(Vector2 relative, UserInterface userInterface, GameHandler handler) {
+    public final void pollRender(Vector2 relative, UserInterface userInterface, GameHandler handler) {
         if (userInterface.isAutoScaled()) {
-            this.truePosition = position.clone().add(relative);
-            this.truePosition = new Vector2(truePosition.x * ((float) handler.getWindow().getWidth() / (float) handler.getWindow().initalWidth),
-                    truePosition.y * ((float) handler.getWindow().getHeight() / (float) handler.getWindow().initalHeight));
-            this.trueScale = new Vector2(scale.x * ((float) handler.getWindow().getWidth() / (float) handler.getWindow().initalWidth),
+            this.globalPosition = position.clone().add(relative);
+            this.globalPosition = new Vector2(globalPosition.x * ((float) handler.getWindow().getWidth() / (float) handler.getWindow().initalWidth),
+                    globalPosition.y * ((float) handler.getWindow().getHeight() / (float) handler.getWindow().initalHeight));
+            this.globalScale = new Vector2(scale.x * ((float) handler.getWindow().getWidth() / (float) handler.getWindow().initalWidth),
                     scale.y * ((float) handler.getWindow().getHeight() / (float) handler.getWindow().initalHeight));
         } else {
-            this.truePosition = position.clone().add(relative);
-            this.trueScale = scale;
+            this.globalPosition = position.clone().add(relative);
+            this.globalScale = scale;
         }
 
         for (Constraint cc : constraints) {
             cc.update(this);
         }
-
-        for (Component cc : components) {
-            cc.render(relative.clone().add(position), userInterface, handler);
-        }
     }
 
     /**
-     * Tells the engine that the object was inited.
+     * Tells the engine that the object was initialized.
      * This allows the engine to handle a lot of the component hassle for you.
      */
-    public void pollInit(UserInterface userInterface, GameHandler handler) {
+    public final void pollInit(UserInterface userInterface, GameHandler handler) {
         init = true;
-        for (Component cc : components) {
+        for (UIComponent cc : components) {
             cc.init(userInterface, handler);
         }
     }
@@ -170,28 +199,32 @@ public abstract class GeneralComponent implements Component {
      *
      * @param handler The handler.
      */
-    public void pollCleanup(GameHandler handler) {
-        for (Component cc : components) {
+    public final void pollCleanup(GameHandler handler) {
+        for (UIComponent cc : components) {
             cc.cleanup(handler);
         }
     }
 
     /**
-     * Get the true position of the object.
+     * Get the GLOBAL position of the object.
      *
-     * @return
+     * <p>Note: The global position is not calculated until after 1 render cycle.</p>
+     *
+     * @return The GLOBAL position of the object.
      */
-    public Vector2 getTruePosition() {
-        return this.truePosition.clone();
+    public final Vector2 getGlobalPosition() {
+        return this.globalPosition.clone();
     }
 
     /**
-     * Get the true scale of an object.
+     * Get the GLOBAL scale of an object.
      *
-     * @return
+     * <p>Note: The global scale is not calculated until after 1 render cycle</p>
+     *
+     * @return The GLOBAL scale of an object.
      */
-    public Vector2 getTrueScale() {
-        return this.trueScale;
+    public final Vector2 getGlobalScale() {
+        return this.globalScale;
     }
 
     /**
@@ -200,7 +233,7 @@ public abstract class GeneralComponent implements Component {
      * @param clazz The type of event
      * @param objs  The parameters
      */
-    public <T> void triggerEvent(Class<? extends UActionEvent> clazz, T... objs) {
+    public final <T> void triggerEvent(Class<? extends UActionEvent> clazz, T... objs) {
         try {
             for (Map.Entry<UActionEvent, Class<? extends UActionEvent>> event : events.entrySet()) {
                 if (clazz != event.getValue()) continue;
@@ -223,7 +256,7 @@ public abstract class GeneralComponent implements Component {
     }
 
     @Override
-    public List<Component> getChildren() {
+    public List<UIComponent> getChildren() {
         return components;
     }
 
@@ -233,7 +266,7 @@ public abstract class GeneralComponent implements Component {
     }
 
     @Override
-    public void remove(Component component) {
+    public void remove(UIComponent component) {
         component.setParent(null);
         components.remove(component);
     }

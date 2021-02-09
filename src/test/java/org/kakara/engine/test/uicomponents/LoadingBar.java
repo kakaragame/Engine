@@ -3,7 +3,7 @@ package org.kakara.engine.test.uicomponents;
 import org.kakara.engine.GameHandler;
 import org.kakara.engine.math.Vector2;
 import org.kakara.engine.ui.UserInterface;
-import org.kakara.engine.ui.components.GeneralComponent;
+import org.kakara.engine.ui.components.GeneralUIComponent;
 import org.kakara.engine.ui.components.shapes.Rectangle;
 import org.kakara.engine.ui.components.text.Text;
 import org.kakara.engine.ui.font.Font;
@@ -12,7 +12,7 @@ import org.kakara.engine.utils.RGBA;
 /**
  * This is an example component. All components must extend GeneralComponent.
  */
-public class LoadingBar extends GeneralComponent {
+public class LoadingBar extends GeneralUIComponent {
     private float percent;
 
     private final Text percentText;
@@ -101,7 +101,7 @@ public class LoadingBar extends GeneralComponent {
      */
     @Override
     public void render(Vector2 relative, UserInterface userInterface, GameHandler handler) {
-        pollRender(relative, userInterface, handler);
+        super.render(relative, userInterface, handler);
         if (percent <= 1)
             inner.setScale(outer.scale.x * percent, scale.y);
         percentText.setText(Math.round(percent * 100) + "%");

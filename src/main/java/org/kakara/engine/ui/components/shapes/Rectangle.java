@@ -6,7 +6,7 @@ import org.kakara.engine.events.event.MouseClickEvent;
 import org.kakara.engine.events.event.MouseReleaseEvent;
 import org.kakara.engine.math.Vector2;
 import org.kakara.engine.ui.UserInterface;
-import org.kakara.engine.ui.components.GeneralComponent;
+import org.kakara.engine.ui.components.GeneralUIComponent;
 import org.kakara.engine.ui.events.UIClickEvent;
 import org.kakara.engine.ui.events.UIHoverEnterEvent;
 import org.kakara.engine.ui.events.UIHoverLeaveEvent;
@@ -19,7 +19,7 @@ import static org.lwjgl.nanovg.NanoVG.*;
 /**
  * Base Rectangle Component
  */
-public class Rectangle extends GeneralComponent {
+public class Rectangle extends GeneralUIComponent {
     private RGBA color;
     private final NVGColor nvgColor;
 
@@ -68,14 +68,14 @@ public class Rectangle extends GeneralComponent {
 
     @EventHandler
     public void onClick(MouseClickEvent evt) {
-        if (UserInterface.isColliding(getTruePosition(), getTrueScale(), new Vector2(evt.getMousePosition()))) {
+        if (UserInterface.isColliding(getGlobalPosition(), getGlobalScale(), new Vector2(evt.getMousePosition()))) {
             triggerEvent(UIClickEvent.class, new Vector2(evt.getMousePosition()), evt.getMouseClickType());
         }
     }
 
     @EventHandler
     public void onRelease(MouseReleaseEvent evt){
-        if(UserInterface.isColliding(getTruePosition(), scale, new Vector2(evt.getMousePosition()))){
+        if(UserInterface.isColliding(getGlobalPosition(), scale, new Vector2(evt.getMousePosition()))){
             triggerEvent(UIReleaseEvent.class, position, evt.getMouseClickType());
         }
     }
@@ -90,7 +90,7 @@ public class Rectangle extends GeneralComponent {
     @Override
     public void render(Vector2 relative, UserInterface userInterface, GameHandler handler) {
         if (!isVisible()) return;
-        boolean isColliding = UserInterface.isColliding(getTruePosition(), getTrueScale(), new Vector2(handler.getMouseInput().getPosition()));
+        boolean isColliding = UserInterface.isColliding(getGlobalPosition(), getGlobalScale(), new Vector2(handler.getMouseInput().getPosition()));
         if (isColliding && !isHovering) {
             isHovering = true;
             triggerEvent(UIHoverEnterEvent.class, handler.getMouseInput().getCurrentPosition());
@@ -100,12 +100,12 @@ public class Rectangle extends GeneralComponent {
         }
 
         nvgBeginPath(userInterface.getVG());
-        nvgRect(userInterface.getVG(), getTruePosition().x, getTruePosition().y, getTrueScale().x, getTrueScale().y);
+        nvgRect(userInterface.getVG(), getGlobalPosition().x, getGlobalPosition().y, getGlobalScale().x, getGlobalScale().y);
 
         nvgRGBA((byte) color.r, (byte) color.g, (byte) color.b, (byte) color.aToNano(), nvgColor);
         nvgFillColor(userInterface.getVG(), nvgColor);
         nvgFill(userInterface.getVG());
 
-        pollRender(relative, userInterface, handler);
+        super.render(relative, userInterface, handler);
     }
 }

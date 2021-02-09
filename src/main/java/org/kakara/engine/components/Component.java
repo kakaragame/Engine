@@ -107,4 +107,13 @@ public abstract class Component {
     public final GameItem getGameItem() {
         return gameItem;
     }
+
+    /**
+     * Get the transform of the parent game item.
+     *
+     * @return The transform of the parent game item.
+     */
+    public final Transform getTransform() {
+        return gameItem.getTransform();
+    }
 }
