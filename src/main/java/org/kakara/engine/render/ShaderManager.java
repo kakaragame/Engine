@@ -58,6 +58,8 @@ public final class ShaderManager {
         if (this.programs.containsKey(name))
             throw new IllegalArgumentException("The specified name already exists.");
         this.programs.put(name, program);
+        if(initialized)
+            program.initializeShader();
     }
 
     /**

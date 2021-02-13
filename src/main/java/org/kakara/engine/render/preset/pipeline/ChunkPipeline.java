@@ -60,6 +60,8 @@ public class ChunkPipeline implements RenderPipeline {
 
     @Override
     public void renderDepthMap(Scene scene, Shader depthShader, Matrix4f lightViewMatrix) {
+        if(!(scene instanceof AbstractGameScene))
+            return;
         AbstractGameScene ags = (AbstractGameScene) scene;
         if (ags.getChunkHandler().getRenderChunkList().isEmpty())
             return;
