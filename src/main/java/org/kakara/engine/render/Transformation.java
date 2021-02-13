@@ -45,11 +45,12 @@ public class Transformation {
 
     /**
      * Update the projection matrix.
-     * @param fov The fov.
-     * @param width The width.
+     *
+     * @param fov    The fov.
+     * @param width  The width.
      * @param height The height.
-     * @param zNear The z near
-     * @param zFar The z far.
+     * @param zNear  The z near
+     * @param zFar   The z far.
      * @return The updated projection matrix.
      */
     public Matrix4f updateProjectionMatrix(float fov, float width, float height, float zNear, float zFar) {
@@ -77,7 +78,7 @@ public class Transformation {
         return modelMatrix.translationRotateScale(
                 gameItem.transform.getPosition().x, gameItem.transform.getPosition().y, gameItem.transform.getPosition().z,
                 rotation.x, rotation.y, rotation.z, rotation.w,
-                gameItem.transform.getScale(), gameItem.transform.getScale(), gameItem.transform.getScale());
+                gameItem.transform.getScale().x, gameItem.transform.getScale().y, gameItem.transform.getScale().z);
     }
 
     /**
@@ -136,8 +137,8 @@ public class Transformation {
      */
     public Matrix4f buildModelViewMatrix(GameItem gameItem, Matrix4f matrix) {
         Quaternionf rotation = gameItem.transform.getRotation();
-        modelMatrix.translationRotateScale(gameItem.transform.getPosition().x, gameItem.transform.getPosition().y, gameItem.transform.getPosition().z, rotation.x, rotation.y, rotation.z, rotation.w, gameItem.transform.getScale(),
-                gameItem.transform.getScale(), gameItem.transform.getScale());
+        modelMatrix.translationRotateScale(gameItem.transform.getPosition().x, gameItem.transform.getPosition().y, gameItem.transform.getPosition().z, rotation.x, rotation.y, rotation.z, rotation.w, gameItem.transform.getScale().x,
+                gameItem.transform.getScale().y, gameItem.transform.getScale().z);
         modelViewMatrix.set(matrix);
         return modelViewMatrix.mul(modelMatrix);
     }

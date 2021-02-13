@@ -26,6 +26,7 @@ public class RenderBlockCollider extends ColliderComponent {
     private final GameHandler handler;
     private Predicate<ColliderComponent> predicate = gameItem -> false;
     private final List<OnTriggerEnter> triggerEvents;
+    private final Vector3 scale = new Vector3(1, 1, 1);
 
     /**
      * Construct the render block collider.
@@ -148,8 +149,8 @@ public class RenderBlockCollider extends ColliderComponent {
     }
 
     @Override
-    public float getScale() {
-        return 1;
+    public Vector3 getScale() {
+        return scale;
     }
 
     public RenderBlock getRenderBlock() {

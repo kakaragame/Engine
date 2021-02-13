@@ -7,6 +7,9 @@ package org.kakara.engine.engine;
  */
 public final class CubeData {
 
+    /**
+     * Vertex data for a Cube.
+     */
     public static final float[] vertex = {
             -0.5f, 0.5f, 0.5f,
             -0.5f, -0.5f, 0.5f,
@@ -39,6 +42,10 @@ public final class CubeData {
             -0.5f, -0.5f, 0.5f,
             -0.5f, 0.5f, 0.5f
     };
+
+    /**
+     * Normal vectors for a Cube.
+     */
     public static final float[] normal = {
             0, 0, 1,
             0, 0, 1,
@@ -70,6 +77,10 @@ public final class CubeData {
             -1, 0, 0,
             -1, 0, 0
     };
+
+    /**
+     * Indices data for a Cube.
+     */
     public static final int[] indices = {
             0, 1, 2, 2, 3, 0,
             // back
@@ -83,6 +94,10 @@ public final class CubeData {
             // left
             20, 21, 22, 22, 23, 20
     };
+
+    /**
+     * Vertex data for the Skybox Cube.
+     */
     public static final float[] skyboxVertex = {
             -100f, 100f, 100f,
             -100f, -100f, 100f,
@@ -119,6 +134,9 @@ public final class CubeData {
     private final static float ONE_THIRD = 1f / 3f;
     private final static float TWO_THIRD = 2f / 3f;
 
+    /**
+     * Texture vertices for a Cube.
+     */
     public static final float[] texture = {
             0.25f, ONE_THIRD,
             0.25f, TWO_THIRD,

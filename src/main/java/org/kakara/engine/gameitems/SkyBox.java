@@ -31,7 +31,7 @@ public class SkyBox extends GameItem {
                 }
 
                 getMeshRenderer().get().setMesh(skyBoxMesh);
-                this.transform.setScale(100);
+                this.transform.setScale(100, 100, 100);
             } else {
                 Mesh skyBoxMesh = new Mesh(CubeData.skyboxVertex, CubeData.texture, CubeData.normal, CubeData.indices);
                 skyBoxMesh.setMaterial(new Material(skyBoxTexture, 0f));

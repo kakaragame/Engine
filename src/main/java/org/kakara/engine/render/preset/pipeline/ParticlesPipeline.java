@@ -82,10 +82,10 @@ public class ParticlesPipeline implements RenderPipeline {
                         Matrix4f modelMatrix = transformation.buildModelMatrix(gameItem);
 
                         viewMatrix.transpose3x3(modelMatrix);
-                        viewMatrix.scale(gameItem.transform.getScale());
+                        viewMatrix.scale(gameItem.transform.getScale().toJoml());
 
                         Matrix4f modelViewMatrix = transformation.buildModelViewMatrix(modelMatrix, viewMatrix);
-                        modelViewMatrix.scale(gameItem.transform.getScale());
+                        modelViewMatrix.scale(gameItem.transform.getScale().toJoml());
                         particleShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
                     }
             );

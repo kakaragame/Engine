@@ -106,7 +106,7 @@ public class MainGameScene extends AbstractGameScene {
             Mesh[] mainPlayer = StaticModelLoader.load(resourceManager.getResource("player/steve.obj"), "/player",this,resourceManager);
             GameItem object = new GameItem(mainPlayer);
             object.transform.setPosition(0, 20, 0);
-            object.transform.setScale(0.3f);
+            object.transform.setScale(0.3f, 0.3f, 0.3f);
             object.getMeshRenderer().get().getMesh().setWireframe(true);
 //        object.setCollider(new BoxCollider(new Vector3(0, 0, 0), new Vector3(1, 1.5f, 1)));
 //        object.getCollider().setUseGravity(true).setTrigger(false);
@@ -314,7 +314,7 @@ public class MainGameScene extends AbstractGameScene {
             Material partMaterial = new Material(particleTexture, 1);
             partMesh.setMaterial(partMaterial);
             Particle particle = new Particle(partMesh, new Vector3(particleSpeed), ttl, 100);
-            particle.transform.setScale(scale);
+            particle.transform.setScale(scale, scale, scale);
             particleEmitter = new FlowParticleEmitter(particle, maxParticles, creationPeriodMillis);
             particleEmitter.setActive(true);
             particleEmitter.setPositionRndRange(range);

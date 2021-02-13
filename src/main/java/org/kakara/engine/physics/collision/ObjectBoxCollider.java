@@ -64,13 +64,15 @@ public class ObjectBoxCollider extends ColliderComponent {
 
     @Override
     public Vector3 getRelativePoint2() {
-        relativePointTwo.set(item.transform.getScale(), item.transform.getScale(), item.transform.getScale());
+        relativePointTwo.set(item.transform.getScale().x, item.transform.getScale().y, item.transform.getScale().z);
         return relativePointTwo;
     }
 
     @Override
     public Vector3 getAbsolutePoint2() {
-        absolutePointTwo.set(item.transform.getPosition().getX() + item.transform.getScale(), item.transform.getPosition().getY() + item.transform.getScale(), item.transform.getPosition().getZ() + item.transform.getScale());
+        absolutePointTwo.set(item.transform.getPosition().getX() + item.transform.getScale().x,
+                item.transform.getPosition().getY() + item.transform.getScale().y,
+                item.transform.getPosition().getZ() + item.transform.getScale().z);
         return absolutePointTwo;
     }
 

@@ -8,11 +8,19 @@ import org.kakara.engine.math.Vector3;
  * The Transform component stores the position, rotation, and scale of the GameItem.
  *
  * <p>This component is required by all GameItems.</p>
+ *
+ * <p>Position and rotation default to (0, 0, 0) while scale
+ * defaults to (1, 1, 1).</p>
+ *
+ * <code>
+ * gameItem.transform.setPosition(0, 5, 0);<br>
+ * gameItem.transform.getRotation().rotateX((float) Math.toRadians(10));<br>
+ * </code>
  */
 public class Transform extends Component {
     private final Vector3 position = new Vector3();
     private final Quaternionf rotation = new Quaternionf();
-    private float scale = 1f;
+    private final Vector3 scale = new Vector3(1, 1, 1);
 
     @Override
     public void start() {
@@ -93,10 +101,34 @@ public class Transform extends Component {
     /**
      * Set the scale.
      *
+     * @param xyz The scale for x, y, and z.
+     */
+    public void setScale(float xyz) {
+        scale.x = xyz;
+        scale.y = xyz;
+        scale.z = xyz;
+    }
+
+    /**
+     * Set the scale.
+     *
+     * @param x The x scaling.
+     * @param y The y scaling.
+     * @param z The z scaling.
+     */
+    public void setScale(float x, float y, float z) {
+        scale.x = x;
+        scale.y = y;
+        scale.z = z;
+    }
+
+    /**
+     * Set the scale.
+     *
      * @param scale The scale to set.
      */
-    public void setScale(float scale) {
-        this.scale = scale;
+    public void setScale(Vector3 scale) {
+        this.scale.set(scale);
     }
 
     /**
@@ -104,7 +136,7 @@ public class Transform extends Component {
      *
      * @return The scale.
      */
-    public float getScale() {
+    public Vector3 getScale() {
         return scale;
     }
 
@@ -117,6 +149,15 @@ public class Transform extends Component {
      */
     public void translateBy(float x, float y, float z) {
         this.position.addMut(x, y, z);
+    }
+
+    /**
+     * Translate the position by a vector.
+     *
+     * @param vector The vector to translate by.
+     */
+    public void translateBy(Vector3 vector) {
+        this.position.addMut(vector);
     }
 
     /**

@@ -48,7 +48,7 @@ public abstract class ColliderComponent extends Component {
      *
      * @return The scale of the collider.
      */
-    public float getScale() {
+    public Vector3 getScale() {
         return getGameItem().transform.getScale();
     }
 

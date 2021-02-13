@@ -92,8 +92,9 @@ public abstract class AbstractGameScene extends AbstractScene {
         for (ColliderComponent collidable : getCollisionManager().getSelectionItems(getCamera().getPosition())) {
             min.set(collidable.getPosition().toJoml());
             max.set(collidable.getPosition().toJoml());
-            min.add(-collidable.getScale() / 2, -collidable.getScale() / 2, -collidable.getScale() / 2);
-            max.add(collidable.getScale() / 2, collidable.getScale() / 2, collidable.getScale() / 2);
+            Vector3 scale = collidable.getScale();
+            min.add(-scale.x / 2, -scale.y / 2, -scale.z / 2);
+            max.add(scale.x / 2, scale.y / 2, scale.z / 2);
             if (Intersectionf.intersectRayAab(getCamera().getPosition().toJoml(), dir, min, max, nearFar) && nearFar.x < closestDistance) {
                 closestDistance = nearFar.x;
                 selectedGameItem = collidable;
@@ -130,8 +131,9 @@ public abstract class AbstractGameScene extends AbstractScene {
             if (ignore.contains(collidable.getGameItem().getUUID())) continue;
             min.set(collidable.getPosition().toJoml());
             max.set(collidable.getPosition().toJoml());
-            min.add(-collidable.getScale() / 2, -collidable.getScale() / 2, -collidable.getScale() / 2);
-            max.add(collidable.getScale() / 2, collidable.getScale() / 2, collidable.getScale() / 2);
+            Vector3 scale = collidable.getScale();
+            min.add(-scale.x / 2, -scale.y / 2, -scale.z / 2);
+            max.add(scale.x / 2, scale.y / 2, scale.z / 2);
             if (Intersectionf.intersectRayAab(getCamera().getPosition().toJoml(), dir, min, max, nearFar) && nearFar.x < closestDistance) {
                 closestDistance = nearFar.x;
                 selectedGameItem = collidable;

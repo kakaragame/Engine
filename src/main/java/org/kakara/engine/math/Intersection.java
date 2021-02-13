@@ -34,9 +34,9 @@ public class Intersection {
 
         min.set(collidable.transform.getPosition().toJoml());
         max.set(collidable.transform.getPosition().toJoml());
-        float scale = collidable.transform.getScale();
-        min.add(-scale / 2, -scale / 2, -scale / 2);
-        max.add(scale / 2, scale / 2, scale / 2);
+        Vector3 scale = collidable.transform.getScale();
+        min.add(-scale.x / 2, -scale.y / 2, -scale.z / 2);
+        max.add(scale.x / 2, scale.y / 2, scale.z / 2);
         boolean val = Intersectionf.intersectRayAab(camera.getPosition().toJoml(), dir, min, max, nearFar);
         result.x = nearFar.x;
         result.y = nearFar.y;
