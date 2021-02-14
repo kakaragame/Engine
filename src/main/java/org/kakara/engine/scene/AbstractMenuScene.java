@@ -8,6 +8,7 @@ import org.kakara.engine.gameitems.ItemHandler;
 import org.kakara.engine.gameitems.SkyBox;
 import org.kakara.engine.gameitems.Texture;
 import org.kakara.engine.gameitems.particles.ParticleHandler;
+import org.kakara.engine.input.controller.ControllerManager;
 import org.kakara.engine.lighting.LightHandler;
 import org.kakara.engine.math.Vector2;
 import org.kakara.engine.physics.collision.CollisionManager;
@@ -82,6 +83,11 @@ public abstract class AbstractMenuScene implements Scene {
     @Override
     public UserInterface getUserInterface() {
         return userInterface;
+    }
+
+    @Override
+    public ControllerManager getControllerManager() {
+        return gameHandler.getControllerManager();
     }
 
     @Override

@@ -1,9 +1,10 @@
 package org.kakara.engine;
 
 import org.jetbrains.annotations.NotNull;
-import org.kakara.engine.input.Clipboard;
-import org.kakara.engine.input.KeyInput;
-import org.kakara.engine.input.MouseInput;
+import org.kakara.engine.input.controller.ControllerManager;
+import org.kakara.engine.input.key.Clipboard;
+import org.kakara.engine.input.key.KeyInput;
+import org.kakara.engine.input.mouse.MouseInput;
 import org.kakara.engine.resources.ResourceManager;
 import org.kakara.engine.scene.Scene;
 import org.kakara.engine.scene.SceneManager;
@@ -11,13 +12,17 @@ import org.kakara.engine.sound.SoundManager;
 import org.kakara.engine.window.Window;
 
 /**
- * Handles the game information.
+ * This class contains all of the information for the game.
+ *
+ * <p>There will only ever be one instance of this class during the execution of the game.
+ * You can retrieve that one instance through {@link GameHandler#getInstance()}.</p>
  */
 public class GameHandler {
 
     private static GameHandler gameHandler;
     private final MouseInput mouseInput;
     private final KeyInput keyInput;
+    private final ControllerManager controllerManager;
     private final Clipboard clipboard;
     private final SceneManager sceneManager;
     private final SoundManager soundManager;
@@ -28,6 +33,7 @@ public class GameHandler {
         this.gameEngine = gameEngine;
         this.mouseInput = new MouseInput(this);
         this.keyInput = new KeyInput(gameEngine);
+        this.controllerManager = new ControllerManager();
         this.clipboard = new Clipboard(gameEngine.getWindow());
 
         this.sceneManager = new SceneManager(this);
@@ -51,7 +57,7 @@ public class GameHandler {
     protected void init() {
         mouseInput.init(gameEngine.getWindow());
         keyInput.init();
-
+        controllerManager.init();
     }
 
     /**
@@ -59,6 +65,7 @@ public class GameHandler {
      */
     protected void update() {
         mouseInput.update();
+        controllerManager.update();
     }
 
     /**
@@ -77,6 +84,16 @@ public class GameHandler {
      */
     public KeyInput getKeyInput() {
         return keyInput;
+    }
+
+    /**
+     * Get the controller manager.
+     * <p>This class handles actions for video game controllers.</p>
+     *
+     * @return The Controller Manager.
+     */
+    public ControllerManager getControllerManager() {
+        return controllerManager;
     }
 
     /**

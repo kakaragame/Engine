@@ -2,9 +2,12 @@ package org.kakara.engine.test;
 
 import org.kakara.engine.GameHandler;
 import org.kakara.engine.engine.CubeData;
+import org.kakara.engine.events.EventHandler;
 import org.kakara.engine.gameitems.Material;
 import org.kakara.engine.gameitems.Texture;
 import org.kakara.engine.gameitems.mesh.Mesh;
+import org.kakara.engine.input.controller.ControllerManager;
+import org.kakara.engine.input.controller.GamePadButtonEvent;
 import org.kakara.engine.math.Vector2;
 import org.kakara.engine.resources.ResourceManager;
 import org.kakara.engine.scene.AbstractMenuScene;
@@ -29,6 +32,8 @@ import org.kakara.engine.window.WindowIcon;
 
 import java.io.IOException;
 import java.io.InputStream;
+
+import static org.lwjgl.glfw.GLFW.*;
 
 /**
  * Example of how to make a proper UI Scene.
@@ -162,6 +167,9 @@ public class TitleScreenScene extends AbstractMenuScene {
             popupMenu.setVisible(true);
             openMenuButton.setVisible(false);
             playButton.setVisible(false);
+
+            System.out.println(glfwGetGamepadName(GLFW_JOYSTICK_2));
+            System.out.println(glfwGetGamepadName(GLFW_JOYSTICK_1));
         });
 
         Text openMenuTxt = new Text("Open Info!", roboto);
@@ -235,5 +243,10 @@ public class TitleScreenScene extends AbstractMenuScene {
         // Update the object rotation.
         obj.getRotation().rotateY(0.03f);
         obj.getRotation().rotateX(0.03f);
+    }
+
+    @EventHandler
+    public void onControllerPress(GamePadButtonEvent event){
+        System.out.println(event.getButtonID());
     }
 }

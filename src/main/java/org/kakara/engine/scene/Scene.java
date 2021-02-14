@@ -7,6 +7,7 @@ import org.kakara.engine.events.EventManager;
 import org.kakara.engine.gameitems.ItemHandler;
 import org.kakara.engine.gameitems.SkyBox;
 import org.kakara.engine.gameitems.particles.ParticleHandler;
+import org.kakara.engine.input.controller.ControllerManager;
 import org.kakara.engine.lighting.LightHandler;
 import org.kakara.engine.physics.collision.CollisionManager;
 import org.kakara.engine.ui.UserInterface;
@@ -80,6 +81,13 @@ public interface Scene {
      * @return The particle handler.
      */
     @Nullable ParticleHandler getParticleHandler();
+
+    /**
+     * Get the controller manager.
+     *
+     * @return The controller manager.
+     */
+    ControllerManager getControllerManager();
 
 
     void handleException(Exception exception);

@@ -4,6 +4,8 @@ import org.kakara.engine.Game;
 import org.kakara.engine.GameHandler;
 import org.kakara.engine.scene.Scene;
 
+import static org.lwjgl.glfw.GLFW.*;
+
 public class KakaraTest implements Game {
 
     private GameHandler gInst;
@@ -23,6 +25,9 @@ public class KakaraTest implements Game {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        System.out.println(glfwGetGamepadName(GLFW_JOYSTICK_2));
+        System.out.println(glfwGetGamepadName(GLFW_JOYSTICK_1));
 
 //        gInst.getSoundManager().setAttenuationModel(AL11.AL_EXPONENT_DISTANCE);
 //        gInst.getSoundManager().setListener(new SoundListener());

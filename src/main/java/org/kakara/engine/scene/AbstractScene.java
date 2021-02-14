@@ -11,6 +11,7 @@ import org.kakara.engine.gameitems.ItemHandler;
 import org.kakara.engine.gameitems.SkyBox;
 import org.kakara.engine.gameitems.particles.ParticleEmitter;
 import org.kakara.engine.gameitems.particles.ParticleHandler;
+import org.kakara.engine.input.controller.ControllerManager;
 import org.kakara.engine.lighting.LightHandler;
 import org.kakara.engine.lighting.PointLight;
 import org.kakara.engine.lighting.SpotLight;
@@ -95,6 +96,11 @@ public abstract class AbstractScene implements Scene {
     @Override
     public @NotNull CollisionManager getCollisionManager() {
         return collisionManager;
+    }
+
+    @Override
+    public ControllerManager getControllerManager() {
+        return gameHandler.getControllerManager();
     }
 
     @Override

@@ -1,4 +1,4 @@
-package org.kakara.engine.input.callbacks;
+package org.kakara.engine.input.mouse;
 
 /**
  * This is a callback for the ScrollInput.

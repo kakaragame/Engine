@@ -1,4 +1,4 @@
-package org.kakara.engine.input;
+package org.kakara.engine.input.key;
 
 import org.kakara.engine.GameEngine;
 import org.kakara.engine.events.event.CharacterPressEvent;
@@ -36,5 +36,15 @@ public class KeyInput {
      */
     public boolean isKeyPressed(int keycode) {
         return engine.getWindow().isKeyPressed(keycode);
+    }
+
+    /**
+     * If a key is currently pressed.
+     *
+     * @param keyCode The keycode value.
+     * @return If the key is pressed.
+     */
+    public boolean isKeyPressed(KeyCode keyCode) {
+        return engine.getWindow().isKeyPressed(keyCode.getID());
     }
 }

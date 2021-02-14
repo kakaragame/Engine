@@ -8,25 +8,26 @@ import org.kakara.engine.debug.DebugCanvas;
 import org.kakara.engine.engine.CubeData;
 import org.kakara.engine.events.EventHandler;
 import org.kakara.engine.events.event.MouseClickEvent;
-import org.kakara.engine.gameitems.Material;
 import org.kakara.engine.gameitems.GameItem;
+import org.kakara.engine.gameitems.Material;
 import org.kakara.engine.gameitems.Texture;
 import org.kakara.engine.gameitems.mesh.AtlasMesh;
 import org.kakara.engine.gameitems.mesh.InstancedMesh;
 import org.kakara.engine.gameitems.mesh.Mesh;
 import org.kakara.engine.gameitems.particles.FlowParticleEmitter;
 import org.kakara.engine.gameitems.particles.Particle;
-import org.kakara.engine.input.KeyInput;
-import org.kakara.engine.input.MouseClickType;
-import org.kakara.engine.input.MouseInput;
+import org.kakara.engine.input.key.KeyCode;
+import org.kakara.engine.input.key.KeyInput;
+import org.kakara.engine.input.mouse.MouseClickType;
+import org.kakara.engine.input.mouse.MouseInput;
 import org.kakara.engine.lighting.DirectionalLight;
 import org.kakara.engine.lighting.LightColor;
 import org.kakara.engine.lighting.PointLight;
 import org.kakara.engine.math.Vector3;
 import org.kakara.engine.models.StaticModelLoader;
-import org.kakara.engine.physics.collision.PhysicsComponent;
 import org.kakara.engine.physics.collision.BoxCollider;
 import org.kakara.engine.physics.collision.ColliderComponent;
+import org.kakara.engine.physics.collision.PhysicsComponent;
 import org.kakara.engine.physics.collision.RenderBlockCollider;
 import org.kakara.engine.renderobjects.RenderBlock;
 import org.kakara.engine.renderobjects.RenderChunk;
@@ -52,8 +53,6 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.concurrent.ThreadLocalRandom;
-
-import static org.lwjgl.glfw.GLFW.*;
 
 public class MainGameScene extends AbstractGameScene {
     private GameItem player;
@@ -93,7 +92,7 @@ public class MainGameScene extends AbstractGameScene {
 
     @Override
     public void loadGraphics(GameHandler gameHandler) throws Exception {
-        try{
+        try {
             System.out.println("Started Loading");
             long time = System.currentTimeMillis();
             angleInc = 0.05f;
@@ -103,7 +102,7 @@ public class MainGameScene extends AbstractGameScene {
             setCursorStatus(false);
             getCamera().setPosition(0, 3, 0);
             var resourceManager = gameHandler.getResourceManager();
-            Mesh[] mainPlayer = StaticModelLoader.load(resourceManager.getResource("player/steve.obj"), "/player",this,resourceManager);
+            Mesh[] mainPlayer = StaticModelLoader.load(resourceManager.getResource("player/steve.obj"), "/player", this, resourceManager);
             GameItem object = new GameItem(mainPlayer);
             object.transform.setPosition(0, 20, 0);
             object.transform.setScale(0.3f, 0.3f, 0.3f);
@@ -138,7 +137,7 @@ public class MainGameScene extends AbstractGameScene {
             System.out.println(Transform.class.isAssignableFrom(MeshRenderer.class));
 //        gi.getMesh().setWireframe(true);
             add(gi);
-            gi.transform.setPosition(3, 16*2 + 5, 3);
+            gi.transform.setPosition(3, 16 * 2 + 5, 3);
 
             PhysicsComponent physicsComponent = gi.addComponent(PhysicsComponent.class);
             // Add a component to handle player movement.
@@ -149,19 +148,18 @@ public class MainGameScene extends AbstractGameScene {
 
             GameItem gi2 = new GameItem(mesh);
             add(gi2);
-            gi2.transform.setPosition(6, 16*2, 6);
+            gi2.transform.setPosition(6, 16 * 2, 6);
             BoxCollider bc = gi2.addComponent(BoxCollider.class);
             bc.setTrigger(true);
 
             gi2.setTag("Test");
 
             gi.getComponent(BoxCollider.class).addOnTriggerEnter((ColliderComponent other) -> {
-                if(other instanceof RenderBlockCollider) return;
-                if(other.getGameItem().getTag().equals("Test")){
+                if (other instanceof RenderBlockCollider) return;
+                if (other.getGameItem().getTag().equals("Test")) {
                     remove(gi2);
                 }
             });
-
 
 
 //        Texture skyb = Utils.inputStreamToTexture(Texture.class.getResourceAsStream("/skybox.png"));
@@ -205,22 +203,22 @@ public class MainGameScene extends AbstractGameScene {
 
 
             new Thread(() -> {
-                for(int cx = 0; cx < 7; cx++){
-                    for(int cy = 0; cy < 2; cy++){
-                        for(int cz = 0; cz < 7; cz++){
+                for (int cx = 0; cx < 7; cx++) {
+                    for (int cy = 0; cy < 2; cy++) {
+                        for (int cz = 0; cz < 7; cz++) {
                             RenderChunk rc = new RenderChunk(new ArrayList<>(), getTextureAtlas());
-                            rc.transform.setPosition(cx * 16, cy*16, cz * 16);
-                            for(int x = 0; x < 16; x++){
-                                for(int y = 0; y < 16; y++){
-                                    for(int z = 0; z < 16; z++){
+                            rc.transform.setPosition(cx * 16, cy * 16, cz * 16);
+                            for (int x = 0; x < 16; x++) {
+                                for (int y = 0; y < 16; y++) {
+                                    for (int z = 0; z < 16; z++) {
                                         RenderBlock rb;
-                                        if(x%3 == 0){
+                                        if (x % 3 == 0) {
                                             rb = new RenderBlock(new BlockLayout(), getTextureAtlas().getTextures().get(4), new Vector3(x, y, z));
                                             rb.setOpaque(false);
-                                        }else{
+                                        } else {
                                             rb = new RenderBlock(new BlockLayout(), getTextureAtlas().getTextures().get(ThreadLocalRandom.current().nextInt(0, 3)), new Vector3(x, y, z));
                                         }
-                                        if(x % 2 == 0){
+                                        if (x % 2 == 0) {
                                             rb.setOverlay(getTextureAtlas().getTextures().get(3));
                                         }
 
@@ -236,7 +234,6 @@ public class MainGameScene extends AbstractGameScene {
                     }
                 }
             }).start();
-
 
 
 //        System.out.println(getChunkHandler().getRenderChunkList());
@@ -273,7 +270,7 @@ public class MainGameScene extends AbstractGameScene {
             userInterface.addFont(font);
 
             Text fps = new Text("FPS: 000", font);
-            fps.setColor(new RGBA(255,255,255,1));
+            fps.setColor(new RGBA(255, 255, 255, 1));
 
             fps.setPosition(20, 20);
             cc.add(fps);
@@ -281,7 +278,7 @@ public class MainGameScene extends AbstractGameScene {
             Rectangle rect = new Rectangle();
             rect.setColor(new RGBA(0, 255, 0, 1));
             rect.setScale(5, 5);
-            rect.setPosition((float)gameHandler.getWindow().getWidth()/2, (float)gameHandler.getWindow().getHeight()/2);
+            rect.setPosition((float) gameHandler.getWindow().getWidth() / 2, (float) gameHandler.getWindow().getHeight() / 2);
             cc.add(rect);
 
             add(cc);
@@ -290,7 +287,7 @@ public class MainGameScene extends AbstractGameScene {
             AtlasMesh m = new AtlasMesh(txt2, getTextureAtlas(), new BlockLayout(), CubeData.vertex, CubeData.normal, CubeData.indices);
 
             UIObject ui = new UIObject(m);
-            ui.setPosition((float)200, (float)200);
+            ui.setPosition((float) 200, (float) 200);
             ui.setScale(100);
             ui.getRotation().rotateX((float) Math.toRadians(50));
             ui.getRotation().rotateY((float) Math.toRadians(40));
@@ -328,7 +325,7 @@ public class MainGameScene extends AbstractGameScene {
             add(new DebugCanvas());
 
             System.out.println("Done. Scene loaded in " + (time - System.currentTimeMillis()) + " ms");
-        }catch (Exception ex){
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
@@ -337,37 +334,37 @@ public class MainGameScene extends AbstractGameScene {
     public void update(float interval) {
         KeyInput ki = handler.getKeyInput();
 
-        fps.setText("FPS: " + Math.round(1/ Time.getDeltaTime()));
+        fps.setText("FPS: " + Math.round(1 / Time.getDeltaTime()));
 
-        if (ki.isKeyPressed(GLFW_KEY_W)) {
+        if (ki.isKeyPressed(KeyCode.W)) {
             getCamera().movePosition(0, 0, -1);
         }
-        if (ki.isKeyPressed(GLFW_KEY_S)) {
+        if (ki.isKeyPressed(KeyCode.S)) {
             getCamera().movePosition(0, 0, 1);
         }
-        if (ki.isKeyPressed(GLFW_KEY_A)) {
+        if (ki.isKeyPressed(KeyCode.A)) {
             getCamera().movePosition(-1, 0, 0);
         }
-        if (ki.isKeyPressed(GLFW_KEY_D)) {
+        if (ki.isKeyPressed(KeyCode.D)) {
             getCamera().movePosition(1, 0, 0);
         }
-        if (ki.isKeyPressed(GLFW_KEY_SPACE)) {
+        if (ki.isKeyPressed(KeyCode.SPACE)) {
             getCamera().movePosition(0, 1, 0);
         }
-        if (ki.isKeyPressed(GLFW_KEY_LEFT_SHIFT)) {
+        if (ki.isKeyPressed(KeyCode.LEFT_SHIFT)) {
             getCamera().movePosition(0, -1, 0);
         }
-        if (ki.isKeyPressed(GLFW_KEY_ESCAPE)) {
+        if (ki.isKeyPressed(KeyCode.ESCAPE)) {
             test.exit();
         }
-        if (ki.isKeyPressed(GLFW_KEY_TAB)) {
+        if (ki.isKeyPressed(KeyCode.TAB)) {
             this.setCursorStatus(true);
             stopped = !stopped;
         }
 
 
         MouseInput mi = handler.getMouseInput();
-        if(!stopped)
+        if (!stopped)
             getCamera().moveRotation((float) (mi.getDeltaPosition().y), (float) mi.getDeltaPosition().x, 0);
         if (handler.getSoundManager().getListener() != null)
             handler.getSoundManager().getListener().setPosition(getCamera().getPosition());
@@ -392,11 +389,11 @@ public class MainGameScene extends AbstractGameScene {
     }
 
     @EventHandler
-    public void OnMouseClick(MouseClickEvent evt){
-        if(evt.getMouseClickType() == MouseClickType.LEFT_CLICK){
+    public void OnMouseClick(MouseClickEvent evt) {
+        if (evt.getMouseClickType() == MouseClickType.LEFT_CLICK) {
             ColliderComponent selected = this.selectGameItems(20);
             System.out.println(selected);
-            if(selected instanceof RenderBlockCollider){
+            if (selected instanceof RenderBlockCollider) {
                 System.out.println("Clicked!");
                 RenderBlock block = ((RenderBlockCollider) selected).getRenderBlock();
                 RenderChunk parentChunk = block.getParentChunk();

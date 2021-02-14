@@ -1,4 +1,4 @@
-package org.kakara.engine.input;
+package org.kakara.engine.input.key;
 
 import org.kakara.engine.window.Window;
 

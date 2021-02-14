@@ -1,10 +1,9 @@
-package org.kakara.engine.input;
+package org.kakara.engine.input.mouse;
 
 import org.joml.Vector2d;
 import org.kakara.engine.GameHandler;
 import org.kakara.engine.events.event.MouseClickEvent;
 import org.kakara.engine.events.event.MouseReleaseEvent;
-import org.kakara.engine.input.callbacks.ScrollInput;
 import org.kakara.engine.math.Vector2;
 import org.kakara.engine.window.Window;
 import org.lwjgl.system.MemoryStack;
