@@ -8,6 +8,7 @@ import org.kakara.engine.debug.DebugCanvas;
 import org.kakara.engine.engine.CubeData;
 import org.kakara.engine.events.EventHandler;
 import org.kakara.engine.events.event.MouseClickEvent;
+import org.kakara.engine.exceptions.ModelLoadException;
 import org.kakara.engine.gameitems.GameItem;
 import org.kakara.engine.gameitems.Material;
 import org.kakara.engine.gameitems.Texture;
@@ -16,6 +17,11 @@ import org.kakara.engine.gameitems.mesh.InstancedMesh;
 import org.kakara.engine.gameitems.mesh.Mesh;
 import org.kakara.engine.gameitems.particles.FlowParticleEmitter;
 import org.kakara.engine.gameitems.particles.Particle;
+import org.kakara.engine.input.Input;
+import org.kakara.engine.input.controller.GamePadButtonEvent;
+import org.kakara.engine.input.controller.ids.ControllerID;
+import org.kakara.engine.input.controller.ids.GamePadAxis;
+import org.kakara.engine.input.controller.ids.GamePadButton;
 import org.kakara.engine.input.key.KeyCode;
 import org.kakara.engine.input.key.KeyInput;
 import org.kakara.engine.input.mouse.MouseClickType;
@@ -35,6 +41,7 @@ import org.kakara.engine.renderobjects.RenderTexture;
 import org.kakara.engine.renderobjects.TextureAtlas;
 import org.kakara.engine.renderobjects.mesh.MeshType;
 import org.kakara.engine.renderobjects.renderlayouts.BlockLayout;
+import org.kakara.engine.resources.ResourceManager;
 import org.kakara.engine.scene.AbstractGameScene;
 import org.kakara.engine.test.components.PlayerMovement;
 import org.kakara.engine.ui.components.shapes.Rectangle;
@@ -57,22 +64,14 @@ import java.util.concurrent.ThreadLocalRandom;
 public class MainGameScene extends AbstractGameScene {
     private GameItem player;
     private GameHandler handler;
-    private GameItem collider;
-    private PhysicsComponent physComp;
     private KakaraTest test;
-    private GameItem blockSelector;
-
     private boolean stopped = false;
-
-    private float angleInc;
 
     private FlowParticleEmitter particleEmitter;
 
     private float lightAngle;
 
     private Text fps;
-
-    private final boolean once = false;
 
     public MainGameScene(GameHandler gameHandler, KakaraTest test) throws Exception {
         super(gameHandler);
@@ -95,26 +94,23 @@ public class MainGameScene extends AbstractGameScene {
         try {
             System.out.println("Started Loading");
             long time = System.currentTimeMillis();
-            angleInc = 0.05f;
             lightAngle = 45;
 
-            this.test = test;
+            // Remove the Cursor
             setCursorStatus(false);
             getCamera().setPosition(0, 3, 0);
+            // Load a test model.
             var resourceManager = gameHandler.getResourceManager();
             Mesh[] mainPlayer = StaticModelLoader.load(resourceManager.getResource("player/steve.obj"), "/player", this, resourceManager);
             GameItem object = new GameItem(mainPlayer);
             object.transform.setPosition(0, 20, 0);
             object.transform.setScale(0.3f, 0.3f, 0.3f);
             object.getMeshRenderer().get().getMesh().setWireframe(true);
-//        object.setCollider(new BoxCollider(new Vector3(0, 0, 0), new Vector3(1, 1.5f, 1)));
-//        object.getCollider().setUseGravity(true).setTrigger(false);
-//        ((BoxCollider) object.getCollider()).setOffset(new Vector3(0, 0.7f, 0));
 
             add(object);
             player = object;
-            //Load Blocks
 
+            // Load an instance mesh
             InstancedMesh mesh = new InstancedMesh(CubeData.vertex, CubeData.texture, CubeData.normal, CubeData.indices, 10000);
             InputStream io = Texture.class.getResourceAsStream("/example_texture.png");
             Texture grass = Utils.inputStreamToTexture(io);
@@ -122,20 +118,16 @@ public class MainGameScene extends AbstractGameScene {
 
             mt.addOverlayTexture(Utils.inputStreamToTexture(Texture.class.getResourceAsStream("/oa.png")));
             mt.addOverlayTexture(Utils.inputStreamToTexture(Texture.class.getResourceAsStream("/ovly2.png")));
-
             mt.setReflectance(0.3f);
-
             mesh.setMaterial(mt);
-
             Mesh me = new Mesh(CubeData.vertex, CubeData.texture, CubeData.normal, CubeData.indices);
             me.setMaterial(mt);
 
+            // Create a new Game Item while testing Components
             GameItem gi = new GameItem(mesh);
             gi.addComponent(BoxCollider.class);
-//            gi.addComponent(Resolver.class);
             System.out.println("TEST:: " + gi.getComponent(ColliderComponent.class));
             System.out.println(Transform.class.isAssignableFrom(MeshRenderer.class));
-//        gi.getMesh().setWireframe(true);
             add(gi);
             gi.transform.setPosition(3, 16 * 2 + 5, 3);
 
@@ -143,9 +135,8 @@ public class MainGameScene extends AbstractGameScene {
             // Add a component to handle player movement.
             gi.addComponent(PlayerMovement.class);
             physicsComponent.setVelocity(new Vector3(0, -9.18f, 0));
-            this.physComp = physicsComponent;
-            collider = gi;
 
+            // Create another game item that can be removed.
             GameItem gi2 = new GameItem(mesh);
             add(gi2);
             gi2.transform.setPosition(6, 16 * 2, 6);
@@ -154,6 +145,8 @@ public class MainGameScene extends AbstractGameScene {
 
             gi2.setTag("Test");
 
+            // Tell the box to remove itself upon collision enter using the old system.
+            // The component system should now be used.
             gi.getComponent(BoxCollider.class).addOnTriggerEnter((ColliderComponent other) -> {
                 if (other instanceof RenderBlockCollider) return;
                 if (other.getGameItem().getTag().equals("Test")) {
@@ -161,15 +154,10 @@ public class MainGameScene extends AbstractGameScene {
                 }
             });
 
-
-//        Texture skyb = Utils.inputStreamToTexture(Texture.class.getResourceAsStream("/skybox.png"));
-//        SkyBox skyBox = new SkyBox(skyb, true);
-//        setSkyBox(skyBox);
-
         /*
 
         ==================================================
-                       Test of Render Chunks
+                       Render Chunk
         ===================================================
 
          */
@@ -181,27 +169,7 @@ public class MainGameScene extends AbstractGameScene {
             TextureAtlas atlas = new TextureAtlas(Arrays.asList(txt1, txt2, txt3, txt5, txt6), Paths.get("").toAbsolutePath().toString(), this);
             setTextureAtlas(atlas);
 
-            System.out.println(txt3.getYOffset());
-
-//        for(int cx = 0; cx < 1; cx++){
-//            for(int cz = 0; cz < 1; cz++){
-//                RenderChunk rc = new RenderChunk(new ArrayList<>(), getTextureAtlas());
-//                rc.setPosition(cx * 16, -16, cz * 16);
-//                for(int x = 0; x < 16; x++){
-//                    for(int y = 0; y < 16; y++){
-//                        for(int z = 0; z < 16; z++){
-//                            if(y > 6 && y < 10) continue;
-//                            RenderBlock rb = new RenderBlock(new BlockLayout(), getTextureAtlas().getTextures().get(ThreadLocalRandom.current().nextInt(0, 3)), new Vector3(x, y, z));
-//                            rc.addBlock(rb);
-//                        }
-//                    }
-//                }
-//                rc.regenerateChunkAsync(getTextureAtlas());
-//                getChunkHandler().addChunk(rc);
-//            }
-//        }
-
-
+            // Generate Render Chunks in a new thread.
             new Thread(() -> {
                 for (int cx = 0; cx < 7; cx++) {
                     for (int cy = 0; cy < 2; cy++) {
@@ -236,95 +204,40 @@ public class MainGameScene extends AbstractGameScene {
             }).start();
 
 
-//        System.out.println(getChunkHandler().getRenderChunkList());
-
-
-            GameItem sh = (GameItem) gi.clone(false);
+            // Add a cloned game item.
+            GameItem sh = gi.clone(false);
             sh.transform.setPosition(-4, 3, -4);
             this.add(sh);
 
 
-            PointLight pointLight = new PointLight(new LightColor(255, 255, 0), new Vector3(1, 1, 1), 1);
+            // Add a point light.
+            PointLight pointLight = new PointLight(new LightColor(0, 255, 255), new Vector3(5, 16 * 2 + 1, 5), 1);
             PointLight.Attenuation att = new PointLight.Attenuation(0.0f, 0.0f, 1.0f);
             pointLight.setAttenuation(att);
             this.add(pointLight);
 
 
+            // Setup the directional light
             DirectionalLight directionalLight = new DirectionalLight(new LightColor(255, 255, 255), new Vector3(0, 1, 0.5f), 0.5f);
             directionalLight.setShadowPosMult(8);
             directionalLight.setOrthoCords(-10.0f, 10.0f, -10.0f, 10.0f, -1.0f, 20.0f);
+            assert getLightHandler() != null;
             getLightHandler().setDirectionalLight(directionalLight);
 
-        /*
 
-            The brand new canvas code.
-
-         */
-
+            // Set the fog for the level.
             setFog(new Fog(true, new Vector3(1f, 1f, 1f), 0.005f));
 
 
-            ComponentCanvas cc = new ComponentCanvas(this);
+            setupCanvas(txt2);
 
-            Font font = new Font("Roboto-Regular", resourceManager.getResource("Roboto-Regular.ttf"), this);
-            userInterface.addFont(font);
-
-            Text fps = new Text("FPS: 000", font);
-            fps.setColor(new RGBA(255, 255, 255, 1));
-
-            fps.setPosition(20, 20);
-            cc.add(fps);
-            this.fps = fps;
-            Rectangle rect = new Rectangle();
-            rect.setColor(new RGBA(0, 255, 0, 1));
-            rect.setScale(5, 5);
-            rect.setPosition((float) gameHandler.getWindow().getWidth() / 2, (float) gameHandler.getWindow().getHeight() / 2);
-            cc.add(rect);
-
-            add(cc);
-
-            ObjectCanvas oc = new ObjectCanvas(this);
-            AtlasMesh m = new AtlasMesh(txt2, getTextureAtlas(), new BlockLayout(), CubeData.vertex, CubeData.normal, CubeData.indices);
-
-            UIObject ui = new UIObject(m);
-            ui.setPosition((float) 200, (float) 200);
-            ui.setScale(100);
-            ui.getRotation().rotateX((float) Math.toRadians(50));
-            ui.getRotation().rotateY((float) Math.toRadians(40));
-            oc.add(ui);
-            add(oc);
-
-            /**
-             * Particles
-             */
-
-            int maxParticles = 200;
-            Vector3f particleSpeed = new Vector3f(0, 1, 0);
-            particleSpeed.mul(2.5f);
-            long ttl = 4000;
-            long creationPeriodMillis = 300;
-            float range = 0.2f;
-            float scale = 1.0f;
-//        Mesh partMesh = OBJLoader.loadMesh("/models/particle.obj", maxParticles);
-            Mesh partMesh = StaticModelLoader.load(resourceManager.getResource("particle.obj"), "", this, resourceManager)[0];
-            Texture particleTexture = new Texture(resourceManager.getResource("particle_anim.png"), 4, 4, this);
-            Material partMaterial = new Material(particleTexture, 1);
-            partMesh.setMaterial(partMaterial);
-            Particle particle = new Particle(partMesh, new Vector3(particleSpeed), ttl, 100);
-            particle.transform.setScale(scale, scale, scale);
-            particleEmitter = new FlowParticleEmitter(particle, maxParticles, creationPeriodMillis);
-            particleEmitter.setActive(true);
-            particleEmitter.setPositionRndRange(range);
-            particleEmitter.setSpeedRndRange(range);
-            particleEmitter.setAnimRange(10);
-            this.add(particleEmitter);
-
+            setupParticles();
 
             this.handler = gameHandler;
 
             add(new DebugCanvas());
 
-            System.out.println("Done. Scene loaded in " + (time - System.currentTimeMillis()) + " ms");
+            System.out.println("Done. Scene loaded in " + (System.currentTimeMillis() - time) + " ms");
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -334,7 +247,28 @@ public class MainGameScene extends AbstractGameScene {
     public void update(float interval) {
         KeyInput ki = handler.getKeyInput();
 
+        // Set the FPS text.
         fps.setText("FPS: " + Math.round(1 / Time.getDeltaTime()));
+
+        // Use controller input if possible.
+        if (getControllerManager().controllerExists(ControllerID.CONTROLLER_ONE)) {
+            // Primary camera movement.
+            getCamera().movePosition(0, 0, Input.getGamePadAxis(ControllerID.CONTROLLER_ONE, GamePadAxis.LEFT_STICK_Y));
+            getCamera().movePosition(Input.getGamePadAxis(ControllerID.CONTROLLER_ONE, GamePadAxis.LEFT_STICK_X), 0, 0);
+            getCamera().moveRotation(2.5f * Input.getGamePadAxis(ControllerID.CONTROLLER_ONE, GamePadAxis.RIGHT_STICK_Y),
+                    2.5f * Input.getGamePadAxis(ControllerID.CONTROLLER_ONE, GamePadAxis.RIGHT_STICK_X), 0);
+
+            // Up and down.
+            if (Input.isGamePadButtonDown(ControllerID.CONTROLLER_ONE, GamePadButton.A)) {
+                getCamera().movePosition(0, 1, 0);
+            }
+            if (Input.isGamePadButtonDown(ControllerID.CONTROLLER_ONE, GamePadButton.B)) {
+                getCamera().movePosition(0, -1, 0);
+            }
+            // Exit the game.
+            if (Input.isGamePadButtonDown(ControllerID.CONTROLLER_ONE, GamePadButton.START))
+                test.exit();
+        }
 
         if (ki.isKeyPressed(KeyCode.W)) {
             getCamera().movePosition(0, 0, -1);
@@ -362,15 +296,15 @@ public class MainGameScene extends AbstractGameScene {
             stopped = !stopped;
         }
 
-
+        // Camera Movement with the mouse.
         MouseInput mi = handler.getMouseInput();
         if (!stopped)
             getCamera().moveRotation((float) (mi.getDeltaPosition().y), (float) mi.getDeltaPosition().x, 0);
         if (handler.getSoundManager().getListener() != null)
             handler.getSoundManager().getListener().setPosition(getCamera().getPosition());
 
-
-        lightAngle += Time.getDeltaTime() * 1.3;
+        // Change the light angle.
+        lightAngle += 3;
         if (lightAngle < 0) {
             lightAngle = 0;
         } else if (lightAngle > 180) {
@@ -401,6 +335,76 @@ public class MainGameScene extends AbstractGameScene {
                 parentChunk.regenerateChunk(getTextureAtlas(), MeshType.SYNC);
             }
         }
+    }
+
+    @EventHandler
+    public void onButtonClick(GamePadButtonEvent event) {
+        if (event.getButtonID() == GamePadButton.RIGHT_BUMPER) {
+            ColliderComponent selected = this.selectGameItems(20);
+            System.out.println(selected);
+            if (selected instanceof RenderBlockCollider) {
+                System.out.println("Clicked!");
+                RenderBlock block = ((RenderBlockCollider) selected).getRenderBlock();
+                RenderChunk parentChunk = block.getParentChunk();
+                parentChunk.removeBlock(block);
+                parentChunk.regenerateChunk(getTextureAtlas(), MeshType.SYNC);
+            }
+        }
+    }
+
+    private void setupCanvas(RenderTexture txt2) {
+        ComponentCanvas cc = new ComponentCanvas(this);
+        Font font = new Font("Roboto-Regular", gameHandler.getResourceManager().getResource("Roboto-Regular.ttf"), this);
+        userInterface.addFont(font);
+
+        Text fps = new Text("FPS: 000", font);
+        fps.setColor(new RGBA(255, 255, 255, 1));
+
+        fps.setPosition(20, 20);
+        cc.add(fps);
+        this.fps = fps;
+        Rectangle rect = new Rectangle();
+        rect.setColor(new RGBA(0, 255, 0, 1));
+        rect.setScale(5, 5);
+        rect.setPosition((float) gameHandler.getWindow().getWidth() / 2, (float) gameHandler.getWindow().getHeight() / 2);
+        cc.add(rect);
+
+        add(cc);
+
+        ObjectCanvas oc = new ObjectCanvas(this);
+        AtlasMesh m = new AtlasMesh(txt2, getTextureAtlas(), new BlockLayout(), CubeData.vertex, CubeData.normal, CubeData.indices);
+
+        UIObject ui = new UIObject(m);
+        ui.setPosition((float) 200, (float) 200);
+        ui.setScale(100);
+        ui.getRotation().rotateX((float) Math.toRadians(50));
+        ui.getRotation().rotateY((float) Math.toRadians(40));
+        oc.add(ui);
+        add(oc);
+    }
+
+    private void setupParticles() throws ModelLoadException {
+        ResourceManager resourceManager = gameHandler.getResourceManager();
+        int maxParticles = 200;
+        Vector3f particleSpeed = new Vector3f(0, 1, 0);
+        particleSpeed.mul(2.5f);
+        long ttl = 4000;
+        long creationPeriodMillis = 300;
+        float range = 0.2f;
+        float scale = 1.0f;
+//        Mesh partMesh = OBJLoader.loadMesh("/models/particle.obj", maxParticles);
+        Mesh partMesh = StaticModelLoader.load(resourceManager.getResource("particle.obj"), "", this, resourceManager)[0];
+        Texture particleTexture = new Texture(resourceManager.getResource("particle_anim.png"), 4, 4, this);
+        Material partMaterial = new Material(particleTexture, 1);
+        partMesh.setMaterial(partMaterial);
+        Particle particle = new Particle(partMesh, new Vector3(particleSpeed), ttl, 100);
+        particle.transform.setScale(scale, scale, scale);
+        particleEmitter = new FlowParticleEmitter(particle, maxParticles, creationPeriodMillis);
+        particleEmitter.setActive(true);
+        particleEmitter.setPositionRndRange(range);
+        particleEmitter.setSpeedRndRange(range);
+        particleEmitter.setAnimRange(10);
+        this.add(particleEmitter);
     }
 
 
