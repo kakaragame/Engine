@@ -101,6 +101,7 @@ tasks {
             //Used by Jenkins
             archiveFileName.set("${project.name}-${project.version}-${project.property("native")}.jar")
         }
+        archiveClassifier.set("");
         dependsOn(project.tasks.getByName("vftask"));
     }
     "jar"{
