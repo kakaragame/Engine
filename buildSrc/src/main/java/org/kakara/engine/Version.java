@@ -27,7 +27,10 @@ public class Version {
                 if (finalBranch.equals("HEAD")) {
                     throw new GradleException("Can not work in HEAD");
                 }
-                if (!branchBlacklist.contains(branch)) {
+
+                String finalBranch1 = finalBranch;
+                System.out.println("finalBranch = " + finalBranch);
+                if (!branchBlacklist.stream().anyMatch(s -> s.contains(finalBranch1))) {
                     value = ENGINE_VERSION.replace("-SNAPSHOT", String.format("-%s-SNAPSHOT", finalBranch.replace("/", "-")));
 
                 }
