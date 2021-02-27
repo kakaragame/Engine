@@ -1,39 +1,43 @@
-package org.kakara.engine.renderobjects;
+package org.kakara.engine.voxels;
 
 import org.jetbrains.annotations.Nullable;
 import org.kakara.engine.math.Vector3;
-import org.kakara.engine.physics.collision.RenderBlockCollider;
+import org.kakara.engine.physics.collision.VoxelCollider;
 import org.kakara.engine.properties.Tagable;
-import org.kakara.engine.renderobjects.mesh.MeshType;
-import org.kakara.engine.renderobjects.renderlayouts.BlockLayout;
-import org.kakara.engine.renderobjects.renderlayouts.Face;
-import org.kakara.engine.renderobjects.renderlayouts.Layout;
-import org.kakara.engine.utils.UUIDUtils;
+import org.kakara.engine.voxels.layouts.BlockLayout;
+import org.kakara.engine.voxels.layouts.Face;
+import org.kakara.engine.voxels.layouts.Layout;
+import org.kakara.engine.voxels.mesh.MeshType;
 
 import java.util.*;
 
 /**
- * The individual blocks of the chunk.
- * <p>Any changes to the RenderBlock requires your to run {@link RenderChunk#regenerateChunk(TextureAtlas, MeshType)} in
+ * This represents individual voxels of the chunk. Voxels have a Layout which defines
+ * the relative points of a voxel. This system allows you to create something like a half voxel.
+ * Voxels are also allowed to have individual textures via VoxelTextures.
+ *
+ * <p>The position of a voxel is relative to the position of the chunk which it is in. So the position of a voxel
+ * can be 0-15 for x, y, ans z. Voxels must be added to a chunk for performance reasons as one large mesh is
+ * much faster than a ton of small meshes.</p>
+ *
+ * <p>Any changes to the Voxel requires you to run {@link VoxelChunk#regenerateChunk(TextureAtlas, MeshType)} in
  * order for the changes to be shown.</p>
+ *
  * <p>This class <b>is</b> thread safe.</p>
  */
-public class RenderBlock implements Tagable {
+public class Voxel implements Tagable {
 
     private final Layout layout;
-    private final RenderTexture texture;
-    private RenderTexture overlay;
+    private final VoxelTexture texture;
+    private VoxelTexture overlay;
     private boolean isOpaque;
 
     private Vector3 position;
 
-    private RenderChunk parentChunk;
+    private VoxelChunk parentChunk;
     private final List<Face> visibleFaces;
-    private boolean selected;
 
-    private RenderBlockCollider collider;
-
-    private final UUID uuid;
+    private final VoxelCollider collider;
 
     /*
         Tagable data
@@ -42,33 +46,32 @@ public class RenderBlock implements Tagable {
     private String tag;
 
     /**
-     * Create a render block.
+     * Create a voxel.
      *
      * @param layout   The layout to use
      * @param texture  The texture to use.
      * @param position The position of the block. (Must be 0-16 for x, y, and z).
      */
-    public RenderBlock(Layout layout, RenderTexture texture, Vector3 position) {
+    public Voxel(Layout layout, VoxelTexture texture, Vector3 position) {
         this.layout = layout;
         this.texture = texture;
         this.position = position;
         this.visibleFaces = new ArrayList<>();
-        this.selected = false;
         this.data = new ArrayList<>();
         this.tag = "";
-        this.uuid = UUIDUtils.randomUUID();
         this.isOpaque = true;
-        this.collider = new RenderBlockCollider(this);
+        this.collider = new VoxelCollider(this);
         this.collider.start();
     }
 
     /**
-     * Create a RenderBlock using the default layout.
+     * Create a Voxel using the default layout.
      *
      * @param texture  The texture to use.
      * @param position The position to use.
      */
-    public RenderBlock(RenderTexture texture, Vector3 position) {
+    public Voxel(VoxelTexture texture, Vector3 position) {
+        // The JIT compiler seems to optimize the new BlockLayout() in some way.
         this(new BlockLayout(), texture, position);
     }
 
@@ -113,7 +116,7 @@ public class RenderBlock implements Tagable {
      *
      * @return The parent chunk.
      */
-    public RenderChunk getParentChunk() {
+    public VoxelChunk getParentChunk() {
         return this.parentChunk;
     }
 
@@ -122,7 +125,7 @@ public class RenderBlock implements Tagable {
      *
      * @param chunk The parent chunk
      */
-    protected void setParentChunk(RenderChunk chunk) {
+    protected void setParentChunk(VoxelChunk chunk) {
         this.parentChunk = chunk;
     }
 
@@ -131,7 +134,7 @@ public class RenderBlock implements Tagable {
      *
      * @return The render texture.
      */
-    public RenderTexture getTexture() {
+    public VoxelTexture getTexture() {
         return texture;
     }
 
@@ -161,27 +164,27 @@ public class RenderBlock implements Tagable {
     }
 
     /**
-     * Get the overlay render texture.
+     * Get the overlay voxel texture.
      *
-     * @return The overlay render texture.
+     * @return The overlay voxel texture.
      * @since 1.0-Pre2
      */
-    public RenderTexture getOverlay() {
+    public VoxelTexture getOverlay() {
         return this.overlay;
     }
 
     /**
-     * Add an overlay render texture.
+     * Add an overlay voxel texture.
      *
      * @param texture The overlay render texture.
      * @since 1.0-Pre2
      */
-    public void setOverlay(@Nullable RenderTexture texture) {
+    public void setOverlay(@Nullable VoxelTexture texture) {
         this.overlay = texture;
     }
 
     /**
-     * Set if the render block is opaque.
+     * Set if the voxel is opaque.
      *
      * @param opaque If the render block is opaque.
      * @since 1.0-Pre4
@@ -191,9 +194,9 @@ public class RenderBlock implements Tagable {
     }
 
     /**
-     * Get if the render block is opaque.
+     * Get if the voxel is opaque.
      *
-     * @return If the render block is opaque.
+     * @return If the voxel is opaque.
      * @since 1.0-Pre4
      */
     public boolean isOpaque() {
@@ -201,12 +204,12 @@ public class RenderBlock implements Tagable {
     }
 
     /**
-     * Get the collider for this render block.
+     * Get the collider for this voxel.
      *
      * @return The collider.
      * @since 1.0-Pre5.
      */
-    public RenderBlockCollider getCollider() {
+    public VoxelCollider getCollider() {
         return this.collider;
     }
 
@@ -401,7 +404,7 @@ public class RenderBlock implements Tagable {
 
     @Override
     public String toString() {
-        return "{RenderBlock: " + position.x + ", " + position.y + ", " + position.z + "}";
+        return "{Voxel: " + position.x + ", " + position.y + ", " + position.z + "}";
     }
 
     @Override

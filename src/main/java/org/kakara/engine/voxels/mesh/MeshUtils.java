@@ -1,9 +1,9 @@
-package org.kakara.engine.renderobjects.mesh;
+package org.kakara.engine.voxels.mesh;
 
-import org.kakara.engine.renderobjects.RenderBlock;
-import org.kakara.engine.renderobjects.TextureAtlas;
-import org.kakara.engine.renderobjects.renderlayouts.BasicMeshLayout;
-import org.kakara.engine.renderobjects.renderlayouts.MeshLayout;
+import org.kakara.engine.voxels.Voxel;
+import org.kakara.engine.voxels.TextureAtlas;
+import org.kakara.engine.voxels.layouts.BasicMeshLayout;
+import org.kakara.engine.voxels.layouts.MeshLayout;
 import org.lwjgl.system.MemoryUtil;
 
 import java.nio.FloatBuffer;
@@ -25,7 +25,7 @@ public class MeshUtils {
      * @param textureAtlas The texture atlas to use.
      * @return The layout.
      */
-    protected static MeshLayout setupLayout(List<RenderBlock> renderBlocks, TextureAtlas textureAtlas) {
+    protected static MeshLayout setupLayout(List<Voxel> renderBlocks, TextureAtlas textureAtlas) {
         List<Float> positions = new ArrayList<>();
         List<Float> texCoords = new ArrayList<>();
         List<Float> normals = new ArrayList<>();
@@ -33,7 +33,7 @@ public class MeshUtils {
         List<Float> overlayCoords = new ArrayList<>();
         List<Integer> hasOverlay = new ArrayList<>();
         int count = 0;
-        for (RenderBlock rb : renderBlocks) {
+        for (Voxel rb : renderBlocks) {
             int initial = positions.size() / 3;
             rb.getVertexFromFaces(positions);
             rb.getTextureFromFaces(texCoords, textureAtlas);

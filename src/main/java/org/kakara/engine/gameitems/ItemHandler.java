@@ -10,7 +10,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Handles all of the items.
- * <p>This class does not manager render chunks. See: {@link org.kakara.engine.renderobjects.ChunkHandler} to add render chunks.</p>
+ * <p>This class does not manager render chunks. See: {@link org.kakara.engine.voxels.ChunkHandler} to add render chunks.</p>
  */
 public class ItemHandler {
     private final List<GameItem> items;

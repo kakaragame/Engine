@@ -1,8 +1,8 @@
-package org.kakara.engine.renderobjects.mesh;
+package org.kakara.engine.voxels.mesh;
 
 import org.kakara.engine.render.culling.RenderQuery;
-import org.kakara.engine.renderobjects.RenderBlock;
-import org.kakara.engine.renderobjects.TextureAtlas;
+import org.kakara.engine.voxels.Voxel;
+import org.kakara.engine.voxels.TextureAtlas;
 
 import java.util.List;
 
@@ -11,7 +11,7 @@ import java.util.List;
  *
  * @since 1.0-Pre2
  */
-public interface RenderMesh {
+public interface VoxelMesh {
     /**
      * The number of vertexes.
      *
@@ -38,7 +38,7 @@ public interface RenderMesh {
      * @param blocks       The list of blocks. (Much be the same as the current render).
      * @param textureAtlas The texture atlas to use.
      */
-    void updateOverlay(List<RenderBlock> blocks, TextureAtlas textureAtlas);
+    void updateOverlay(List<Voxel> blocks, TextureAtlas textureAtlas);
 
     RenderQuery getQuery();
 }

@@ -1,4 +1,4 @@
-package org.kakara.engine.renderobjects.renderlayouts;
+package org.kakara.engine.voxels.layouts;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;

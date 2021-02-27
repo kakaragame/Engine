@@ -33,7 +33,7 @@ public abstract class ColliderComponent extends Component {
     /**
      * Get the position for the collider.
      * <p>For most colliders this is the same as gameItem.transform. (For an exception see
-     * {@link RenderBlockCollider})</p>
+     * {@link VoxelCollider})</p>
      *
      * @return The position of the collider.
      */
@@ -44,7 +44,7 @@ public abstract class ColliderComponent extends Component {
     /**
      * Get the scale for the collider.
      * <p>For more colliders this is the same as gameItem.transfrom. (For an exception see
-     * {@link RenderBlockCollider}</p>
+     * {@link VoxelCollider}</p>
      *
      * @return The scale of the collider.
      */

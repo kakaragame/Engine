@@ -8,9 +8,9 @@ import org.kakara.engine.math.Vector3;
 import org.kakara.engine.physics.FixedPhysicsUpdater;
 import org.kakara.engine.physics.collision.ColliderComponent;
 import org.kakara.engine.physics.collision.CollisionManager;
-import org.kakara.engine.renderobjects.ChunkHandler;
-import org.kakara.engine.renderobjects.RenderChunk;
-import org.kakara.engine.renderobjects.TextureAtlas;
+import org.kakara.engine.voxels.ChunkHandler;
+import org.kakara.engine.voxels.VoxelChunk;
+import org.kakara.engine.voxels.TextureAtlas;
 
 import java.util.*;
 
@@ -188,29 +188,29 @@ public abstract class AbstractGameScene extends AbstractScene {
 
     /**
      * Add a chunk to the scene
-     * <p>This does the same as {@link org.kakara.engine.renderobjects.ChunkHandler#addChunk(RenderChunk)}</p>
+     * <p>This does the same as {@link org.kakara.engine.voxels.ChunkHandler#addChunk(VoxelChunk)}</p>
      *
      * @param chunk The chunk to add
      * @since 1.0-Pre1
      */
-    public void add(RenderChunk chunk) {
+    public void add(VoxelChunk chunk) {
         chunkHandler.addChunk(chunk);
     }
 
     /**
      * Remove a chunk from the scene
-     * <p>This does the same as {@link org.kakara.engine.renderobjects.ChunkHandler#addChunk(RenderChunk)} and {@link #removeChunk(UUID)}</p>
+     * <p>This does the same as {@link org.kakara.engine.voxels.ChunkHandler#addChunk(VoxelChunk)} and {@link #removeChunk(UUID)}</p>
      *
      * @param chunk The chunk to remove.
      * @since 1.0-Pre1
      */
-    public void remove(RenderChunk chunk) {
+    public void remove(VoxelChunk chunk) {
         chunkHandler.removeChunk(chunk.getId());
     }
 
     /**
      * Remove a chunk from the scene.
-     * <p>This does the same as {@link org.kakara.engine.renderobjects.ChunkHandler#addChunk(RenderChunk)} and {@link #remove(RenderChunk)}</p>
+     * <p>This does the same as {@link org.kakara.engine.voxels.ChunkHandler#addChunk(VoxelChunk)} and {@link #remove(VoxelChunk)}</p>
      *
      * @param chunkId The chunk id to remove.
      * @since 1.0-Pre1

@@ -3,7 +3,7 @@ package org.kakara.engine;
 import org.kakara.engine.render.PipelineManager;
 import org.kakara.engine.render.Renderer;
 import org.kakara.engine.render.ShaderManager;
-import org.kakara.engine.renderobjects.ChunkHandler;
+import org.kakara.engine.voxels.ChunkHandler;
 import org.kakara.engine.scene.AbstractGameScene;
 import org.kakara.engine.scene.AbstractMenuScene;
 import org.kakara.engine.utils.Time;

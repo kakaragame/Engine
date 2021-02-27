@@ -40,11 +40,15 @@ import java.util.stream.Collectors;
  * </code>
  */
 public class GameItem implements Tagable, Identifiable {
+    // The UUID of the GameItem.
     private final UUID uuid;
+    // The feature list.
     private final List<Feature> features = new ArrayList<>();
-    private int textPos;
     private String tag;
     private List<Object> data;
+
+    // This stores the texture position if a sprite sheet is used.
+    private int textPos;
 
     /*
         Components
@@ -234,7 +238,9 @@ public class GameItem implements Tagable, Identifiable {
     }
 
     /**
-     * Get the texture position.
+     * Get the texture position of the GameItem on a sprite sheet.
+     *
+     * TODO Place this on the Material class instead?
      *
      * @return The texture position.
      */
@@ -244,6 +250,8 @@ public class GameItem implements Tagable, Identifiable {
 
     /**
      * Set the texture position.
+     *
+     * TODO Place this on the Material class instead?
      *
      * @param pos The texture position.
      */

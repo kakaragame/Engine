@@ -1,7 +1,7 @@
 package org.kakara.engine.render;
 
 import org.kakara.engine.GameEngine;
-import org.kakara.engine.render.preset.shader.ChunkShader;
+import org.kakara.engine.render.preset.shader.VoxelShader;
 import org.kakara.engine.render.preset.shader.ParticleShader;
 import org.kakara.engine.render.preset.shader.StandardShader;
 
@@ -31,7 +31,7 @@ public final class ShaderManager {
         programs = new HashMap<>();
         // Define the default shaders.
         programs.put("Standard", new StandardShader());
-        programs.put("Chunk", new ChunkShader());
+        programs.put("Voxel", new VoxelShader());
         programs.put("Particle", new ParticleShader());
         initialized = false;
     }

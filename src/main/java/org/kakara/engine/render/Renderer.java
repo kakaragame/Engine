@@ -9,11 +9,11 @@ import org.kakara.engine.gameitems.mesh.IMesh;
 import org.kakara.engine.lighting.DirectionalLight;
 import org.kakara.engine.lighting.ShadowMap;
 import org.kakara.engine.render.culling.FrustumCullingFilter;
-import org.kakara.engine.renderobjects.RenderChunk;
-import org.kakara.engine.renderobjects.mesh.RenderMesh;
 import org.kakara.engine.scene.Scene;
 import org.kakara.engine.ui.objectcanvas.UIObject;
 import org.kakara.engine.utils.Utils;
+import org.kakara.engine.voxels.VoxelChunk;
+import org.kakara.engine.voxels.mesh.VoxelMesh;
 import org.kakara.engine.window.Window;
 
 import java.util.ArrayList;
@@ -129,16 +129,16 @@ public final class Renderer {
      * @param lightViewMatrix    The lightViewMatrix
      * @deprecated Unused
      */
-    private void doOcclusionTest(List<RenderChunk> chunks, Shader chunkShaderProgram, Matrix4f viewMatrix, Matrix4f lightViewMatrix) {
-        if (chunks == null || chunks.isEmpty() || chunks.get(0).getRenderMesh() == null) return;
-        if (chunks.get(0).getRenderMesh().getQuery() == null) return;
+    private void doOcclusionTest(List<VoxelChunk> chunks, Shader chunkShaderProgram, Matrix4f viewMatrix, Matrix4f lightViewMatrix) {
+        if (chunks == null || chunks.isEmpty() || chunks.get(0).getVoxelMesh() == null) return;
+        if (chunks.get(0).getVoxelMesh().getQuery() == null) return;
         glColorMask(false, false, false, false);
         glDepthMask(false);
-        for (RenderChunk chunk : new ArrayList<>(chunks)) {
+        for (VoxelChunk chunk : new ArrayList<>(chunks)) {
             // If the chunk is out of the frustum then don't bother testing.
             if (!frustumFilter.testRenderObject(chunk.transform.getPosition(), 16, 16, 16))
                 continue;
-            RenderMesh mesh = chunk.getRenderMesh();
+            VoxelMesh mesh = chunk.getVoxelMesh();
             if (mesh == null) continue;
             if (mesh.getQuery() != null) {
                 // Calculate the Matrix for the chunk so it is tested in the right spot
@@ -213,8 +213,8 @@ public final class Renderer {
         //TODO remove model view matrix
         Matrix4f modelViewMatrix = transformation.buildModelViewMatrix(scene.getSkyBox(), viewMatrix);
         skyBoxShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-        skyBoxShaderProgram.setUniform("ambientLight", scene.getLightHandler().getSkyBoxLight().toVector());
-
+        skyBoxShaderProgram.setUniform("ambientLight",
+                Objects.requireNonNull(scene.getLightHandler()).getSkyBoxLight().toVector());
         scene.getSkyBox().getComponent(MeshRenderer.class).getMesh().render();
 
         skyBoxShaderProgram.unbind();

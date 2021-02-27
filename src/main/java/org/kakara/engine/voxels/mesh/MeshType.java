@@ -1,4 +1,4 @@
-package org.kakara.engine.renderobjects.mesh;
+package org.kakara.engine.voxels.mesh;
 
 public enum MeshType {
     SYNC,

@@ -7,20 +7,20 @@ import org.kakara.engine.render.ShaderProgram;
 import org.kakara.engine.utils.Utils;
 
 /**
- * The default shader for the RenderChunk system.
+ * The default shader for the Voxel system.
  * <p>This shader follows the standard naming convention.</p>
  *
  * @since 1.0-Pre4
  */
-public class ChunkShader implements ShaderProgram {
+public class VoxelShader implements ShaderProgram {
     private Shader shader;
 
     @Override
     public void initializeShader() {
-        try{
+        try {
             shader = new Shader();
-            shader.createVertexShader(Utils.loadResource("/shaders/chunk/chunkVertex.vs"));
-            shader.createFragmentShader(Utils.loadResource("/shaders/chunk/chunkFragment.fs"));
+            shader.createVertexShader(Utils.loadResource("/shaders/voxel/voxelVertex.vs"));
+            shader.createFragmentShader(Utils.loadResource("/shaders/voxel/voxelFragment.fs"));
             shader.link();
 
             shader.createUniform("projectionMatrix");
@@ -40,7 +40,7 @@ public class ChunkShader implements ShaderProgram {
             shader.createUniform("reflectance");
             // Texture Atlas
             shader.createUniform("textureAtlas");
-        }catch (Exception ex){
+        } catch (Exception ex) {
             GameEngine.LOGGER.error("Unable to initialize chunk shader", ex);
         }
     }

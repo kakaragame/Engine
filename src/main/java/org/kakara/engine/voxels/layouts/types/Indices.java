@@ -1,10 +1,10 @@
-package org.kakara.engine.renderobjects.renderlayouts.types;
+package org.kakara.engine.voxels.layouts.types;
 
 import java.util.List;
 
 /**
  * The indices values are stored here. The starting index is the index that is starts at.
- * So each one would be 0 - 6 for example. See the source code for {@link org.kakara.engine.renderobjects.renderlayouts.BlockLayout}
+ * So each one would be 0 - 6 for example. See the source code for {@link org.kakara.engine.voxels.layouts.BlockLayout}
  */
 public interface Indices {
     List<Integer> getFront(int startingIndex);

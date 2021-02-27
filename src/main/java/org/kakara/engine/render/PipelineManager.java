@@ -1,7 +1,7 @@
 package org.kakara.engine.render;
 
 import org.kakara.engine.GameEngine;
-import org.kakara.engine.render.preset.pipeline.ChunkPipeline;
+import org.kakara.engine.render.preset.pipeline.VoxelPipeline;
 import org.kakara.engine.render.preset.pipeline.ParticlesPipeline;
 import org.kakara.engine.render.preset.pipeline.StandardPipeline;
 
@@ -24,7 +24,7 @@ public final class PipelineManager {
     public PipelineManager() {
         this.pipelineList = new ArrayList<>();
         pipelineList.add(new StandardPipeline());
-        pipelineList.add(new ChunkPipeline());
+        pipelineList.add(new VoxelPipeline());
         pipelineList.add(new ParticlesPipeline());
     }
 
@@ -61,8 +61,8 @@ public final class PipelineManager {
      *
      * @return The chunk pipeline.
      */
-    public ChunkPipeline getChunkPipeline() {
-        return (ChunkPipeline) pipelineList.get(1);
+    public VoxelPipeline getChunkPipeline() {
+        return (VoxelPipeline) pipelineList.get(1);
     }
 
     /**

@@ -1,4 +1,4 @@
-package org.kakara.engine.renderobjects;
+package org.kakara.engine.voxels;
 
 import org.kakara.engine.GameEngine;
 import org.kakara.engine.gameitems.Texture;
@@ -14,12 +14,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * The TextureAtlas is one big texture file that is used to display textures on render chunks.
+ * The TextureAtlas is one big texture file that is used to display textures on voxel chunks.
+ * The TextureAtlas allows for efficient use of CPU power when rending VoxelChunks.
+ *
  * <p>The textures on the texture atlas are put together at runtime.</p>
  */
 public class TextureAtlas {
     private final String output;
-    private final List<RenderTexture> textures;
+    private final List<VoxelTexture> textures;
 
     private int textureWidth;
     private int textureHeight;
@@ -33,25 +35,25 @@ public class TextureAtlas {
     /**
      * Create the texture atlas.
      *
-     * @param textures     The list of render textures.
+     * @param textures     The list of voxel textures.
      * @param output       The location of where the texture atlas is to be outputted.
      * @param currentScene The current scene
      */
-    public TextureAtlas(List<RenderTexture> textures, String output, Scene currentScene) {
+    public TextureAtlas(List<VoxelTexture> textures, String output, Scene currentScene) {
         this(textures, output, currentScene, 400, 300);
     }
 
     /**
      * Create the texture atlas.
      *
-     * @param textures      The list of render textures.
+     * @param textures      The list of voxel textures.
      * @param output        The location of where the texture atlas is to be outputted.
      * @param currentScene  The current scene
      * @param textureWidth  The width of each texture
      * @param textureHeight The height of each texture.
      * @since 1.0-Pre1
      */
-    public TextureAtlas(List<RenderTexture> textures, String output, Scene currentScene, int textureWidth, int textureHeight) {
+    public TextureAtlas(List<VoxelTexture> textures, String output, Scene currentScene, int textureWidth, int textureHeight) {
         this.textures = textures;
         this.output = output;
         this.currentScene = currentScene;
@@ -65,11 +67,11 @@ public class TextureAtlas {
     }
 
     /**
-     * Get the list of render textures.
+     * Get the list of voxel textures.
      *
-     * @return The list of render textures.
+     * @return The list of voxel textures.
      */
-    public List<RenderTexture> getTextures() {
+    public List<VoxelTexture> getTextures() {
         return textures;
     }
 
@@ -108,7 +110,7 @@ public class TextureAtlas {
      * @param textures The list of textures
      * @throws IOException If the file could not be read / created.
      */
-    private void calculateTextureAtlas(List<RenderTexture> textures) throws IOException {
+    private void calculateTextureAtlas(List<VoxelTexture> textures) throws IOException {
         if (texture != null)
             texture.cleanup();
 

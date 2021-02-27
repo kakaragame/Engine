@@ -25,6 +25,15 @@ import static org.lwjgl.BufferUtils.createByteBuffer;
  * A class full of important Utilities
  */
 public class Utils {
+    /**
+     * Load a resource by its file name.
+     *
+     * <p>This is primarily used to load shaders and object files.</p>
+     *
+     * @param fileName The file name (relative to the resource path of this class.)
+     * @return The String content of the file.
+     * @throws Exception If an Input Exception is encountered.
+     */
     public static String loadResource(String fileName) throws Exception {
         String result;
         try (InputStream in = Utils.class.getResourceAsStream(fileName);
@@ -39,14 +48,14 @@ public class Utils {
      *
      * @param url The resource
      * @return The file
-     * @throws URISyntaxException
+     * @throws URISyntaxException If the URI is not formatted corrected.
      */
     public static File getFileFromResource(URL url) throws URISyntaxException {
         return new File(url.toURI());
     }
 
     /**
-     * Such a hacky thing. We need to fix this.
+     * A hacky way to remove file:/ and jar: from a url.
      * TODO fix this
      *
      * @param url The url to remove
@@ -150,7 +159,7 @@ public class Utils {
     }
 
     /**
-     * Convert an inputstream into a texture.
+     * Convert an input stream into a texture.
      *
      * @param io The input stream.
      * @return The texture.
@@ -165,7 +174,7 @@ public class Utils {
     }
 
     /**
-     * Convert an inputstream into a bytebuffer.
+     * Convert an input stream into a bytebuffer.
      *
      * @param io The input stream.
      * @return The byte buffer.

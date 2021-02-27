@@ -8,6 +8,7 @@ import org.kakara.engine.resources.JarResource;
 import org.kakara.engine.resources.Resource;
 import org.kakara.engine.scene.Scene;
 import org.kakara.engine.utils.Utils;
+import org.kakara.engine.voxels.VoxelTexture;
 import org.lwjgl.system.MemoryStack;
 
 import java.io.IOException;
@@ -22,7 +23,7 @@ import static org.lwjgl.system.MemoryStack.stackPush;
 
 /**
  * Handles textures for the Meshes.
- * Do not use this class for RenderChunk Textures. Use {@link org.kakara.engine.renderobjects.RenderTexture}
+ * Do not use this class for RenderChunk Textures. Use {@link VoxelTexture}
  *
  * <p>This class is <b>not</b> thread safe.</p>
  */

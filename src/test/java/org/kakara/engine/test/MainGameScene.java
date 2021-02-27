@@ -34,13 +34,13 @@ import org.kakara.engine.models.StaticModelLoader;
 import org.kakara.engine.physics.collision.BoxCollider;
 import org.kakara.engine.physics.collision.ColliderComponent;
 import org.kakara.engine.physics.collision.PhysicsComponent;
-import org.kakara.engine.physics.collision.RenderBlockCollider;
-import org.kakara.engine.renderobjects.RenderBlock;
-import org.kakara.engine.renderobjects.RenderChunk;
-import org.kakara.engine.renderobjects.RenderTexture;
-import org.kakara.engine.renderobjects.TextureAtlas;
-import org.kakara.engine.renderobjects.mesh.MeshType;
-import org.kakara.engine.renderobjects.renderlayouts.BlockLayout;
+import org.kakara.engine.physics.collision.VoxelCollider;
+import org.kakara.engine.voxels.Voxel;
+import org.kakara.engine.voxels.VoxelChunk;
+import org.kakara.engine.voxels.VoxelTexture;
+import org.kakara.engine.voxels.TextureAtlas;
+import org.kakara.engine.voxels.mesh.MeshType;
+import org.kakara.engine.voxels.layouts.BlockLayout;
 import org.kakara.engine.resources.ResourceManager;
 import org.kakara.engine.scene.AbstractGameScene;
 import org.kakara.engine.test.components.PlayerMovement;
@@ -148,7 +148,7 @@ public class MainGameScene extends AbstractGameScene {
             // Tell the box to remove itself upon collision enter using the old system.
             // The component system should now be used.
             gi.getComponent(BoxCollider.class).addOnTriggerEnter((ColliderComponent other) -> {
-                if (other instanceof RenderBlockCollider) return;
+                if (other instanceof VoxelCollider) return;
                 if (other.getGameItem().getTag().equals("Test")) {
                     remove(gi2);
                 }
@@ -161,11 +161,11 @@ public class MainGameScene extends AbstractGameScene {
         ===================================================
 
          */
-            RenderTexture txt1 = new RenderTexture(resourceManager.getResource("/example_texture.png"));
-            RenderTexture txt2 = new RenderTexture(resourceManager.getResource("/oop.png"));
-            RenderTexture txt3 = new RenderTexture(resourceManager.getResource("/ExampleBlock.png"));
-            RenderTexture txt5 = new RenderTexture(resourceManager.getResource("/ovly2.png"));
-            RenderTexture txt6 = new RenderTexture(resourceManager.getResource("/fewio.png"));
+            VoxelTexture txt1 = new VoxelTexture(resourceManager.getResource("/example_texture.png"));
+            VoxelTexture txt2 = new VoxelTexture(resourceManager.getResource("/oop.png"));
+            VoxelTexture txt3 = new VoxelTexture(resourceManager.getResource("/ExampleBlock.png"));
+            VoxelTexture txt5 = new VoxelTexture(resourceManager.getResource("/ovly2.png"));
+            VoxelTexture txt6 = new VoxelTexture(resourceManager.getResource("/fewio.png"));
             TextureAtlas atlas = new TextureAtlas(Arrays.asList(txt1, txt2, txt3, txt5, txt6), Paths.get("").toAbsolutePath().toString(), this);
             setTextureAtlas(atlas);
 
@@ -174,23 +174,23 @@ public class MainGameScene extends AbstractGameScene {
                 for (int cx = 0; cx < 7; cx++) {
                     for (int cy = 0; cy < 2; cy++) {
                         for (int cz = 0; cz < 7; cz++) {
-                            RenderChunk rc = new RenderChunk(new ArrayList<>(), getTextureAtlas());
+                            VoxelChunk rc = new VoxelChunk(new ArrayList<>(), getTextureAtlas());
                             rc.transform.setPosition(cx * 16, cy * 16, cz * 16);
                             for (int x = 0; x < 16; x++) {
                                 for (int y = 0; y < 16; y++) {
                                     for (int z = 0; z < 16; z++) {
-                                        RenderBlock rb;
+                                        Voxel rb;
                                         if (x % 3 == 0) {
-                                            rb = new RenderBlock(new BlockLayout(), getTextureAtlas().getTextures().get(4), new Vector3(x, y, z));
+                                            rb = new Voxel(new BlockLayout(), getTextureAtlas().getTextures().get(4), new Vector3(x, y, z));
                                             rb.setOpaque(false);
                                         } else {
-                                            rb = new RenderBlock(new BlockLayout(), getTextureAtlas().getTextures().get(ThreadLocalRandom.current().nextInt(0, 3)), new Vector3(x, y, z));
+                                            rb = new Voxel(new BlockLayout(), getTextureAtlas().getTextures().get(ThreadLocalRandom.current().nextInt(0, 3)), new Vector3(x, y, z));
                                         }
                                         if (x % 2 == 0) {
                                             rb.setOverlay(getTextureAtlas().getTextures().get(3));
                                         }
 
-                                        rc.addBlock(rb);
+                                        rc.addVoxel(rb);
                                     }
                                 }
                             }
@@ -226,7 +226,7 @@ public class MainGameScene extends AbstractGameScene {
 
 
             // Set the fog for the level.
-            setFog(new Fog(true, new Vector3(1f, 1f, 1f), 0.005f));
+            setFog(new Fog(true, new RGBA(255, 255, 255), 0.005f));
 
 
             setupCanvas(txt2);
@@ -327,11 +327,11 @@ public class MainGameScene extends AbstractGameScene {
         if (evt.getMouseClickType() == MouseClickType.LEFT_CLICK) {
             ColliderComponent selected = this.selectGameItems(20);
             System.out.println(selected);
-            if (selected instanceof RenderBlockCollider) {
+            if (selected instanceof VoxelCollider) {
                 System.out.println("Clicked!");
-                RenderBlock block = ((RenderBlockCollider) selected).getRenderBlock();
-                RenderChunk parentChunk = block.getParentChunk();
-                parentChunk.removeBlock(block);
+                Voxel block = ((VoxelCollider) selected).getRenderBlock();
+                VoxelChunk parentChunk = block.getParentChunk();
+                parentChunk.removeVoxel(block);
                 parentChunk.regenerateChunk(getTextureAtlas(), MeshType.SYNC);
             }
         }
@@ -342,17 +342,17 @@ public class MainGameScene extends AbstractGameScene {
         if (event.getButtonID() == GamePadButton.RIGHT_BUMPER) {
             ColliderComponent selected = this.selectGameItems(20);
             System.out.println(selected);
-            if (selected instanceof RenderBlockCollider) {
+            if (selected instanceof VoxelCollider) {
                 System.out.println("Clicked!");
-                RenderBlock block = ((RenderBlockCollider) selected).getRenderBlock();
-                RenderChunk parentChunk = block.getParentChunk();
-                parentChunk.removeBlock(block);
+                Voxel block = ((VoxelCollider) selected).getRenderBlock();
+                VoxelChunk parentChunk = block.getParentChunk();
+                parentChunk.removeVoxel(block);
                 parentChunk.regenerateChunk(getTextureAtlas(), MeshType.SYNC);
             }
         }
     }
 
-    private void setupCanvas(RenderTexture txt2) {
+    private void setupCanvas(VoxelTexture txt2) {
         ComponentCanvas cc = new ComponentCanvas(this);
         Font font = new Font("Roboto-Regular", gameHandler.getResourceManager().getResource("Roboto-Regular.ttf"), this);
         userInterface.addFont(font);

@@ -3,26 +3,26 @@ package org.kakara.engine.physics.collision;
 import org.kakara.engine.GameHandler;
 import org.kakara.engine.math.Vector3;
 import org.kakara.engine.physics.OnTriggerEnter;
-import org.kakara.engine.renderobjects.RenderBlock;
+import org.kakara.engine.voxels.Voxel;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
 /**
- * This is used to handle the RenderBlock collisions for voxels.
+ * This is used to handle the Voxel collisions.
  * <p>This component has special behavior and is not attached to a GameItem.</p>
  * <p>{@link #getGameItem()} is null for this component. Please check that a {@link ColliderComponent}
  * is not an instance of this class before using that method.</p>
  */
-public class RenderBlockCollider extends ColliderComponent {
+public class VoxelCollider extends ColliderComponent {
 
     private Vector3 point1;
     private Vector3 point2;
     private Vector3 offset;
     private boolean isTrigger;
 
-    private final RenderBlock renderBlock;
+    private final Voxel renderBlock;
     private final GameHandler handler;
     private Predicate<ColliderComponent> predicate = gameItem -> false;
     private final List<OnTriggerEnter> triggerEvents;
@@ -33,7 +33,7 @@ public class RenderBlockCollider extends ColliderComponent {
      *
      * @param renderBlock The render block that this collider uses.
      */
-    public RenderBlockCollider(RenderBlock renderBlock) {
+    public VoxelCollider(Voxel renderBlock) {
         this.handler = GameHandler.getInstance();
         this.triggerEvents = new ArrayList<>();
         this.renderBlock = renderBlock;
@@ -153,7 +153,7 @@ public class RenderBlockCollider extends ColliderComponent {
         return scale;
     }
 
-    public RenderBlock getRenderBlock() {
+    public Voxel getRenderBlock() {
         return renderBlock;
     }
 

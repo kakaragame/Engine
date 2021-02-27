@@ -6,7 +6,7 @@ import org.kakara.engine.lighting.LightHandler;
 import org.kakara.engine.lighting.ShadowMap;
 import org.kakara.engine.render.*;
 import org.kakara.engine.render.culling.FrustumCullingFilter;
-import org.kakara.engine.renderobjects.RenderChunk;
+import org.kakara.engine.voxels.VoxelChunk;
 import org.kakara.engine.scene.AbstractGameScene;
 import org.kakara.engine.scene.Scene;
 
@@ -18,12 +18,12 @@ import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 
 /**
- * The default render pipeline for the RenderChunk system.
+ * The default render pipeline for the Voxel system.
  *
  * @since 1.0-Pre4
  */
 // TODO fix depth map by copying standerd pipeline.
-public class ChunkPipeline implements RenderPipeline {
+public class VoxelPipeline implements RenderPipeline {
 
     private Shader chunkShaderProgram;
     private ShaderManager manager;
@@ -34,7 +34,7 @@ public class ChunkPipeline implements RenderPipeline {
     @Override
     public void init(ShaderManager manager, Transformation transformation, FrustumCullingFilter frustumFilter, ShadowMap shadowMap) {
         this.manager = manager;
-        chunkShaderProgram = manager.findShader("Chunk").getShader();
+        chunkShaderProgram = manager.findShader("Voxel").getShader();
         this.transformation = transformation;
         this.frustumFilter = frustumFilter;
         this.shadowMap = shadowMap;
@@ -60,17 +60,17 @@ public class ChunkPipeline implements RenderPipeline {
 
     @Override
     public void renderDepthMap(Scene scene, Shader depthShader, Matrix4f lightViewMatrix) {
-        if(!(scene instanceof AbstractGameScene))
+        if (!(scene instanceof AbstractGameScene))
             return;
         AbstractGameScene ags = (AbstractGameScene) scene;
-        if (ags.getChunkHandler().getRenderChunkList().isEmpty())
+        if (ags.getChunkHandler().getVoxelChunkList().isEmpty())
             return;
-        List<RenderChunk> renderChunks = ags.getChunkHandler().getRenderChunkList();
+        List<VoxelChunk> renderChunks = ags.getChunkHandler().getVoxelChunkList();
         if (renderChunks == null) return;
 
-        for (RenderChunk renderChunk : renderChunks) {
+        for (VoxelChunk renderChunk : renderChunks) {
             if (renderChunk == null) continue;
-            if (renderChunk.getBlockCount() < 1) continue;
+            if (renderChunk.getVoxelCount() < 1) continue;
 
             if (!frustumFilter.testRenderObject(renderChunk.transform.getPosition(), 16, 16, 16))
                 continue;
@@ -91,9 +91,9 @@ public class ChunkPipeline implements RenderPipeline {
     private void renderChunk(Scene scene) {
         if (!(scene instanceof AbstractGameScene)) return;
         AbstractGameScene ags = (AbstractGameScene) scene;
-        if (ags.getChunkHandler().getRenderChunkList().isEmpty())
+        if (ags.getChunkHandler().getVoxelChunkList().isEmpty())
             return;
-        List<RenderChunk> renderChunks = ags.getChunkHandler().getRenderChunkList();
+        List<VoxelChunk> renderChunks = ags.getChunkHandler().getVoxelChunkList();
         if (renderChunks == null) return;
         chunkShaderProgram.bind();
         Matrix4f projectionMatrix = transformation.getProjectionMatrix();
@@ -117,9 +117,9 @@ public class ChunkPipeline implements RenderPipeline {
         // TODO one day reimplement occlusion culling.
         //doOcclusionTest(renderChunks, chunkShaderProgram, viewMatrix, lightViewMatrix);
 
-        for (RenderChunk renderChunk : renderChunks) {
+        for (VoxelChunk renderChunk : renderChunks) {
             if (renderChunk == null) continue;
-            if (renderChunk.getBlockCount() < 1) continue;
+            if (renderChunk.getVoxelCount() < 1) continue;
 
             if (!frustumFilter.testRenderObject(renderChunk.transform.getPosition(), 16, 16, 16))
                 continue;

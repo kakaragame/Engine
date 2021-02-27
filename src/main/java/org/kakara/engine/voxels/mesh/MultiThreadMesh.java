@@ -1,14 +1,14 @@
-package org.kakara.engine.renderobjects.mesh;
+package org.kakara.engine.voxels.mesh;
 
 import org.jetbrains.annotations.Nullable;
 import org.kakara.engine.GameEngine;
 import org.kakara.engine.GameHandler;
 import org.kakara.engine.exceptions.InvalidThreadException;
 import org.kakara.engine.render.culling.RenderQuery;
-import org.kakara.engine.renderobjects.RenderBlock;
-import org.kakara.engine.renderobjects.RenderChunk;
-import org.kakara.engine.renderobjects.TextureAtlas;
-import org.kakara.engine.renderobjects.renderlayouts.MeshLayout;
+import org.kakara.engine.voxels.Voxel;
+import org.kakara.engine.voxels.VoxelChunk;
+import org.kakara.engine.voxels.TextureAtlas;
+import org.kakara.engine.voxels.layouts.MeshLayout;
 import org.lwjgl.system.MemoryUtil;
 
 import java.nio.FloatBuffer;
@@ -30,7 +30,7 @@ import static org.lwjgl.opengl.GL33.GL_ANY_SAMPLES_PASSED;
  *
  * @since 1.0-Pre2
  */
-public class MultiThreadMesh implements RenderMesh {
+public class MultiThreadMesh implements VoxelMesh {
 
     protected final List<Integer> vboIdList;
     protected int vaoId;
@@ -46,13 +46,13 @@ public class MultiThreadMesh implements RenderMesh {
      * @param textureAtlas The texture atlas to use
      * @param future       The completable future that is to be completed once the generation is complete.
      */
-    public MultiThreadMesh(RenderChunk renderChunk, TextureAtlas textureAtlas, @Nullable CompletableFuture<MultiThreadMesh> future) {
+    public MultiThreadMesh(VoxelChunk renderChunk, TextureAtlas textureAtlas, @Nullable CompletableFuture<MultiThreadMesh> future) {
         if (Thread.currentThread() == GameEngine.currentThread)
             throw new InvalidThreadException("This class can only be constructed on a secondary thread!");
         vboIdList = new ArrayList<>();
         MultiThreadMesh instance = this;
 
-        List<RenderBlock> renderBlocks = renderChunk.calculateVisibleBlocks();
+        List<Voxel> renderBlocks = renderChunk.calculateVisibleVoxels();
         MeshLayout layout = null;
         try {
             layout = MeshUtils.setupLayout(renderBlocks, textureAtlas);
@@ -193,11 +193,11 @@ public class MultiThreadMesh implements RenderMesh {
     }
 
     @Override
-    public void updateOverlay(List<RenderBlock> blocks, TextureAtlas textureAtlas) {
+    public void updateOverlay(List<Voxel> blocks, TextureAtlas textureAtlas) {
         List<Float> overlayCoords = new ArrayList<>();
         List<Integer> hasOverlay = new ArrayList<>();
 
-        for (RenderBlock rb : blocks) {
+        for (Voxel rb : blocks) {
             int initial = overlayCoords.size() / 2;
             rb.getOverlayFromFaces(overlayCoords, textureAtlas);
             hasOverlay.addAll(Collections.nCopies((overlayCoords.size() / 2 - initial), rb.getOverlay() == null ? 0 : 1));

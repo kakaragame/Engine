@@ -130,7 +130,7 @@ public class DebugCanvas implements UICanvas {
         if(scene instanceof AbstractGameScene){
             if(ImGui.collapsingHeader("Abstract Game Scene Information")){
                 AbstractGameScene abstractGameScene = (AbstractGameScene) scene;
-                ImGui.text("# of Render Chunks: " + abstractGameScene.getChunkHandler().getRenderChunkList().size());
+                ImGui.text("# of Render Chunks: " + abstractGameScene.getChunkHandler().getVoxelChunkList().size());
 //                Collidable lookingAt = abstractGameScene.selectGameItems(30);
 //                if(lookingAt instanceof RenderBlock){
 //                    RenderBlock rb = (RenderBlock) lookingAt;

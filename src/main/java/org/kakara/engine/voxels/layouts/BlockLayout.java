@@ -1,10 +1,10 @@
-package org.kakara.engine.renderobjects.renderlayouts;
+package org.kakara.engine.voxels.layouts;
 
 import org.kakara.engine.math.Vector3;
-import org.kakara.engine.renderobjects.renderlayouts.types.Indices;
-import org.kakara.engine.renderobjects.renderlayouts.types.Normal;
-import org.kakara.engine.renderobjects.renderlayouts.types.Texture;
-import org.kakara.engine.renderobjects.renderlayouts.types.Vertex;
+import org.kakara.engine.voxels.layouts.types.Indices;
+import org.kakara.engine.voxels.layouts.types.Normal;
+import org.kakara.engine.voxels.layouts.types.Texture;
+import org.kakara.engine.voxels.layouts.types.Vertex;
 
 import java.util.Arrays;
 import java.util.List;
