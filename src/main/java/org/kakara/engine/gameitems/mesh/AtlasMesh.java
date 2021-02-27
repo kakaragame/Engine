@@ -167,9 +167,15 @@ public class AtlasMesh implements IMesh {
         glBindVertexArray(getVaoId());
         glEnableVertexAttribArray(0);
         glEnableVertexAttribArray(1);
+
+        if (isWireframe())
+            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     }
 
     protected void endRender() {
+        if (isWireframe())
+            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
         // Restore state
         glDisableVertexAttribArray(0);
         glDisableVertexAttribArray(1);
@@ -184,15 +190,7 @@ public class AtlasMesh implements IMesh {
      */
     public void render() {
         initRender();
-
-        if (isWireframe())
-            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
         glDrawElements(GL_TRIANGLES, getVertexCount(), GL_UNSIGNED_INT, 0);
-
-        if (isWireframe())
-            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
         endRender();
     }
 
@@ -205,16 +203,16 @@ public class AtlasMesh implements IMesh {
      */
     @Override
     public void renderList(List<GameItem> gameItems, FrustumCullingFilter filter, Consumer<GameItem> consumer) {
-        initRender();
         for (GameItem gameItem : gameItems) {
             if (gameItem.getMeshRenderer().isEmpty()) continue;
             if (gameItem.getMeshRenderer().get().isVisible() && filter.testCollider(gameItem.getComponent(ColliderComponent.class))) {
                 consumer.accept(gameItem);
-                glDrawElements(GL_TRIANGLES, getVertexCount(), GL_UNSIGNED_INT, 0);
-            }
+                initRender();
 
+                glDrawElements(GL_TRIANGLES, getVertexCount(), GL_UNSIGNED_INT, 0);
+                endRender();
+            }
         }
-        endRender();
     }
 
     @Override
