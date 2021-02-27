@@ -4,6 +4,7 @@ import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.kakara.engine.Camera;
 import org.kakara.engine.GameEngine;
+import org.kakara.engine.components.MeshRenderer;
 import org.kakara.engine.gameitems.mesh.IMesh;
 import org.kakara.engine.lighting.DirectionalLight;
 import org.kakara.engine.lighting.ShadowMap;
@@ -214,7 +215,7 @@ public final class Renderer {
         skyBoxShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
         skyBoxShaderProgram.setUniform("ambientLight", scene.getLightHandler().getSkyBoxLight().toVector());
 
-        scene.getSkyBox().getMeshRenderer().get().getMesh().render();
+        scene.getSkyBox().getComponent(MeshRenderer.class).getMesh().render();
 
         skyBoxShaderProgram.unbind();
     }

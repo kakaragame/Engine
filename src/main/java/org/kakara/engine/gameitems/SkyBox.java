@@ -30,16 +30,16 @@ public class SkyBox extends GameItem {
                     m.setMaterial(new Material(skyBoxTexture, 0f));
                 }
 
-                getMeshRenderer().get().setMesh(skyBoxMesh);
+                getComponent(MeshRenderer.class).setMesh(skyBoxMesh);
                 this.transform.setScale(100, 100, 100);
             } else {
                 Mesh skyBoxMesh = new Mesh(CubeData.skyboxVertex, CubeData.texture, CubeData.normal, CubeData.indices);
                 skyBoxMesh.setMaterial(new Material(skyBoxTexture, 0f));
-                getMeshRenderer().get().setMesh(skyBoxMesh);
+                getComponent(MeshRenderer.class).setMesh(skyBoxMesh);
             }
             this.transform.setPosition(0, 0, 0);
         }catch(Exception ex){
-            throw new GenericLoadException("Error: unable to load sky box object!");
+            throw new GenericLoadException("Error: unable to load sky box object!", ex);
         }
     }
 
