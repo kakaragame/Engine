@@ -190,11 +190,7 @@ public class AtlasMesh implements IMesh {
      */
     public void render() {
         initRender();
-
-
         glDrawElements(GL_TRIANGLES, getVertexCount(), GL_UNSIGNED_INT, 0);
-
-
         endRender();
     }
 
@@ -215,9 +211,7 @@ public class AtlasMesh implements IMesh {
 
                 glDrawElements(GL_TRIANGLES, getVertexCount(), GL_UNSIGNED_INT, 0);
                 endRender();
-
             }
-
         }
     }
 
