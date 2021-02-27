@@ -8,6 +8,7 @@ import org.kakara.engine.math.Vector3;
 import org.kakara.engine.physics.FixedPhysicsUpdater;
 import org.kakara.engine.physics.collision.ColliderComponent;
 import org.kakara.engine.physics.collision.CollisionManager;
+import org.kakara.engine.physics.collision.VoxelCollider;
 import org.kakara.engine.voxels.ChunkHandler;
 import org.kakara.engine.voxels.VoxelChunk;
 import org.kakara.engine.voxels.TextureAtlas;
@@ -128,7 +129,9 @@ public abstract class AbstractGameScene extends AbstractScene {
         Vector2f nearFar = new Vector2f();
 
         for (ColliderComponent collidable : getCollisionManager().getSelectionItems(getCamera().getPosition())) {
-            if (ignore.contains(collidable.getGameItem().getUUID())) continue;
+            if(!(collidable instanceof VoxelCollider)){
+                if (ignore.contains(collidable.getGameItem().getUUID())) continue;
+            }
             min.set(collidable.getPosition().toJoml());
             max.set(collidable.getPosition().toJoml());
             Vector3 scale = collidable.getScale();
