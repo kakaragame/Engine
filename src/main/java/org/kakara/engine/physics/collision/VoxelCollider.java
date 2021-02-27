@@ -22,7 +22,7 @@ public class VoxelCollider extends ColliderComponent {
     private Vector3 offset;
     private boolean isTrigger;
 
-    private final Voxel renderBlock;
+    private final Voxel voxel;
     private final GameHandler handler;
     private Predicate<ColliderComponent> predicate = gameItem -> false;
     private final List<OnTriggerEnter> triggerEvents;
@@ -36,7 +36,7 @@ public class VoxelCollider extends ColliderComponent {
     public VoxelCollider(Voxel renderBlock) {
         this.handler = GameHandler.getInstance();
         this.triggerEvents = new ArrayList<>();
-        this.renderBlock = renderBlock;
+        this.voxel = renderBlock;
     }
 
     @Override
@@ -96,7 +96,7 @@ public class VoxelCollider extends ColliderComponent {
 
     @Override
     public Vector3 getAbsolutePoint1() {
-        return new Vector3(point1.x, point1.y, point1.z).addMut(offset).addMut(renderBlock.getWorldPosition());
+        return new Vector3(point1.x, point1.y, point1.z).addMut(offset).addMut(voxel.getWorldPosition());
     }
 
     @Override
@@ -106,7 +106,7 @@ public class VoxelCollider extends ColliderComponent {
 
     @Override
     public Vector3 getAbsolutePoint2() {
-        return new Vector3(point2.x, point2.y, point2.z).addMut(offset).addMut(renderBlock.getWorldPosition());
+        return new Vector3(point2.x, point2.y, point2.z).addMut(offset).addMut(voxel.getWorldPosition());
     }
 
     @Override
@@ -145,7 +145,7 @@ public class VoxelCollider extends ColliderComponent {
 
     @Override
     public Vector3 getPosition() {
-        return renderBlock.getWorldPosition();
+        return voxel.getWorldPosition();
     }
 
     @Override
@@ -153,8 +153,8 @@ public class VoxelCollider extends ColliderComponent {
         return scale;
     }
 
-    public Voxel getRenderBlock() {
-        return renderBlock;
+    public Voxel getVoxel() {
+        return voxel;
     }
 
     /**
@@ -200,7 +200,7 @@ public class VoxelCollider extends ColliderComponent {
         CollisionManager cm = handler.getCurrentScene().getCollisionManager();
         assert cm != null;
 
-        for (ColliderComponent gi : cm.getCollidngItems(renderBlock.getWorldPosition())) {
+        for (ColliderComponent gi : cm.getCollidngItems(voxel.getWorldPosition())) {
             if (gi == this) continue;
             if (getPredicate().test(gi)) continue;
             if (cm.isColliding(gi, this).isIntersecting()) {

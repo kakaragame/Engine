@@ -329,7 +329,7 @@ public class MainGameScene extends AbstractGameScene {
             System.out.println(selected);
             if (selected instanceof VoxelCollider) {
                 System.out.println("Clicked!");
-                Voxel block = ((VoxelCollider) selected).getRenderBlock();
+                Voxel block = ((VoxelCollider) selected).getVoxel();
                 VoxelChunk parentChunk = block.getParentChunk();
                 parentChunk.removeVoxel(block);
                 parentChunk.regenerateChunk(getTextureAtlas(), MeshType.SYNC);
@@ -344,7 +344,7 @@ public class MainGameScene extends AbstractGameScene {
             System.out.println(selected);
             if (selected instanceof VoxelCollider) {
                 System.out.println("Clicked!");
-                Voxel block = ((VoxelCollider) selected).getRenderBlock();
+                Voxel block = ((VoxelCollider) selected).getVoxel();
                 VoxelChunk parentChunk = block.getParentChunk();
                 parentChunk.removeVoxel(block);
                 parentChunk.regenerateChunk(getTextureAtlas(), MeshType.SYNC);
