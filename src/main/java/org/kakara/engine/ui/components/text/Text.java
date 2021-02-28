@@ -3,7 +3,7 @@ package org.kakara.engine.ui.components.text;
 import org.kakara.engine.GameHandler;
 import org.kakara.engine.math.Vector2;
 import org.kakara.engine.ui.UserInterface;
-import org.kakara.engine.ui.components.GeneralComponent;
+import org.kakara.engine.ui.components.GeneralUIComponent;
 import org.kakara.engine.ui.font.Font;
 import org.kakara.engine.utils.RGBA;
 import org.lwjgl.nanovg.NVGColor;
@@ -15,7 +15,8 @@ import static org.lwjgl.nanovg.NanoVG.*;
  * <p>The scale of the text is the line width in the x position.</p>
  * <p>As of 1.0-Pre1, all text properties are implemented.</p>
  */
-public class Text extends GeneralComponent {
+public class Text extends GeneralUIComponent {
+    private final NVGColor nvgColor;
     private String text;
     private Font font;
     private float size;
@@ -25,8 +26,6 @@ public class Text extends GeneralComponent {
     private int textAlign;
     private float blur;
     private RGBA color;
-
-    private final NVGColor nvgColor;
     private UserInterface userInterface;
 
     /**
@@ -61,7 +60,7 @@ public class Text extends GeneralComponent {
     public void render(Vector2 relative, UserInterface userInterface, GameHandler handler) {
         if (!isVisible()) return;
 
-        pollRender(relative, userInterface, handler);
+        super.render(relative, userInterface, handler);
 
         nvgBeginPath(userInterface.getVG());
         nvgFontSize(userInterface.getVG(), calculateSize(handler));
@@ -74,7 +73,7 @@ public class Text extends GeneralComponent {
         nvgRGBA((byte) color.r, (byte) color.g, (byte) color.b, (byte) color.aToNano(), nvgColor);
         nvgFillColor(userInterface.getVG(), nvgColor);
 
-        nvgTextBox(userInterface.getVG(), getTruePosition().x, getTruePosition().y, this.calculateLineWidth(handler), text);
+        nvgTextBox(userInterface.getVG(), getGlobalPosition().x, getGlobalPosition().y, this.calculateLineWidth(handler), text);
     }
 
     /**
@@ -84,8 +83,8 @@ public class Text extends GeneralComponent {
      * @return The scaled size
      */
     protected float calculateSize(GameHandler handler) {
-        if (userInterface.isAutoScaled())
-            return this.getSize() * ((float) handler.getWindow().getWidth() / (float) handler.getWindow().initalWidth);
+        if (getParentCanvas().isAutoScale())
+            return this.getSize() * ((float) handler.getWindow().getWidth() / (float) handler.getWindow().initialWidth);
         else
             return this.getSize();
     }
@@ -98,8 +97,8 @@ public class Text extends GeneralComponent {
      * @return the scaled width
      */
     protected float calculateLineWidth(GameHandler handler) {
-        if (userInterface.isAutoScaled())
-            return this.getLineWidth() * ((float) handler.getWindow().getWidth() / (float) handler.getWindow().initalWidth);
+        if (getParentCanvas().isAutoScale())
+            return this.getLineWidth() * ((float) handler.getWindow().getWidth() / (float) handler.getWindow().initialWidth);
         else
             return this.getLineWidth();
     }

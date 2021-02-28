@@ -4,15 +4,16 @@ import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.kakara.engine.Camera;
 import org.kakara.engine.GameEngine;
+import org.kakara.engine.components.MeshRenderer;
 import org.kakara.engine.gameitems.mesh.IMesh;
 import org.kakara.engine.lighting.DirectionalLight;
 import org.kakara.engine.lighting.ShadowMap;
 import org.kakara.engine.render.culling.FrustumCullingFilter;
-import org.kakara.engine.renderobjects.RenderChunk;
-import org.kakara.engine.renderobjects.mesh.RenderMesh;
 import org.kakara.engine.scene.Scene;
 import org.kakara.engine.ui.objectcanvas.UIObject;
 import org.kakara.engine.utils.Utils;
+import org.kakara.engine.voxels.VoxelChunk;
+import org.kakara.engine.voxels.mesh.VoxelMesh;
 import org.kakara.engine.window.Window;
 
 import java.util.ArrayList;
@@ -29,27 +30,22 @@ import static org.lwjgl.opengl.GL30.glBindFramebuffer;
  * <p>Please note that the Skybox, Shadow System, and UI, are not apart of the pipeline system.</p>
  */
 public final class Renderer {
+    // FOV information.
+    private static final float FOV = (float) Math.toRadians(60.0f);
+    private static final float Z_NEAR = 0.01f;
+    private static final float Z_FAR = 1000.0f;
     private final Transformation transformation;
     private final FrustumCullingFilter frustumFilter;
     private final GameEngine engine;
-
+    private Shader skyBoxShaderProgram;
+    private Shader depthShaderProgram;
+    private Shader hudShaderProgram;
+    private ShadowMap shadowMap;
     public Renderer(GameEngine engine) {
         transformation = new Transformation();
         frustumFilter = new FrustumCullingFilter();
         this.engine = engine;
     }
-
-    private Shader skyBoxShaderProgram;
-    private Shader depthShaderProgram;
-    private Shader hudShaderProgram;
-
-    private ShadowMap shadowMap;
-
-    // FOV information.
-    private static final float FOV = (float) Math.toRadians(60.0f);
-    private static final float Z_NEAR = 0.01f;
-    private static final float Z_FAR = 1000.0f;
-
 
     /**
      * Setup shaders
@@ -99,7 +95,7 @@ public final class Renderer {
 
     /**
      * Render the 3D portion of the HUD.
-     * <p>See {@link org.kakara.engine.ui.objectcanvas.UIObject} and {@link org.kakara.engine.ui.items.ObjectCanvas} for more info.</p>
+     * <p>See {@link org.kakara.engine.ui.objectcanvas.UIObject} and {@link org.kakara.engine.ui.canvases.ObjectCanvas} for more info.</p>
      *
      * @param window  The window of the current game.
      * @param objects The list of objects.
@@ -107,14 +103,15 @@ public final class Renderer {
      */
     public void renderHUD(Window window, List<UIObject> objects, boolean isAuto) {
         hudShaderProgram.bind();
-        int width = isAuto ? window.initalWidth : window.getWidth();
-        int height = isAuto ? window.initalHeight : window.getHeight();
+        int width = isAuto ? window.initialWidth : window.getWidth();
+        int height = isAuto ? window.initialHeight : window.getHeight();
         Matrix4f orthoProjection = transformation.buildOrtho(0, width, height, 0);
         for (UIObject object : objects) {
-            IMesh mesh = object.getMesh();
             hudShaderProgram.setUniform("ortho", orthoProjection);
             hudShaderProgram.setUniform("model", transformation.buildModelViewMatrixUI(object));
-            mesh.render();
+            for (IMesh mesh : object.getMeshes()) {
+                mesh.render();
+            }
         }
         hudShaderProgram.unbind();
     }
@@ -128,16 +125,16 @@ public final class Renderer {
      * @param lightViewMatrix    The lightViewMatrix
      * @deprecated Unused
      */
-    private void doOcclusionTest(List<RenderChunk> chunks, Shader chunkShaderProgram, Matrix4f viewMatrix, Matrix4f lightViewMatrix) {
-        if (chunks == null || chunks.isEmpty() || chunks.get(0).getRenderMesh() == null) return;
-        if (chunks.get(0).getRenderMesh().getQuery() == null) return;
+    private void doOcclusionTest(List<VoxelChunk> chunks, Shader chunkShaderProgram, Matrix4f viewMatrix, Matrix4f lightViewMatrix) {
+        if (chunks == null || chunks.isEmpty() || chunks.get(0).getVoxelMesh() == null) return;
+        if (chunks.get(0).getVoxelMesh().getQuery() == null) return;
         glColorMask(false, false, false, false);
         glDepthMask(false);
-        for (RenderChunk chunk : new ArrayList<>(chunks)) {
+        for (VoxelChunk chunk : new ArrayList<>(chunks)) {
             // If the chunk is out of the frustum then don't bother testing.
-            if (!frustumFilter.testRenderObject(chunk.getPosition(), 16, 16, 16))
+            if (!frustumFilter.testRenderObject(chunk.transform.getPosition(), 16, 16, 16))
                 continue;
-            RenderMesh mesh = chunk.getRenderMesh();
+            VoxelMesh mesh = chunk.getVoxelMesh();
             if (mesh == null) continue;
             if (mesh.getQuery() != null) {
                 // Calculate the Matrix for the chunk so it is tested in the right spot
@@ -212,9 +209,9 @@ public final class Renderer {
         //TODO remove model view matrix
         Matrix4f modelViewMatrix = transformation.buildModelViewMatrix(scene.getSkyBox(), viewMatrix);
         skyBoxShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-        skyBoxShaderProgram.setUniform("ambientLight", scene.getLightHandler().getSkyBoxLight().toVector());
-
-        scene.getSkyBox().getMesh().render();
+        skyBoxShaderProgram.setUniform("ambientLight",
+                Objects.requireNonNull(scene.getLightHandler()).getSkyBoxLight().toVector());
+        scene.getSkyBox().getComponent(MeshRenderer.class).getMesh().render();
 
         skyBoxShaderProgram.unbind();
     }
@@ -264,8 +261,9 @@ public final class Renderer {
         depthShaderProgram.createFragmentShader(Utils.loadResource("/shaders/depth/depthFragment.fs"));
         depthShaderProgram.link();
 
+        depthShaderProgram.createUniform("isInstanced");
+        depthShaderProgram.createUniform("modelLightViewNonInstancedMatrix");
         depthShaderProgram.createUniform("orthoProjectionMatrix");
-        depthShaderProgram.createUniform("modelLightViewMatrix");
     }
 
 

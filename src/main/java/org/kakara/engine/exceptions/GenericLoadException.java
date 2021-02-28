@@ -9,4 +9,8 @@ public class GenericLoadException extends RuntimeException {
     public GenericLoadException(String message) {
         super(message);
     }
+
+    public GenericLoadException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }

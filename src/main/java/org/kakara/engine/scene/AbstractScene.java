@@ -11,14 +11,15 @@ import org.kakara.engine.gameitems.ItemHandler;
 import org.kakara.engine.gameitems.SkyBox;
 import org.kakara.engine.gameitems.particles.ParticleEmitter;
 import org.kakara.engine.gameitems.particles.ParticleHandler;
+import org.kakara.engine.input.controller.ControllerManager;
 import org.kakara.engine.lighting.LightHandler;
 import org.kakara.engine.lighting.PointLight;
 import org.kakara.engine.lighting.SpotLight;
 import org.kakara.engine.physics.collision.CollisionManager;
-import org.kakara.engine.renderobjects.RenderChunk;
 import org.kakara.engine.ui.UICanvas;
 import org.kakara.engine.ui.UserInterface;
 import org.kakara.engine.utils.Time;
+import org.kakara.engine.voxels.VoxelChunk;
 import org.kakara.engine.weather.Fog;
 
 /**
@@ -52,12 +53,12 @@ public abstract class AbstractScene implements Scene {
     }
 
     @Override
-    public boolean getCurserStatus() {
+    public boolean getCursorStatus() {
         return mouseStatus;
     }
 
     @Override
-    public void setCurserStatus(boolean status) {
+    public void setCursorStatus(boolean status) {
         mouseStatus = status;
         gameHandler.getWindow().setCursorVisibility(status);
     }
@@ -98,6 +99,11 @@ public abstract class AbstractScene implements Scene {
     }
 
     @Override
+    public ControllerManager getControllerManager() {
+        return gameHandler.getControllerManager();
+    }
+
+    @Override
     public float getDeltaTime() {
         return Time.getDeltaTime();
     }
@@ -119,7 +125,7 @@ public abstract class AbstractScene implements Scene {
 
     /**
      * Add a game item to the scene.
-     * <p>This does not work for RenderChunks. See {@link AbstractGameScene#add(RenderChunk)}</p>
+     * <p>This does not work for RenderChunks. See {@link AbstractGameScene#add(VoxelChunk)}</p>
      * <p>This functionality works the same as {@link org.kakara.engine.gameitems.ItemHandler#addItem(GameItem)}</p>
      *
      * @param gameItem The game item to add
@@ -170,7 +176,7 @@ public abstract class AbstractScene implements Scene {
 
     /**
      * Remove an item from the scene
-     * <p>This does not work for RenderChunks. See {@link AbstractGameScene#add(RenderChunk)}</p>
+     * <p>This does not work for RenderChunks. See {@link AbstractGameScene#add(VoxelChunk)}</p>
      * <p>This functionality works the same as {@link org.kakara.engine.gameitems.ItemHandler#removeItem(GameItem)}</p>
      *
      * @param item The item to remove.

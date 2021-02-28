@@ -8,8 +8,8 @@ import org.kakara.engine.models.TextureCache;
  * This is the class that manages the scenes.
  */
 public class SceneManager {
-    private Scene currentScene;
     private final GameHandler handler;
+    private Scene currentScene;
 
     public SceneManager(GameHandler gameHandler) {
         this.handler = gameHandler;
@@ -24,6 +24,8 @@ public class SceneManager {
         if (currentScene != null)
             this.cleanupScenes();
         currentScene = null;
+        // TODO look further into this v
+        System.gc();
         currentScene = scene;
         // Continue loading the next scene.
         try {

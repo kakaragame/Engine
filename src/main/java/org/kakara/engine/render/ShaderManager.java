@@ -1,9 +1,9 @@
 package org.kakara.engine.render;
 
 import org.kakara.engine.GameEngine;
-import org.kakara.engine.render.preset.shader.ChunkShader;
 import org.kakara.engine.render.preset.shader.ParticleShader;
 import org.kakara.engine.render.preset.shader.StandardShader;
+import org.kakara.engine.render.preset.shader.VoxelShader;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,7 +31,7 @@ public final class ShaderManager {
         programs = new HashMap<>();
         // Define the default shaders.
         programs.put("Standard", new StandardShader());
-        programs.put("Chunk", new ChunkShader());
+        programs.put("Voxel", new VoxelShader());
         programs.put("Particle", new ParticleShader());
         initialized = false;
     }
@@ -58,6 +58,8 @@ public final class ShaderManager {
         if (this.programs.containsKey(name))
             throw new IllegalArgumentException("The specified name already exists.");
         this.programs.put(name, program);
+        if (initialized)
+            program.initializeShader();
     }
 
     /**

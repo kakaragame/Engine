@@ -4,7 +4,7 @@ import org.joml.Intersectionf;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.kakara.engine.Camera;
-import org.kakara.engine.physics.collision.Collidable;
+import org.kakara.engine.gameitems.GameItem;
 
 /**
  * Handles the intersection of a ray and blocks.
@@ -13,7 +13,8 @@ import org.kakara.engine.physics.collision.Collidable;
  */
 public class Intersection {
 
-    private Intersection() {}
+    private Intersection() {
+    }
 
     /**
      * Check to see if the collidable intersects with the ray from the camera.
@@ -24,7 +25,7 @@ public class Intersection {
      *                   <p>The x value contains the near value, the y value contains the far value.</p>
      * @return If the way intersects with the collidable.
      */
-    public static boolean intersect(Collidable collidable, Camera camera, Vector2 result) {
+    public static boolean intersect(GameItem collidable, Camera camera, Vector2 result) {
         Vector3f dir = new Vector3f();
         dir = camera.getViewMatrix().positiveZ(dir).negate();
 
@@ -32,10 +33,11 @@ public class Intersection {
         Vector3f min = new Vector3f();
         Vector2f nearFar = new Vector2f();
 
-        min.set(collidable.getColPosition().toJoml());
-        max.set(collidable.getColPosition().toJoml());
-        min.add(-collidable.getColScale() / 2, -collidable.getColScale() / 2, -collidable.getColScale() / 2);
-        max.add(collidable.getColScale() / 2, collidable.getColScale() / 2, collidable.getColScale() / 2);
+        min.set(collidable.transform.getPosition().toJoml());
+        max.set(collidable.transform.getPosition().toJoml());
+        Vector3 scale = collidable.transform.getScale();
+        min.add(-scale.x / 2, -scale.y / 2, -scale.z / 2);
+        max.add(scale.x / 2, scale.y / 2, scale.z / 2);
         boolean val = Intersectionf.intersectRayAab(camera.getPosition().toJoml(), dir, min, max, nearFar);
         result.x = nearFar.x;
         result.y = nearFar.y;

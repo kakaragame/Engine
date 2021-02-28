@@ -5,15 +5,13 @@ import imgui.flag.ImGuiCond;
 import imgui.gl3.ImGuiImplGl3;
 import imgui.glfw.ImGuiImplGlfw;
 import org.kakara.engine.GameHandler;
-import org.kakara.engine.physics.collision.Collidable;
-import org.kakara.engine.renderobjects.RenderBlock;
 import org.kakara.engine.scene.AbstractGameScene;
 import org.kakara.engine.scene.AbstractScene;
 import org.kakara.engine.scene.Scene;
 import org.kakara.engine.ui.UICanvas;
 import org.kakara.engine.ui.UserInterface;
-import org.kakara.engine.ui.items.ComponentCanvas;
-import org.kakara.engine.ui.items.ObjectCanvas;
+import org.kakara.engine.ui.canvases.ComponentCanvas;
+import org.kakara.engine.ui.canvases.ObjectCanvas;
 import org.kakara.engine.utils.Time;
 import org.kakara.engine.weather.Fog;
 
@@ -38,6 +36,7 @@ public class DebugCanvas implements UICanvas {
      */
     private List<Object> data;
     private String tag;
+
     @Override
     public void init(UserInterface userInterface, GameHandler handler) {
         ImGui.createContext();
@@ -64,13 +63,23 @@ public class DebugCanvas implements UICanvas {
         ImGui.destroyContext();
     }
 
-    private void renderFPSInfo(Scene scene){
+    @Override
+    public boolean isAutoScale() {
+        return false;
+    }
+
+    @Override
+    public void setAutoScale(boolean autoScale) {
+
+    }
+
+    private void renderFPSInfo(Scene scene) {
         ImGui.setNextWindowSize(300, 300, ImGuiCond.Once);
         ImGui.setNextWindowPos(10, 300, ImGuiCond.Once);
         ImGui.begin("FPS Information");
-        ImGui.text("FPS: " + Math.round(1/ Time.getDeltaTime()));
-        fps.push(Math.round(1/ Time.getDeltaTime()));
-        if(fps.size() > 50)
+        ImGui.text("FPS: " + Math.round(1 / Time.getDeltaTime()));
+        fps.push(Math.round(1 / Time.getDeltaTime()));
+        if (fps.size() > 50)
             fps.remove(0);
         float[] fpsData = getFPSArray();
         ImGui.plotLines("", fpsData, fps.size(), 0, "Frame Per Second (Lines)", 0, 100, 200, 100);
@@ -78,49 +87,48 @@ public class DebugCanvas implements UICanvas {
         ImGui.end();
     }
 
-    private float[] getFPSArray(){
+    private float[] getFPSArray() {
         float[] data = new float[fps.size()];
-        for(int i = 0; i < fps.size(); i++){
+        for (int i = 0; i < fps.size(); i++) {
             data[i] = fps.get(i);
         }
         return data;
     }
 
-    private float[] getQuery(){
+    private float[] getQuery() {
         float[] data = new float[query.size()];
-        for(int i = 0; i < query.size(); i++){
+        for (int i = 0; i < query.size(); i++) {
             data[i] = query.get(i);
         }
         return data;
     }
 
-    private void renderSceneInfo(Scene scene){
+    private void renderSceneInfo(Scene scene) {
         ImGui.setNextWindowSize(300, 300, ImGuiCond.Once);
         ImGui.setNextWindowPos(10, 10, ImGuiCond.Once);
         ImGui.begin("Scene Information");
         ImGui.text("Scene Class: " + scene.getClass().getSimpleName());
         ImGui.text("Scene Super Class: " + scene.getClass().getSuperclass().getSimpleName());
         ImGui.separator();
-        if(ImGui.collapsingHeader("UserInterface")){
+        if (ImGui.collapsingHeader("UserInterface")) {
             ImGui.text("# of UICanvases: " + scene.getUserInterface().getUICanvases().size());
             int i = 0;
-            for(UICanvas canvas : scene.getUserInterface().getUICanvases()){
-                if(ImGui.collapsingHeader(canvas.getClass().getSimpleName() + " : " + i)){
-                    if(canvas instanceof ComponentCanvas){
+            for (UICanvas canvas : scene.getUserInterface().getUICanvases()) {
+                if (ImGui.collapsingHeader(canvas.getClass().getSimpleName() + " : " + i)) {
+                    if (canvas instanceof ComponentCanvas) {
                         renderComponentUICanvas((ComponentCanvas) canvas);
-                    }
-                    else if(canvas instanceof ObjectCanvas){
+                    } else if (canvas instanceof ObjectCanvas) {
                         renderObjectUICanvas((ObjectCanvas) canvas);
                     }
                 }
                 i++;
             }
         }
-        if(scene instanceof AbstractScene){
-            if(ImGui.collapsingHeader("Abstract Scene Information")){
+        if (scene instanceof AbstractScene) {
+            if (ImGui.collapsingHeader("Abstract Scene Information")) {
                 AbstractScene abstractScene = (AbstractScene) scene;
                 ImGui.text("# of Items: " + abstractScene.getItemHandler().getItems().size());
-                if(ImGui.treeNode("Lights")) {
+                if (ImGui.treeNode("Lights")) {
                     ImGui.text("# of Point Lights: " + abstractScene.getLightHandler().getDisplayPointLights().size());
                     ImGui.text("# of Spot Lights: " + abstractScene.getLightHandler().getSpotLights().size());
                     ImGui.treePop();
@@ -129,19 +137,19 @@ public class DebugCanvas implements UICanvas {
                 ImGui.text("Has Skybox: " + (abstractScene.getSkyBox() == null ? "false" : "true"));
             }
         }
-        if(scene instanceof AbstractGameScene){
-            if(ImGui.collapsingHeader("Abstract Game Scene Information")){
+        if (scene instanceof AbstractGameScene) {
+            if (ImGui.collapsingHeader("Abstract Game Scene Information")) {
                 AbstractGameScene abstractGameScene = (AbstractGameScene) scene;
-                ImGui.text("# of Render Chunks: " + abstractGameScene.getChunkHandler().getRenderChunkList().size());
-                Collidable lookingAt = abstractGameScene.selectGameItems(30);
-                if(lookingAt instanceof RenderBlock){
-                    RenderBlock rb = (RenderBlock) lookingAt;
-                    ImGui.text("Facing Chunk Query Result: " + rb.getParentChunk().getRenderMesh().getQuery().pollPreviousResult());
-                    query.push(rb.getParentChunk().getRenderMesh().getQuery().pollPreviousResult());
-                }else{
-                    ImGui.text("Facing Chunk Query Result: NAN");
-                }
-                if(query.size() > 50)
+                ImGui.text("# of Render Chunks: " + abstractGameScene.getChunkHandler().getVoxelChunkList().size());
+//                Collidable lookingAt = abstractGameScene.selectGameItems(30);
+//                if(lookingAt instanceof RenderBlock){
+//                    RenderBlock rb = (RenderBlock) lookingAt;
+//                    ImGui.text("Facing Chunk Query Result: " + rb.getParentChunk().getRenderMesh().getQuery().pollPreviousResult());
+//                    query.push(rb.getParentChunk().getRenderMesh().getQuery().pollPreviousResult());
+//                }else{
+//                    ImGui.text("Facing Chunk Query Result: NAN");
+//                }
+                if (query.size() > 50)
                     query.remove(0);
                 float[] queryData = getQuery();
                 ImGui.plotHistogram("", queryData, query.size(), 0, "Query Value (Histogram)", 0, 1, 200, 100);
@@ -150,16 +158,12 @@ public class DebugCanvas implements UICanvas {
         ImGui.end();
     }
 
-    private void renderComponentUICanvas(ComponentCanvas canvas){
+    private void renderComponentUICanvas(ComponentCanvas canvas) {
         ImGui.text("# of Components: " + canvas.getComponents().size());
     }
 
-    private void renderObjectUICanvas(ObjectCanvas canvas){
+    private void renderObjectUICanvas(ObjectCanvas canvas) {
         ImGui.text("# of Objects: " + canvas.getObjects().size());
-    }
-    @Override
-    public void setData(List<Object> data) {
-        this.data = data;
     }
 
     @Override
@@ -168,12 +172,17 @@ public class DebugCanvas implements UICanvas {
     }
 
     @Override
-    public void setTag(String tag) {
-        this.tag = tag;
+    public void setData(List<Object> data) {
+        this.data = data;
     }
 
     @Override
     public String getTag() {
         return tag;
+    }
+
+    @Override
+    public void setTag(String tag) {
+        this.tag = tag;
     }
 }

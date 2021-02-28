@@ -12,6 +12,10 @@ public class Main {
 
         Configuration.DEBUG_MEMORY_ALLOCATOR.set(true);
 
+        GameEngine.LOGGER.debug("Test");
+
+        System.out.println(GameEngine.LOGGER.isErrorEnabled());
+
         GameEngine gameEng = new GameEngine("Kakara Engine :: Test", 1080, 720, true, kt);
         gameEng.run();
     }

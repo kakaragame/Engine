@@ -1,6 +1,6 @@
 package org.kakara.engine.ui.events;
 
-import org.kakara.engine.input.MouseClickType;
+import org.kakara.engine.input.mouse.MouseClickType;
 import org.kakara.engine.math.Vector2;
 
 /**

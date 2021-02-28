@@ -2,12 +2,16 @@ package org.kakara.engine.test;
 
 import org.kakara.engine.GameHandler;
 import org.kakara.engine.engine.CubeData;
+import org.kakara.engine.events.EventHandler;
 import org.kakara.engine.gameitems.Material;
 import org.kakara.engine.gameitems.Texture;
 import org.kakara.engine.gameitems.mesh.Mesh;
+import org.kakara.engine.input.controller.GamePadButtonEvent;
 import org.kakara.engine.math.Vector2;
 import org.kakara.engine.resources.ResourceManager;
 import org.kakara.engine.scene.AbstractMenuScene;
+import org.kakara.engine.ui.canvases.ComponentCanvas;
+import org.kakara.engine.ui.canvases.ObjectCanvas;
 import org.kakara.engine.ui.components.shapes.Rectangle;
 import org.kakara.engine.ui.components.text.BoundedText;
 import org.kakara.engine.ui.components.text.Text;
@@ -19,8 +23,6 @@ import org.kakara.engine.ui.events.UIHoverEnterEvent;
 import org.kakara.engine.ui.events.UIHoverLeaveEvent;
 import org.kakara.engine.ui.font.Font;
 import org.kakara.engine.ui.font.TextAlign;
-import org.kakara.engine.ui.items.ComponentCanvas;
-import org.kakara.engine.ui.items.ObjectCanvas;
 import org.kakara.engine.ui.objectcanvas.UIObject;
 import org.kakara.engine.utils.RGBA;
 import org.kakara.engine.utils.Time;
@@ -29,6 +31,8 @@ import org.kakara.engine.window.WindowIcon;
 
 import java.io.IOException;
 import java.io.InputStream;
+
+import static org.lwjgl.glfw.GLFW.*;
 
 /**
  * Example of how to make a proper UI Scene.
@@ -162,6 +166,9 @@ public class TitleScreenScene extends AbstractMenuScene {
             popupMenu.setVisible(true);
             openMenuButton.setVisible(false);
             playButton.setVisible(false);
+
+            System.out.println(glfwGetGamepadName(GLFW_JOYSTICK_2));
+            System.out.println(glfwGetGamepadName(GLFW_JOYSTICK_1));
         });
 
         Text openMenuTxt = new Text("Open Info!", roboto);
@@ -222,10 +229,10 @@ public class TitleScreenScene extends AbstractMenuScene {
         add(cc);
 
 
-        setCurserStatus(true);
+        setCursorStatus(true);
         // Set the background of the menu.
         setBackground(Utils.inputStreamToTexture(Texture.class.getResourceAsStream("/oa.png")));
-        getUserInterface().setAutoScale(false);
+        cc.setAutoScale(false);
 
     }
 
@@ -235,5 +242,10 @@ public class TitleScreenScene extends AbstractMenuScene {
         // Update the object rotation.
         obj.getRotation().rotateY(0.03f);
         obj.getRotation().rotateX(0.03f);
+    }
+
+    @EventHandler
+    public void onControllerPress(GamePadButtonEvent event) {
+        System.out.println(event.getButtonID());
     }
 }

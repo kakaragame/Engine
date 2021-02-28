@@ -1,19 +1,22 @@
 package org.kakara.engine.gameitems;
 
+import org.kakara.engine.GameEngine;
+import org.kakara.engine.components.Component;
 import org.kakara.engine.gameitems.features.Feature;
 import org.kakara.engine.gameitems.mesh.IMesh;
 import org.kakara.engine.gameitems.mesh.InstancedMesh;
-import org.kakara.engine.gameitems.mesh.Mesh;
 
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Handles all of the items.
- * <p>This class does not manager render chunks. See: {@link org.kakara.engine.renderobjects.ChunkHandler} to add render chunks.</p>
+ * <p>This class does not manager render chunks. See: {@link org.kakara.engine.voxels.ChunkHandler} to add render chunks.</p>
  */
 public class ItemHandler {
     private final List<GameItem> items;
+
+    private final NullMesh nullMesh = new NullMesh();
 
     private final Map<IMesh, List<GameItem>> nonInstancedMeshMap;
     private final Map<InstancedMesh, List<GameItem>> instancedMeshMap;
@@ -31,14 +34,18 @@ public class ItemHandler {
      * @param obj The object to be added.
      */
     public void addItem(GameItem obj) {
-        IMesh mesh = obj.getMesh();
+        IMesh mesh;
+        if (obj.getMeshRenderer().isPresent())
+            mesh = obj.getMeshRenderer().get().getMesh();
+        else
+            mesh = nullMesh;
+        List<GameItem> list;
         if (mesh instanceof InstancedMesh) {
-            List<GameItem> list = instancedMeshMap.computeIfAbsent((InstancedMesh) mesh, k -> new ArrayList<>());
-            list.add(obj);
+            list = instancedMeshMap.computeIfAbsent((InstancedMesh) mesh, k -> new ArrayList<>());
         } else {
-            List<GameItem> list = nonInstancedMeshMap.computeIfAbsent(mesh, k -> new ArrayList<>());
-            list.add(obj);
+            list = nonInstancedMeshMap.computeIfAbsent(mesh, k -> new ArrayList<>());
         }
+        list.add(obj);
         items.add(obj);
     }
 
@@ -50,7 +57,12 @@ public class ItemHandler {
      * @since 1.0-Pre1
      */
     public void removeItem(GameItem obj) {
-        IMesh mesh = obj.getMesh();
+        IMesh mesh;
+        if (obj.getMeshRenderer().isPresent())
+            mesh = obj.getMeshRenderer().get().getMesh();
+        else
+            mesh = new NullMesh();
+
         if (mesh instanceof InstancedMesh) {
             instancedMeshMap.get(mesh).remove(obj);
         } else {
@@ -68,14 +80,23 @@ public class ItemHandler {
     public void removeItemWithTag(String tag) {
         for (GameItem item : new ArrayList<>(items)) {
             if (item.getTag().equals(tag)) {
-                if (item.getMesh() instanceof InstancedMesh) {
-                    instancedMeshMap.get(item.getMesh()).remove(item);
+                IMesh mesh;
+                if (item.getMeshRenderer().isPresent())
+                    mesh = item.getMeshRenderer().get().getMesh();
+                else
+                    mesh = new NullMesh();
+                if (mesh instanceof InstancedMesh) {
+                    instancedMeshMap.get(mesh).remove(item);
                 } else {
-                    nonInstancedMeshMap.get(item.getMesh()).remove(item);
+                    nonInstancedMeshMap.get(mesh).remove(item);
                 }
                 items.remove(item);
             }
         }
+    }
+
+    public boolean containsItem(GameItem item) {
+        return items.contains(item);
     }
 
     /**
@@ -137,15 +158,27 @@ public class ItemHandler {
     }
 
     /**
-     * Update features within game items.
+     * Update features within game items. (Features and Components).
      * <p>Internal use only.</p>
      */
     public void update() {
         for (GameItem item : items) {
             for (Feature feature : item.getFeatures()) {
-                feature.update(item);
+                try {
+                    feature.update(item);
+                } catch (Exception e) {
+                    GameEngine.LOGGER.error("Unable to run feature " + feature.getClass().getName() + ". In item " + item.toString(), e);
+                }
+            }
+            for (Component component : item.getComponents()) {
+                try {
+                    component.update();
+                } catch (Exception e) {
+                    GameEngine.LOGGER.error("Unable to run component " + component.getClass().getName() + ". In item " + item.toString(), e);
+                }
             }
         }
+
     }
 
     /**
@@ -155,13 +188,17 @@ public class ItemHandler {
     public void cleanup() {
         for (Map.Entry<InstancedMesh, List<GameItem>> m : instancedMeshMap.entrySet()) {
             for (GameItem gi : m.getValue()) {
-                gi.cleanup();
+                for (Component component : gi.getComponents()) {
+                    component.cleanup();
+                }
             }
         }
 
         for (Map.Entry<IMesh, List<GameItem>> m : nonInstancedMeshMap.entrySet()) {
             for (GameItem gi : m.getValue()) {
-                gi.cleanup();
+                for (Component component : gi.getComponents()) {
+                    component.cleanup();
+                }
             }
         }
     }

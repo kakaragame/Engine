@@ -8,6 +8,7 @@ import org.kakara.engine.resources.JarResource;
 import org.kakara.engine.resources.Resource;
 import org.kakara.engine.scene.Scene;
 import org.kakara.engine.utils.Utils;
+import org.kakara.engine.voxels.VoxelTexture;
 import org.lwjgl.system.MemoryStack;
 
 import java.io.IOException;
@@ -22,7 +23,7 @@ import static org.lwjgl.system.MemoryStack.stackPush;
 
 /**
  * Handles textures for the Meshes.
- * Do not use this class for RenderChunk Textures. Use {@link org.kakara.engine.renderobjects.RenderTexture}
+ * Do not use this class for RenderChunk Textures. Use {@link VoxelTexture}
  *
  * <p>This class is <b>not</b> thread safe.</p>
  */
@@ -146,21 +147,9 @@ public class Texture {
             glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, this.width, this.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, decodedImage);
             // Generate Mip Map
             glGenerateMipmap(GL_TEXTURE_2D);
-        }
-    }
 
-    /**
-     * Correct the file path on windows.
-     *
-     * @param path The path.
-     * @return The corrected path.
-     */
-    private String correctPath(String path) {
-        // Remove an extra / in front of the drive on windows.
-        if (SystemUtils.IS_OS_WINDOWS && path.startsWith("/")) {
-            return path.substring(1);
+            stbi_image_free(decodedImage);
         }
-        return path;
     }
 
     /**
@@ -178,7 +167,7 @@ public class Texture {
 
             ByteBuffer decodedImage = stbi_load_from_memory(imageData, w, h, avChannels, 4);
 
-            if(decodedImage == null){
+            if (decodedImage == null) {
                 throw new GenericLoadException("Error: Cannot load specified image. " + stbi_failure_reason());
             }
 
@@ -200,11 +189,22 @@ public class Texture {
             // Generate Mip Map
             glGenerateMipmap(GL_TEXTURE_2D);
 
-            w.clear();
-            h.clear();
-            avChannels.clear();
-            decodedImage.clear();
+            stbi_image_free(decodedImage);
         }
+    }
+
+    /**
+     * Correct the file path on windows.
+     *
+     * @param path The path.
+     * @return The corrected path.
+     */
+    private String correctPath(String path) {
+        // Remove an extra / in front of the drive on windows.
+        if (SystemUtils.IS_OS_WINDOWS && path.startsWith("/")) {
+            return path.substring(1);
+        }
+        return path;
     }
 
     /**

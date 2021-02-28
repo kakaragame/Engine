@@ -5,8 +5,8 @@ package org.kakara.engine.exceptions.render;
  *
  * @since 1.0-Pre4
  */
-public class GenericRenderException extends Exception{
-    public GenericRenderException(String message){
+public class GenericRenderException extends Exception {
+    public GenericRenderException(String message) {
         super(message);
     }
 }

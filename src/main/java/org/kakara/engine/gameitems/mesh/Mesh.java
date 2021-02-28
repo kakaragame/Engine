@@ -5,8 +5,8 @@ import org.kakara.engine.GameEngine;
 import org.kakara.engine.exceptions.InvalidThreadException;
 import org.kakara.engine.gameitems.GameItem;
 import org.kakara.engine.gameitems.Material;
-import org.kakara.engine.gameitems.MeshGameItem;
 import org.kakara.engine.gameitems.Texture;
+import org.kakara.engine.physics.collision.ColliderComponent;
 import org.kakara.engine.render.culling.FrustumCullingFilter;
 import org.lwjgl.system.MemoryUtil;
 
@@ -255,7 +255,7 @@ public class Mesh implements IMesh {
             glBindTexture(GL_TEXTURE_2D, normalMap.getId());
         }
 
-        if(material != null){
+        if (material != null) {
             int[] textures = {GL_TEXTURE3, GL_TEXTURE4, GL_TEXTURE5, GL_TEXTURE6, GL_TEXTURE7};
             for (int i = 0; i < material.getOverlayTextures().size(); i++) {
                 Texture ovText = material != null ? material.getOverlayTextures().get(i) : null;
@@ -318,18 +318,13 @@ public class Mesh implements IMesh {
     public void renderList(List<GameItem> gameItems, FrustumCullingFilter filter, Consumer<GameItem> consumer) {
 
         for (GameItem gameItem : gameItems) {
-            if(gameItem instanceof MeshGameItem){
-                MeshGameItem meshGameItem = (MeshGameItem) gameItem;
-                if (meshGameItem.isVisible() && filter.testCollider(meshGameItem.getCollider())) {
-                    consumer.accept(gameItem);
-                    // TODO Improve this, This is no longer as performance efficient.
-                    initRender();
-                    glDrawElements(GL_TRIANGLES, getVertexCount(), GL_UNSIGNED_INT, 0);
-                    endRender();
-                }
-            }else{
+            if (gameItem.getMeshRenderer().isEmpty()) continue;
+            if (gameItem.getMeshRenderer().get().isVisible() && filter.testCollider(gameItem.getComponent(ColliderComponent.class))) {
                 consumer.accept(gameItem);
+                // TODO Improve this, This is no longer as performance efficient.
+                initRender();
                 glDrawElements(GL_TRIANGLES, getVertexCount(), GL_UNSIGNED_INT, 0);
+                endRender();
             }
         }
     }
@@ -346,7 +341,7 @@ public class Mesh implements IMesh {
             glDeleteBuffers(vboId);
         }
 
-        if(material != null){
+        if (material != null) {
             // Delete the texture
             Texture texture = material.getTexture();
             if (texture != null) {

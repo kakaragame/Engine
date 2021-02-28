@@ -4,6 +4,7 @@ import org.joml.Matrix4f;
 import org.kakara.engine.GameHandler;
 import org.kakara.engine.gameitems.GameItem;
 import org.kakara.engine.math.KMath;
+import org.kakara.engine.physics.collision.ColliderComponent;
 import org.kakara.engine.render.Transformation;
 import org.kakara.engine.render.culling.FrustumCullingFilter;
 import org.lwjgl.system.MemoryUtil;
@@ -161,10 +162,10 @@ public class InstancedMesh extends Mesh {
         int i = 0;
         FrustumCullingFilter filter = GameHandler.getInstance().getGameEngine().getRenderer().getFrustumFilter();
         for (GameItem gameItem : gameItems) {
-            if (!filter.testCollider(gameItem.getCollider()))
+            if (!filter.testCollider(gameItem.getComponent(ColliderComponent.class)))
                 continue;
 
-            if (KMath.distance(gameItem.getPosition(), GameHandler.getInstance().getCurrentScene().getCamera().getPosition()) > 100)
+            if (KMath.distance(gameItem.transform.getPosition(), GameHandler.getInstance().getCurrentScene().getCamera().getPosition()) > 100)
                 continue;
 
             Matrix4f modelMatrix = transformation.buildModelMatrix(gameItem);

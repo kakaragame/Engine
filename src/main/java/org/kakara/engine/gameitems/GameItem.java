@@ -1,110 +1,285 @@
 package org.kakara.engine.gameitems;
 
-import org.joml.Quaternionf;
+import org.kakara.engine.GameHandler;
+import org.kakara.engine.components.Component;
+import org.kakara.engine.components.MeshRenderer;
+import org.kakara.engine.components.Transform;
 import org.kakara.engine.gameitems.features.Feature;
 import org.kakara.engine.gameitems.mesh.IMesh;
-import org.kakara.engine.math.Vector3;
-import org.kakara.engine.physics.PhysicsItem;
-import org.kakara.engine.physics.collision.Collidable;
+import org.kakara.engine.properties.Identifiable;
 import org.kakara.engine.properties.Tagable;
 
-import java.util.List;
+import java.lang.reflect.InvocationTargetException;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
- * The main game item interface.
+ * GameItems are the basic building block of the engine. They are used to create objects
+ * that can be seen in a game.
+ * <p>
+ * GameItems on their own are nothing. Components are what give GameItems their functionality.
+ * All GameItems have a transform component, which contains the position, rotation, and scale of
+ * the item.
+ * <br>
+ * Common components have their own getters or public fields for easy access ({@link #getTransform()},
+ * {@link #getMeshRenderer()}).
+ * <br>
+ * Custom components can be made by extending {@link Component}. Components are then added using
+ * {@link #addComponent(Class)}. Please see the documentation for more information on making
+ * custom components.
+ * </p>
+ * <h3>Examples:</h3>
+ * <code>
+ * GameItem item = new GameItem(exampleMesh); <br>
+ * item.transform.setPosition(10, 10, 10);<br>
+ * item.addComponent(ObjectBoxCollider.class);<br>
+ * item.addComponent(PhysicsItem.class);
+ * </code>
+ * <code>
+ * GameItem item = new GameItem();
+ * </code>
  */
-public interface GameItem extends Tagable, Collidable, PhysicsItem {
+public class GameItem implements Tagable, Identifiable {
+    public final Transform transform;
+    // The UUID of the GameItem.
+    private final UUID uuid;
+    // The feature list.
+    private final List<Feature> features = new ArrayList<>();
+    /*
+        Components
+     */
+    private final List<Component> components = new ArrayList<>();
+    private String tag;
+    private List<Object> data;
+    // This stores the texture position if a sprite sheet is used.
+    private int textPos;
+    private MeshRenderer meshRenderer;
 
     /**
-     * Get the current position.
+     * Construct a GameItem with the default constructor.
      *
-     * @return The current position.
+     * <p>This GameItem will only have a Transform component.</p>
      */
-    Vector3 getPosition();
+    public GameItem() {
+        uuid = UUID.randomUUID();
+        textPos = 0;
+        tag = "";
+        data = new ArrayList<>();
+        this.transform = addComponent(Transform.class);
+    }
 
     /**
-     * Set the position of the item
+     * Construct a GameItem with a mesh.
+     * <p>The MeshRenderer component will automatically be added.</p>
      *
-     * @param position The position in vector form
-     * @return The instance of the Game Item.
+     * @param mesh The mesh to add.
      */
-    GameItem setPosition(Vector3 position);
+    public GameItem(IMesh mesh) {
+        this(new IMesh[]{mesh});
+    }
 
     /**
-     * Set the position of the game item.
+     * Construct a GameItem with an array of meshes.
+     * <p>The MeshRenderer component will automatically be added.</p>
      *
-     * @param x x value
-     * @param y y value
-     * @param z z value
-     * @return The instance of the game item.
+     * @param meshes The meshes to add.
      */
-    GameItem setPosition(float x, float y, float z);
+    public GameItem(IMesh[] meshes) {
+        uuid = UUID.randomUUID();
+        textPos = 0;
+        tag = "";
+        data = new ArrayList<>();
+        this.transform = addComponent(Transform.class);
+        this.meshRenderer = addComponent(MeshRenderer.class);
+        this.meshRenderer.setMesh(meshes);
+    }
 
     /**
-     * Change the position of the game item by x, y, and z values.
+     * Add a component to the game item.
+     * <p>
+     * Example:
+     * <code>
+     * PhysicsComponent pi = gameItem.addComponent(PhysicsComponent.class);
+     * </code>
      *
-     * @param x Change in x
-     * @param y Change in y
-     * @param z Change in z
-     * @return The instance of the game item.
+     * <p>Please note that some built-in components have special behavior.
+     * See the documentation for more information.</p>
+     *
+     * @param component The component to add.
+     * @param <T>       The type of component.
+     * @return The instance of the added component.
      */
-    GameItem translateBy(float x, float y, float z);
+    public <T extends Component> T addComponent(Class<T> component) {
+        if (components.stream().anyMatch(comp -> comp.getClass() == component))
+            throw new RuntimeException("This game item already has that component!");
+        T comp;
+        try {
+            comp = (T) component.getConstructors()[0].newInstance();
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | IndexOutOfBoundsException e) {
+            throw new RuntimeException("Cannot add illegal component!");
+        }
+
+        comp.init(this);
+        this.components.add(comp);
+
+        if (component == MeshRenderer.class) {
+            ItemHandler itemHandler = GameHandler.getInstance().getCurrentScene().getItemHandler();
+            assert itemHandler != null;
+            if (itemHandler.containsItem(this)) {
+                itemHandler.removeItem(this);
+                this.meshRenderer = (MeshRenderer) comp;
+                itemHandler.addItem(this);
+            }
+        }
+        comp.start();
+        return comp;
+    }
 
     /**
-     * Change the position of the game item by a vector.
+     * Get a component from the GameItem.
      *
-     * @param position The vector to change by.
-     * @return The instance of the game item.
+     * <p>Example:</p>
+     * <code>
+     * PhysicsComponent pc = gameItem.getComponent(PhysicsComponent.class);
+     * </code>
+     *
+     * <p>You can also use a parent class: </p>
+     * <code>
+     * ColliderComponent cc = gameItem.getComponent(ColliderComponent.class);
+     * </code>
+     *
+     * @param component The component to obtain.
+     * @param <T>       The type of component to obtain.
+     * @return The instance of the component. (Returns null if not found.)
      */
-    GameItem translateBy(Vector3 position);
+    public <T extends Component> T getComponent(Class<T> component) {
+        List<Component> compLst = components.stream().filter(comp -> component.isAssignableFrom(comp.getClass()))
+                .collect(Collectors.toList());
+        if (compLst.size() > 0)
+            return (T) compLst.get(0);
+
+        return null;
+    }
 
     /**
-     * Get the scale of the item.
+     * Remove a component from the GameItem.
+     * <p>Example:</p>
+     * <code>
+     * gameItem.removeComponent(PhysicsComponent.class);
+     * </code>
+     * <p>Please note that some built-in components have special behavior. Required components,
+     * like the Transform component, cannot be removed.</p>
      *
-     * @return The scale
+     * <p>Parent classes cannot be used to remove components.</p>
+     *
+     * @param component The component to remove.
+     * @param <T>       The type of component to remove.
      */
-    float getScale();
+    public <T extends Component> void removeComponent(Class<T> component) {
+        if (component == Transform.class)
+            throw new IllegalArgumentException("Unable to remove required component!");
+
+        getComponent(component).onRemove();
+
+        components.removeIf(comp -> comp.getClass() == component);
+
+
+        if (component == MeshRenderer.class) {
+            ItemHandler itemHandler = GameHandler.getInstance().getCurrentScene().getItemHandler();
+            assert itemHandler != null;
+            if (itemHandler.containsItem(this)) {
+                itemHandler.removeItem(this);
+                this.meshRenderer = null;
+                itemHandler.addItem(this);
+            }
+        }
+    }
 
     /**
-     * Set the scale of the Game Item
+     * Check to see if a component exists.
+     * <p>This does not work with parent classes.</p>
      *
-     * @param scale The scale value
-     * @return The instance of the game item.
+     * @param component The component to find.
+     * @param <T>       The type of component to find.
+     * @return If the component was found.
      */
-    GameItem setScale(float scale);
-
-    Quaternionf getRotation();
+    public <T extends Component> boolean hasComponent(Class<T> component) {
+        return components.stream().anyMatch(comp -> comp.getClass() == component);
+    }
 
     /**
-     * Set the rotation of the Object
+     * Get the list of components.
      *
-     * @param q The quaternion
-     * @return The instance of the game item.
+     * @return An read-only list of components.
      */
-    GameItem setRotation(Quaternionf q);
+    public List<Component> getComponents() {
+        return Collections.unmodifiableList(components);
+    }
 
     /**
-     * Change the rotation by the angle on the axis.
+     * Get the transform component.
+     * <p>This is the same as using the public transform field. There is no difference or preference.</p>
      *
-     * @param angle The angle to change by. (In radians)
-     * @param axis  The vector of the axis (without magnitude)
-     * @return The instance of the game item.
+     * @return The transform component.
      */
-    GameItem rotateAboutAxis(float angle, Vector3 axis);
+    public Transform getTransform() {
+        return transform;
+    }
 
     /**
-     * Set the rotation to the angle on the axis.
+     * Get the mesh renderer for the GameItem.
      *
-     * @param angle The angle to set to. (In Radians).
-     * @param axis  The vector of the axis (without magnitude)
-     * @return The instance of the game item.
+     * @return An optional (possibly) containing the MeshRenderer component.
      */
-    GameItem setRotationAboutAxis(float angle, Vector3 axis);
+    public Optional<MeshRenderer> getMeshRenderer() {
+        return Optional.ofNullable(meshRenderer);
+    }
 
+    /**
+     * Get the texture position of the GameItem on a sprite sheet.
+     * <p>
+     * TODO Place this on the Material class instead?
+     *
+     * @return The texture position.
+     */
+    public int getTextPos() {
+        return this.textPos;
+    }
 
-    void render();
+    /**
+     * Set the texture position.
+     * <p>
+     * TODO Place this on the Material class instead?
+     *
+     * @param pos The texture position.
+     */
+    public void setTextPos(int pos) {
+        this.textPos = pos;
+    }
 
-    void cleanup();
+    /**
+     * Get the list of features.
+     *
+     * @return The list of features.
+     * @deprecated Replaced by the component system. This will be removed in Pre6.
+     */
+    @Deprecated
+    public List<Feature> getFeatures() {
+        return features;
+    }
+
+    /**
+     * Add a feature to this GameItem.
+     * <p>Consider using a {@link Component} instead of a feature.</p>
+     *
+     * @param feature The feature to add.
+     * @deprecated Replaced by the component system. This will be removed in Pre6.
+     */
+    @Deprecated
+    public void addFeature(Feature feature) {
+        features.add(feature);
+        feature.updateValues(this);
+    }
 
 
     /**
@@ -113,44 +288,47 @@ public interface GameItem extends Tagable, Collidable, PhysicsItem {
      * @param exact If you want it to be an exact copy.
      * @return The clone of the gameobject.
      */
-    GameItem clone(boolean exact);
+    public GameItem clone(boolean exact) {
+        GameItem clone = new GameItem(this.meshRenderer.getMeshes());
+        if (exact) {
+            clone.transform.setPosition(transform.getPosition().x, transform.getPosition().y, transform.getPosition().z);
+            clone.transform.setRotation(transform.getRotation());
+            clone.transform.setScale(transform.getScale());
+        }
+        return clone;
+    }
 
-    /**
-     * Get the mesh of the game item.
-     *
-     * @return The mesh
-     */
-    IMesh getMesh();
+    @Override
+    public UUID getUUID() {
+        return uuid;
+    }
 
-    /**
-     * Get the texture position
-     * <p>Mainly used by the particle system</p>
-     *
-     * @return The texture position
-     */
-    int getTextPos();
+    @Override
+    public List<Object> getData() {
+        return data;
+    }
 
-    /**
-     * Set the texture position
-     * <p>Mainly used by the particle system</p>
-     *
-     * @param pos The position
-     */
-    void setTextPos(int pos);
+    @Override
+    public void setData(List<Object> data) {
+        this.data = data;
+    }
 
-    /**
-     * Get the features on this GameItem.
-     *
-     * @return The list of features.
-     * @since 1.0-Pre2
-     */
-    List<Feature> getFeatures();
+    @Override
+    public String getTag() {
+        return tag;
+    }
 
-    /**
-     * Add a feature to this GameItem.
-     *
-     * @param feature The feature to add.
-     * @since 1.0-Pre2
-     */
-    void addFeature(Feature feature);
+    @Override
+    public void setTag(String tag) {
+        this.tag = tag;
+    }
+
+    @Override
+    public String toString() {
+        return "GameItem{" +
+                "uuid=" + uuid +
+                ", tag='" + tag + '\'' +
+                ", textPos=" + textPos +
+                '}';
+    }
 }

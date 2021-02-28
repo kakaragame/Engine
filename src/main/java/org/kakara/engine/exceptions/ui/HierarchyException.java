@@ -6,7 +6,7 @@ package org.kakara.engine.exceptions.ui;
  * @since 1.0-Pre4
  */
 public class HierarchyException extends RuntimeException {
-    public HierarchyException(String message){
+    public HierarchyException(String message) {
         super(message);
     }
 }

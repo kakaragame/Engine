@@ -17,9 +17,10 @@ import org.lwjgl.nanovg.NanoVGGL3;
 import static org.lwjgl.nanovg.NanoVG.*;
 
 /**
- * Display an image onto the HUD.
+ * The Sprite Component is used to display an image (or sprite) on the
+ * UserInterface.
  */
-public class Sprite extends GeneralComponent {
+public class Sprite extends GeneralUIComponent {
     private float rotation;
     private byte alpha;
     private int image;
@@ -29,11 +30,12 @@ public class Sprite extends GeneralComponent {
 
     /**
      * Create a sprite.
-     * @param texture The texture of the sprite
+     *
+     * @param texture  The texture of the sprite
      * @param position The position of the sprite
-     * @param scale The scale of the sprite.
+     * @param scale    The scale of the sprite.
      */
-    public Sprite(Texture texture, Vector2 position, Vector2 scale){
+    public Sprite(Texture texture, Vector2 position, Vector2 scale) {
         this.alpha = (byte) 255;
         this.rotation = 0;
         this.position = position;
@@ -43,7 +45,14 @@ public class Sprite extends GeneralComponent {
         isHovering = false;
     }
 
-    public Sprite(Texture texture, Vector2 position){
+    /**
+     * Create a sprite.
+     * <p>The scale of the sprite is automatically calculated by the system.</p>
+     *
+     * @param texture  The texture of the sprite.
+     * @param position The position of the sprite.
+     */
+    public Sprite(Texture texture, Vector2 position) {
         this.alpha = (byte) 255;
         this.rotation = 0;
         this.position = position;
@@ -53,11 +62,15 @@ public class Sprite extends GeneralComponent {
         isHovering = false;
     }
 
+    public Sprite(Texture tex) {
+        this(tex, new Vector2(0, 0));
+    }
+
     @Override
     public void init(UserInterface userInterface, GameHandler handler) {
         pollInit(userInterface, handler);
         this.image = NanoVGGL3.nvglCreateImageFromHandle(userInterface.getVG(), texture.getId(), texture.getWidth(), texture.getHeight(), 0);
-        if(scale.equals(new Vector2(-1, -1))){
+        if (scale.equals(new Vector2(-1, -1))) {
             int[] w = new int[1], h = new int[1];
             nvgImageSize(userInterface.getVG(), image, w, h);
             this.setScale(w[0], h[0]);
@@ -66,100 +79,106 @@ public class Sprite extends GeneralComponent {
     }
 
     @EventHandler
-    public void onClick(MouseClickEvent evt){
-        if(UserInterface.isColliding(getTruePosition(), scale, new Vector2(evt.getMousePosition()))){
+    public void onClick(MouseClickEvent evt) {
+        if (UserInterface.isColliding(getGlobalPosition(), scale, new Vector2(evt.getMousePosition()))) {
             triggerEvent(UIClickEvent.class, position, evt.getMouseClickType());
         }
     }
 
     @EventHandler
-    public void onRelease(MouseReleaseEvent evt){
-        if(UserInterface.isColliding(getTruePosition(), scale, new Vector2(evt.getMousePosition()))){
+    public void onRelease(MouseReleaseEvent evt) {
+        if (UserInterface.isColliding(getGlobalPosition(), scale, new Vector2(evt.getMousePosition()))) {
             triggerEvent(UIReleaseEvent.class, position, evt.getMouseClickType());
         }
     }
 
-    public Sprite(Texture tex){
-        this(tex, new Vector2(0, 0));
-    }
-
     /**
      * Change the image of the sprite
+     *
      * @param tex The texture to change it to.
      */
-    public void setImage(Texture tex){
+    public void setImage(Texture tex) {
         this.texture = tex;
         nvgDeleteImage(GameHandler.getInstance().getSceneManager().getCurrentScene().getUserInterface().getVG(),
                 image);
         this.image = NanoVGGL3.nvglCreateImageFromHandle(
                 GameHandler.getInstance().getSceneManager().getCurrentScene().getUserInterface().getVG(),
-                tex.getId(), texture.getWidth(),tex.getHeight(), 0);
+                tex.getId(), texture.getWidth(), tex.getHeight(), 0);
     }
 
-    public void setScaleToImageSize(){
+    /**
+     * Set the scale of the image to the size of the image itself.
+     */
+    public void setScaleToImageSize() {
         int[] w = new int[1], h = new int[1];
         nvgImageSize(GameHandler.getInstance().getSceneManager().getCurrentScene().getUserInterface().getVG(), image, w, h);
         this.setScale(w[0], h[0]);
     }
 
     /**
+     * Get the alpha value of the sprite
+     *
+     * @return The alpha value.
+     */
+    public int getAlpha() {
+        return this.alpha & 0xFF;
+    }
+
+    /**
      * Set the transparency of the sprite.
+     *
      * @param b Transparency level
      * @return The instance of the sprite.
      */
-    public Sprite setAlpha(byte b){
+    public Sprite setAlpha(byte b) {
         this.alpha = b;
         return this;
     }
 
     /**
-     * Get the alpha value of the sprite
-     * @return The alpha value.
+     * Get the rotation of the sprite.
+     *
+     * @return The rotation.
      */
-    public int getAlpha(){
-        return this.alpha & 0xFF;
+    public float getRotation() {
+        return this.rotation;
     }
 
     /**
      * Set the rotation of the image
+     *
      * @param rotation The rotation of the image in degrees.
      * @return The instance of the sprite.
      */
-    public Sprite setRotation(float rotation){
+    public Sprite setRotation(float rotation) {
         this.rotation = rotation;
         return this;
     }
 
-    /**
-     * Get the rotation of the sprite.
-     * @return The rotation.
-     */
-    public float getRotation(){
-        return this.rotation;
-    }
-
     @Override
     public void render(Vector2 relative, UserInterface userInterface, GameHandler handler) {
-        if(!isVisible()) return;
-        boolean isColliding = UserInterface.isColliding(getTruePosition(), getTrueScale(), new Vector2(handler.getMouseInput().getPosition()));
-        if(isColliding && !isHovering){
+        if (!isVisible()) return;
+        boolean isColliding = UserInterface.isColliding(getGlobalPosition(), getGlobalScale(), new Vector2(handler.getMouseInput().getPosition()));
+        if (isColliding && !isHovering) {
             isHovering = true;
             triggerEvent(UIHoverEnterEvent.class, handler.getMouseInput().getCurrentPosition());
-        }else if(!isColliding && isHovering){
+        } else if (!isColliding && isHovering) {
             isHovering = false;
             triggerEvent(UIHoverLeaveEvent.class, handler.getMouseInput().getCurrentPosition());
         }
-        NVGPaint imagePaint = nvgImagePattern(userInterface.getVG(), getTruePosition().x, getTruePosition().y, getTrueScale().x, getTrueScale().y, rotation, image, 1.0f, NVGPaint.calloc());
+        NVGPaint imagePaint = nvgImagePattern(userInterface.getVG(), getGlobalPosition().x, getGlobalPosition().y, getGlobalScale().x, getGlobalScale().y, rotation, image, 1.0f, NVGPaint.calloc());
         nvgBeginPath(userInterface.getVG());
-        nvgRect(userInterface.getVG(), getTruePosition().x, getTruePosition().y,  getTrueScale().x, getTrueScale().y);
+        nvgRect(userInterface.getVG(), getGlobalPosition().x, getGlobalPosition().y, getGlobalScale().x, getGlobalScale().y);
         nvgFillPaint(userInterface.getVG(), imagePaint);
         nvgFill(userInterface.getVG());
+        nvgClosePath(userInterface.getVG());
         imagePaint.free();
-        pollRender(relative, userInterface, handler);
+
+        super.render(relative, userInterface, handler);
     }
 
     @Override
-    public void cleanup(GameHandler handler){
+    public void cleanup(GameHandler handler) {
         super.cleanup(handler);
 //        nvgDeleteImage(handler.getSceneManager().getCurrentScene().getHUD().getVG(),
 //                image);

@@ -3,7 +3,7 @@ package org.kakara.engine.ui.components.text;
 import org.kakara.engine.GameHandler;
 import org.kakara.engine.math.Vector2;
 import org.kakara.engine.ui.UserInterface;
-import org.kakara.engine.ui.components.GeneralComponent;
+import org.kakara.engine.ui.components.GeneralUIComponent;
 import org.kakara.engine.ui.constraints.Constraint;
 import org.kakara.engine.ui.font.Font;
 import org.kakara.engine.utils.RGBA;
@@ -23,7 +23,10 @@ import static org.lwjgl.nanovg.NanoVG.*;
  *
  * @since 1.0-Pre1
  */
-public class BoundedText extends GeneralComponent {
+public class BoundedText extends GeneralUIComponent {
+    private final NVGColor nvgColor;
+    private final NVGTextRow.Buffer rows = NVGTextRow.create(3);
+    private final FloatBuffer lineh = BufferUtils.createFloatBuffer(1);
     private String text;
     private ByteBuffer paragraph;
     private Font font;
@@ -34,10 +37,6 @@ public class BoundedText extends GeneralComponent {
     private float blur;
     private Vector2 maximumBound;
     private RGBA color;
-    private final NVGColor nvgColor;
-    private final NVGTextRow.Buffer rows = NVGTextRow.create(3);
-    private final FloatBuffer lineh = BufferUtils.createFloatBuffer(1);
-
     private UserInterface userInterface;
 
     /**
@@ -73,7 +72,7 @@ public class BoundedText extends GeneralComponent {
     public void render(Vector2 relative, UserInterface userInterface, GameHandler handler) {
         if (!isVisible()) return;
 
-        pollRender(relative, userInterface, handler);
+        super.render(relative, userInterface, handler);
 
         displayText(userInterface, handler);
     }
@@ -112,7 +111,7 @@ public class BoundedText extends GeneralComponent {
 
         nvgTextMetrics(userInterface.getVG(), null, null, lineh);
 
-        float y = getTruePosition().y;
+        float y = getGlobalPosition().y;
 
 //        NVGTextRow.Buffer buf = NVGTextRow.create(3);
 //        nvgTextBreakLines(userInterface.getVG(), "This is a test", calculateLineWidth(handler), buf);
@@ -138,7 +137,7 @@ public class BoundedText extends GeneralComponent {
                 nvgRGBA((byte) color.r, (byte) color.g, (byte) color.b, (byte) color.aToNano(), nvgColor);
                 nvgFillColor(userInterface.getVG(), nvgColor);
 
-                nnvgText(userInterface.getVG(), getTruePosition().x, y, row.start(), row.end());
+                nnvgText(userInterface.getVG(), getGlobalPosition().x, y, row.start(), row.end());
 
                 lnum++;
                 y += lineh.get(0);
@@ -150,11 +149,11 @@ public class BoundedText extends GeneralComponent {
     }
 
     private float toRelativeX(float x) {
-        return x - getTruePosition().x;
+        return x - getGlobalPosition().x;
     }
 
     private float toRelativeY(float y) {
-        return y - getTruePosition().y;
+        return y - getGlobalPosition().y;
     }
 
     /**
@@ -164,8 +163,8 @@ public class BoundedText extends GeneralComponent {
      * @return The scaled size
      */
     protected float calculateSize(GameHandler handler) {
-        if (userInterface.isAutoScaled())
-            return this.getSize() * ((float) handler.getWindow().getWidth() / (float) handler.getWindow().initalWidth);
+        if (getParentCanvas().isAutoScale())
+            return this.getSize() * ((float) handler.getWindow().getWidth() / (float) handler.getWindow().initialWidth);
         else
             return this.getSize();
     }
@@ -178,8 +177,8 @@ public class BoundedText extends GeneralComponent {
      * @return the scaled width
      */
     protected float calculateLineWidth(GameHandler handler) {
-        if (userInterface.isAutoScaled())
-            return this.getMaximumBound().x * ((float) handler.getWindow().getWidth() / (float) handler.getWindow().initalWidth);
+        if (getParentCanvas().isAutoScale())
+            return this.getMaximumBound().x * ((float) handler.getWindow().getWidth() / (float) handler.getWindow().initialWidth);
         else
             return this.getMaximumBound().x;
     }

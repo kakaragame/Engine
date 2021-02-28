@@ -8,14 +8,15 @@ import org.kakara.engine.gameitems.ItemHandler;
 import org.kakara.engine.gameitems.SkyBox;
 import org.kakara.engine.gameitems.Texture;
 import org.kakara.engine.gameitems.particles.ParticleHandler;
+import org.kakara.engine.input.controller.ControllerManager;
 import org.kakara.engine.lighting.LightHandler;
 import org.kakara.engine.math.Vector2;
 import org.kakara.engine.physics.collision.CollisionManager;
 import org.kakara.engine.ui.UICanvas;
 import org.kakara.engine.ui.UserInterface;
-import org.kakara.engine.ui.components.GeneralComponent;
+import org.kakara.engine.ui.canvases.ComponentCanvas;
+import org.kakara.engine.ui.components.GeneralUIComponent;
 import org.kakara.engine.ui.components.Sprite;
-import org.kakara.engine.ui.items.ComponentCanvas;
 import org.kakara.engine.utils.Time;
 import org.kakara.engine.weather.Fog;
 
@@ -57,12 +58,12 @@ public abstract class AbstractMenuScene implements Scene {
     }
 
     @Override
-    public boolean getCurserStatus() {
+    public boolean getCursorStatus() {
         return mouseStatus;
     }
 
     @Override
-    public void setCurserStatus(boolean status) {
+    public void setCursorStatus(boolean status) {
         mouseStatus = status;
         gameHandler.getWindow().setCursorVisibility(status);
     }
@@ -82,6 +83,11 @@ public abstract class AbstractMenuScene implements Scene {
     @Override
     public UserInterface getUserInterface() {
         return userInterface;
+    }
+
+    @Override
+    public ControllerManager getControllerManager() {
+        return gameHandler.getControllerManager();
     }
 
     @Override
@@ -185,7 +191,7 @@ public abstract class AbstractMenuScene implements Scene {
 /**
  * INTERNAL USE ONLY
  */
-class BackgroundImage extends GeneralComponent {
+class BackgroundImage extends GeneralUIComponent {
 
     private final Sprite sprite;
 
@@ -201,7 +207,7 @@ class BackgroundImage extends GeneralComponent {
 
     @Override
     public void render(Vector2 relative, UserInterface userInterface, GameHandler handler) {
-        pollRender(relative, userInterface, handler);
+        super.render(relative, userInterface, handler);
         sprite.scale = new Vector2(handler.getWindow().getWidth(), handler.getWindow().getHeight());
     }
 

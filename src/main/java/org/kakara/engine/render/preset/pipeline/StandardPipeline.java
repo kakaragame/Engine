@@ -1,10 +1,8 @@
 package org.kakara.engine.render.preset.pipeline;
 
 import org.joml.Matrix4f;
-import org.kakara.engine.GameHandler;
 import org.kakara.engine.exceptions.render.ShaderNotFoundException;
 import org.kakara.engine.gameitems.GameItem;
-import org.kakara.engine.gameitems.MeshGameItem;
 import org.kakara.engine.gameitems.mesh.IMesh;
 import org.kakara.engine.gameitems.mesh.InstancedMesh;
 import org.kakara.engine.lighting.LightHandler;
@@ -16,11 +14,6 @@ import org.kakara.engine.scene.Scene;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
-import static org.lwjgl.opengl.GL11.glBindTexture;
-import static org.lwjgl.opengl.GL13.GL_TEXTURE2;
-import static org.lwjgl.opengl.GL13.glActiveTexture;
 
 /**
  * The default render pipeline for the GameItem system.
@@ -90,7 +83,7 @@ public class StandardPipeline implements RenderPipeline {
      * @param lightViewMatrix The light view matrix.
      */
     private void renderNonInstancedMeshes(Scene scene, boolean depthMap, Shader shader, Matrix4f viewMatrix, Matrix4f lightViewMatrix) {
-        shaderProgram.setUniform("isInstanced", 0);
+        shader.setUniform("isInstanced", 0);
 
         // Render each mesh with the associated game Items
         Map<IMesh, List<GameItem>> mapMeshes = Objects.requireNonNull(scene.getItemHandler()).getNonInstancedMeshMap();
@@ -102,16 +95,15 @@ public class StandardPipeline implements RenderPipeline {
             }
 
             mesh.renderList(mapMeshes.get(mesh), frustumFilter, (GameItem gameItem) -> {
-                MeshGameItem meshGameItem = ((MeshGameItem) gameItem);
                 Matrix4f modelMatrix = transformation.buildModelMatrix(gameItem);
                 if (!depthMap) {
                     Matrix4f modelViewMatrix = transformation.buildModelViewMatrix(modelMatrix, viewMatrix);
-                    shaderProgram.setUniform("modelViewNonInstancedMatrix", modelViewMatrix);
+                    shader.setUniform("modelViewNonInstancedMatrix", modelViewMatrix);
                 }
                 Matrix4f modelLightViewMatrix = transformation.buildModelLightViewMatrix(modelMatrix, lightViewMatrix);
-                shaderProgram.setUniform("modelLightViewNonInstancedMatrix", modelLightViewMatrix);
+                shader.setUniform("modelLightViewNonInstancedMatrix", modelLightViewMatrix);
                 // Render every mesh (some game items can have more than one)
-                for (IMesh m : meshGameItem.getMeshes()) {
+                for (IMesh m : gameItem.getMeshRenderer().orElseThrow().getMeshes()) {
                     m.render();
                 }
             });
@@ -128,15 +120,16 @@ public class StandardPipeline implements RenderPipeline {
      * @param lightViewMatrix The light view matrix.
      */
     private void renderInstancedMeshes(Scene scene, boolean depthMap, Shader shader, Matrix4f viewMatrix, Matrix4f lightViewMatrix) {
-        shaderProgram.setUniform("isInstanced", 1);
+        shader.setUniform("isInstanced", 1);
 
         // Render each mesh with the associated game Items
         Map<InstancedMesh, List<GameItem>> mapMeshes = Objects.requireNonNull(scene.getItemHandler()).getInstancedMeshMap();
         for (InstancedMesh mesh : mapMeshes.keySet()) {
             if (!depthMap) {
-                shaderProgram.setUniform("material", mesh.getMaterial().get());
+                shader.setUniform("material", mesh.getMaterial().get());
                 Graphics.bindShadowMap(shadowMap);
             }
+
             mesh.renderListInstanced(mapMeshes.get(mesh), depthMap, transformation, viewMatrix, lightViewMatrix);
         }
     }

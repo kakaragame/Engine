@@ -65,7 +65,7 @@ public class ParticlesPipeline implements RenderPipeline {
 
         for (int i = 0; i < numEmitters; i++) {
             ParticleEmitter emitter = emitters.get(i);
-            Mesh mesh = (Mesh) emitter.getBaseParticle().getMesh();
+            Mesh mesh = (Mesh) emitter.getBaseParticle().getMeshRenderer().get().getMesh();
 
             Texture text = mesh.getMaterial().get().getTexture();
             particleShaderProgram.setUniform("numCols", text.getNumCols());
@@ -82,10 +82,10 @@ public class ParticlesPipeline implements RenderPipeline {
                         Matrix4f modelMatrix = transformation.buildModelMatrix(gameItem);
 
                         viewMatrix.transpose3x3(modelMatrix);
-                        viewMatrix.scale(gameItem.getScale());
+                        viewMatrix.scale(gameItem.transform.getScale().toJoml());
 
                         Matrix4f modelViewMatrix = transformation.buildModelViewMatrix(modelMatrix, viewMatrix);
-                        modelViewMatrix.scale(gameItem.getScale());
+                        modelViewMatrix.scale(gameItem.transform.getScale().toJoml());
                         particleShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
                     }
             );

@@ -1,7 +1,7 @@
 package org.kakara.engine.gameitems.particles;
 
 import org.joml.Quaternionf;
-import org.kakara.engine.gameitems.MeshGameItem;
+import org.kakara.engine.gameitems.GameItem;
 import org.kakara.engine.gameitems.Texture;
 import org.kakara.engine.gameitems.mesh.Mesh;
 import org.kakara.engine.math.Vector3;
@@ -9,18 +9,14 @@ import org.kakara.engine.math.Vector3;
 /**
  * Handles the particles.
  */
-public class Particle extends MeshGameItem {
-
-    private Vector3 speed;
-
-    //Time to live in milliseconds
-    private long ttl;
-
-    private long updateTextureMillis;
-
-    private long currentAnimTimeMillis;
+public class Particle extends GameItem {
 
     private final int animFrames;
+    private Vector3 speed;
+    //Time to live in milliseconds
+    private long ttl;
+    private long updateTextureMillis;
+    private long currentAnimTimeMillis;
 
     public Particle(Mesh mesh, Vector3 speed, long ttl, long updateTextureMillis) {
         super(mesh);
@@ -28,17 +24,17 @@ public class Particle extends MeshGameItem {
         this.ttl = ttl;
         this.updateTextureMillis = updateTextureMillis;
         this.currentAnimTimeMillis = 0;
-        Texture texture = this.getMesh().getMaterial().get().getTexture();
+        Texture texture = this.getMeshRenderer().get().getMesh().getMaterial().get().getTexture();
         this.animFrames = texture.getNumCols() * texture.getNumRows();
     }
 
     public Particle(Particle baseParticle) {
-        super(baseParticle.getMesh());
-        Vector3 aux = baseParticle.getPosition();
-        setPosition(aux.x, aux.y, aux.z);
-        Quaternionf rotation = new Quaternionf(baseParticle.getRotation());
-        setRotation(rotation);
-        setScale(baseParticle.getScale());
+        super(baseParticle.getMeshRenderer().get().getMesh());
+        Vector3 aux = baseParticle.transform.getPosition();
+        transform.setPosition(aux.x, aux.y, aux.z);
+        Quaternionf rotation = new Quaternionf(baseParticle.transform.getRotation());
+        transform.setRotation(rotation);
+        transform.setScale(baseParticle.transform.getScale());
         this.speed = baseParticle.speed.clone();
         this.ttl = baseParticle.getTtl();
         this.updateTextureMillis = baseParticle.getUpdateTextureMillis();

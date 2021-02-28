@@ -1,7 +1,7 @@
 package org.kakara.engine.events.event;
 
 import org.joml.Vector2d;
-import org.kakara.engine.input.MouseClickType;
+import org.kakara.engine.input.mouse.MouseClickType;
 
 /**
  * When a mouse button is clicked.

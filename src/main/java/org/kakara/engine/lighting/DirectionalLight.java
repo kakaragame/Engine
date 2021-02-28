@@ -6,10 +6,10 @@ import org.kakara.engine.math.Vector3;
  * Handles Lighting that is similar to the sun.
  */
 public class DirectionalLight {
+    private final OrthoCoords orthoCords;
     private LightColor color;
     private Vector3 direction;
     private float intensity;
-    private final OrthoCoords orthoCords;
     private float shadowPosMult;
 
     /**

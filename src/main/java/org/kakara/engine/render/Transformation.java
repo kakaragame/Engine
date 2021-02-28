@@ -45,11 +45,12 @@ public class Transformation {
 
     /**
      * Update the projection matrix.
-     * @param fov The fov.
-     * @param width The width.
+     *
+     * @param fov    The fov.
+     * @param width  The width.
      * @param height The height.
-     * @param zNear The z near
-     * @param zFar The z far.
+     * @param zNear  The z near
+     * @param zFar   The z far.
      * @return The updated projection matrix.
      */
     public Matrix4f updateProjectionMatrix(float fov, float width, float height, float zNear, float zFar) {
@@ -73,12 +74,11 @@ public class Transformation {
      * @return The model matrix.
      */
     public Matrix4f buildModelMatrix(GameItem gameItem) {
-
-        Quaternionf rotation = gameItem.getRotation();
+        Quaternionf rotation = gameItem.transform.getRotation();
         return modelMatrix.translationRotateScale(
-                gameItem.getPosition().x, gameItem.getPosition().y, gameItem.getPosition().z,
+                gameItem.transform.getPosition().x, gameItem.transform.getPosition().y, gameItem.transform.getPosition().z,
                 rotation.x, rotation.y, rotation.z, rotation.w,
-                gameItem.getScale(), gameItem.getScale(), gameItem.getScale());
+                gameItem.transform.getScale().x, gameItem.transform.getScale().y, gameItem.transform.getScale().z);
     }
 
     /**
@@ -136,9 +136,9 @@ public class Transformation {
      * @return The model view matrix.
      */
     public Matrix4f buildModelViewMatrix(GameItem gameItem, Matrix4f matrix) {
-        Quaternionf rotation = gameItem.getRotation();
-        modelMatrix.translationRotateScale(gameItem.getPosition().x, gameItem.getPosition().y, gameItem.getPosition().z, rotation.x, rotation.y, rotation.z, rotation.w, gameItem.getScale(),
-                gameItem.getScale(), gameItem.getScale());
+        Quaternionf rotation = gameItem.transform.getRotation();
+        modelMatrix.translationRotateScale(gameItem.transform.getPosition().x, gameItem.transform.getPosition().y, gameItem.transform.getPosition().z, rotation.x, rotation.y, rotation.z, rotation.w, gameItem.transform.getScale().x,
+                gameItem.transform.getScale().y, gameItem.transform.getScale().z);
         modelViewMatrix.set(matrix);
         return modelViewMatrix.mul(modelMatrix);
     }

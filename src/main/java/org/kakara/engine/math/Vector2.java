@@ -79,20 +79,22 @@ public class Vector2 {
 
     /**
      * Add a value to the vector. (Non-Mutated).
+     *
      * @param x The x value.
      * @param y The y value.
      * @return The vector after addition.
      */
-    public Vector2 add(float x, float y){
+    public Vector2 add(float x, float y) {
         return new Vector2(this.x + x, this.y + y);
     }
 
     /**
      * Add a value to the vector. (Non-Mutated).
+     *
      * @param vec The vector.
      * @return The vector after addition.
      */
-    public Vector2 add(Vector2 vec){
+    public Vector2 add(Vector2 vec) {
         return add(vec.x, vec.y);
     }
 
@@ -123,20 +125,22 @@ public class Vector2 {
 
     /**
      * Subtract a x, y from the vector. (Non-Mutated).
+     *
      * @param x The x value.
      * @param y The y value.
      * @return The vector after subtraction
      */
-    public Vector2 subtract(float x, float y){
+    public Vector2 subtract(float x, float y) {
         return new Vector2(this.x - x, this.y - y);
     }
 
     /**
      * Subtract a vector from the current vector. (Non-Mutated).
+     *
      * @param vec The x value.
      * @return The vector after subtraction
      */
-    public Vector2 subtract(Vector2 vec){
+    public Vector2 subtract(Vector2 vec) {
         return subtract(vec.x, vec.y);
     }
 

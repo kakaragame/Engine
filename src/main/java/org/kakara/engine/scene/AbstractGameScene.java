@@ -4,14 +4,14 @@ import org.joml.Intersectionf;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.kakara.engine.GameHandler;
-import org.kakara.engine.gameitems.MeshGameItem;
 import org.kakara.engine.math.Vector3;
 import org.kakara.engine.physics.FixedPhysicsUpdater;
-import org.kakara.engine.physics.collision.Collidable;
+import org.kakara.engine.physics.collision.ColliderComponent;
 import org.kakara.engine.physics.collision.CollisionManager;
-import org.kakara.engine.renderobjects.ChunkHandler;
-import org.kakara.engine.renderobjects.RenderChunk;
-import org.kakara.engine.renderobjects.TextureAtlas;
+import org.kakara.engine.physics.collision.VoxelCollider;
+import org.kakara.engine.voxels.ChunkHandler;
+import org.kakara.engine.voxels.TextureAtlas;
+import org.kakara.engine.voxels.VoxelChunk;
 
 import java.util.*;
 
@@ -22,8 +22,8 @@ import java.util.*;
 public abstract class AbstractGameScene extends AbstractScene {
 
     private final ChunkHandler chunkHandler;
-    private TextureAtlas textureAtlas;
     private final Timer physicsUpdater;
+    private TextureAtlas textureAtlas;
 
     public AbstractGameScene(GameHandler gameHandler) {
         super(gameHandler);
@@ -78,8 +78,8 @@ public abstract class AbstractGameScene extends AbstractScene {
      *                 <p>Note: This value is limited by the maximum distance set in {@link CollisionManager#getSelectionItems(Vector3)}</p>
      * @return The collidable that was found.
      */
-    public Collidable selectGameItems(float distance) {
-        Collidable selectedGameItem = null;
+    public ColliderComponent selectGameItems(float distance) {
+        ColliderComponent selectedGameItem = null;
         float closestDistance = distance;
 
         Vector3f dir = new Vector3f();
@@ -90,21 +90,18 @@ public abstract class AbstractGameScene extends AbstractScene {
         Vector3f min = new Vector3f();
         Vector2f nearFar = new Vector2f();
 
-        for (Collidable collidable : getCollisionManager().getSelectionItems(getCamera().getPosition())) {
-            collidable.setSelected(false);
-            min.set(collidable.getColPosition().toJoml());
-            max.set(collidable.getColPosition().toJoml());
-            min.add(-collidable.getColScale() / 2, -collidable.getColScale() / 2, -collidable.getColScale() / 2);
-            max.add(collidable.getColScale() / 2, collidable.getColScale() / 2, collidable.getColScale() / 2);
+        for (ColliderComponent collidable : getCollisionManager().getSelectionItems(getCamera().getPosition())) {
+            min.set(collidable.getPosition().toJoml());
+            max.set(collidable.getPosition().toJoml());
+            Vector3 scale = collidable.getScale();
+            min.add(-scale.x / 2, -scale.y / 2, -scale.z / 2);
+            max.add(scale.x / 2, scale.y / 2, scale.z / 2);
             if (Intersectionf.intersectRayAab(getCamera().getPosition().toJoml(), dir, min, max, nearFar) && nearFar.x < closestDistance) {
                 closestDistance = nearFar.x;
                 selectedGameItem = collidable;
             }
         }
 
-        if (selectedGameItem != null) {
-            selectedGameItem.setSelected(true);
-        }
         return selectedGameItem;
     }
 
@@ -118,9 +115,9 @@ public abstract class AbstractGameScene extends AbstractScene {
      * @param ignoreIds The UUIDs to ignore.
      * @return The collidable that was found.
      */
-    public Collidable selectGameItems(float distance, UUID... ignoreIds) {
+    public ColliderComponent selectGameItems(float distance, UUID... ignoreIds) {
         List<UUID> ignore = new ArrayList<>(Arrays.asList(ignoreIds));
-        Collidable selectedGameItem = null;
+        ColliderComponent selectedGameItem = null;
         float closestDistance = distance;
 
         Vector3f dir = new Vector3f();
@@ -131,20 +128,19 @@ public abstract class AbstractGameScene extends AbstractScene {
         Vector3f min = new Vector3f();
         Vector2f nearFar = new Vector2f();
 
-        for (Collidable collidable : getCollisionManager().getSelectionItems(getCamera().getPosition())) {
-            if (ignore.contains(collidable.getUUID())) continue;
-            collidable.setSelected(false);
-            min.set(collidable.getColPosition().toJoml());
-            max.set(collidable.getColPosition().toJoml());
-            min.add(-collidable.getColScale() / 2, -collidable.getColScale() / 2, -collidable.getColScale() / 2);
-            max.add(collidable.getColScale() / 2, collidable.getColScale() / 2, collidable.getColScale() / 2);
+        for (ColliderComponent collidable : getCollisionManager().getSelectionItems(getCamera().getPosition())) {
+            if (!(collidable instanceof VoxelCollider)) {
+                if (ignore.contains(collidable.getGameItem().getUUID())) continue;
+            }
+            min.set(collidable.getPosition().toJoml());
+            max.set(collidable.getPosition().toJoml());
+            Vector3 scale = collidable.getScale();
+            min.add(-scale.x / 2, -scale.y / 2, -scale.z / 2);
+            max.add(scale.x / 2, scale.y / 2, scale.z / 2);
             if (Intersectionf.intersectRayAab(getCamera().getPosition().toJoml(), dir, min, max, nearFar) && nearFar.x < closestDistance) {
                 closestDistance = nearFar.x;
                 selectedGameItem = collidable;
             }
-        }
-        if (selectedGameItem != null) {
-            selectedGameItem.setSelected(true);
         }
         return selectedGameItem;
     }
@@ -159,65 +155,65 @@ public abstract class AbstractGameScene extends AbstractScene {
      * @return The collidable that was selected.
      * @since 1.0-Pre3
      */
-    public Collidable selectGameItems(float distance, String... tags) {
-        List<String> ignoreTags = Arrays.asList(tags);
-        Collidable selectedGameItem = null;
-        float closestDistance = distance;
-
-        Vector3f dir = new Vector3f();
-
-        dir = getCamera().getViewMatrix().positiveZ(dir).negate();
-
-        Vector3f max = new Vector3f();
-        Vector3f min = new Vector3f();
-        Vector2f nearFar = new Vector2f();
-
-        for (Collidable collidable : getCollisionManager().getSelectionItems(getCamera().getPosition())) {
-            collidable.setSelected(false);
-            if (collidable instanceof MeshGameItem) {
-                if (ignoreTags.contains(((MeshGameItem) collidable).getTag())) continue;
-            }
-            min.set(collidable.getColPosition().toJoml());
-            max.set(collidable.getColPosition().toJoml());
-            min.add(-collidable.getColScale() / 2, -collidable.getColScale() / 2, -collidable.getColScale() / 2);
-            max.add(collidable.getColScale() / 2, collidable.getColScale() / 2, collidable.getColScale() / 2);
-            if (Intersectionf.intersectRayAab(getCamera().getPosition().toJoml(), dir, min, max, nearFar) && nearFar.x < closestDistance) {
-                closestDistance = nearFar.x;
-                selectedGameItem = collidable;
-            }
-        }
-
-        if (selectedGameItem != null) {
-            selectedGameItem.setSelected(true);
-        }
-        return selectedGameItem;
-    }
+//    public Collidable selectGameItems(float distance, String... tags) {
+//        List<String> ignoreTags = Arrays.asList(tags);
+//        Collidable selectedGameItem = null;
+//        float closestDistance = distance;
+//
+//        Vector3f dir = new Vector3f();
+//
+//        dir = getCamera().getViewMatrix().positiveZ(dir).negate();
+//
+//        Vector3f max = new Vector3f();
+//        Vector3f min = new Vector3f();
+//        Vector2f nearFar = new Vector2f();
+//
+//        for (Collidable collidable : getCollisionManager().getSelectionItems(getCamera().getPosition())) {
+//            collidable.setSelected(false);
+//            if (collidable instanceof GameItem) {
+//                if (ignoreTags.contains(((GameItem) collidable).getTag())) continue;
+//            }
+//            min.set(collidable.getColPosition().toJoml());
+//            max.set(collidable.getColPosition().toJoml());
+//            min.add(-collidable.getColScale() / 2, -collidable.getColScale() / 2, -collidable.getColScale() / 2);
+//            max.add(collidable.getColScale() / 2, collidable.getColScale() / 2, collidable.getColScale() / 2);
+//            if (Intersectionf.intersectRayAab(getCamera().getPosition().toJoml(), dir, min, max, nearFar) && nearFar.x < closestDistance) {
+//                closestDistance = nearFar.x;
+//                selectedGameItem = collidable;
+//            }
+//        }
+//
+//        if (selectedGameItem != null) {
+//            selectedGameItem.setSelected(true);
+//        }
+//        return selectedGameItem;
+//    }
 
     /**
      * Add a chunk to the scene
-     * <p>This does the same as {@link org.kakara.engine.renderobjects.ChunkHandler#addChunk(RenderChunk)}</p>
+     * <p>This does the same as {@link org.kakara.engine.voxels.ChunkHandler#addChunk(VoxelChunk)}</p>
      *
      * @param chunk The chunk to add
      * @since 1.0-Pre1
      */
-    public void add(RenderChunk chunk) {
+    public void add(VoxelChunk chunk) {
         chunkHandler.addChunk(chunk);
     }
 
     /**
      * Remove a chunk from the scene
-     * <p>This does the same as {@link org.kakara.engine.renderobjects.ChunkHandler#addChunk(RenderChunk)} and {@link #removeChunk(UUID)}</p>
+     * <p>This does the same as {@link org.kakara.engine.voxels.ChunkHandler#addChunk(VoxelChunk)} and {@link #removeChunk(UUID)}</p>
      *
      * @param chunk The chunk to remove.
      * @since 1.0-Pre1
      */
-    public void remove(RenderChunk chunk) {
+    public void remove(VoxelChunk chunk) {
         chunkHandler.removeChunk(chunk.getId());
     }
 
     /**
      * Remove a chunk from the scene.
-     * <p>This does the same as {@link org.kakara.engine.renderobjects.ChunkHandler#addChunk(RenderChunk)} and {@link #remove(RenderChunk)}</p>
+     * <p>This does the same as {@link org.kakara.engine.voxels.ChunkHandler#addChunk(VoxelChunk)} and {@link #remove(VoxelChunk)}</p>
      *
      * @param chunkId The chunk id to remove.
      * @since 1.0-Pre1

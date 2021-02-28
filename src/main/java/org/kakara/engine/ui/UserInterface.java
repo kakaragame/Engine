@@ -4,7 +4,7 @@ import org.kakara.engine.GameHandler;
 import org.kakara.engine.exceptions.InitializationException;
 import org.kakara.engine.math.Vector2;
 import org.kakara.engine.scene.Scene;
-import org.kakara.engine.ui.components.Component;
+import org.kakara.engine.ui.components.UIComponent;
 import org.kakara.engine.ui.font.Font;
 import org.kakara.engine.window.Window;
 
@@ -24,19 +24,16 @@ import static org.lwjgl.system.MemoryUtil.NULL;
  */
 public class UserInterface {
 
-    private long vg;
-
     private final List<UICanvas> uiCanvas;
     private final List<Font> fonts;
     private final Scene scene;
+    private long vg;
 
-    private boolean autoScale;
 
     public UserInterface(Scene scene) {
         uiCanvas = new ArrayList<>();
         fonts = new ArrayList<>();
         this.scene = scene;
-        this.autoScale = true;
     }
 
     /**
@@ -55,6 +52,7 @@ public class UserInterface {
 
     /**
      * Internal Use Only
+     *
      * @param window The window.
      * @throws InitializationException If the ui cannot be initialized.
      */
@@ -75,6 +73,7 @@ public class UserInterface {
 
     /**
      * Internal Use Only
+     *
      * @param window The window.
      */
     public void render(Window window) {
@@ -106,7 +105,7 @@ public class UserInterface {
 
     /**
      * Add an item to the HUD.
-     * <p>Components <b>do not</b> go here! They must go inside of a ComponentCanvas! See {@link org.kakara.engine.ui.items.ComponentCanvas#add(Component)}</p>
+     * <p>Components <b>do not</b> go here! They must go inside of a ComponentCanvas! See {@link org.kakara.engine.ui.canvases.ComponentCanvas#add(UIComponent)}</p>
      *
      * @param item The item to add.
      */
@@ -184,27 +183,5 @@ public class UserInterface {
      */
     public Scene getScene() {
         return scene;
-    }
-
-    /**
-     * If the UserInterface will scale with the size of the window.
-     *
-     * @return If the ui is auto scaled.
-     * @since 1.0-Pre3
-     */
-    public boolean isAutoScaled() {
-        return autoScale;
-    }
-
-    /**
-     * Sets if the UserInterface should automatically scale according to the size of the window.
-     * <p>The auto scale bases the position coords on the default size of the window. So if by default the window size is 1080x720,
-     * then the position values will go from 0 - 1080 in the x direction and 0 - 720 in the y direction. With auto scale enabled the position
-     * value always point to the same area of the screen.</p>
-     *
-     * @param value If the auto scale is enabled (Default of true).
-     */
-    public void setAutoScale(boolean value) {
-        this.autoScale = value;
     }
 }

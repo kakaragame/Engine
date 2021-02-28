@@ -1,6 +1,7 @@
 package org.kakara.engine.render;
 
 import org.joml.Matrix4f;
+import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 import org.kakara.engine.exceptions.render.ShaderCreationException;
@@ -10,6 +11,7 @@ import org.kakara.engine.gameitems.Material;
 import org.kakara.engine.lighting.DirectionalLight;
 import org.kakara.engine.lighting.PointLight;
 import org.kakara.engine.lighting.SpotLight;
+import org.kakara.engine.math.Vector2;
 import org.kakara.engine.math.Vector3;
 import org.kakara.engine.weather.Fog;
 import org.lwjgl.system.MemoryStack;
@@ -169,6 +171,26 @@ public final class Shader {
      */
     public void setUniform(String uniformName, float value) {
         glUniform1f(uniforms.get(uniformName), value);
+    }
+
+    /**
+     * Set a Vector2 uniform.
+     *
+     * @param uniformName The uniform name.
+     * @param value       The value of the uniform.
+     */
+    public void setUniform(String uniformName, Vector2f value) {
+        glUniform2f(uniforms.get(uniformName), value.x, value.y);
+    }
+
+    /**
+     * Set a Vector2 uniform.
+     *
+     * @param uniformName The uniform name.
+     * @param value       The value of the uniform.
+     */
+    public void setUniform(String uniformName, Vector2 value) {
+        glUniform2f(uniforms.get(uniformName), value.x, value.y);
     }
 
     /**
@@ -414,7 +436,7 @@ public final class Shader {
      */
     public void setUniform(String uniformName, Fog fog) {
         setUniform(uniformName + ".activeFog", fog.isActive() ? 1 : 0);
-        setUniform(uniformName + ".color", fog.getColor());
+        setUniform(uniformName + ".color", fog.getColor().getVector3Color());
         setUniform(uniformName + ".density", fog.getDensity());
     }
 

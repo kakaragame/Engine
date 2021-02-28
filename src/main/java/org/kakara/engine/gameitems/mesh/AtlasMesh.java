@@ -1,15 +1,14 @@
 package org.kakara.engine.gameitems.mesh;
 
 import org.kakara.engine.GameEngine;
-import org.kakara.engine.engine.CubeData;
 import org.kakara.engine.exceptions.InvalidThreadException;
 import org.kakara.engine.gameitems.GameItem;
 import org.kakara.engine.gameitems.Material;
-import org.kakara.engine.gameitems.MeshGameItem;
+import org.kakara.engine.physics.collision.ColliderComponent;
 import org.kakara.engine.render.culling.FrustumCullingFilter;
-import org.kakara.engine.renderobjects.RenderTexture;
-import org.kakara.engine.renderobjects.TextureAtlas;
-import org.kakara.engine.renderobjects.renderlayouts.Layout;
+import org.kakara.engine.voxels.TextureAtlas;
+import org.kakara.engine.voxels.VoxelTexture;
+import org.kakara.engine.voxels.layouts.Layout;
 import org.lwjgl.system.MemoryUtil;
 
 import java.nio.FloatBuffer;
@@ -49,7 +48,7 @@ public class AtlasMesh implements IMesh {
      * @param normals   The list of normals.
      * @param indices   The indices
      */
-    public AtlasMesh(RenderTexture texture, TextureAtlas atlas, Layout layout, float[] positions, float[] normals, int[] indices) {
+    public AtlasMesh(VoxelTexture texture, TextureAtlas atlas, Layout layout, float[] positions, float[] normals, int[] indices) {
         if (Thread.currentThread() != GameEngine.currentThread)
             throw new InvalidThreadException("This class can only be constructed on the main thread!");
         this.atlas = atlas;
@@ -168,9 +167,15 @@ public class AtlasMesh implements IMesh {
         glBindVertexArray(getVaoId());
         glEnableVertexAttribArray(0);
         glEnableVertexAttribArray(1);
+
+        if (isWireframe())
+            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     }
 
     protected void endRender() {
+        if (isWireframe())
+            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
         // Restore state
         glDisableVertexAttribArray(0);
         glDisableVertexAttribArray(1);
@@ -185,15 +190,7 @@ public class AtlasMesh implements IMesh {
      */
     public void render() {
         initRender();
-
-        if (isWireframe())
-            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
         glDrawElements(GL_TRIANGLES, getVertexCount(), GL_UNSIGNED_INT, 0);
-
-        if (isWireframe())
-            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
         endRender();
     }
 
@@ -206,20 +203,16 @@ public class AtlasMesh implements IMesh {
      */
     @Override
     public void renderList(List<GameItem> gameItems, FrustumCullingFilter filter, Consumer<GameItem> consumer) {
-        initRender();
         for (GameItem gameItem : gameItems) {
-            if(gameItem instanceof MeshGameItem){
-                MeshGameItem meshGameItem = (MeshGameItem) gameItem;
-                if (meshGameItem.isVisible() && filter.testCollider(meshGameItem.getCollider())) {
-                    consumer.accept(gameItem);
-                    glDrawElements(GL_TRIANGLES, getVertexCount(), GL_UNSIGNED_INT, 0);
-                }
-            }else{
+            if (gameItem.getMeshRenderer().isEmpty()) continue;
+            if (gameItem.getMeshRenderer().get().isVisible() && filter.testCollider(gameItem.getComponent(ColliderComponent.class))) {
                 consumer.accept(gameItem);
+                initRender();
+
                 glDrawElements(GL_TRIANGLES, getVertexCount(), GL_UNSIGNED_INT, 0);
+                endRender();
             }
         }
-        endRender();
     }
 
     @Override

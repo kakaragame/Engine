@@ -1,11 +1,9 @@
 package org.kakara.engine.physics;
 
+import org.kakara.engine.components.Component;
 import org.kakara.engine.gameitems.GameItem;
-import org.kakara.engine.gameitems.MeshGameItem;
-import org.kakara.engine.physics.collision.Collider;
 import org.kakara.engine.scene.Scene;
 
-import java.util.List;
 import java.util.Objects;
 import java.util.TimerTask;
 
@@ -33,30 +31,36 @@ public class FixedPhysicsUpdater extends TimerTask {
         currentTime = System.currentTimeMillis();
         float deltaTime = ((float) (currentTime - oldTime)) * 0.001f;
         // TODO come up with better solution. Maybe change getItems to copyonwritearray
-        synchronized (Objects.requireNonNull(scene.getItemHandler()).getItems()){
+        synchronized (Objects.requireNonNull(scene.getItemHandler()).getItems()) {
             for (GameItem item : Objects.requireNonNull(scene.getItemHandler()).getItems()) {
                 try {
-                    if (!(item instanceof MeshGameItem)) continue;
-                    MeshGameItem meshItem = (MeshGameItem) item;
-                    if (meshItem.getCollider() == null) continue;
-                    Collider collider = meshItem.getCollider();
-                    // Add by mutation to keep object creation down.
-                    meshItem.getVelocity().addMut(meshItem.getAcceleration().getX() * deltaTime, meshItem.getAcceleration().getY() * deltaTime, meshItem.getAcceleration().getZ() * deltaTime);
-                    meshItem.translateBy(meshItem.getVelocity().getX() * deltaTime, 0, 0);
-
-                    // Handles Triggers
-                    collider.update();
-
-                    collider.updateZ();
-                    meshItem.translateBy(0, 0, meshItem.getVelocity().getZ() * deltaTime);
-                    collider.updateZ();
-                    meshItem.translateBy(0, meshItem.getVelocity().getY() * deltaTime, 0);
-                    collider.updateY();
-                } catch (NullPointerException ex) {
-                    // Ignore.
-                    // This happens when it is doing calculations and a block is removed.
-                    // The next update should work just fine.
+                    for (Component components : item.getComponents()) {
+                        components.physicsUpdate(deltaTime);
+                    }
+                } catch (Exception ex) {
+                    ex.printStackTrace();
                 }
+//                try {
+//                    GameItem meshItem = (GameItem) item;
+//                    if (meshItem.getCollider() == null) continue;
+//                    ColliderComponent collider = meshItem.getCollider();
+//                    // Add by mutation to keep object creation down.
+//                    meshItem.getVelocity().addMut(meshItem.getAcceleration().getX() * deltaTime, meshItem.getAcceleration().getY() * deltaTime, meshItem.getAcceleration().getZ() * deltaTime);
+//                    meshItem.translateBy(meshItem.getVelocity().getX() * deltaTime, 0, 0);
+//
+//                    // Handles Triggers
+//                    collider.update();
+//
+//                    collider.updateZ();
+//                    meshItem.translateBy(0, 0, meshItem.getVelocity().getZ() * deltaTime);
+//                    collider.updateZ();
+//                    meshItem.translateBy(0, meshItem.getVelocity().getY() * deltaTime, 0);
+//                    collider.updateY();
+//                } catch (NullPointerException ex) {
+//                    // Ignore.
+//                    // This happens when it is doing calculations and a block is removed.
+//                    // The next update should work just fine.
+//                }
                 //...
             }
         }
