@@ -6,7 +6,8 @@ import java.util.Objects;
 
 /**
  * The MeshRender component handles meshes for the GameItem.
- * <p>Despite the name, it is up to Render Pipelines to render the mesh.</p>
+ *
+ * <p>The MeshRenderer stores the meshes for the GameItem, which are then rendered by a Pipeline.</p>
  */
 public class MeshRenderer extends Component {
     private IMesh[] mesh;

@@ -4,6 +4,7 @@ import org.jetbrains.annotations.Nullable;
 import org.kakara.engine.GameHandler;
 import org.kakara.engine.exceptions.ui.HierarchyException;
 import org.kakara.engine.math.Vector2;
+import org.kakara.engine.ui.UICanvas;
 import org.kakara.engine.ui.UserInterface;
 import org.kakara.engine.ui.constraints.Constraint;
 import org.kakara.engine.ui.events.UActionEvent;
@@ -34,10 +35,13 @@ public abstract class GeneralUIComponent implements UIComponent {
 
     public Vector2 position;
     public Vector2 scale;
+
     protected Map<UActionEvent, Class<? extends UActionEvent>> events;
     protected List<UIComponent> components;
     protected List<Constraint> constraints;
-    boolean init = false;
+
+    private boolean init = false;
+    private UICanvas parentCanvas;
     private UIComponent parent;
     private Vector2 globalPosition;
     private Vector2 globalScale;
@@ -65,11 +69,17 @@ public abstract class GeneralUIComponent implements UIComponent {
         isVisible = true;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public final void addUActionEvent(Class<? extends UActionEvent> clazz, UActionEvent uae) {
         events.put(uae, clazz);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public final Map<UActionEvent, Class<? extends UActionEvent>> getEvents() {
         return events;
@@ -88,12 +98,13 @@ public abstract class GeneralUIComponent implements UIComponent {
      * When overriding the cleanup method {@link #pollCleanup(GameHandler)} should be used.
      *
      * <code>
+     *
+     * @param handler The instance of the game handler.
      * @Override <br>
      * public void cleanup(GameHandler handler) {<br>
      * pollCleanup(handler);<br>
      * }<br>
      * </code>
-     * @param handler The instance of the game handler.
      */
     @Override
     public void cleanup(GameHandler handler) {
@@ -102,56 +113,105 @@ public abstract class GeneralUIComponent implements UIComponent {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public final void add(UIComponent component) {
         if (component.getParent() != null)
             throw new HierarchyException("That UI component already has a parent!");
         this.components.add(component);
+        component.setParentCanvas(getParentCanvas());
         component.setParent(this);
         if (init)
             component.init(GameHandler.getInstance().getSceneManager().getCurrentScene().getUserInterface(), GameHandler.getInstance());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public final void setPosition(float x, float y) {
         this.position.x = x;
         this.position.y = y;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public final Vector2 getPosition() {
         return position.clone();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public final void setPosition(Vector2 pos) {
         setPosition(pos.x, pos.y);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public final void setScale(float x, float y) {
         this.scale.x = x;
         this.scale.y = y;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public final Vector2 getScale() {
         return scale;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public final void setScale(Vector2 scale) {
         setScale(scale.x, scale.y);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public final UIComponent getParent() {
         return parent;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public final void setParent(@Nullable UIComponent parent) {
         this.parent = parent;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public final UICanvas getParentCanvas() {
+        return parentCanvas;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public final void setParentCanvas(UICanvas canvas) {
+        this.parentCanvas = canvas;
+
+        for(UIComponent component : components){
+            if(component.getParentCanvas() == null)
+                component.setParentCanvas(getParentCanvas());
+        }
     }
 
     /**
@@ -166,7 +226,7 @@ public abstract class GeneralUIComponent implements UIComponent {
      * @param handler       The game handler.
      */
     public final void pollRender(Vector2 relative, UserInterface userInterface, GameHandler handler) {
-        if (userInterface.isAutoScaled()) {
+        if (parentCanvas.isAutoScale()) {
             this.globalPosition = position.clone().add(relative);
             this.globalPosition = new Vector2(globalPosition.x * ((float) handler.getWindow().getWidth() / (float) handler.getWindow().initialWidth),
                     globalPosition.y * ((float) handler.getWindow().getHeight() / (float) handler.getWindow().initialHeight));
@@ -190,6 +250,9 @@ public abstract class GeneralUIComponent implements UIComponent {
         init = true;
         for (UIComponent cc : components) {
             cc.init(userInterface, handler);
+            if(cc.getParentCanvas() == null){
+                cc.setParentCanvas(getParentCanvas());
+            }
         }
     }
 
@@ -244,38 +307,59 @@ public abstract class GeneralUIComponent implements UIComponent {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean isVisible() {
         return isVisible;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setVisible(boolean visible) {
         this.isVisible = visible;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<UIComponent> getChildren() {
         return components;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void clearChildren() {
         components.clear();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void remove(UIComponent component) {
         component.setParent(null);
         components.remove(component);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void addConstraint(Constraint constraint) {
         constraints.add(constraint);
         constraint.onAdd(this);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void removeConstraint(Class<Constraint> constraintClass) {
         List<Constraint> props = constraints.stream().filter(prop -> prop.getClass() == constraintClass).collect(Collectors.toList());
@@ -286,21 +370,33 @@ public abstract class GeneralUIComponent implements UIComponent {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<Object> getData() {
         return data;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setData(List<Object> data) {
         this.data = data;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getTag() {
         return tag;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setTag(String tag) {
         this.tag = tag;

@@ -4,6 +4,7 @@ import org.jetbrains.annotations.Nullable;
 import org.kakara.engine.GameHandler;
 import org.kakara.engine.math.Vector2;
 import org.kakara.engine.properties.Tagable;
+import org.kakara.engine.ui.UICanvas;
 import org.kakara.engine.ui.UIListener;
 import org.kakara.engine.ui.UserInterface;
 import org.kakara.engine.ui.constraints.Constraint;
@@ -181,6 +182,21 @@ public interface UIComponent extends Tagable, UIListener {
      * @since 1.0-Pre1
      */
     void setParent(@Nullable UIComponent parent);
+
+    /**
+     * Get the parent canvas.
+     *
+     * @return The parent canvas.
+     */
+    UICanvas getParentCanvas();
+
+    /**
+     * Set the parent canvas.
+     * <p>Internal use only.</p>
+     *
+     * @param canvas The parent canvas.
+     */
+    void setParentCanvas(UICanvas canvas);
 
     /**
      * Add a constraint to the component

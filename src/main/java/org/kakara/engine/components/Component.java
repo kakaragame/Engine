@@ -12,7 +12,8 @@ import org.kakara.engine.physics.collision.ColliderComponent;
  *
  * <p>Please see the documentation for a detailed guide on creating components.</p>
  *
- * <p>Some built-in components have special functionality. See the documentation for more information.</p>
+ * <p>Some built-in components have special functionality. See the
+ * <a href="https://docs.kakara.org/engine/getting-started-1/components">documentation</a> for more information.</p>
  */
 public abstract class Component {
 
@@ -97,6 +98,17 @@ public abstract class Component {
      */
     public final <T extends Component> T addComponent(Class<T> component) {
         return gameItem.addComponent(component);
+    }
+
+    /**
+     * Check if a component exists on the parent game item.
+     *
+     * @param component The component to add.
+     * @param <T>       The type of component to check.
+     * @return If the component exists on the parent.
+     */
+    public final <T extends Component> boolean hasComponent(Class<T> component) {
+        return gameItem.hasComponent(component);
     }
 
     /**

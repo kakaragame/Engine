@@ -1,4 +1,4 @@
-package org.kakara.engine.ui.items;
+package org.kakara.engine.ui.canvases;
 
 import org.kakara.engine.GameHandler;
 import org.kakara.engine.exceptions.ui.HierarchyException;
@@ -26,9 +26,12 @@ import java.util.List;
  * </code>
  */
 public class ComponentCanvas implements UICanvas {
-    boolean init = false;
+    private boolean init = false;
     private final List<UIComponent> components;
     private final Scene scene;
+
+    private boolean autoScale;
+
     /*
      * Tagable data
      */
@@ -54,6 +57,7 @@ public class ComponentCanvas implements UICanvas {
         if (component.getParent() != null)
             throw new HierarchyException("Error: That component already has a parent!");
         components.add(component);
+        component.setParentCanvas(this);
         if (init) {
             component.init(scene.getUserInterface(), GameHandler.getInstance());
         }
@@ -81,6 +85,16 @@ public class ComponentCanvas implements UICanvas {
         for (UIComponent component : components) {
             component.cleanup(handler);
         }
+    }
+
+    @Override
+    public boolean isAutoScale() {
+        return autoScale;
+    }
+
+    @Override
+    public void setAutoScale(boolean autoScale) {
+        this.autoScale = autoScale;
     }
 
     /**

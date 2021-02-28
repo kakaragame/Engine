@@ -100,7 +100,7 @@ public final class Renderer {
 
     /**
      * Render the 3D portion of the HUD.
-     * <p>See {@link org.kakara.engine.ui.objectcanvas.UIObject} and {@link org.kakara.engine.ui.items.ObjectCanvas} for more info.</p>
+     * <p>See {@link org.kakara.engine.ui.objectcanvas.UIObject} and {@link org.kakara.engine.ui.canvases.ObjectCanvas} for more info.</p>
      *
      * @param window  The window of the current game.
      * @param objects The list of objects.

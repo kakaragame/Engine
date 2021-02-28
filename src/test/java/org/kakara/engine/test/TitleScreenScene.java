@@ -6,7 +6,6 @@ import org.kakara.engine.events.EventHandler;
 import org.kakara.engine.gameitems.Material;
 import org.kakara.engine.gameitems.Texture;
 import org.kakara.engine.gameitems.mesh.Mesh;
-import org.kakara.engine.input.controller.ControllerManager;
 import org.kakara.engine.input.controller.GamePadButtonEvent;
 import org.kakara.engine.math.Vector2;
 import org.kakara.engine.resources.ResourceManager;
@@ -22,8 +21,8 @@ import org.kakara.engine.ui.events.UIHoverEnterEvent;
 import org.kakara.engine.ui.events.UIHoverLeaveEvent;
 import org.kakara.engine.ui.font.Font;
 import org.kakara.engine.ui.font.TextAlign;
-import org.kakara.engine.ui.items.ComponentCanvas;
-import org.kakara.engine.ui.items.ObjectCanvas;
+import org.kakara.engine.ui.canvases.ComponentCanvas;
+import org.kakara.engine.ui.canvases.ObjectCanvas;
 import org.kakara.engine.ui.objectcanvas.UIObject;
 import org.kakara.engine.utils.RGBA;
 import org.kakara.engine.utils.Time;
@@ -233,7 +232,7 @@ public class TitleScreenScene extends AbstractMenuScene {
         setCursorStatus(true);
         // Set the background of the menu.
         setBackground(Utils.inputStreamToTexture(Texture.class.getResourceAsStream("/oa.png")));
-        getUserInterface().setAutoScale(false);
+        cc.setAutoScale(false);
 
     }
 

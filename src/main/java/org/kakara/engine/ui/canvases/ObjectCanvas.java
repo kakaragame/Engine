@@ -1,4 +1,4 @@
-package org.kakara.engine.ui.items;
+package org.kakara.engine.ui.canvases;
 
 import org.joml.Intersectionf;
 import org.joml.Vector2f;
@@ -30,6 +30,9 @@ import static org.lwjgl.nanovg.NanoVG.nvgEndFrame;
 public class ObjectCanvas implements UICanvas {
     private final List<UIObject> objects;
     private final Scene scene;
+
+    private boolean autoScale;
+
     /*
      * Tagable data
      */
@@ -53,6 +56,7 @@ public class ObjectCanvas implements UICanvas {
      */
     public void add(UIObject object) {
         objects.add(object);
+        object.setParentCanvas(this);
     }
 
     @Override
@@ -65,7 +69,7 @@ public class ObjectCanvas implements UICanvas {
         nvgEndFrame(userInterface.getVG());
         Window win = handler.getGameEngine().getWindow();
         win.restoreState();
-        handler.getGameEngine().getRenderer().renderHUD(win, objects, userInterface.isAutoScaled());
+        handler.getGameEngine().getRenderer().renderHUD(win, objects, autoScale);
         nvgBeginFrame(userInterface.getVG(), win.getWidth(), win.getHeight(), 1);
     }
 
@@ -74,6 +78,16 @@ public class ObjectCanvas implements UICanvas {
         for (UIObject obj : objects) {
             obj.getMesh().cleanUp();
         }
+    }
+
+    @Override
+    public boolean isAutoScale() {
+        return autoScale;
+    }
+
+    @Override
+    public void setAutoScale(boolean autoScale) {
+        this.autoScale = autoScale;
     }
 
     /**

@@ -5,6 +5,7 @@ import org.kakara.engine.gameitems.mesh.IMesh;
 import org.kakara.engine.math.Vector2;
 import org.kakara.engine.math.Vector3;
 import org.kakara.engine.properties.Tagable;
+import org.kakara.engine.ui.UICanvas;
 import org.kakara.engine.ui.UIListener;
 import org.kakara.engine.ui.events.UActionEvent;
 
@@ -15,7 +16,7 @@ import java.util.Map;
 
 /**
  * This is an object that is to be displayed on the UI.
- * <p>This is to be used with {@link org.kakara.engine.ui.items.ObjectCanvas}</p>
+ * <p>This is to be used with {@link org.kakara.engine.ui.canvases.ObjectCanvas}</p>
  *
  * @since 1.0-Pre1
  */
@@ -24,6 +25,8 @@ public class UIObject implements Tagable, UIListener {
     private final Quaternionf rotation;
     private final IMesh mesh;
     private float scale;
+
+    private UICanvas parentCanvas;
 
     private final Map<UActionEvent, Class<? extends UActionEvent>> events;
 
@@ -146,6 +149,24 @@ public class UIObject implements Tagable, UIListener {
      */
     public void setScale(float scale) {
         this.scale = scale;
+    }
+
+    /**
+     * Get the parent canvas.
+     *
+     * @return The parent canvas.
+     */
+    public UICanvas getParentCanvas() {
+        return parentCanvas;
+    }
+
+    /**
+     * Set the parent canvas.
+     *
+     * @param canvas The parent canvas.
+     */
+    public void setParentCanvas(UICanvas canvas) {
+        this.parentCanvas = canvas;
     }
 
     /**

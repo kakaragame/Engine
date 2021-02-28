@@ -10,8 +10,8 @@ import org.kakara.engine.scene.AbstractScene;
 import org.kakara.engine.scene.Scene;
 import org.kakara.engine.ui.UICanvas;
 import org.kakara.engine.ui.UserInterface;
-import org.kakara.engine.ui.items.ComponentCanvas;
-import org.kakara.engine.ui.items.ObjectCanvas;
+import org.kakara.engine.ui.canvases.ComponentCanvas;
+import org.kakara.engine.ui.canvases.ObjectCanvas;
 import org.kakara.engine.utils.Time;
 import org.kakara.engine.weather.Fog;
 
@@ -60,6 +60,16 @@ public class DebugCanvas implements UICanvas {
         imGuiGl3.dispose();
         imGuiGlfw.dispose();
         ImGui.destroyContext();
+    }
+
+    @Override
+    public boolean isAutoScale() {
+        return false;
+    }
+
+    @Override
+    public void setAutoScale(boolean autoScale) {
+
     }
 
     private void renderFPSInfo(Scene scene){

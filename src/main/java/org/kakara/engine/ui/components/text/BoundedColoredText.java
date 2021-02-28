@@ -271,7 +271,7 @@ public class BoundedColoredText extends GeneralUIComponent {
      * @return The scaled size
      */
     protected float calculateSize(GameHandler handler) {
-        if (userInterface.isAutoScaled())
+        if (getParentCanvas().isAutoScale())
             return this.getSize() * ((float) handler.getWindow().getWidth() / (float) handler.getWindow().initialWidth);
         else
             return this.getSize();
@@ -285,7 +285,7 @@ public class BoundedColoredText extends GeneralUIComponent {
      * @return the scaled width
      */
     protected float calculateLineWidth(GameHandler handler) {
-        if (userInterface.isAutoScaled())
+        if (getParentCanvas().isAutoScale())
             return this.getMaximumBound().x * ((float) handler.getWindow().getWidth() / (float) handler.getWindow().initialWidth);
         else
             return this.getMaximumBound().x;

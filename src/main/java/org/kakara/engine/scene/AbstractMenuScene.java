@@ -16,7 +16,7 @@ import org.kakara.engine.ui.UICanvas;
 import org.kakara.engine.ui.UserInterface;
 import org.kakara.engine.ui.components.GeneralUIComponent;
 import org.kakara.engine.ui.components.Sprite;
-import org.kakara.engine.ui.items.ComponentCanvas;
+import org.kakara.engine.ui.canvases.ComponentCanvas;
 import org.kakara.engine.utils.Time;
 import org.kakara.engine.weather.Fog;
 
