@@ -261,7 +261,9 @@ public class GameItem implements Tagable, Identifiable {
      * Get the list of features.
      *
      * @return The list of features.
+     * @deprecated Replaced by the component system. This will be removed in Pre6.
      */
+    @Deprecated
     public List<Feature> getFeatures() {
         return features;
     }
@@ -271,7 +273,9 @@ public class GameItem implements Tagable, Identifiable {
      * <p>Consider using a {@link Component} instead of a feature.</p>
      *
      * @param feature The feature to add.
+     * @deprecated Replaced by the component system. This will be removed in Pre6.
      */
+    @Deprecated
     public void addFeature(Feature feature) {
         features.add(feature);
         feature.updateValues(this);

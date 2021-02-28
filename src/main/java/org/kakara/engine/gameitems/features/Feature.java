@@ -9,7 +9,9 @@ import org.kakara.engine.gameitems.GameItem;
  * <p>As of Pre-5 {@link org.kakara.engine.components.Component} are recommended instead of Features.</p>
  *
  * @since 1.0-Pre2
+ * @deprecated Replaced by the Component System. To be removed in Pre6
  */
+@Deprecated
 public interface Feature {
     /**
      * The code to run each update.
