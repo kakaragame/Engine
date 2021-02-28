@@ -55,6 +55,7 @@ public class UserInterface {
 
     /**
      * Internal Use Only
+     *
      * @param window The window.
      * @throws InitializationException If the ui cannot be initialized.
      */
@@ -75,6 +76,7 @@ public class UserInterface {
 
     /**
      * Internal Use Only
+     *
      * @param window The window.
      */
     public void render(Window window) {

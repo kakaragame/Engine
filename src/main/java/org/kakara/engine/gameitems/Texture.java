@@ -147,6 +147,8 @@ public class Texture {
             glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, this.width, this.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, decodedImage);
             // Generate Mip Map
             glGenerateMipmap(GL_TEXTURE_2D);
+
+            stbi_image_free(decodedImage);
         }
     }
 
@@ -179,7 +181,7 @@ public class Texture {
 
             ByteBuffer decodedImage = stbi_load_from_memory(imageData, w, h, avChannels, 4);
 
-            if(decodedImage == null){
+            if (decodedImage == null) {
                 throw new GenericLoadException("Error: Cannot load specified image. " + stbi_failure_reason());
             }
 
@@ -201,10 +203,7 @@ public class Texture {
             // Generate Mip Map
             glGenerateMipmap(GL_TEXTURE_2D);
 
-            w.clear();
-            h.clear();
-            avChannels.clear();
-            decodedImage.clear();
+            stbi_image_free(decodedImage);
         }
     }
 

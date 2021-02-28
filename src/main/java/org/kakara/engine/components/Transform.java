@@ -199,30 +199,4 @@ public class Transform extends Component {
         }
         position.y += offset.y;
     }
-
-    /**
-     * Move the rotation by an offset
-     * <p>For use by particles only</p>
-     *
-     * @param offsetX The x offset
-     * @param offsetY The y offset
-     * @param offsetZ The z offset
-     */
-    public void moveRotation(float offsetX, float offsetY, float offsetZ) {
-        rotation.x += offsetX;
-        rotation.y += offsetY;
-        rotation.z += offsetZ;
-    }
-
-    /**
-     * Move the rotation by an offset
-     * <p>For use by particles only</p>
-     *
-     * @param offset The offset vector.
-     */
-    public void moveRotation(Vector3 offset) {
-        rotation.x += offset.x;
-        rotation.y += offset.y;
-        rotation.z += offset.z;
-    }
 }

@@ -265,8 +265,9 @@ public final class Renderer {
         depthShaderProgram.createFragmentShader(Utils.loadResource("/shaders/depth/depthFragment.fs"));
         depthShaderProgram.link();
 
+        depthShaderProgram.createUniform("isInstanced");
+        depthShaderProgram.createUniform("modelLightViewNonInstancedMatrix");
         depthShaderProgram.createUniform("orthoProjectionMatrix");
-        depthShaderProgram.createUniform("modelLightViewMatrix");
     }
 
 

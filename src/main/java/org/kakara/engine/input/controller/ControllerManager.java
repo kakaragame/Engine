@@ -2,9 +2,9 @@ package org.kakara.engine.input.controller;
 
 import org.kakara.engine.GameHandler;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import static org.lwjgl.glfw.GLFW.*;
 
@@ -18,7 +18,7 @@ public class ControllerManager {
     private final List<Controller> controllers;
 
     public ControllerManager() {
-        controllers = new ArrayList<>();
+        controllers = new CopyOnWriteArrayList<>();
     }
 
     /**

@@ -6,9 +6,9 @@ import org.kakara.engine.lighting.LightHandler;
 import org.kakara.engine.lighting.ShadowMap;
 import org.kakara.engine.render.*;
 import org.kakara.engine.render.culling.FrustumCullingFilter;
-import org.kakara.engine.voxels.VoxelChunk;
 import org.kakara.engine.scene.AbstractGameScene;
 import org.kakara.engine.scene.Scene;
+import org.kakara.engine.voxels.VoxelChunk;
 
 import java.util.List;
 
@@ -77,7 +77,7 @@ public class VoxelPipeline implements RenderPipeline {
 
             Matrix4f modelMatrix = transformation.buildModelMatrix(renderChunk);
             Matrix4f modelLightViewMatrix = transformation.buildModelLightViewMatrix(modelMatrix, lightViewMatrix);
-            depthShader.setUniform("modelLightViewMatrix", modelLightViewMatrix);
+            depthShader.setUniform("modelLightViewNonInstancedMatrix", modelLightViewMatrix);
             depthShader.setUniform("orthoProjectionMatrix", transformation.getOrthoProjectionMatrix());
 
 
