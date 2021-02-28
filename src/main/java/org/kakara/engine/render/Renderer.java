@@ -112,10 +112,11 @@ public final class Renderer {
         int height = isAuto ? window.initialHeight : window.getHeight();
         Matrix4f orthoProjection = transformation.buildOrtho(0, width, height, 0);
         for (UIObject object : objects) {
-            IMesh mesh = object.getMesh();
             hudShaderProgram.setUniform("ortho", orthoProjection);
             hudShaderProgram.setUniform("model", transformation.buildModelViewMatrixUI(object));
-            mesh.render();
+            for (IMesh mesh : object.getMeshes()) {
+                mesh.render();
+            }
         }
         hudShaderProgram.unbind();
     }

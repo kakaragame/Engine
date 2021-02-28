@@ -23,7 +23,7 @@ import java.util.Map;
 public class UIObject implements Tagable, UIListener {
     private final Vector2 position;
     private final Quaternionf rotation;
-    private final IMesh mesh;
+    private final IMesh[] mesh;
     private float scale;
 
     private UICanvas parentCanvas;
@@ -57,6 +57,37 @@ public class UIObject implements Tagable, UIListener {
      * @param scale    The scale of the object.
      */
     public UIObject(IMesh mesh, Vector2 position, Quaternionf rotation, float scale) {
+        this.mesh = new IMesh[]{mesh};
+        this.position = position.clone();
+        this.rotation = rotation;
+        this.scale = scale;
+        this.rotation.rotateZ((float) Math.toRadians(180));
+        this.rotation.rotateY((float) Math.toRadians(180));
+
+        this.events = new HashMap<>();
+    }
+
+    /**
+     * Create a new UIObject.
+     * <p>Default position of (0,0)</p>
+     * <p>Default rotation of none.</p>
+     * <p>Default scale of 10.</p>
+     *
+     * @param mesh The mesh array to use.
+     */
+    public UIObject(IMesh[] mesh) {
+        this(mesh, new Vector2(0, 0), new Quaternionf(), 10);
+    }
+
+    /**
+     * Create a new UIObject.
+     *
+     * @param mesh     The mesh array.
+     * @param position The position of the object
+     * @param rotation The rotation of the object
+     * @param scale    The scale of the object.
+     */
+    public UIObject(IMesh[] mesh, Vector2 position, Quaternionf rotation, float scale) {
         this.mesh = mesh;
         this.position = position.clone();
         this.rotation = rotation;
@@ -219,6 +250,15 @@ public class UIObject implements Tagable, UIListener {
      * @return The mesh.
      */
     public IMesh getMesh() {
+        return mesh[0];
+    }
+
+    /**
+     * Get the array of meshes.
+     *
+     * @return The array of meshes.
+     */
+    public IMesh[] getMeshes() {
         return mesh;
     }
 
