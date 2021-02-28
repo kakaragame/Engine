@@ -40,9 +40,10 @@ public class KeyPressEvent {
 
     /**
      * Get the key code for the key that was pressed.
+     *
      * @return The key code.
      */
-    public KeyCode getKeyCode(){
+    public KeyCode getKeyCode() {
         return KeyCode.getKeyCodeById(keyCode);
     }
 

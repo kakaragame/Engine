@@ -3,10 +3,10 @@ package org.kakara.engine;
 import org.kakara.engine.render.PipelineManager;
 import org.kakara.engine.render.Renderer;
 import org.kakara.engine.render.ShaderManager;
-import org.kakara.engine.voxels.ChunkHandler;
 import org.kakara.engine.scene.AbstractGameScene;
 import org.kakara.engine.scene.AbstractMenuScene;
 import org.kakara.engine.utils.Time;
+import org.kakara.engine.voxels.ChunkHandler;
 import org.kakara.engine.window.Window;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,17 +24,6 @@ public class GameEngine implements Runnable {
     public static final Thread currentThread = Thread.currentThread();
     //WE will change this to the games logger in the impl.
     public static final Logger LOGGER = LoggerFactory.getLogger(GameEngine.class);
-    public final int TARGET_FPS = 75;
-    public final int TARGET_UPS = 30;
-    private final Window window;
-    private final Time time;
-    private final Game game;
-    private final GameHandler gameHandler;
-    private final Queue<Runnable> mainThreadQueue = new LinkedBlockingQueue<>();
-    protected boolean running = true;
-    private Renderer renderer;
-    private final PipelineManager pipelineManager;
-    private final ShaderManager shaderManager;
     private static final Properties engineProperties = new Properties();
 
     static {
@@ -45,6 +34,18 @@ public class GameEngine implements Runnable {
             LOGGER.warn("Unable to load engine.properties", e);
         }
     }
+
+    public final int TARGET_FPS = 75;
+    public final int TARGET_UPS = 30;
+    private final Window window;
+    private final Time time;
+    private final Game game;
+    private final GameHandler gameHandler;
+    private final Queue<Runnable> mainThreadQueue = new LinkedBlockingQueue<>();
+    private final PipelineManager pipelineManager;
+    private final ShaderManager shaderManager;
+    protected boolean running = true;
+    private Renderer renderer;
 
     /**
      * Create a new game.
@@ -65,6 +66,14 @@ public class GameEngine implements Runnable {
         this.pipelineManager = new PipelineManager();
     }
 
+    public static String getEngineVersion() {
+        return engineProperties.getProperty("version");
+    }
+
+    public static Properties getEngineProperties() {
+        return engineProperties;
+    }
+
     /**
      * The main game loop.
      */
@@ -73,9 +82,9 @@ public class GameEngine implements Runnable {
         try {
             init();
             gameLoop();
-        }catch (Exception ex){
+        } catch (Exception ex) {
             ex.printStackTrace();
-        } finally{
+        } finally {
             cleanup();
         }
 
@@ -286,14 +295,6 @@ public class GameEngine implements Runnable {
 
     protected void exit() {
         running = false;
-    }
-
-    public static String getEngineVersion() {
-        return engineProperties.getProperty("version");
-    }
-
-    public static Properties getEngineProperties() {
-        return engineProperties;
     }
 
 }

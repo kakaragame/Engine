@@ -16,19 +16,17 @@ import java.util.function.Predicate;
  */
 public class ObjectBoxCollider extends ColliderComponent {
 
-    private boolean isTrigger;
-
-    private Vector3 lastPosition;
-    private GameItem item;
     private final GameHandler handler;
-    private Predicate<ColliderComponent> predicate = gameItem -> false;
     private final List<OnTriggerEnter> triggerEvents;
-
     // This actually conserves memory since it acts as a cache.
     private final Vector3 relativePointOne;
     private final Vector3 relativePointTwo;
     private final Vector3 absolutePointOne;
     private final Vector3 absolutePointTwo;
+    private boolean isTrigger;
+    private Vector3 lastPosition;
+    private GameItem item;
+    private Predicate<ColliderComponent> predicate = gameItem -> false;
 
     public ObjectBoxCollider() {
         this.handler = GameHandler.getInstance();

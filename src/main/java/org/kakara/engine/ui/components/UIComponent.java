@@ -87,8 +87,9 @@ public interface UIComponent extends Tagable, UIListener {
 
     /**
      * Internal Use Only
+     *
      * @param userInterface the user interface
-     * @param handler the handler
+     * @param handler       the handler
      */
     void init(UserInterface userInterface, GameHandler handler);
 

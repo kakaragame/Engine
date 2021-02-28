@@ -2,8 +2,6 @@ package org.kakara.engine.ui.constraints;
 
 import org.kakara.engine.GameHandler;
 import org.kakara.engine.math.Vector2;
-import org.kakara.engine.ui.UICanvas;
-import org.kakara.engine.ui.UserInterface;
 import org.kakara.engine.ui.components.UIComponent;
 import org.kakara.engine.window.Window;
 
@@ -14,9 +12,9 @@ import org.kakara.engine.window.Window;
  */
 public class HorizontalCenterConstraint implements Constraint {
 
+    private final float offset;
     private Window window;
     private UIComponent component;
-    private final float offset;
 
     public HorizontalCenterConstraint() {
         this(0);

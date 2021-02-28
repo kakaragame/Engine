@@ -21,7 +21,7 @@ public class SkyBox extends GameItem {
     public SkyBox(Texture skyBoxTexture, boolean useUniqueModel) {
         super();
         addComponent(MeshRenderer.class);
-        try{
+        try {
             GameHandler gm = GameHandler.getInstance();
             if (useUniqueModel) {
                 Mesh[] skyBoxMesh = StaticModelLoader.load(gm.getResourceManager().getResource("skybox.obj"), "/player", gm.getSceneManager().getCurrentScene(),
@@ -38,7 +38,7 @@ public class SkyBox extends GameItem {
                 getComponent(MeshRenderer.class).setMesh(skyBoxMesh);
             }
             this.transform.setPosition(0, 0, 0);
-        }catch(Exception ex){
+        } catch (Exception ex) {
             throw new GenericLoadException("Error: unable to load sky box object!", ex);
         }
     }

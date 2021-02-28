@@ -2,12 +2,12 @@ package org.kakara.engine.gameitems.mesh;
 
 import org.kakara.engine.GameEngine;
 import org.kakara.engine.exceptions.InvalidThreadException;
-import org.kakara.engine.gameitems.Material;
 import org.kakara.engine.gameitems.GameItem;
+import org.kakara.engine.gameitems.Material;
 import org.kakara.engine.physics.collision.ColliderComponent;
 import org.kakara.engine.render.culling.FrustumCullingFilter;
-import org.kakara.engine.voxels.VoxelTexture;
 import org.kakara.engine.voxels.TextureAtlas;
+import org.kakara.engine.voxels.VoxelTexture;
 import org.kakara.engine.voxels.layouts.Layout;
 import org.lwjgl.system.MemoryUtil;
 

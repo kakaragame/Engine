@@ -17,16 +17,15 @@ import java.util.function.Predicate;
  */
 public class VoxelCollider extends ColliderComponent {
 
+    private final Voxel voxel;
+    private final GameHandler handler;
+    private final List<OnTriggerEnter> triggerEvents;
+    private final Vector3 scale = new Vector3(1, 1, 1);
     private Vector3 point1;
     private Vector3 point2;
     private Vector3 offset;
     private boolean isTrigger;
-
-    private final Voxel voxel;
-    private final GameHandler handler;
     private Predicate<ColliderComponent> predicate = gameItem -> false;
-    private final List<OnTriggerEnter> triggerEvents;
-    private final Vector3 scale = new Vector3(1, 1, 1);
 
     /**
      * Construct the render block collider.

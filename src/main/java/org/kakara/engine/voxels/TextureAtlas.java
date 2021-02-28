@@ -22,15 +22,11 @@ import java.util.stream.Collectors;
 public class TextureAtlas {
     private final String output;
     private final List<VoxelTexture> textures;
-
+    private final Scene currentScene;
     private int textureWidth;
     private int textureHeight;
-
     private Texture texture;
-
     private int numberOfRows;
-
-    private final Scene currentScene;
 
     /**
      * Create the texture atlas.

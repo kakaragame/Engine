@@ -5,9 +5,9 @@ import org.kakara.engine.GameEngine;
 import org.kakara.engine.GameHandler;
 import org.kakara.engine.exceptions.InvalidThreadException;
 import org.kakara.engine.render.culling.RenderQuery;
+import org.kakara.engine.voxels.TextureAtlas;
 import org.kakara.engine.voxels.Voxel;
 import org.kakara.engine.voxels.VoxelChunk;
-import org.kakara.engine.voxels.TextureAtlas;
 import org.kakara.engine.voxels.layouts.MeshLayout;
 import org.lwjgl.system.MemoryUtil;
 

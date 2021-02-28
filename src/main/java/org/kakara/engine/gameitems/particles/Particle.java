@@ -1,7 +1,6 @@
 package org.kakara.engine.gameitems.particles;
 
 import org.joml.Quaternionf;
-import org.kakara.engine.components.MeshRenderer;
 import org.kakara.engine.gameitems.GameItem;
 import org.kakara.engine.gameitems.Texture;
 import org.kakara.engine.gameitems.mesh.Mesh;
@@ -12,16 +11,12 @@ import org.kakara.engine.math.Vector3;
  */
 public class Particle extends GameItem {
 
+    private final int animFrames;
     private Vector3 speed;
-
     //Time to live in milliseconds
     private long ttl;
-
     private long updateTextureMillis;
-
     private long currentAnimTimeMillis;
-
-    private final int animFrames;
 
     public Particle(Mesh mesh, Vector3 speed, long ttl, long updateTextureMillis) {
         super(mesh);

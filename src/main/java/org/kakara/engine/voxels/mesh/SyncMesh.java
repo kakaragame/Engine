@@ -4,9 +4,9 @@ import org.kakara.engine.GameEngine;
 import org.kakara.engine.GameHandler;
 import org.kakara.engine.exceptions.InvalidThreadException;
 import org.kakara.engine.render.culling.RenderQuery;
+import org.kakara.engine.voxels.TextureAtlas;
 import org.kakara.engine.voxels.Voxel;
 import org.kakara.engine.voxels.VoxelChunk;
-import org.kakara.engine.voxels.TextureAtlas;
 import org.kakara.engine.voxels.layouts.MeshLayout;
 import org.lwjgl.system.MemoryUtil;
 
@@ -29,10 +29,9 @@ import static org.lwjgl.opengl.GL33.GL_ANY_SAMPLES_PASSED;
 public class SyncMesh implements VoxelMesh {
 
     protected final List<Integer> vboIdList;
-    protected int vaoId;
     private final int vertexCount;
-
     private final RenderQuery query;
+    protected int vaoId;
 
     /**
      * Create a render mesh

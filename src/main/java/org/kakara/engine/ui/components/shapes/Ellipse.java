@@ -30,9 +30,8 @@ import static org.lwjgl.nanovg.NanoVG.*;
  * @since 1.0-Pre1
  */
 public class Ellipse extends GeneralUIComponent {
-    private RGBA color;
     private final NVGColor nvgColor;
-
+    private RGBA color;
     private boolean isHovering;
 
     public Ellipse() {
@@ -84,8 +83,8 @@ public class Ellipse extends GeneralUIComponent {
     }
 
     @EventHandler
-    public void onRelease(MouseReleaseEvent evt){
-        if(UserInterface.isColliding(getGlobalPosition(), scale, new Vector2(evt.getMousePosition()))){
+    public void onRelease(MouseReleaseEvent evt) {
+        if (UserInterface.isColliding(getGlobalPosition(), scale, new Vector2(evt.getMousePosition()))) {
             triggerEvent(UIReleaseEvent.class, position, evt.getMouseClickType());
         }
     }

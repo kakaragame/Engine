@@ -83,7 +83,7 @@ public class StandardPipeline implements RenderPipeline {
      * @param lightViewMatrix The light view matrix.
      */
     private void renderNonInstancedMeshes(Scene scene, boolean depthMap, Shader shader, Matrix4f viewMatrix, Matrix4f lightViewMatrix) {
-            shader.setUniform("isInstanced", 0);
+        shader.setUniform("isInstanced", 0);
 
         // Render each mesh with the associated game Items
         Map<IMesh, List<GameItem>> mapMeshes = Objects.requireNonNull(scene.getItemHandler()).getNonInstancedMeshMap();
@@ -120,7 +120,7 @@ public class StandardPipeline implements RenderPipeline {
      * @param lightViewMatrix The light view matrix.
      */
     private void renderInstancedMeshes(Scene scene, boolean depthMap, Shader shader, Matrix4f viewMatrix, Matrix4f lightViewMatrix) {
-            shader.setUniform("isInstanced", 1);
+        shader.setUniform("isInstanced", 1);
 
         // Render each mesh with the associated game Items
         Map<InstancedMesh, List<GameItem>> mapMeshes = Objects.requireNonNull(scene.getItemHandler()).getInstancedMeshMap();

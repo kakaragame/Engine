@@ -6,9 +6,9 @@ import org.kakara.engine.GameHandler;
 import org.kakara.engine.exceptions.InvalidThreadException;
 import org.kakara.engine.render.culling.RenderQuery;
 import org.kakara.engine.voxels.ChunkHandler;
+import org.kakara.engine.voxels.TextureAtlas;
 import org.kakara.engine.voxels.Voxel;
 import org.kakara.engine.voxels.VoxelChunk;
-import org.kakara.engine.voxels.TextureAtlas;
 import org.kakara.engine.voxels.layouts.MeshLayout;
 import org.lwjgl.system.MemoryUtil;
 
@@ -35,14 +35,12 @@ import static org.lwjgl.opengl.GL33.GL_ANY_SAMPLES_PASSED;
 public class ModifiedAsyncMesh implements VoxelMesh {
 
     protected final List<Integer> vboIdList;
+    private final CompletableFuture<MeshLayout> future;
+    private final CompletableFuture<ModifiedAsyncMesh> whenFinished;
+    private final RenderQuery query;
     protected int vaoId;
     private int vertexCount;
     private boolean finished;
-    private final CompletableFuture<MeshLayout> future;
-
-    private final CompletableFuture<ModifiedAsyncMesh> whenFinished;
-
-    private final RenderQuery query;
 
     /**
      * Create a render mesh

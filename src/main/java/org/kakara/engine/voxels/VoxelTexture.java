@@ -32,7 +32,7 @@ public class VoxelTexture {
      * Initializes the voxel texture.
      * This is for internal use only.
      *
-     * @param id The id
+     * @param id      The id
      * @param xOffset the xOffset
      * @param yOffset the yOffset
      */

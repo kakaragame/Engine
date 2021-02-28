@@ -18,16 +18,15 @@ import java.util.function.Predicate;
  */
 public class BoxCollider extends ColliderComponent {
 
+    private final GameHandler handler;
+    private final List<OnTriggerEnter> triggerEvents;
     private Vector3 point1;
     private Vector3 point2;
     private Vector3 offset;
     private boolean isTrigger;
-
     private Vector3 lastPosition;
     private GameItem item;
-    private final GameHandler handler;
     private Predicate<ColliderComponent> predicate = gameItem -> false;
-    private final List<OnTriggerEnter> triggerEvents;
 
     public BoxCollider() {
         this.handler = GameHandler.getInstance();

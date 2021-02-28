@@ -16,10 +16,10 @@ import org.kakara.engine.lighting.LightHandler;
 import org.kakara.engine.lighting.PointLight;
 import org.kakara.engine.lighting.SpotLight;
 import org.kakara.engine.physics.collision.CollisionManager;
-import org.kakara.engine.voxels.VoxelChunk;
 import org.kakara.engine.ui.UICanvas;
 import org.kakara.engine.ui.UserInterface;
 import org.kakara.engine.utils.Time;
+import org.kakara.engine.voxels.VoxelChunk;
 import org.kakara.engine.weather.Fog;
 
 /**

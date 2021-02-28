@@ -137,14 +137,6 @@ public enum KeyCode {
         this.id = id;
     }
 
-    public int getID() {
-        return this.id;
-    }
-
-    public char getCharacter() {
-        return this.character;
-    }
-
     public static KeyCode getKeyCodeById(int id) {
         for (KeyCode keyCode : KeyCode.values()) {
             if (keyCode.id == id)
@@ -152,5 +144,13 @@ public enum KeyCode {
         }
 
         return KeyCode.UNKNOWN;
+    }
+
+    public int getID() {
+        return this.id;
+    }
+
+    public char getCharacter() {
+        return this.character;
     }
 }

@@ -1,9 +1,9 @@
 package org.kakara.engine;
 
+import org.gradle.api.GradleException;
+
 import java.io.IOException;
 import java.util.List;
-
-import org.gradle.api.GradleException;
 
 public class Version {
     public static final String ENGINE_VERSION = "1.0-SNAPSHOT";
@@ -48,6 +48,7 @@ public class Version {
 
     /**
      * Executes a command
+     *
      * @param cmd the command
      * @return the return
      * @throws IOException if it failed.

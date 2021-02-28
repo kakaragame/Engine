@@ -48,7 +48,7 @@ public class Vector3 {
     /**
      * Creates a zero vector.
      */
-    public Vector3(){
+    public Vector3() {
         this(0, 0, 0);
     }
 
@@ -135,21 +135,21 @@ public class Vector3 {
         this.z = z;
     }
 
-    public Vector3 identity(float x, float y, float z){
+    public Vector3 identity(float x, float y, float z) {
         this.idX = x;
         this.idY = y;
         this.idZ = z;
         return this;
     }
 
-    public Vector3 identity(){
+    public Vector3 identity() {
         this.x = idX;
         this.y = idY;
         this.z = idZ;
         return this;
     }
 
-    public Vector3 identitySelf(){
+    public Vector3 identitySelf() {
         this.idX = x;
         this.idY = y;
         this.idZ = z;
@@ -239,10 +239,11 @@ public class Vector3 {
 
     /**
      * Add a vector with mutation.
+     *
      * @param other The other vector.
      * @return An instance of the current vector.
      */
-    public Vector3 addMut(Vector3f other){
+    public Vector3 addMut(Vector3f other) {
         return addMut(other.x, other.y, other.z);
     }
 
@@ -270,10 +271,11 @@ public class Vector3 {
 
     /**
      * Add a vector without mutating the current vector.
+     *
      * @param other The other vector.
      * @return The vector after addition.
      */
-    public Vector3 add(Vector3f other){
+    public Vector3 add(Vector3f other) {
         return add(other.x, other.y, other.z);
     }
 

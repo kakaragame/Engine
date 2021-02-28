@@ -41,6 +41,15 @@ public class MeshRenderer extends Component {
     }
 
     /**
+     * Get the mesh.
+     *
+     * @return The mesh.
+     */
+    public IMesh getMesh() {
+        return mesh[0];
+    }
+
+    /**
      * Set the mesh for the component.
      *
      * @param mesh The mesh to set.
@@ -64,15 +73,6 @@ public class MeshRenderer extends Component {
             for (IMesh m : this.mesh)
                 m.cleanUp();
         this.mesh = mesh;
-    }
-
-    /**
-     * Get the mesh.
-     *
-     * @return The mesh.
-     */
-    public IMesh getMesh() {
-        return mesh[0];
     }
 
     /**

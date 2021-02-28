@@ -5,8 +5,8 @@ package org.kakara.engine.exceptions.render;
  *
  * @since 1.0-Pre4
  */
-public class ShaderNotFoundException extends RuntimeException{
-    public ShaderNotFoundException(String message){
+public class ShaderNotFoundException extends RuntimeException {
+    public ShaderNotFoundException(String message) {
         super(message);
     }
 }

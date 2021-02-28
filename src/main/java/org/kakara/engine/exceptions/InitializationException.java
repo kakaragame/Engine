@@ -7,7 +7,7 @@ package org.kakara.engine.exceptions;
  * @since 1.0-Pre4
  */
 public class InitializationException extends Exception {
-    public InitializationException(String message){
+    public InitializationException(String message) {
         super(message);
     }
 }

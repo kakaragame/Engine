@@ -24,12 +24,9 @@ public class UIObject implements Tagable, UIListener {
     private final Vector2 position;
     private final Quaternionf rotation;
     private final IMesh mesh;
-    private float scale;
-
-    private UICanvas parentCanvas;
-
     private final Map<UActionEvent, Class<? extends UActionEvent>> events;
-
+    private float scale;
+    private UICanvas parentCanvas;
     /*
      * Tagable data
      */

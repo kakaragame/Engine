@@ -1,8 +1,8 @@
 package org.kakara.engine.voxels.mesh;
 
 import org.kakara.engine.render.culling.RenderQuery;
-import org.kakara.engine.voxels.Voxel;
 import org.kakara.engine.voxels.TextureAtlas;
+import org.kakara.engine.voxels.Voxel;
 
 import java.util.List;
 

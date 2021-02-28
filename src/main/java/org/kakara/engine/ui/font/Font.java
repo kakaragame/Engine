@@ -14,18 +14,17 @@ import static org.lwjgl.nanovg.NanoVG.nvgCreateFontMem;
  */
 public class Font {
 
-    private int font;
     private final String name;
     private final Resource fileName;
-
+    private int font;
     private ByteBuffer thisNeedsToBeHereSoTheGarbageCollectorDoesNotComeAndGetMeTMDotCom;
 
     /**
      * Create a new font
      *
-     * @param name     the name of the font.
-     *                 <p>It doesn't matter what it is, as long as you don't use the same name twice</p>
-     * @param fileName The font resource.
+     * @param name         the name of the font.
+     *                     <p>It doesn't matter what it is, as long as you don't use the same name twice</p>
+     * @param fileName     The font resource.
      * @param currentScene the active scene.
      */
     public Font(String name, Resource fileName, Scene currentScene) {
@@ -35,8 +34,8 @@ public class Font {
     }
 
     /**
-     *
      * Internal Use Only
+     *
      * @param userInterface the user interface
      */
     public void init(UserInterface userInterface) {
@@ -70,6 +69,7 @@ public class Font {
 
     /**
      * Internal Use Only
+     *
      * @return the bytebuffer for the font
      */
     public ByteBuffer getByteBuffer() {

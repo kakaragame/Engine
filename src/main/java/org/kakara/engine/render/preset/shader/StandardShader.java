@@ -18,7 +18,7 @@ public class StandardShader implements ShaderProgram {
 
     @Override
     public void initializeShader() {
-        try{
+        try {
             shader = new Shader();
             shader.createVertexShader(Utils.loadResource("/shaders/scene/sceneVertex.vs"));
             shader.createFragmentShader(Utils.loadResource("/shaders/scene/sceneFragment.fs"));
@@ -42,7 +42,7 @@ public class StandardShader implements ShaderProgram {
             shader.createPointLightListUniform("pointLights", LightHandler.MAX_POINT_LIGHTS);
             shader.createSpotLightListUniform("spotLights", LightHandler.MAX_SPOT_LIGHTS);
             shader.createDirectionalLightUniform("directionalLight");
-        }catch (Exception ex){
+        } catch (Exception ex) {
             GameEngine.LOGGER.error("An exception has occurred enabling the standard shader.", ex);
         }
     }

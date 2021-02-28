@@ -32,12 +32,11 @@ import org.joml.Vector4f;
  * </table>
  */
 public class RGBA {
+    private final Vector4f vec;
     public int r;
     public int g;
     public int b;
     public float a;
-
-    private final Vector4f vec;
 
     /**
      * Set the values of RGBA.
