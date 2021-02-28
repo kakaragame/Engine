@@ -244,6 +244,8 @@ public abstract class GeneralUIComponent implements UIComponent {
                 cc.update(this);
             } catch (Exception e) {
                 GameEngine.LOGGER.error("Unable to run constraint " + cc.getClass().getName() + ". In component " + toString(), e);
+                // This is probably not the best and should be changed.
+                throw e;
             }
         }
     }
