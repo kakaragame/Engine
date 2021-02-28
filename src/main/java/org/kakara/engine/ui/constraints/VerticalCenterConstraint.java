@@ -33,7 +33,7 @@ public class VerticalCenterConstraint implements Constraint {
     @Override
     public void onAdd(UIComponent component) {
         window = GameHandler.getInstance().getGameEngine().getWindow();
-        component = component;
+        this.component = component;
     }
 
     @Override

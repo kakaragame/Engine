@@ -1,6 +1,7 @@
 package org.kakara.engine.ui.components;
 
 import org.jetbrains.annotations.Nullable;
+import org.kakara.engine.GameEngine;
 import org.kakara.engine.GameHandler;
 import org.kakara.engine.exceptions.ui.HierarchyException;
 import org.kakara.engine.math.Vector2;
@@ -208,8 +209,8 @@ public abstract class GeneralUIComponent implements UIComponent {
     public final void setParentCanvas(UICanvas canvas) {
         this.parentCanvas = canvas;
 
-        for(UIComponent component : components){
-            if(component.getParentCanvas() == null)
+        for (UIComponent component : components) {
+            if (component.getParentCanvas() == null)
                 component.setParentCanvas(getParentCanvas());
         }
     }
@@ -238,7 +239,11 @@ public abstract class GeneralUIComponent implements UIComponent {
         }
 
         for (Constraint cc : constraints) {
-            cc.update(this);
+            try {
+                cc.update(this);
+            } catch (Exception e) {
+                GameEngine.LOGGER.error("Unable to run constraint " + cc.getClass().getName() + ". In component " + toString(), e);
+            }
         }
     }
 
@@ -250,7 +255,7 @@ public abstract class GeneralUIComponent implements UIComponent {
         init = true;
         for (UIComponent cc : components) {
             cc.init(userInterface, handler);
-            if(cc.getParentCanvas() == null){
+            if (cc.getParentCanvas() == null) {
                 cc.setParentCanvas(getParentCanvas());
             }
         }
@@ -402,4 +407,17 @@ public abstract class GeneralUIComponent implements UIComponent {
         this.tag = tag;
     }
 
+    @Override
+    public String toString() {
+        return "GeneralUIComponent{" +
+                "position=" + position +
+                ", scale=" + scale +
+                ", init=" + init +
+                ", globalPosition=" + globalPosition +
+                ", globalScale=" + globalScale +
+                ", isVisible=" + isVisible +
+                ", tag='" + tag + '\'' +
+                ", parentcanvas='" + parentCanvas.getTag() + "\'" +
+                '}';
+    }
 }
