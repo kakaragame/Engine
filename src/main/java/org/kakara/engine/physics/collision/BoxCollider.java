@@ -45,7 +45,8 @@ public class BoxCollider extends ColliderComponent {
     }
 
     @Override
-    public void update() {}
+    public void update() {
+    }
 
     @Override
     public ColliderComponent setTrigger(boolean value) {
@@ -223,7 +224,7 @@ public class BoxCollider extends ColliderComponent {
             if (gi == this) continue;
             if (getPredicate().test(gi)) continue;
             if (cm.isColliding(gi, item.getComponent(ColliderComponent.class)).isIntersecting()) {
-                for(Component component : item.getComponents()){
+                for (Component component : item.getComponents()) {
                     component.onCollision(gi);
                 }
                 // Fire the trigger event.
@@ -234,4 +235,15 @@ public class BoxCollider extends ColliderComponent {
         }
     }
 
+    @Override
+    public String toString() {
+        return "BoxCollider{" +
+                "point1=" + point1.toString() +
+                ", point2=" + point2.toString() +
+                ", offset=" + offset.toString() +
+                ", isTrigger=" + isTrigger +
+                ", lastPosition=" + lastPosition.toString() +
+                ", item=" + item.toString() +
+                '}';
+    }
 }

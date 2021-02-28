@@ -320,4 +320,13 @@ public class GameItem implements Tagable, Identifiable {
     public void setTag(String tag) {
         this.tag = tag;
     }
+
+    @Override
+    public String toString() {
+        return "GameItem{" +
+                "uuid=" + uuid +
+                ", tag='" + tag + '\'' +
+                ", textPos=" + textPos +
+                '}';
+    }
 }

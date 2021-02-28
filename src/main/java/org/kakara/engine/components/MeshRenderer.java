@@ -2,6 +2,7 @@ package org.kakara.engine.components;
 
 import org.kakara.engine.gameitems.mesh.IMesh;
 
+import java.util.Arrays;
 import java.util.Objects;
 
 /**
@@ -99,5 +100,13 @@ public class MeshRenderer extends Component {
      */
     public void setVisible(boolean visible) {
         this.visible = visible;
+    }
+
+    @Override
+    public String toString() {
+        return "MeshRenderer{" +
+                "mesh=" + Arrays.toString(mesh) +
+                ", visible=" + visible +
+                '}';
     }
 }

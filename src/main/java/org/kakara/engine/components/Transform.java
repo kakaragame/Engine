@@ -199,4 +199,13 @@ public class Transform extends Component {
         }
         position.y += offset.y;
     }
+
+    @Override
+    public String toString() {
+        return "Transform{" +
+                "position=" + position.toString() +
+                ", rotation=" + rotation.toString() +
+                ", scale=" + scale.toString() +
+                '}';
+    }
 }

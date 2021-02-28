@@ -1,5 +1,6 @@
 package org.kakara.engine.gameitems;
 
+import org.kakara.engine.GameEngine;
 import org.kakara.engine.components.Component;
 import org.kakara.engine.gameitems.features.Feature;
 import org.kakara.engine.gameitems.mesh.IMesh;
@@ -34,7 +35,7 @@ public class ItemHandler {
      */
     public void addItem(GameItem obj) {
         IMesh mesh;
-        if(obj.getMeshRenderer().isPresent())
+        if (obj.getMeshRenderer().isPresent())
             mesh = obj.getMeshRenderer().get().getMesh();
         else
             mesh = nullMesh;
@@ -57,7 +58,7 @@ public class ItemHandler {
      */
     public void removeItem(GameItem obj) {
         IMesh mesh;
-        if(obj.getMeshRenderer().isPresent())
+        if (obj.getMeshRenderer().isPresent())
             mesh = obj.getMeshRenderer().get().getMesh();
         else
             mesh = new NullMesh();
@@ -80,7 +81,7 @@ public class ItemHandler {
         for (GameItem item : new ArrayList<>(items)) {
             if (item.getTag().equals(tag)) {
                 IMesh mesh;
-                if(item.getMeshRenderer().isPresent())
+                if (item.getMeshRenderer().isPresent())
                     mesh = item.getMeshRenderer().get().getMesh();
                 else
                     mesh = new NullMesh();
@@ -94,7 +95,7 @@ public class ItemHandler {
         }
     }
 
-    public boolean containsItem(GameItem item){
+    public boolean containsItem(GameItem item) {
         return items.contains(item);
     }
 
@@ -163,12 +164,21 @@ public class ItemHandler {
     public void update() {
         for (GameItem item : items) {
             for (Feature feature : item.getFeatures()) {
-                feature.update(item);
+                try {
+                    feature.update(item);
+                } catch (Exception e) {
+                    GameEngine.LOGGER.error("Unable to run feature " + feature.getClass().getName() + ". In item " + item.toString(), e);
+                }
             }
-            for(Component component : item.getComponents()){
-                component.update();
+            for (Component component : item.getComponents()) {
+                try {
+                    component.update();
+                } catch (Exception e) {
+                    GameEngine.LOGGER.error("Unable to run component " + component.getClass().getName() + ". In item " + item.toString(), e);
+                }
             }
         }
+
     }
 
     /**
@@ -178,7 +188,7 @@ public class ItemHandler {
     public void cleanup() {
         for (Map.Entry<InstancedMesh, List<GameItem>> m : instancedMeshMap.entrySet()) {
             for (GameItem gi : m.getValue()) {
-                for(Component component : gi.getComponents()){
+                for (Component component : gi.getComponents()) {
                     component.cleanup();
                 }
             }
@@ -186,7 +196,7 @@ public class ItemHandler {
 
         for (Map.Entry<IMesh, List<GameItem>> m : nonInstancedMeshMap.entrySet()) {
             for (GameItem gi : m.getValue()) {
-                for(Component component : gi.getComponents()){
+                for (Component component : gi.getComponents()) {
                     component.cleanup();
                 }
             }
