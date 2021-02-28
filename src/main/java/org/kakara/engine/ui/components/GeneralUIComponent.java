@@ -26,12 +26,13 @@ import java.util.stream.Collectors;
  * <p>When overriding the render method you want to call super.render() in order to draw child objects.</p>
  * <code>
  *
- * @Override <br>
+ *  <br>
  * public void render(Vector2 relative, UserInterface userInterface, GameHandler handler) {<br>
  * super.render(relative, userInterface, handler);<br>
  * }<br>
  * </code>
  */
+@SuppressWarnings("unchecked")
 public abstract class GeneralUIComponent implements UIComponent {
 
     public Vector2 position;
@@ -101,7 +102,7 @@ public abstract class GeneralUIComponent implements UIComponent {
      * <code>
      *
      * @param handler The instance of the game handler.
-     * @Override <br>
+     *  <br>
      * public void cleanup(GameHandler handler) {<br>
      * pollCleanup(handler);<br>
      * }<br>
@@ -250,6 +251,8 @@ public abstract class GeneralUIComponent implements UIComponent {
     /**
      * Tells the engine that the object was initialized.
      * This allows the engine to handle a lot of the component hassle for you.
+     * @param userInterface the user interface
+     * @param handler the game handler
      */
     public final void pollInit(UserInterface userInterface, GameHandler handler) {
         init = true;

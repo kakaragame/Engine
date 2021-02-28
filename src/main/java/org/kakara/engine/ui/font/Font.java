@@ -26,6 +26,7 @@ public class Font {
      * @param name     the name of the font.
      *                 <p>It doesn't matter what it is, as long as you don't use the same name twice</p>
      * @param fileName The font resource.
+     * @param currentScene the active scene.
      */
     public Font(String name, Resource fileName, Scene currentScene) {
         this.name = name;
@@ -34,7 +35,9 @@ public class Font {
     }
 
     /**
+     *
      * Internal Use Only
+     * @param userInterface the user interface
      */
     public void init(UserInterface userInterface) {
         try {
@@ -67,6 +70,7 @@ public class Font {
 
     /**
      * Internal Use Only
+     * @return the bytebuffer for the font
      */
     public ByteBuffer getByteBuffer() {
         return thisNeedsToBeHereSoTheGarbageCollectorDoesNotComeAndGetMeTMDotCom;

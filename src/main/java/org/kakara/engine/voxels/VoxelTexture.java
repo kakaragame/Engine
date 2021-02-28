@@ -33,6 +33,8 @@ public class VoxelTexture {
      * This is for internal use only.
      *
      * @param id The id
+     * @param xOffset the xOffset
+     * @param yOffset the yOffset
      */
     public void init(int id, float xOffset, float yOffset) {
         this.id = id;
