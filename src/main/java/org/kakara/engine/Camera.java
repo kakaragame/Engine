@@ -172,4 +172,13 @@ public class Camera {
         this.rotation.y = rotation.y;
         this.rotation.z = rotation.z;
     }
+
+    @Override
+    public String toString() {
+        return "Camera{" +
+                "position=" + position.toString() +
+                ", rotation=" + rotation.toString() +
+                ", viewMatrix=" + viewMatrix +
+                '}';
+    }
 }

@@ -13,11 +13,10 @@ import org.kakara.engine.utils.RGBA;
  * This is an example component. All components must extend GeneralComponent.
  */
 public class LoadingBar extends GeneralUIComponent {
-    private float percent;
-
     private final Text percentText;
     private final Rectangle outer;
     private final Rectangle inner;
+    private float percent;
 
     /*
      * Be sure to put super(); here.

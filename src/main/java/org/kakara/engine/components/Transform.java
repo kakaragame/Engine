@@ -42,15 +42,6 @@ public class Transform extends Component {
     }
 
     /**
-     * Set the position.
-     *
-     * @param position The position vector.
-     */
-    public void setPosition(Vector3 position) {
-        this.position.set(position);
-    }
-
-    /**
      * Get the position vector.
      * <p>This is not a copy and is mutable.</p>
      *
@@ -61,12 +52,12 @@ public class Transform extends Component {
     }
 
     /**
-     * Set the rotation.
+     * Set the position.
      *
-     * @param rotation The Quaternion to set the rotation to.
+     * @param position The position vector.
      */
-    public void setRotation(Quaternionf rotation) {
-        this.rotation.set(rotation);
+    public void setPosition(Vector3 position) {
+        this.position.set(position);
     }
 
     /**
@@ -76,6 +67,15 @@ public class Transform extends Component {
      */
     public Quaternionf getRotation() {
         return rotation;
+    }
+
+    /**
+     * Set the rotation.
+     *
+     * @param rotation The Quaternion to set the rotation to.
+     */
+    public void setRotation(Quaternionf rotation) {
+        this.rotation.set(rotation);
     }
 
     /**
@@ -101,17 +101,6 @@ public class Transform extends Component {
     /**
      * Set the scale.
      *
-     * @param xyz The scale for x, y, and z.
-     */
-    public void setScale(float xyz) {
-        scale.x = xyz;
-        scale.y = xyz;
-        scale.z = xyz;
-    }
-
-    /**
-     * Set the scale.
-     *
      * @param x The x scaling.
      * @param y The y scaling.
      * @param z The z scaling.
@@ -123,21 +112,32 @@ public class Transform extends Component {
     }
 
     /**
-     * Set the scale.
-     *
-     * @param scale The scale to set.
-     */
-    public void setScale(Vector3 scale) {
-        this.scale.set(scale);
-    }
-
-    /**
      * Get the scale.
      *
      * @return The scale.
      */
     public Vector3 getScale() {
         return scale;
+    }
+
+    /**
+     * Set the scale.
+     *
+     * @param xyz The scale for x, y, and z.
+     */
+    public void setScale(float xyz) {
+        scale.x = xyz;
+        scale.y = xyz;
+        scale.z = xyz;
+    }
+
+    /**
+     * Set the scale.
+     *
+     * @param scale The scale to set.
+     */
+    public void setScale(Vector3 scale) {
+        this.scale.set(scale);
     }
 
     /**
@@ -198,5 +198,14 @@ public class Transform extends Component {
             position.z += (float) Math.cos(Math.toRadians(camera.getRotation().y - 90)) * offset.x;
         }
         position.y += offset.y;
+    }
+
+    @Override
+    public String toString() {
+        return "Transform{" +
+                "position=" + position.toString() +
+                ", rotation=" + rotation.toString() +
+                ", scale=" + scale.toString() +
+                '}';
     }
 }

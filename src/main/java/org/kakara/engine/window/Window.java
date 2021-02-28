@@ -26,13 +26,13 @@ public final class Window {
 
     public final int initialWidth;
     public final int initialHeight;
+    private final WindowOptions options;
     private String title;
     private int width;
     private int height;
     private boolean resized;
     private boolean vSync;
     private boolean resizable;
-    private final WindowOptions options;
     private boolean cursor;
     private long window;
 
@@ -300,6 +300,15 @@ public final class Window {
     }
 
     /**
+     * Get if the window is resizable.
+     *
+     * @return If the window is resizable.
+     */
+    public boolean isResizable() {
+        return this.resizable;
+    }
+
+    /**
      * Set if the window is resizable.
      *
      * @param resizable If the window is resizable.
@@ -307,15 +316,6 @@ public final class Window {
     public void setResizable(boolean resizable) {
         this.resizable = resizable;
         glfwSetWindowAttrib(window, GLFW_RESIZABLE, resizable ? GLFW_TRUE : GLFW_FALSE);
-    }
-
-    /**
-     * Get if the window is resizable.
-     *
-     * @return If the window is resizable.
-     */
-    public boolean isResizable() {
-        return this.resizable;
     }
 
     /**

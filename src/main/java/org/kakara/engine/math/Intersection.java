@@ -13,7 +13,8 @@ import org.kakara.engine.gameitems.GameItem;
  */
 public class Intersection {
 
-    private Intersection() {}
+    private Intersection() {
+    }
 
     /**
      * Check to see if the collidable intersects with the ray from the camera.

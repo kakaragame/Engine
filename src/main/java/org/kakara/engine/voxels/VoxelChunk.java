@@ -18,9 +18,9 @@ import java.util.concurrent.CompletableFuture;
  * <p>This class <b>is</b> thread safe.</p>
  */
 public class VoxelChunk extends GameItem {
-    private VoxelMesh mesh;
     private final Voxel[][][] voxelArray;
     private final UUID chunkId;
+    private VoxelMesh mesh;
     private int voxelCount = 0;
 
     /**

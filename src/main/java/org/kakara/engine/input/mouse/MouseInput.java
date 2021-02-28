@@ -20,14 +20,12 @@ import static org.lwjgl.glfw.GLFW.*;
 public class MouseInput {
     private final Vector2d previousPos;
     private final Vector2d currentPos;
+    private final GameHandler handler;
+    // Callbacks prevent slowdown from reflection.
+    private final List<ScrollInput> scrollCallback;
     private boolean inWindow = false;
     private boolean leftButtonPressed = false;
     private boolean rightButtonPressed = false;
-
-    private final GameHandler handler;
-
-    // Callbacks prevent slowdown from reflection.
-    private final List<ScrollInput> scrollCallback;
 
     public MouseInput(GameHandler handler) {
         previousPos = new Vector2d(-1, -1);
@@ -60,18 +58,18 @@ public class MouseInput {
         });
         glfwSetCursorEnterCallback(window.getWindowHandler(), (windowHandle, entered) -> inWindow = entered);
         glfwSetMouseButtonCallback(window.getWindowHandler(), (windowHandle, button, action, mode) -> {
-            if(action == GLFW_PRESS){
-                if(button == GLFW_MOUSE_BUTTON_1)
+            if (action == GLFW_PRESS) {
+                if (button == GLFW_MOUSE_BUTTON_1)
                     leftButtonPressed = true;
-                else if(button == GLFW_MOUSE_BUTTON_2)
+                else if (button == GLFW_MOUSE_BUTTON_2)
                     rightButtonPressed = true;
 
                 MouseClickType mct = MouseClickType.valueOf(button);
                 handler.getSceneManager().getCurrentScene().getEventManager().fireHandler(new MouseClickEvent(this.getPosition(), mct));
-            }else if(action == GLFW_RELEASE){
-                if(button == GLFW_MOUSE_BUTTON_1)
+            } else if (action == GLFW_RELEASE) {
+                if (button == GLFW_MOUSE_BUTTON_1)
                     leftButtonPressed = false;
-                else if(button == GLFW_MOUSE_BUTTON_2)
+                else if (button == GLFW_MOUSE_BUTTON_2)
                     rightButtonPressed = false;
 
                 MouseClickType mct = MouseClickType.valueOf(button);

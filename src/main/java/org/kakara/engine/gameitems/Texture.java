@@ -153,20 +153,6 @@ public class Texture {
     }
 
     /**
-     * Correct the file path on windows.
-     *
-     * @param path The path.
-     * @return The corrected path.
-     */
-    private String correctPath(String path) {
-        // Remove an extra / in front of the drive on windows.
-        if (SystemUtils.IS_OS_WINDOWS && path.startsWith("/")) {
-            return path.substring(1);
-        }
-        return path;
-    }
-
-    /**
      * Create a texture from a byte buffer.
      *
      * @param imageData The byte buffer.
@@ -205,6 +191,20 @@ public class Texture {
 
             stbi_image_free(decodedImage);
         }
+    }
+
+    /**
+     * Correct the file path on windows.
+     *
+     * @param path The path.
+     * @return The corrected path.
+     */
+    private String correctPath(String path) {
+        // Remove an extra / in front of the drive on windows.
+        if (SystemUtils.IS_OS_WINDOWS && path.startsWith("/")) {
+            return path.substring(1);
+        }
+        return path;
     }
 
     /**

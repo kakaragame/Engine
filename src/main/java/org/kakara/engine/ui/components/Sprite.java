@@ -62,6 +62,10 @@ public class Sprite extends GeneralUIComponent {
         isHovering = false;
     }
 
+    public Sprite(Texture tex) {
+        this(tex, new Vector2(0, 0));
+    }
+
     @Override
     public void init(UserInterface userInterface, GameHandler handler) {
         pollInit(userInterface, handler);
@@ -88,10 +92,6 @@ public class Sprite extends GeneralUIComponent {
         }
     }
 
-    public Sprite(Texture tex) {
-        this(tex, new Vector2(0, 0));
-    }
-
     /**
      * Change the image of the sprite
      *
@@ -116,6 +116,15 @@ public class Sprite extends GeneralUIComponent {
     }
 
     /**
+     * Get the alpha value of the sprite
+     *
+     * @return The alpha value.
+     */
+    public int getAlpha() {
+        return this.alpha & 0xFF;
+    }
+
+    /**
      * Set the transparency of the sprite.
      *
      * @param b Transparency level
@@ -127,12 +136,12 @@ public class Sprite extends GeneralUIComponent {
     }
 
     /**
-     * Get the alpha value of the sprite
+     * Get the rotation of the sprite.
      *
-     * @return The alpha value.
+     * @return The rotation.
      */
-    public int getAlpha() {
-        return this.alpha & 0xFF;
+    public float getRotation() {
+        return this.rotation;
     }
 
     /**
@@ -144,15 +153,6 @@ public class Sprite extends GeneralUIComponent {
     public Sprite setRotation(float rotation) {
         this.rotation = rotation;
         return this;
-    }
-
-    /**
-     * Get the rotation of the sprite.
-     *
-     * @return The rotation.
-     */
-    public float getRotation() {
-        return this.rotation;
     }
 
     @Override

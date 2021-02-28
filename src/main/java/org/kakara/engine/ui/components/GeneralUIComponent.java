@@ -1,6 +1,7 @@
 package org.kakara.engine.ui.components;
 
 import org.jetbrains.annotations.Nullable;
+import org.kakara.engine.GameEngine;
 import org.kakara.engine.GameHandler;
 import org.kakara.engine.exceptions.ui.HierarchyException;
 import org.kakara.engine.math.Vector2;
@@ -25,12 +26,13 @@ import java.util.stream.Collectors;
  * <p>When overriding the render method you want to call super.render() in order to draw child objects.</p>
  * <code>
  *
- * @Override <br>
+ * <br>
  * public void render(Vector2 relative, UserInterface userInterface, GameHandler handler) {<br>
  * super.render(relative, userInterface, handler);<br>
  * }<br>
  * </code>
  */
+@SuppressWarnings("unchecked")
 public abstract class GeneralUIComponent implements UIComponent {
 
     public Vector2 position;
@@ -100,11 +102,11 @@ public abstract class GeneralUIComponent implements UIComponent {
      * <code>
      *
      * @param handler The instance of the game handler.
-     * @Override <br>
-     * public void cleanup(GameHandler handler) {<br>
-     * pollCleanup(handler);<br>
-     * }<br>
-     * </code>
+     *                <br>
+     *                public void cleanup(GameHandler handler) {<br>
+     *                pollCleanup(handler);<br>
+     *                }<br>
+     *                </code>
      */
     @Override
     public void cleanup(GameHandler handler) {
@@ -208,8 +210,8 @@ public abstract class GeneralUIComponent implements UIComponent {
     public final void setParentCanvas(UICanvas canvas) {
         this.parentCanvas = canvas;
 
-        for(UIComponent component : components){
-            if(component.getParentCanvas() == null)
+        for (UIComponent component : components) {
+            if (component.getParentCanvas() == null)
                 component.setParentCanvas(getParentCanvas());
         }
     }
@@ -238,19 +240,26 @@ public abstract class GeneralUIComponent implements UIComponent {
         }
 
         for (Constraint cc : constraints) {
-            cc.update(this);
+            try {
+                cc.update(this);
+            } catch (Exception e) {
+                GameEngine.LOGGER.error("Unable to run constraint " + cc.getClass().getName() + ". In component " + toString(), e);
+            }
         }
     }
 
     /**
      * Tells the engine that the object was initialized.
      * This allows the engine to handle a lot of the component hassle for you.
+     *
+     * @param userInterface the user interface
+     * @param handler       the game handler
      */
     public final void pollInit(UserInterface userInterface, GameHandler handler) {
         init = true;
         for (UIComponent cc : components) {
             cc.init(userInterface, handler);
-            if(cc.getParentCanvas() == null){
+            if (cc.getParentCanvas() == null) {
                 cc.setParentCanvas(getParentCanvas());
             }
         }
@@ -402,4 +411,17 @@ public abstract class GeneralUIComponent implements UIComponent {
         this.tag = tag;
     }
 
+    @Override
+    public String toString() {
+        return "GeneralUIComponent{" +
+                "position=" + position +
+                ", scale=" + scale +
+                ", init=" + init +
+                ", globalPosition=" + globalPosition +
+                ", globalScale=" + globalScale +
+                ", isVisible=" + isVisible +
+                ", tag='" + tag + '\'' +
+                ", parentcanvas='" + parentCanvas.getTag() + "\'" +
+                '}';
+    }
 }

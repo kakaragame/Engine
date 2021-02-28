@@ -10,8 +10,8 @@ import org.kakara.engine.physics.collision.ColliderComponent;
 import org.kakara.engine.physics.collision.CollisionManager;
 import org.kakara.engine.physics.collision.VoxelCollider;
 import org.kakara.engine.voxels.ChunkHandler;
-import org.kakara.engine.voxels.VoxelChunk;
 import org.kakara.engine.voxels.TextureAtlas;
+import org.kakara.engine.voxels.VoxelChunk;
 
 import java.util.*;
 
@@ -22,8 +22,8 @@ import java.util.*;
 public abstract class AbstractGameScene extends AbstractScene {
 
     private final ChunkHandler chunkHandler;
-    private TextureAtlas textureAtlas;
     private final Timer physicsUpdater;
+    private TextureAtlas textureAtlas;
 
     public AbstractGameScene(GameHandler gameHandler) {
         super(gameHandler);
@@ -129,7 +129,7 @@ public abstract class AbstractGameScene extends AbstractScene {
         Vector2f nearFar = new Vector2f();
 
         for (ColliderComponent collidable : getCollisionManager().getSelectionItems(getCamera().getPosition())) {
-            if(!(collidable instanceof VoxelCollider)){
+            if (!(collidable instanceof VoxelCollider)) {
                 if (ignore.contains(collidable.getGameItem().getUUID())) continue;
             }
             min.set(collidable.getPosition().toJoml());

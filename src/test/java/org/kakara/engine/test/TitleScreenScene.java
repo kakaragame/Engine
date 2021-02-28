@@ -10,6 +10,8 @@ import org.kakara.engine.input.controller.GamePadButtonEvent;
 import org.kakara.engine.math.Vector2;
 import org.kakara.engine.resources.ResourceManager;
 import org.kakara.engine.scene.AbstractMenuScene;
+import org.kakara.engine.ui.canvases.ComponentCanvas;
+import org.kakara.engine.ui.canvases.ObjectCanvas;
 import org.kakara.engine.ui.components.shapes.Rectangle;
 import org.kakara.engine.ui.components.text.BoundedText;
 import org.kakara.engine.ui.components.text.Text;
@@ -21,8 +23,6 @@ import org.kakara.engine.ui.events.UIHoverEnterEvent;
 import org.kakara.engine.ui.events.UIHoverLeaveEvent;
 import org.kakara.engine.ui.font.Font;
 import org.kakara.engine.ui.font.TextAlign;
-import org.kakara.engine.ui.canvases.ComponentCanvas;
-import org.kakara.engine.ui.canvases.ObjectCanvas;
 import org.kakara.engine.ui.objectcanvas.UIObject;
 import org.kakara.engine.utils.RGBA;
 import org.kakara.engine.utils.Time;
@@ -245,7 +245,7 @@ public class TitleScreenScene extends AbstractMenuScene {
     }
 
     @EventHandler
-    public void onControllerPress(GamePadButtonEvent event){
+    public void onControllerPress(GamePadButtonEvent event) {
         System.out.println(event.getButtonID());
     }
 }

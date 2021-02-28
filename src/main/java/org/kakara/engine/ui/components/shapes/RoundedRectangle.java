@@ -26,8 +26,8 @@ import static org.lwjgl.nanovg.NanoVG.*;
  * @since 1.0-Pre1
  */
 public class RoundedRectangle extends GeneralUIComponent {
-    private RGBA color;
     private final NVGColor nvgColor;
+    private RGBA color;
     private float radius;
 
     private boolean isHovering;

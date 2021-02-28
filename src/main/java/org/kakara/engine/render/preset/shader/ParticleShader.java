@@ -16,7 +16,7 @@ public class ParticleShader implements ShaderProgram {
 
     @Override
     public void initializeShader() {
-        try{
+        try {
             shader = new Shader();
             shader.createVertexShader(Utils.loadResource("/shaders/particle/particleVertex.vs"));
             shader.createFragmentShader(Utils.loadResource("/shaders/particle/particleFragment.fs"));
@@ -30,7 +30,7 @@ public class ParticleShader implements ShaderProgram {
             shader.createUniform("texYOffset");
             shader.createUniform("numCols");
             shader.createUniform("numRows");
-        }catch (Exception ex){
+        } catch (Exception ex) {
             GameEngine.LOGGER.error("Unable to initialize particle shader", ex);
         }
     }

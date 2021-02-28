@@ -16,6 +16,7 @@ import static org.lwjgl.nanovg.NanoVG.*;
  * <p>As of 1.0-Pre1, all text properties are implemented.</p>
  */
 public class Text extends GeneralUIComponent {
+    private final NVGColor nvgColor;
     private String text;
     private Font font;
     private float size;
@@ -25,8 +26,6 @@ public class Text extends GeneralUIComponent {
     private int textAlign;
     private float blur;
     private RGBA color;
-
-    private final NVGColor nvgColor;
     private UserInterface userInterface;
 
     /**

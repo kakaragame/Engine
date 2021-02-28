@@ -11,8 +11,6 @@ import java.math.RoundingMode;
  */
 public class KMath {
 
-    private KMath() {}
-
     /**
      * The maximum error a float could reasonably have. (Not to be used for exact calculations.) <br>
      * Use the following instead:
@@ -27,6 +25,8 @@ public class KMath {
      * @see java.math.BigDecimal
      */
     public static final float FLOAT_MIN_ERROR = -0.00001f;
+    private KMath() {
+    }
 
     /**
      * Find the distance between two vectors.

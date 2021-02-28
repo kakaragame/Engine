@@ -24,11 +24,10 @@ import static org.lwjgl.system.MemoryUtil.NULL;
  */
 public class UserInterface {
 
-    private long vg;
-
     private final List<UICanvas> uiCanvas;
     private final List<Font> fonts;
     private final Scene scene;
+    private long vg;
 
 
     public UserInterface(Scene scene) {

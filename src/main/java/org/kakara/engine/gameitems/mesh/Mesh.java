@@ -3,8 +3,8 @@ package org.kakara.engine.gameitems.mesh;
 import org.jetbrains.annotations.NotNull;
 import org.kakara.engine.GameEngine;
 import org.kakara.engine.exceptions.InvalidThreadException;
-import org.kakara.engine.gameitems.Material;
 import org.kakara.engine.gameitems.GameItem;
+import org.kakara.engine.gameitems.Material;
 import org.kakara.engine.gameitems.Texture;
 import org.kakara.engine.physics.collision.ColliderComponent;
 import org.kakara.engine.render.culling.FrustumCullingFilter;
@@ -318,7 +318,7 @@ public class Mesh implements IMesh {
     public void renderList(List<GameItem> gameItems, FrustumCullingFilter filter, Consumer<GameItem> consumer) {
 
         for (GameItem gameItem : gameItems) {
-            if(gameItem.getMeshRenderer().isEmpty()) continue;
+            if (gameItem.getMeshRenderer().isEmpty()) continue;
             if (gameItem.getMeshRenderer().get().isVisible() && filter.testCollider(gameItem.getComponent(ColliderComponent.class))) {
                 consumer.accept(gameItem);
                 // TODO Improve this, This is no longer as performance efficient.

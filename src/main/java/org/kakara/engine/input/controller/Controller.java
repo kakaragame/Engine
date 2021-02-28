@@ -88,7 +88,7 @@ public class Controller {
      * Get an axis from the controller.
      *
      * @param axisID The id of an axis.
-     * @return The value of the axis. (|value| is always > 0.05 and < 1. In other conditions it is
+     * @return The value of the axis. (|value| is always &gt; 0.05 and &lt; 1. In other conditions it is
      * perfectly 0).
      */
     public float getAxis(int axisID) {

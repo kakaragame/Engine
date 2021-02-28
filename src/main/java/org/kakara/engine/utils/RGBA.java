@@ -28,15 +28,15 @@ import org.joml.Vector4f;
  *         <td>Alpha (a)</td>
  *         <td>The opacity of the color. 0-1 values with 1 being complete opaque and 0 being transparent.</td>
  *     </tr>
+ *     <caption>The RGBA table</caption>
  * </table>
  */
 public class RGBA {
+    private final Vector4f vec;
     public int r;
     public int g;
     public int b;
     public float a;
-
-    private final Vector4f vec;
 
     /**
      * Set the values of RGBA.
@@ -126,6 +126,7 @@ public class RGBA {
      * @param g Green - (0-255)
      * @param b Blue - (0-255)
      * @param a Alpha - (0-1)
+     * @return The RGBA color for the object
      */
     public RGBA setRGBA(int r, int g, int b, float a) {
         if (r < 0 || r > 255)

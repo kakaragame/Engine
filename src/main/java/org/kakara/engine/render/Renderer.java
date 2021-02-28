@@ -30,27 +30,22 @@ import static org.lwjgl.opengl.GL30.glBindFramebuffer;
  * <p>Please note that the Skybox, Shadow System, and UI, are not apart of the pipeline system.</p>
  */
 public final class Renderer {
+    // FOV information.
+    private static final float FOV = (float) Math.toRadians(60.0f);
+    private static final float Z_NEAR = 0.01f;
+    private static final float Z_FAR = 1000.0f;
     private final Transformation transformation;
     private final FrustumCullingFilter frustumFilter;
     private final GameEngine engine;
-
+    private Shader skyBoxShaderProgram;
+    private Shader depthShaderProgram;
+    private Shader hudShaderProgram;
+    private ShadowMap shadowMap;
     public Renderer(GameEngine engine) {
         transformation = new Transformation();
         frustumFilter = new FrustumCullingFilter();
         this.engine = engine;
     }
-
-    private Shader skyBoxShaderProgram;
-    private Shader depthShaderProgram;
-    private Shader hudShaderProgram;
-
-    private ShadowMap shadowMap;
-
-    // FOV information.
-    private static final float FOV = (float) Math.toRadians(60.0f);
-    private static final float Z_NEAR = 0.01f;
-    private static final float Z_FAR = 1000.0f;
-
 
     /**
      * Setup shaders

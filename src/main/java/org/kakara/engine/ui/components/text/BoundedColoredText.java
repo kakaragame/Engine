@@ -37,6 +37,9 @@ import static org.lwjgl.nanovg.NanoVG.*;
  * @since 1.0-Pre3
  */
 public class BoundedColoredText extends GeneralUIComponent {
+    private final NVGColor nvgColor;
+    private final NVGTextRow.Buffer rows = NVGTextRow.create(3);
+    private final FloatBuffer lineh = BufferUtils.createFloatBuffer(1);
     private String text;
     private ByteBuffer paragraph;
     private Font font;
@@ -46,9 +49,6 @@ public class BoundedColoredText extends GeneralUIComponent {
     private int textAlign;
     private float blur;
     private Vector2 maximumBound;
-    private final NVGColor nvgColor;
-    private final NVGTextRow.Buffer rows = NVGTextRow.create(3);
-    private final FloatBuffer lineh = BufferUtils.createFloatBuffer(1);
     private int lnum;
 
     private UserInterface userInterface;

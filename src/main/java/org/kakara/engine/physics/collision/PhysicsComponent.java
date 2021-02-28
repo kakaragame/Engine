@@ -146,4 +146,13 @@ public class PhysicsComponent extends Component {
     public boolean shouldResolve() {
         return resolve;
     }
+
+    @Override
+    public String toString() {
+        return "PhysicsComponent{" +
+                "velocity=" + velocity.toString() +
+                ", acceleration=" + acceleration.toString() +
+                ", resolve=" + resolve +
+                '}';
+    }
 }

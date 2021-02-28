@@ -10,13 +10,14 @@ public enum MouseClickType {
     OTHER(3);
 
     int num;
-    MouseClickType(int num){
+
+    MouseClickType(int num) {
         this.num = num;
     }
 
-    public static MouseClickType valueOf(int num){
-        for(MouseClickType type : MouseClickType.values()){
-            if(num == type.num)
+    public static MouseClickType valueOf(int num) {
+        for (MouseClickType type : MouseClickType.values()) {
+            if (num == type.num)
                 return type;
         }
         return OTHER;

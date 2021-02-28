@@ -31,13 +31,13 @@ public class FixedPhysicsUpdater extends TimerTask {
         currentTime = System.currentTimeMillis();
         float deltaTime = ((float) (currentTime - oldTime)) * 0.001f;
         // TODO come up with better solution. Maybe change getItems to copyonwritearray
-        synchronized (Objects.requireNonNull(scene.getItemHandler()).getItems()){
+        synchronized (Objects.requireNonNull(scene.getItemHandler()).getItems()) {
             for (GameItem item : Objects.requireNonNull(scene.getItemHandler()).getItems()) {
-                try{
-                    for(Component components : item.getComponents()){
+                try {
+                    for (Component components : item.getComponents()) {
                         components.physicsUpdate(deltaTime);
                     }
-                }catch (Exception ex){
+                } catch (Exception ex) {
                     ex.printStackTrace();
                 }
 //                try {

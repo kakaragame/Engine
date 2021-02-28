@@ -29,16 +29,12 @@ public class Voxel implements Tagable {
 
     private final Layout layout;
     private final VoxelTexture texture;
+    private final List<Face> visibleFaces;
+    private final VoxelCollider collider;
     private VoxelTexture overlay;
     private boolean isOpaque;
-
     private Vector3 position;
-
     private VoxelChunk parentChunk;
-    private final List<Face> visibleFaces;
-
-    private final VoxelCollider collider;
-
     /*
         Tagable data
      */
@@ -94,21 +90,21 @@ public class Voxel implements Tagable {
     }
 
     /**
-     * Get the position in term of the normal engine units.
-     *
-     * @return The normal position
-     */
-    public Vector3 getWorldPosition() {
-        return position.add(parentChunk.transform.getPosition());
-    }
-
-    /**
      * Set the position of the block
      *
      * @param position the position
      */
     public void setPosition(Vector3 position) {
         this.position = position.clone();
+    }
+
+    /**
+     * Get the position in term of the normal engine units.
+     *
+     * @return The normal position
+     */
+    public Vector3 getWorldPosition() {
+        return position.add(parentChunk.transform.getPosition());
     }
 
     /**
@@ -184,16 +180,6 @@ public class Voxel implements Tagable {
     }
 
     /**
-     * Set if the voxel is opaque.
-     *
-     * @param opaque If the render block is opaque.
-     * @since 1.0-Pre4
-     */
-    public void setOpaque(boolean opaque) {
-        this.isOpaque = opaque;
-    }
-
-    /**
      * Get if the voxel is opaque.
      *
      * @return If the voxel is opaque.
@@ -201,6 +187,16 @@ public class Voxel implements Tagable {
      */
     public boolean isOpaque() {
         return isOpaque;
+    }
+
+    /**
+     * Set if the voxel is opaque.
+     *
+     * @param opaque If the render block is opaque.
+     * @since 1.0-Pre4
+     */
+    public void setOpaque(boolean opaque) {
+        this.isOpaque = opaque;
     }
 
     /**

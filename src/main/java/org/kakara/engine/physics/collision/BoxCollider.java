@@ -18,16 +18,15 @@ import java.util.function.Predicate;
  */
 public class BoxCollider extends ColliderComponent {
 
+    private final GameHandler handler;
+    private final List<OnTriggerEnter> triggerEvents;
     private Vector3 point1;
     private Vector3 point2;
     private Vector3 offset;
     private boolean isTrigger;
-
     private Vector3 lastPosition;
     private GameItem item;
-    private final GameHandler handler;
     private Predicate<ColliderComponent> predicate = gameItem -> false;
-    private final List<OnTriggerEnter> triggerEvents;
 
     public BoxCollider() {
         this.handler = GameHandler.getInstance();
@@ -45,7 +44,8 @@ public class BoxCollider extends ColliderComponent {
     }
 
     @Override
-    public void update() {}
+    public void update() {
+    }
 
     @Override
     public ColliderComponent setTrigger(boolean value) {
@@ -223,7 +223,7 @@ public class BoxCollider extends ColliderComponent {
             if (gi == this) continue;
             if (getPredicate().test(gi)) continue;
             if (cm.isColliding(gi, item.getComponent(ColliderComponent.class)).isIntersecting()) {
-                for(Component component : item.getComponents()){
+                for (Component component : item.getComponents()) {
                     component.onCollision(gi);
                 }
                 // Fire the trigger event.
@@ -234,4 +234,15 @@ public class BoxCollider extends ColliderComponent {
         }
     }
 
+    @Override
+    public String toString() {
+        return "BoxCollider{" +
+                "point1=" + point1.toString() +
+                ", point2=" + point2.toString() +
+                ", offset=" + offset.toString() +
+                ", isTrigger=" + isTrigger +
+                ", lastPosition=" + lastPosition.toString() +
+                ", item=" + item.toString() +
+                '}';
+    }
 }

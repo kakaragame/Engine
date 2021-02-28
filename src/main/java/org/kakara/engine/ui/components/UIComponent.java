@@ -60,6 +60,8 @@ public interface UIComponent extends Tagable, UIListener {
      * Please use {@link UIListener#addUActionEvent(Class, UActionEvent)}
      * Deprecated to use a consistent method
      *
+     * @param uae   the action event to
+     * @param clazz the clazz
      * @deprecated To be removed in the future.
      */
     @Deprecated
@@ -76,16 +78,25 @@ public interface UIComponent extends Tagable, UIListener {
 
     /**
      * Internal Use Only
+     *
+     * @param relativePosition the relative position
+     * @param userInterface    the user interface
+     * @param handler          handler
      */
     void render(Vector2 relativePosition, UserInterface userInterface, GameHandler handler);
 
     /**
      * Internal Use Only
+     *
+     * @param userInterface the user interface
+     * @param handler       the handler
      */
     void init(UserInterface userInterface, GameHandler handler);
 
     /**
      * Internal Use Only
+     *
+     * @param handler gameHandler
      */
     void cleanup(GameHandler handler);
 

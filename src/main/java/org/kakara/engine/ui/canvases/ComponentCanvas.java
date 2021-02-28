@@ -26,10 +26,9 @@ import java.util.List;
  * </code>
  */
 public class ComponentCanvas implements UICanvas {
-    private boolean init = false;
     private final List<UIComponent> components;
     private final Scene scene;
-
+    private boolean init = false;
     private boolean autoScale;
 
     /*

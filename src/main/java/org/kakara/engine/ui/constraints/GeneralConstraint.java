@@ -2,7 +2,6 @@ package org.kakara.engine.ui.constraints;
 
 import org.jetbrains.annotations.Nullable;
 import org.kakara.engine.GameHandler;
-import org.kakara.engine.ui.UICanvas;
 import org.kakara.engine.ui.components.UIComponent;
 import org.kakara.engine.window.Window;
 

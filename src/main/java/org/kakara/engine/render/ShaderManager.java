@@ -1,9 +1,9 @@
 package org.kakara.engine.render;
 
 import org.kakara.engine.GameEngine;
-import org.kakara.engine.render.preset.shader.VoxelShader;
 import org.kakara.engine.render.preset.shader.ParticleShader;
 import org.kakara.engine.render.preset.shader.StandardShader;
+import org.kakara.engine.render.preset.shader.VoxelShader;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -58,7 +58,7 @@ public final class ShaderManager {
         if (this.programs.containsKey(name))
             throw new IllegalArgumentException("The specified name already exists.");
         this.programs.put(name, program);
-        if(initialized)
+        if (initialized)
             program.initializeShader();
     }
 

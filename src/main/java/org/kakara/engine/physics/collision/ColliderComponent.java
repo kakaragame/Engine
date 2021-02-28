@@ -127,7 +127,7 @@ public abstract class ColliderComponent extends Component {
     /**
      * Add an event to be triggered when this collidable comes in contact with a trigger.
      * <p>Important note: This triggers every physics update that the object is colliding with a trigger.</p>
-     * 
+     *
      * <p>This functionality has been replaced by the {@link Component#onCollision(ColliderComponent)}.
      * Consider using that instead.</p>
      *
