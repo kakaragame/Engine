@@ -291,6 +291,16 @@ public class Vector3 {
     }
 
     /**
+     * Multiply a vector by a constant without mutation
+     *
+     * @param v The constant
+     * @return The new Vector3 from the multiplication.
+     */
+    public Vector3 multiply(float v) {
+        return new Vector3(this.x * v, this.y * v, this.z * v);
+    }
+
+    /**
      * Divide a vector by a constant with mutation
      *
      * @param v The constant

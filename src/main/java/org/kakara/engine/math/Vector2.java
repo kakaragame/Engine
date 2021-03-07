@@ -145,6 +145,15 @@ public class Vector2 {
     }
 
     /**
+     * Get the magnitude of the vector.
+     *
+     * @return The magnitude of the vector.
+     */
+    public double magnitude() {
+        return Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
+    }
+
+    /**
      * Create a clone of the vector.
      * <p>This will create a new version of the vector that <b>will not</b> mutate the original vector.</p>
      *

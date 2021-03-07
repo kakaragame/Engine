@@ -4,6 +4,7 @@ import org.kakara.engine.GameEngine;
 import org.kakara.engine.exceptions.ModelLoadException;
 import org.kakara.engine.gameitems.Material;
 import org.kakara.engine.gameitems.Texture;
+import org.kakara.engine.gameitems.mesh.InstancedMesh;
 import org.kakara.engine.gameitems.mesh.Mesh;
 import org.kakara.engine.resources.FileResource;
 import org.kakara.engine.resources.JarResource;
@@ -99,6 +100,77 @@ public class StaticModelLoader {
         return meshes;
     }
 
+    /**
+     * Load a model that should be instanced.
+     *
+     * @param resource        The resource for the model file (.obj)
+     * @param texturesDir     The location of the texture directory
+     * @param scene           The current scene
+     * @param resourceManager The resource manager.
+     * @param instances       The number of instances.
+     * @return The Array of meshes.
+     * @throws ModelLoadException If an error occurs while loading the model.
+     */
+    public static Mesh[] loadInstanced(Resource resource, String texturesDir, Scene scene, ResourceManager resourceManager, int instances) throws ModelLoadException {
+        return loadInstanced(resource, texturesDir, resourceManager, scene, instances, aiProcess_GenSmoothNormals | aiProcess_JoinIdenticalVertices | aiProcess_Triangulate
+                | aiProcess_FixInfacingNormals);
+    }
+
+
+    /**
+     * Load a model that should be instanced.
+     *
+     * @param resource        The resource for the model file
+     * @param texturesDir     The location of the Texture directory
+     * @param resourceManager The resource manager
+     * @param scene           The current scene
+     * @param instances       The number of instances.
+     * @param flags           Flags to load the object by.
+     * @return The array of instance meshes.
+     * @throws ModelLoadException If an error occurs while loading the model.
+     */
+    public static InstancedMesh[] loadInstanced(Resource resource, String texturesDir, ResourceManager resourceManager, Scene scene, int instances, int flags) throws ModelLoadException {
+        GameEngine.LOGGER.debug(String.format("Loading Model %s With Textures in %s", resource.toString(), texturesDir));
+
+        AIScene aiScene = null;
+        if (resource instanceof FileResource) {
+            aiScene = aiImportFile(resource.getPath(), flags);
+        } else if (resource instanceof JarResource) {
+            AIFileIO fileIo = AIFileIO.create();
+            AIFileOpenProcI fileOpenProc = new SimpleAIFileOpenProc();
+            AIFileCloseProcI fileCloseProc = new SimpleAIFileCloseProc();
+            fileIo.set(fileOpenProc, fileCloseProc, NULL);
+            aiScene = aiImportFileEx(resource.getPath(), flags, fileIo);
+        }
+        //I feel like this is gonna be a problem
+        if (aiScene == null) {
+            throw new ModelLoadException(aiGetErrorString());
+        }
+
+        int numMaterials = aiScene.mNumMaterials();
+        PointerBuffer aiMaterials = aiScene.mMaterials();
+        List<Material> materials = new ArrayList<>();
+        for (int i = 0; i < numMaterials; i++) {
+            AIMaterial aiMaterial = AIMaterial.create(aiMaterials.get(i));
+            try {
+                processMaterial(aiMaterial, materials, texturesDir, resourceManager, scene);
+            } catch (Exception e) {
+                throw new ModelLoadException(e);
+            }
+        }
+
+        int numMeshes = aiScene.mNumMeshes();
+        PointerBuffer aiMeshes = aiScene.mMeshes();
+        InstancedMesh[] meshes = new InstancedMesh[numMeshes];
+        for (int i = 0; i < numMeshes; i++) {
+            AIMesh aiMesh = AIMesh.create(aiMeshes.get(i));
+            InstancedMesh mesh = processInstancedMesh(aiMesh, instances, materials);
+            meshes[i] = mesh;
+        }
+
+        return meshes;
+    }
+
     protected static void processIndices(AIMesh aiMesh, List<Integer> indices) {
         int numFaces = aiMesh.mNumFaces();
         AIFace.Buffer aiFaces = aiMesh.mFaces();
@@ -141,6 +213,13 @@ public class StaticModelLoader {
         materials.add(material);
     }
 
+    /**
+     * Process the mesh.
+     *
+     * @param aiMesh    The AI Mesh.
+     * @param materials The list of materials.
+     * @return The mesh.
+     */
     private static Mesh processMesh(AIMesh aiMesh, List<Material> materials) {
         List<Float> vertices = new ArrayList<>();
         List<Float> textures = new ArrayList<>();
@@ -154,6 +233,39 @@ public class StaticModelLoader {
 
         Mesh mesh = new Mesh(Utils.listToArray(vertices), Utils.listToArray(textures),
                 Utils.listToArray(normals), Utils.listIntToArray(indices));
+        Material material;
+        int materialIdx = aiMesh.mMaterialIndex();
+        if (materialIdx >= 0 && materialIdx < materials.size()) {
+            material = materials.get(materialIdx);
+        } else {
+            material = new Material();
+        }
+        mesh.setMaterial(material);
+
+        return mesh;
+    }
+
+    /**
+     * Process a mesh into an InstancedMesh.
+     *
+     * @param aiMesh    The AI Mesh.
+     * @param instances The number of instances.
+     * @param materials The materials.
+     * @return The instanced mesh.
+     */
+    private static InstancedMesh processInstancedMesh(AIMesh aiMesh, int instances, List<Material> materials) {
+        List<Float> vertices = new ArrayList<>();
+        List<Float> textures = new ArrayList<>();
+        List<Float> normals = new ArrayList<>();
+        List<Integer> indices = new ArrayList<>();
+
+        processVertices(aiMesh, vertices);
+        processNormals(aiMesh, normals);
+        processTextCoords(aiMesh, textures);
+        processIndices(aiMesh, indices);
+
+        InstancedMesh mesh = new InstancedMesh(Utils.listToArray(vertices), Utils.listToArray(textures),
+                Utils.listToArray(normals), Utils.listIntToArray(indices), instances);
         Material material;
         int materialIdx = aiMesh.mMaterialIndex();
         if (materialIdx >= 0 && materialIdx < materials.size()) {
