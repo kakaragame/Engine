@@ -412,6 +412,6 @@ public class Vector3 {
 
     @Override
     public String toString() {
-        return "{" + this.x + ", " + this.y + ", " + this.z + "}";
+        return "Vector3 {" + this.x + ", " + this.y + ", " + this.z + "}";
     }
 }

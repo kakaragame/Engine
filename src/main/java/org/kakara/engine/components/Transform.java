@@ -1,6 +1,7 @@
 package org.kakara.engine.components;
 
 import org.joml.Quaternionf;
+import org.joml.Vector3fc;
 import org.kakara.engine.Camera;
 import org.kakara.engine.math.Vector3;
 
@@ -58,6 +59,15 @@ public class Transform extends Component {
      */
     public void setPosition(Vector3 position) {
         this.position.set(position);
+    }
+
+    /**
+     * Set the position.
+     *
+     * @param position The position vector.
+     */
+    public void setPosition(Vector3fc position) {
+        setPosition(position.x(), position.y(), position.z());
     }
 
     /**
@@ -141,6 +151,15 @@ public class Transform extends Component {
     }
 
     /**
+     * Set the scale.
+     *
+     * @param scale The scale to set.
+     */
+    public void setScale(Vector3fc scale) {
+        setScale(scale.x(), scale.y(), scale.z());
+    }
+
+    /**
      * Translate the position by a value.
      *
      * @param x The x value.
@@ -202,7 +221,7 @@ public class Transform extends Component {
 
     @Override
     public String toString() {
-        return "Transform{" +
+        return "Transform {" +
                 "position=" + position.toString() +
                 ", rotation=" + rotation.toString() +
                 ", scale=" + scale.toString() +
