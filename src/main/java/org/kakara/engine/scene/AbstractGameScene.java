@@ -106,7 +106,7 @@ public abstract class AbstractGameScene extends AbstractScene {
     }
 
     /**
-     * Select a game item while ignoring certain tags.
+     * Select a game item while ignoring certain uuids.
      * <p>This method also works with RenderBlocks as well with instanced and non-instanced game items</p>
      * <p>The maximum distance is set to 20 for performance reasons.</p>
      *
@@ -131,6 +131,90 @@ public abstract class AbstractGameScene extends AbstractScene {
         for (ColliderComponent collidable : getCollisionManager().getSelectionItems(getCamera().getPosition())) {
             if (!(collidable instanceof VoxelCollider)) {
                 if (ignore.contains(collidable.getGameItem().getUUID())) continue;
+            }
+            min.set(collidable.getPosition().toJoml());
+            max.set(collidable.getPosition().toJoml());
+            Vector3 scale = collidable.getScale();
+            min.add(-scale.x / 2, -scale.y / 2, -scale.z / 2);
+            max.add(scale.x / 2, scale.y / 2, scale.z / 2);
+            if (Intersectionf.intersectRayAab(getCamera().getPosition().toJoml(), dir, min, max, nearFar) && nearFar.x < closestDistance) {
+                closestDistance = nearFar.x;
+                selectedGameItem = collidable;
+            }
+        }
+        return selectedGameItem;
+    }
+
+    /**
+     * Select a game item while ignoring certain tags and uuids.
+     * <p>This method also works with RenderBlocks as well with instanced and non-instanced game items</p>
+     * <p>The maximum distance is set to 20 for performance reasons.</p>
+     *
+     * @param distance   The maximum distance that a block can be selected for.
+     *                   <p>Note: This value is limited by the maximum distance set in {@link CollisionManager#getSelectionItems(Vector3)}</p>
+     * @param ignoreIds  The array of UUIDs to ignore.
+     * @param ignoreTags The array of tags to ignore.
+     * @return The collidable that was found.
+     */
+    public ColliderComponent selectGameItems(float distance, UUID[] ignoreIds, String[] ignoreTags) {
+        List<UUID> ignore = new ArrayList<>(Arrays.asList(ignoreIds));
+        List<String> ignoreT = new ArrayList<>(Arrays.asList(ignoreTags));
+        ColliderComponent selectedGameItem = null;
+        float closestDistance = distance;
+
+        Vector3f dir = new Vector3f();
+
+        dir = getCamera().getViewMatrix().positiveZ(dir).negate();
+
+        Vector3f max = new Vector3f();
+        Vector3f min = new Vector3f();
+        Vector2f nearFar = new Vector2f();
+
+        for (ColliderComponent collidable : getCollisionManager().getSelectionItems(getCamera().getPosition())) {
+            if (!(collidable instanceof VoxelCollider)) {
+                if (ignore.contains(collidable.getGameItem().getUUID())) continue;
+                if (ignoreT.contains(collidable.getGameItem().getTag())) continue;
+            }
+            min.set(collidable.getPosition().toJoml());
+            max.set(collidable.getPosition().toJoml());
+            Vector3 scale = collidable.getScale();
+            min.add(-scale.x / 2, -scale.y / 2, -scale.z / 2);
+            max.add(scale.x / 2, scale.y / 2, scale.z / 2);
+            if (Intersectionf.intersectRayAab(getCamera().getPosition().toJoml(), dir, min, max, nearFar) && nearFar.x < closestDistance) {
+                closestDistance = nearFar.x;
+                selectedGameItem = collidable;
+            }
+        }
+        return selectedGameItem;
+    }
+
+    /**
+     * Select a game item while ignoring certain tags and uuids.
+     * <p>This method also works with RenderBlocks as well with instanced and non-instanced game items</p>
+     * <p>The maximum distance is set to 20 for performance reasons.</p>
+     *
+     * @param distance   The maximum distance that a block can be selected for.
+     *                   <p>Note: This value is limited by the maximum distance set in {@link CollisionManager#getSelectionItems(Vector3)}</p>
+     * @param ignoreIds  The list of UUIDs to ignore.
+     * @param ignoreTags The list of tags to ignore.
+     * @return The collidable that was found.
+     */
+    public ColliderComponent selectGameItems(float distance, List<UUID> ignoreIds, List<String> ignoreTags) {
+        ColliderComponent selectedGameItem = null;
+        float closestDistance = distance;
+
+        Vector3f dir = new Vector3f();
+
+        dir = getCamera().getViewMatrix().positiveZ(dir).negate();
+
+        Vector3f max = new Vector3f();
+        Vector3f min = new Vector3f();
+        Vector2f nearFar = new Vector2f();
+
+        for (ColliderComponent collidable : getCollisionManager().getSelectionItems(getCamera().getPosition())) {
+            if (!(collidable instanceof VoxelCollider)) {
+                if (ignoreIds.contains(collidable.getGameItem().getUUID())) continue;
+                if (ignoreTags.contains(collidable.getGameItem().getTag())) continue;
             }
             min.set(collidable.getPosition().toJoml());
             max.set(collidable.getPosition().toJoml());
