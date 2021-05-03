@@ -135,6 +135,9 @@ public class GameEngine implements Runnable {
 
         gameHandler.getSceneManager().cleanupScenes();
         gameHandler.getSoundManager().cleanup();
+
+        // TODO :: Come up with a better solution for this.
+        game.exit();
     }
 
     private void sync() {
