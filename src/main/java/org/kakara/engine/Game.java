@@ -32,7 +32,10 @@ public interface Game {
     void update();
 
     /**
-     * Exits the game;
+     * This method is called when the Game terminates, either by calling {@link GameHandler#exit()} or the user
+     * clicking the close window button.
+     *
+     * <p>Note: When this method is called all Engine systems have already been cleaned up and terminated.</p>
      */
     void exit();
 }

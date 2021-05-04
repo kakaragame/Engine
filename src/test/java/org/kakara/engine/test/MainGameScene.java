@@ -267,7 +267,7 @@ public class MainGameScene extends AbstractGameScene {
             }
             // Exit the game.
             if (Input.isGamePadButtonDown(ControllerID.CONTROLLER_ONE, GamePadButton.START))
-                test.exit();
+                gameHandler.exit();
         }
 
         if (ki.isKeyPressed(KeyCode.W)) {
@@ -289,7 +289,7 @@ public class MainGameScene extends AbstractGameScene {
             getCamera().movePosition(0, -1, 0);
         }
         if (ki.isKeyPressed(KeyCode.ESCAPE)) {
-            test.exit();
+            gameHandler.exit();
         }
         if (ki.isKeyPressed(KeyCode.TAB)) {
             this.setCursorStatus(true);

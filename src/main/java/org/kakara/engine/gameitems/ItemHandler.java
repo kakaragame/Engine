@@ -12,6 +12,9 @@ import java.util.concurrent.CopyOnWriteArrayList;
 /**
  * Handles all of the items.
  * <p>This class does not manager render chunks. See: {@link org.kakara.engine.voxels.ChunkHandler} to add render chunks.</p>
+ * <p>Please note that {@link CopyOnWriteArrayList} is used to store the items, allowing for the addition of items on separate threads.
+ * Due to this, making large additions to the ItemHandler often is performance heavy and could cause FPS drop. Please
+ * keep this in mind when designing your code.</p>
  */
 public class ItemHandler {
     private final List<GameItem> items;
@@ -41,9 +44,9 @@ public class ItemHandler {
             mesh = nullMesh;
         List<GameItem> list;
         if (mesh instanceof InstancedMesh) {
-            list = instancedMeshMap.computeIfAbsent((InstancedMesh) mesh, k -> new ArrayList<>());
+            list = instancedMeshMap.computeIfAbsent((InstancedMesh) mesh, k -> new CopyOnWriteArrayList<>());
         } else {
-            list = nonInstancedMeshMap.computeIfAbsent(mesh, k -> new ArrayList<>());
+            list = nonInstancedMeshMap.computeIfAbsent(mesh, k -> new CopyOnWriteArrayList<>());
         }
         list.add(obj);
         items.add(obj);

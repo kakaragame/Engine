@@ -53,6 +53,6 @@ public class KakaraTest implements Game {
 
     @Override
     public void exit() {
-        gInst.exit();
+        System.out.println("The game has been terminated.");
     }
 }

@@ -136,7 +136,7 @@ public class GameEngine implements Runnable {
         gameHandler.getSceneManager().cleanupScenes();
         gameHandler.getSoundManager().cleanup();
 
-        // TODO :: Come up with a better solution for this.
+        // After everything is done, call the exit method on the game.
         game.exit();
     }
 

@@ -29,7 +29,7 @@ import static org.lwjgl.nanovg.NanoVG.*;
  * </code>
  * Color codes are just hex colors wrapped in curly braces. '{}'. 3 letter hex color codes are not supported. Example String:
  * <code>
- * "{#5BE0D5}I am a cool color! {#5BE06D} Me too! {#F54FFFF}Another cool color! {#ED4725}I am red!"
+ * "{#5BE0D5}I am a cool color! {#5BE06D} Me too! {#F54FFF}Another cool color! {#ED4725}I am red!"
  * </code>
  * </p>
  * <p><b>The scale is automatically set and should not be edited!</b></p>
@@ -97,6 +97,13 @@ public class BoundedColoredText extends GeneralUIComponent {
         MemoryUtil.memFree(paragraph);
     }
 
+    /**
+     * Inform the system to count the number of lines in the text.
+     * <p>This information can be retrieved from {@link #getLineNumbers()} after this method is called.</p>
+     *
+     * @param userInterface The user interface.
+     * @param handler       The game handler.
+     */
     public void calculateLineNumbers(UserInterface userInterface, GameHandler handler) {
         nvgSave(userInterface.getVG());
 
@@ -216,11 +223,17 @@ public class BoundedColoredText extends GeneralUIComponent {
         lnum++;
     }
 
+    /**
+     * Split up the colors in a message for processing.
+     *
+     * @param message The message.
+     * @return The Map of strings and their colors.
+     */
     protected Map<String, RGBA> splitColors(String message) {
-        List<String> normalMessage = new ArrayList<>(Arrays.asList(message.split("\\{(#[^}]+)}")));
+        List<String> normalMessage = new ArrayList<>(Arrays.asList(message.split("\\{(#[^}]{6})}")));
         List<String> colorCodes = new ArrayList<>();
         colorCodes.add("{#FFFFFF}");
-        Matcher m = Pattern.compile("\\{(#[^}]+)}").matcher(message);
+        Matcher m = Pattern.compile("\\{(#[^}]{6})}").matcher(message);
         while (m.find()) {
             colorCodes.add(m.group());
         }
@@ -239,6 +252,12 @@ public class BoundedColoredText extends GeneralUIComponent {
         return output;
     }
 
+    /**
+     * Check to make sure a chat color code is valid.
+     *
+     * @param code The code.
+     * @return If it is valid.
+     */
     protected boolean isChatCode(String code) {
         try {
             hex2Rgb(code);
@@ -248,6 +267,12 @@ public class BoundedColoredText extends GeneralUIComponent {
         return true;
     }
 
+    /**
+     * Convert the hex String to the {@link RGBA} class.
+     *
+     * @param colorStr The hex string.
+     * @return The hex String in RGBA form.
+     */
     protected RGBA hex2Rgb(String colorStr) {
         String hexCode = colorStr.replace("{", "").replace("}", "");
         return new RGBA(

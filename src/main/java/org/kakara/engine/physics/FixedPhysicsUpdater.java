@@ -30,15 +30,15 @@ public class FixedPhysicsUpdater extends TimerTask {
         oldTime = currentTime;
         currentTime = System.currentTimeMillis();
         float deltaTime = ((float) (currentTime - oldTime)) * 0.001f;
-        // TODO come up with better solution. Maybe change getItems to copyonwritearray
         synchronized (Objects.requireNonNull(scene.getItemHandler()).getItems()) {
             for (GameItem item : Objects.requireNonNull(scene.getItemHandler()).getItems()) {
                 try {
                     for (Component components : item.getComponents()) {
                         components.physicsUpdate(deltaTime);
                     }
-                } catch (Exception ex) {
-                    ex.printStackTrace();
+                } catch (NullPointerException ex) {
+                    // Continue for now. This is caused by a synchronization issue between the
+                    // threads. For now do nothing as I don't know how to fix this.
                 }
 //                try {
 //                    GameItem meshItem = (GameItem) item;
