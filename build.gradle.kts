@@ -118,7 +118,7 @@ dependencies {
     implementation(group = "me.ryandw11", name = "Octree", version = "1.0")
     implementation("org.apache.commons:commons-lang3:3.12.0")
     implementation("commons-io:commons-io:2.8.0")
-    implementation("org.jetbrains:annotations:20.1.0")
+    implementation("org.jetbrains:annotations:21.0.0")
     implementation("com.github.nifty-gui:nifty:1.4.3")
     implementation("org.l33tlabs.twl:pngdecoder:1.0")
     implementation("io.imgui.java:binding:1.77-0.17.2")
