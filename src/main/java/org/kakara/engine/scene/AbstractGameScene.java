@@ -230,50 +230,6 @@ public abstract class AbstractGameScene extends AbstractScene {
     }
 
     /**
-     * Select game items while ignoring certain tags.
-     * <p>See {@link #selectGameItems(float, UUID...)} and {@link #selectGameItems(float)} for other options.</p>
-     *
-     * @param distance The distance to select.
-     * @param tags     he maximum distance that a block can be selected for.
-     *                 <p>Note: This value is limited by the maximum distance set in {@link CollisionManager#getSelectionItems(Vector3)}</p>
-     * @return The collidable that was selected.
-     * @since 1.0-Pre3
-     */
-//    public Collidable selectGameItems(float distance, String... tags) {
-//        List<String> ignoreTags = Arrays.asList(tags);
-//        Collidable selectedGameItem = null;
-//        float closestDistance = distance;
-//
-//        Vector3f dir = new Vector3f();
-//
-//        dir = getCamera().getViewMatrix().positiveZ(dir).negate();
-//
-//        Vector3f max = new Vector3f();
-//        Vector3f min = new Vector3f();
-//        Vector2f nearFar = new Vector2f();
-//
-//        for (Collidable collidable : getCollisionManager().getSelectionItems(getCamera().getPosition())) {
-//            collidable.setSelected(false);
-//            if (collidable instanceof GameItem) {
-//                if (ignoreTags.contains(((GameItem) collidable).getTag())) continue;
-//            }
-//            min.set(collidable.getColPosition().toJoml());
-//            max.set(collidable.getColPosition().toJoml());
-//            min.add(-collidable.getColScale() / 2, -collidable.getColScale() / 2, -collidable.getColScale() / 2);
-//            max.add(collidable.getColScale() / 2, collidable.getColScale() / 2, collidable.getColScale() / 2);
-//            if (Intersectionf.intersectRayAab(getCamera().getPosition().toJoml(), dir, min, max, nearFar) && nearFar.x < closestDistance) {
-//                closestDistance = nearFar.x;
-//                selectedGameItem = collidable;
-//            }
-//        }
-//
-//        if (selectedGameItem != null) {
-//            selectedGameItem.setSelected(true);
-//        }
-//        return selectedGameItem;
-//    }
-
-    /**
      * Add a chunk to the scene
      * <p>This does the same as {@link org.kakara.engine.voxels.ChunkHandler#addChunk(VoxelChunk)}</p>
      *

@@ -137,6 +137,12 @@ public enum KeyCode {
         this.id = id;
     }
 
+    /**
+     * Get a key code by its ID.
+     *
+     * @param id The id of the keycode to get.
+     * @return The key code. (Returns KeyCode.UNKNOWN if not found).
+     */
     public static KeyCode getKeyCodeById(int id) {
         for (KeyCode keyCode : KeyCode.values()) {
             if (keyCode.id == id)
@@ -146,10 +152,20 @@ public enum KeyCode {
         return KeyCode.UNKNOWN;
     }
 
+    /**
+     * Get the ID of the Key.
+     *
+     * @return The ID of the Key.
+     */
     public int getID() {
         return this.id;
     }
 
+    /**
+     * Get the character for the key.
+     *
+     * @return The character for the key.
+     */
     public char getCharacter() {
         return this.character;
     }

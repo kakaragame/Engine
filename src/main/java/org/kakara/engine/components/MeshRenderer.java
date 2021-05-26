@@ -105,7 +105,7 @@ public class MeshRenderer extends Component {
     @Override
     public String toString() {
         return "MeshRenderer{" +
-                "mesh=" + Arrays.toString(mesh) +
+                "meshes=" + Arrays.toString(mesh) +
                 ", visible=" + visible +
                 '}';
     }

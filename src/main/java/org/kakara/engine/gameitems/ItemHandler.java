@@ -5,6 +5,7 @@ import org.kakara.engine.components.Component;
 import org.kakara.engine.gameitems.features.Feature;
 import org.kakara.engine.gameitems.mesh.IMesh;
 import org.kakara.engine.gameitems.mesh.InstancedMesh;
+import org.kakara.engine.gameitems.mesh.NullMesh;
 
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -189,19 +190,9 @@ public class ItemHandler {
      * <p>Internal Use Only.</p>
      */
     public void cleanup() {
-        for (Map.Entry<InstancedMesh, List<GameItem>> m : instancedMeshMap.entrySet()) {
-            for (GameItem gi : m.getValue()) {
-                for (Component component : gi.getComponents()) {
-                    component.cleanup();
-                }
-            }
-        }
-
-        for (Map.Entry<IMesh, List<GameItem>> m : nonInstancedMeshMap.entrySet()) {
-            for (GameItem gi : m.getValue()) {
-                for (Component component : gi.getComponents()) {
-                    component.cleanup();
-                }
+        for(GameItem item : items){
+            for(Component component : item.getComponents()){
+                component.cleanup();
             }
         }
     }
