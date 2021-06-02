@@ -6,7 +6,7 @@ import org.kakara.engine.math.Vector3;
 
 /**
  * A light that is based on a point. It radiates in all directions.
- * </p>
+ * <br>
  * <code>
  *     PointLight pointLight = new PointLight(LightColor.RED, new Vector3(), 1);<br>
  *     add(pointLight);
