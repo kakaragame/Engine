@@ -5,7 +5,13 @@ import org.kakara.engine.math.KMath;
 import org.kakara.engine.math.Vector3;
 
 /**
- * Point based lighting.
+ * A light that is based on a point. It radiates in all directions.
+ * </p>
+ * <code>
+ *     PointLight pointLight = new PointLight(LightColor.RED, new Vector3(), 1);<br>
+ *     add(pointLight);
+ * </code>
+ *
  */
 public class PointLight implements Comparable<PointLight> {
     private LightColor color;
@@ -15,11 +21,11 @@ public class PointLight implements Comparable<PointLight> {
     private Attenuation attenuation;
 
     /**
-     * Create a point light
+     * Create a point light.
      *
      * @param color     The color of the light
      * @param position  The position of the light
-     * @param intensity The intensity of the light.
+     * @param intensity The intensity of the light. (0-1)
      */
     public PointLight(LightColor color, Vector3 position, float intensity) {
         attenuation = new Attenuation(1, 0, 0);

@@ -1,13 +1,18 @@
 package org.kakara.engine.lighting;
 
 import org.kakara.engine.math.Vector3;
+import org.kakara.engine.scene.AbstractScene;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 /**
- * Handles the lighting for the engine.
+ * This class is responsible for the lighting of the engine.
+ *
+ * <p>Obtain the light handler in the current scene by doing {@link AbstractScene#getLightHandler()}.</p>
+ *
+ * <p>The engine limits 5 spot and point lights to be rendered at a time.</p>
  */
 public class LightHandler {
 

@@ -11,6 +11,7 @@ import org.kakara.engine.events.event.MouseClickEvent;
 import org.kakara.engine.exceptions.ModelLoadException;
 import org.kakara.engine.gameitems.GameItem;
 import org.kakara.engine.gameitems.Material;
+import org.kakara.engine.gameitems.SkyBox;
 import org.kakara.engine.gameitems.Texture;
 import org.kakara.engine.gameitems.mesh.AtlasMesh;
 import org.kakara.engine.gameitems.mesh.InstancedMesh;
@@ -227,6 +228,9 @@ public class MainGameScene extends AbstractGameScene {
 
             // Set the fog for the level.
             setFog(new Fog(true, new RGBA(255, 255, 255), 0.005f));
+
+            SkyBox skyBox = new SkyBox(new Texture(resourceManager.getResource("/yeet.png"), this), false);
+            setSkyBox(skyBox);
 
 
             setupCanvas(txt2);

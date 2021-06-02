@@ -3,9 +3,25 @@ package org.kakara.engine.lighting;
 import org.joml.Vector3f;
 
 /**
- * Handles the coloring of the lights.
+ * The color for lights in the Kakara Engine.
+ *
+ * <p>There are many predefined light colors, like {@link #RED}.</p>
  */
 public class LightColor {
+
+    public static final LightColor RED = new LightColor(255, 0, 0);
+    public static final LightColor GREEN = new LightColor(0, 255, 0);
+    public static final LightColor BLUE = new LightColor(0, 0, 255);
+    public static final LightColor PURPLE = new LightColor(128, 0, 128);
+    public static final LightColor PINK = new LightColor(255, 192, 203);
+    public static final LightColor ORANGE = new LightColor(255, 165, 0);
+    public static final LightColor YELLOW = new LightColor(255, 255, 0);
+    public static final LightColor CYAN = new LightColor(0, 255, 255);
+    public static final LightColor BROWN = new LightColor(165, 42, 42);
+    public static final LightColor WHITE = new LightColor(255, 255, 255);
+    public static final LightColor IVORY = new LightColor(255, 255, 240);
+    public static final LightColor GRAY = new LightColor(128, 128, 128);
+
     private int red;
     private int green;
     private int blue;

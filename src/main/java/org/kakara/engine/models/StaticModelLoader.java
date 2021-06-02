@@ -84,7 +84,9 @@ public class StaticModelLoader {
             try {
                 processMaterial(aiMaterial, materials, texturesDir, resourceManager, scene);
             } catch (Exception e) {
-                throw new ModelLoadException(e);
+                GameEngine.LOGGER.error("Unable to load material for model " + resource.toString());
+                throw new ModelLoadException("An error has occurred when attempting to load the materials for a model. Did you" +
+                        " set the correct texture directory?", e);
             }
         }
 

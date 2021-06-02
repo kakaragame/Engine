@@ -3,7 +3,9 @@ package org.kakara.engine.lighting;
 import org.kakara.engine.math.Vector3;
 
 /**
- * Handles Lighting that is similar to the sun.
+ * Global lighting that casts in a certain direction.
+ *
+ * <p>Get the current DirectionalLight by doing {@link LightHandler#getDirectionalLight()}.</p>
  */
 public class DirectionalLight {
     private final OrthoCoords orthoCords;
