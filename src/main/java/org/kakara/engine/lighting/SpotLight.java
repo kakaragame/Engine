@@ -1,61 +1,43 @@
 package org.kakara.engine.lighting;
 
 import org.joml.Vector3f;
-import org.kakara.engine.GameHandler;
-import org.kakara.engine.math.KMath;
 import org.kakara.engine.math.Vector3;
 
 /**
  * Spot / Beam based lighting.
  */
-public class SpotLight implements Comparable<SpotLight> {
-    private PointLight pointLight;
-
+public class SpotLight extends PointLight {
     private Vector3f coneDirection;
-
     private float cutOff;
 
     /**
-     * Define a spot light.
+     * Construct a spot light.
      *
-     * @param pointLight    The light the that this light will inherit its properties from.
+     * <p>The default settings are slightly different from a normal PointLight.</p>
+     *
+     * @param position      The position of the spot light.
      * @param coneDirection The direction of the cone
      * @param cutOffAngle   The angle of cutoff.
      */
-    public SpotLight(PointLight pointLight, Vector3f coneDirection, float cutOffAngle) {
-        this.pointLight = pointLight;
+    public SpotLight(Vector3 position, Vector3f coneDirection, float cutOffAngle) {
+        super(LightColor.WHITE, position, 1);
+        this.attenuation.setExponent(0.02f);
+        this.attenuation.setConstant(0);
         this.coneDirection = coneDirection;
         setCutOffAngle(cutOffAngle);
     }
 
     /**
-     * Make a spot light off of another one
+     * Make a spot light off of another one.
+     *
+     * <p>All values are cloned.</p>
      *
      * @param spotLight Clone a spot light.
      */
     public SpotLight(SpotLight spotLight) {
-        this(new PointLight(spotLight.getPointLight()),
-                new Vector3f(spotLight.getConeDirection()),
-                0);
+        super(spotLight);
+        this.coneDirection = new Vector3f(spotLight.coneDirection);
         setCutOff(spotLight.getCutOff());
-    }
-
-    /**
-     * Get the point light
-     *
-     * @return The point light
-     */
-    public PointLight getPointLight() {
-        return pointLight;
-    }
-
-    /**
-     * Set the point light
-     *
-     * @param pointLight The point light
-     */
-    public void setPointLight(PointLight pointLight) {
-        this.pointLight = pointLight;
     }
 
     /**
@@ -86,7 +68,9 @@ public class SpotLight implements Comparable<SpotLight> {
     }
 
     /**
-     * Set the cut off
+     * Set the cut off.
+     *
+     * <p>In most cases you will want to use {@link #setCutOffAngle(float)} instead.</p>
      *
      * @param cutOff the cute off.
      */
@@ -101,12 +85,6 @@ public class SpotLight implements Comparable<SpotLight> {
      */
     public final void setCutOffAngle(float cutOffAngle) {
         this.setCutOff((float) Math.cos(Math.toRadians(cutOffAngle)));
-    }
-
-    @Override
-    public int compareTo(SpotLight o) {
-        Vector3 cameraPos = GameHandler.getInstance().getCurrentScene().getCamera().getPosition();
-        return Math.round(KMath.distance(cameraPos, getPointLight().getPosition()) - KMath.distance(cameraPos, o.getPointLight().getPosition()));
     }
 
 }

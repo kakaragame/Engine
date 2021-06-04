@@ -8,20 +8,19 @@ import org.kakara.engine.math.Vector3;
  * A light that is based on a point. It radiates in all directions.
  * <br>
  * <code>
- *     PointLight pointLight = new PointLight(LightColor.RED, new Vector3(), 1);<br>
- *     add(pointLight);
+ * PointLight pointLight = new PointLight(LightColor.RED, new Vector3(), 1);<br>
+ * add(pointLight);
  * </code>
- *
  */
 public class PointLight implements Comparable<PointLight> {
-    private LightColor color;
-    private Vector3 position;
-    private float intensity;
+    protected LightColor color;
+    protected final Vector3 position;
+    protected float intensity;
 
-    private Attenuation attenuation;
+    protected Attenuation attenuation;
 
     /**
-     * Create a point light.
+     * Construct a point light.
      *
      * @param color     The color of the light
      * @param position  The position of the light
@@ -34,11 +33,24 @@ public class PointLight implements Comparable<PointLight> {
         this.intensity = intensity;
     }
 
+    /**
+     * Construct a point light.
+     *
+     * @param color       The color.
+     * @param position    The position.
+     * @param intensity   The intensity.
+     * @param attenuation The attenuation.
+     */
     public PointLight(LightColor color, Vector3 position, float intensity, Attenuation attenuation) {
         this(color, position, intensity);
         this.attenuation = attenuation;
     }
 
+    /**
+     * Clone a point light.
+     *
+     * @param pointLight The point light to clone.
+     */
     public PointLight(PointLight pointLight) {
         this(pointLight.getColor(), pointLight.getPosition().clone(),
                 pointLight.getIntensity(), pointLight.getAttenuation());
@@ -88,7 +100,7 @@ public class PointLight implements Comparable<PointLight> {
      * @param position The position
      */
     public void setPosition(Vector3 position) {
-        this.position = position;
+        this.position.set(position);
     }
 
     /**
@@ -99,7 +111,7 @@ public class PointLight implements Comparable<PointLight> {
      * @param z Z pos
      */
     public void setPosition(float x, float y, float z) {
-        this.position = new Vector3(x, y, z);
+        this.position.set(x, y, z);
     }
 
     /**

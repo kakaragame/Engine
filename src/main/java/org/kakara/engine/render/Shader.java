@@ -411,7 +411,7 @@ public final class Shader {
      * @param spotLight   The spot light
      */
     public void setUniform(String uniformName, SpotLight spotLight) {
-        setUniform(uniformName + ".pl", spotLight.getPointLight());
+        setUniform(uniformName + ".pl", (PointLight) spotLight);
         setUniform(uniformName + ".conedir", spotLight.getConeDirection());
         setUniform(uniformName + ".cutoff", spotLight.getCutOff());
     }

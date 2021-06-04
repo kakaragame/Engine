@@ -67,13 +67,15 @@ public final class Graphics {
             Vector4f dir = new Vector4f(currSpotLight.getConeDirection(), 0);
             dir.mul(viewMatrix);
             currSpotLight.setConeDirection(new Vector3f(dir.x, dir.y, dir.z));
-            Vector3f lightPos = currSpotLight.getPointLight().getPosition().toJoml();
+            Vector3f lightPos = currSpotLight.getPosition().toJoml();
 
             Vector4f aux = new Vector4f(lightPos, 1);
             aux.mul(viewMatrix);
             lightPos.x = aux.x;
             lightPos.y = aux.y;
             lightPos.z = aux.z;
+
+            currSpotLight.setPosition(lightPos.x, lightPos.y, lightPos.z);
 
             program.setUniform("spotLights", currSpotLight, i);
         }
