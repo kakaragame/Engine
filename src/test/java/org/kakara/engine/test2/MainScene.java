@@ -5,6 +5,8 @@ import org.kakara.engine.GameHandler;
 import org.kakara.engine.events.EventHandler;
 import org.kakara.engine.events.event.KeyPressEvent;
 import org.kakara.engine.gameitems.GameItem;
+import org.kakara.engine.gameitems.SkyBox;
+import org.kakara.engine.gameitems.Texture;
 import org.kakara.engine.gameitems.mesh.Mesh;
 import org.kakara.engine.input.Input;
 import org.kakara.engine.input.controller.ids.ControllerID;
@@ -45,6 +47,11 @@ public class MainScene extends AbstractGameScene {
         spotLight.setIntensity(10);
         spotLight.setColor(LightColor.PURPLE);
         add(spotLight);
+
+        Texture skyboxText = new Texture(rm.getResource("/m.png"), this);
+
+        SkyBox skyBox = new SkyBox(skyboxText, false);
+        setSkyBox(skyBox);
     }
 
     @EventHandler

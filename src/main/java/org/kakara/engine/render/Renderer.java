@@ -197,6 +197,7 @@ public final class Renderer {
      * @param scene  The current scene
      */
     public void renderSkyBox(Window window, Camera camera, Scene scene) {
+        glDisable(GL_CULL_FACE);
         skyBoxShaderProgram.bind();
         skyBoxShaderProgram.setUniform("texture_sampler", 0);
         Matrix4f projectionMatrix = transformation.getProjectionMatrix();
@@ -212,8 +213,8 @@ public final class Renderer {
         skyBoxShaderProgram.setUniform("ambientLight",
                 Objects.requireNonNull(scene.getLightHandler()).getSkyBoxLight().toVector());
         scene.getSkyBox().getComponent(MeshRenderer.class).getMesh().render();
-
         skyBoxShaderProgram.unbind();
+        glEnable(GL_CULL_FACE);
     }
 
     /**

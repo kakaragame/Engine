@@ -104,6 +104,8 @@ public class StandardPipeline implements RenderPipeline {
                 shader.setUniform("modelLightViewNonInstancedMatrix", modelLightViewMatrix);
                 // Render every mesh (some game items can have more than one)
                 for (IMesh m : gameItem.getMeshRenderer().orElseThrow().getMeshes()) {
+                    // Skip the current mesh as it is already rendered by the renderList method.
+                    if(m == mesh) continue;
                     m.render();
                 }
             });
