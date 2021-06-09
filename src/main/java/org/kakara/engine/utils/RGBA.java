@@ -6,6 +6,9 @@ import org.joml.Vector4f;
 /**
  * RGBA stores the color values for the engine.
  *
+ * <p>There are 34 pre-defined colors for you to use. They have the same RGB values
+ * as their CSS counter parts for consistency.</p>
+ *
  * <h2>Color Values</h2>
  * <table>
  *     <tr>
@@ -32,6 +35,42 @@ import org.joml.Vector4f;
  * </table>
  */
 public class RGBA {
+    public static final RGBA RED = new RGBA(255, 0, 0);
+    public static final RGBA SALMON = new RGBA(250, 128, 114);
+    public static final RGBA CRIMSON = new RGBA(220, 20, 60);
+    public static final RGBA ORANGE = new RGBA(255, 165, 0);
+    public static final RGBA CORAL = new RGBA(255, 127, 80);
+    public static final RGBA GOLD = new RGBA(255, 215, 0);
+    public static final RGBA YELLOW = new RGBA(255, 255, 0);
+    public static final RGBA PEACH = new RGBA(255, 218, 185);
+    public static final RGBA LIGHT_YELLOW = new RGBA(255, 255, 224);
+    public static final RGBA LIME = new RGBA(0, 255, 0);
+    public static final RGBA GREEN = new RGBA(0, 128, 0);
+    public static final RGBA DARK_GREEN = new RGBA(0, 100, 0);
+    public static final RGBA SPRING_GREEN = new RGBA(0, 255, 127);
+    public static final RGBA SEA_GREEN = new RGBA(46, 139, 87);
+    public static final RGBA OLIVE = new RGBA(128, 128, 0);
+    public static final RGBA CYAN = new RGBA(0, 255, 255);
+    public static final RGBA LIGHT_CYAN = new RGBA(224, 255, 255);
+    public static final RGBA TURQUOISE = new RGBA(64, 224, 208);
+    public static final RGBA TEAL = new RGBA(0, 128, 128);
+    public static final RGBA SKY_BLUE = new RGBA(135, 206, 235);
+    public static final RGBA BLUE = new RGBA(0, 0, 255);
+    public static final RGBA DARK_BLUE = new RGBA(0, 0, 139);
+    public static final RGBA MAGENTA = new RGBA(255, 0, 255);
+    public static final RGBA VIOLET = new RGBA(148, 0, 211);
+    public static final RGBA PURPLE = new RGBA(128, 0, 128);
+    public static final RGBA PINK = new RGBA(255, 192, 203);
+    public static final RGBA DEEP_PINK = new RGBA(255, 20, 147);
+    public static final RGBA WHITE = new RGBA(255, 255, 255);
+    public static final RGBA AZURE = new RGBA(240, 255, 255);
+    public static final RGBA LIGHT_GRAY = new RGBA(211, 211, 211);
+    public static final RGBA SILVER = new RGBA(192, 192, 192);
+    public static final RGBA GRAY = new RGBA(128, 128, 128);
+    public static final RGBA BLACK = new RGBA(0, 0, 0);
+    public static final RGBA BROWN = new RGBA(165, 42, 42);
+    public static final RGBA CHOCOLATE = new RGBA(210, 105, 30);
+
     private final Vector4f vec;
     public int r;
     public int g;
@@ -58,6 +97,7 @@ public class RGBA {
         this.r = r;
         this.g = g;
         this.b = b;
+        this.a = 1;
 
         vec = new Vector4f(r / 255f, g / 255f, b / 255f, 1);
     }

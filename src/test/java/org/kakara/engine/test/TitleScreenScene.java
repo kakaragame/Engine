@@ -83,11 +83,11 @@ public class TitleScreenScene extends AbstractMenuScene {
          */
         Rectangle playButton = new Rectangle(new Vector2(0, gameHandler.getWindow().getHeight() - 300),
                 new Vector2(100, 100));
-        playButton.setColor(new RGBA(0, 150, 150, 1));
+        playButton.setColor(RGBA.SKY_BLUE);
         playButton.addConstraint(new HorizontalCenterConstraint(-100));
         // Setup the events for the button.
-        playButton.addUActionEvent(UIHoverEnterEvent.class, (UIHoverEnterEvent) location -> playButton.setColor(new RGBA(0, 150, 200, 1)));
-        playButton.addUActionEvent(UIHoverLeaveEvent.class, (UIHoverLeaveEvent) location -> playButton.setColor(new RGBA(0, 150, 150, 1)));
+        playButton.addUActionEvent(UIHoverEnterEvent.class, (UIHoverEnterEvent) location -> playButton.setColor(RGBA.CYAN));
+        playButton.addUActionEvent(UIHoverLeaveEvent.class, (UIHoverLeaveEvent) location -> playButton.setColor(RGBA.SKY_BLUE));
         playButton.addUActionEvent(UIClickEvent.class, (UIClickEvent) (location, clickType) -> {
             if (!playButton.isVisible()) return;
             try {
@@ -113,7 +113,7 @@ public class TitleScreenScene extends AbstractMenuScene {
 
          */
         Rectangle popupMenu = new Rectangle(new Vector2(0, 100), new Vector2(600, 500));
-        popupMenu.setColor(new RGBA(181, 181, 181, 1));
+        popupMenu.setColor(RGBA.LIGHT_GRAY);
         popupMenu.setVisible(false);
         popupMenu.addConstraint(new HorizontalCenterConstraint());
         Text popupTitle = new Text("The Kakara Engine!", roboto);
@@ -134,7 +134,7 @@ public class TitleScreenScene extends AbstractMenuScene {
         popupMenu.add(popupText);
 
         Rectangle popupClose = new Rectangle(new Vector2(0, 0), new Vector2(100, 70));
-        popupClose.setColor(new RGBA(0, 150, 150, 1));
+        popupClose.setColor(RGBA.SKY_BLUE);
         popupClose.addConstraint(new HorizontalCenterConstraint());
         popupClose.addConstraint(new GeneralConstraint(ComponentSide.BOTTOM, popupMenu, ComponentSide.BOTTOM, 100));
 
@@ -148,8 +148,8 @@ public class TitleScreenScene extends AbstractMenuScene {
         popupMenu.add(popupClose);
 
         popupClose.addUActionEvent(UIHoverEnterEvent.class,
-                (UIHoverEnterEvent) location -> popupClose.setColor(new RGBA(0, 150, 200, 1)));
-        popupClose.addUActionEvent(UIHoverLeaveEvent.class, (UIHoverLeaveEvent) location -> popupClose.setColor(new RGBA(0, 150, 150, 1)));
+                (UIHoverEnterEvent) location -> popupClose.setColor(RGBA.CYAN));
+        popupClose.addUActionEvent(UIHoverLeaveEvent.class, (UIHoverLeaveEvent) location -> popupClose.setColor(RGBA.SKY_BLUE));
 
         /*
 
@@ -158,10 +158,10 @@ public class TitleScreenScene extends AbstractMenuScene {
          */
         Rectangle openMenuButton = new Rectangle(new Vector2(gameHandler.getWindow().getWidth() / 2f + 100, gameHandler.getWindow().getHeight() - 300),
                 new Vector2(100, 100));
-        openMenuButton.setColor(new RGBA(0, 150, 150, 1));
+        openMenuButton.setColor(RGBA.SKY_BLUE);
         openMenuButton.addConstraint(new HorizontalCenterConstraint(100));
-        openMenuButton.addUActionEvent(UIHoverEnterEvent.class, (UIHoverEnterEvent) location -> openMenuButton.setColor(new RGBA(0, 150, 200, 1)));
-        openMenuButton.addUActionEvent(UIHoverLeaveEvent.class, (UIHoverLeaveEvent) location -> openMenuButton.setColor(new RGBA(0, 150, 150, 1)));
+        openMenuButton.addUActionEvent(UIHoverEnterEvent.class, (UIHoverEnterEvent) location -> openMenuButton.setColor(RGBA.CYAN));
+        openMenuButton.addUActionEvent(UIHoverLeaveEvent.class, (UIHoverLeaveEvent) location -> openMenuButton.setColor(RGBA.SKY_BLUE));
         openMenuButton.addUActionEvent(UIClickEvent.class, (UIClickEvent) (location, clickType) -> {
             popupMenu.setVisible(true);
             openMenuButton.setVisible(false);
