@@ -34,15 +34,18 @@ if (hasProperty("native")) {
 group = "org.kakara"
 val artifactName = "engine"
 var build = "0"
-var branch = "";
+var branch = ""
+
 if (hasProperty("branch")) {
     branch = properties.get("branch").toString()
 }
+
 if (hasProperty("buildNumber")) {
     version = org.kakara.engine.Version.getEngineVersion(properties.get("buildNumber").toString(), branch);
 } else {
     version = org.kakara.engine.Version.getEngineVersion("", branch);
 }
+
 java {
     targetCompatibility = JavaVersion.VERSION_11
     sourceCompatibility = JavaVersion.VERSION_11
@@ -132,19 +135,15 @@ dependencies {
 
     implementation("org.lwjgl", "lwjgl")
     implementation("org.lwjgl", "lwjgl-assimp")
-    implementation("org.lwjgl", "lwjgl-bgfx")
     implementation("org.lwjgl", "lwjgl-glfw")
     implementation("org.lwjgl", "lwjgl-nanovg")
     implementation("org.lwjgl", "lwjgl-openal")
-    implementation("org.lwjgl", "lwjgl-opencl")
     implementation("org.lwjgl", "lwjgl-opengl")
     implementation("org.lwjgl", "lwjgl-par")
     implementation("org.lwjgl", "lwjgl-stb")
-    implementation("org.lwjgl", "lwjgl-vulkan")
     if (!lwjglNatives.equals("build", true)) {
         runtimeOnly("org.lwjgl", "lwjgl", classifier = lwjglNatives)
         runtimeOnly("org.lwjgl", "lwjgl-assimp", classifier = lwjglNatives)
-        runtimeOnly("org.lwjgl", "lwjgl-bgfx", classifier = lwjglNatives)
         runtimeOnly("org.lwjgl", "lwjgl-glfw", classifier = lwjglNatives)
         runtimeOnly("org.lwjgl", "lwjgl-nanovg", classifier = lwjglNatives)
         runtimeOnly("org.lwjgl", "lwjgl-openal", classifier = lwjglNatives)
@@ -153,6 +152,4 @@ dependencies {
         runtimeOnly("org.lwjgl", "lwjgl-stb", classifier = lwjglNatives)
         implementation("io.imgui.java:$lwjglNatives:1.77-0.17.2")
     }
-
-    if (lwjglNatives == "natives-macos") runtimeOnly("org.lwjgl", "lwjgl-vulkan", classifier = lwjglNatives)
 }

@@ -53,6 +53,35 @@ public class Vector2 {
     }
 
     /**
+     * Set the Vector to the described vector.
+     *
+     * <p>Editing this vector will not affect otherVec.</p>
+     *
+     * @param otherVec The vector to set this vector to. (OtherVec is not mutated).
+     * @return The instance to this vector.
+     */
+    public Vector2 set(Vector2 otherVec) {
+        this.x = otherVec.x;
+        this.y = otherVec.y;
+
+        return this;
+    }
+
+    /**
+     * Set the Vector to the described x and y values.
+     *
+     * @param x The x position.
+     * @param y The y position.
+     * @return The instance to this vector.
+     */
+    public Vector2 set(float x, float y) {
+        this.x = x;
+        this.y = y;
+
+        return this;
+    }
+
+    /**
      * Add a value to the vector.
      * <p>This mutates the vector.</p>
      *

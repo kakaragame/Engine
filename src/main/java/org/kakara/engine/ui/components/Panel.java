@@ -1,15 +1,8 @@
 package org.kakara.engine.ui.components;
 
 import org.kakara.engine.GameHandler;
-import org.kakara.engine.events.EventHandler;
-import org.kakara.engine.events.event.MouseClickEvent;
-import org.kakara.engine.events.event.MouseReleaseEvent;
 import org.kakara.engine.math.Vector2;
 import org.kakara.engine.ui.UserInterface;
-import org.kakara.engine.ui.events.UIClickEvent;
-import org.kakara.engine.ui.events.UIHoverEnterEvent;
-import org.kakara.engine.ui.events.UIHoverLeaveEvent;
-import org.kakara.engine.ui.events.UIReleaseEvent;
 
 import static org.lwjgl.nanovg.NanoVG.nvgResetScissor;
 import static org.lwjgl.nanovg.NanoVG.nvgScissor;
@@ -28,7 +21,6 @@ import static org.lwjgl.nanovg.NanoVG.nvgScissor;
  */
 public class Panel extends GeneralUIComponent {
 
-    private boolean isHovering;
     private boolean allowOverflow;
 
     /**
@@ -47,7 +39,6 @@ public class Panel extends GeneralUIComponent {
      */
     public Panel(Vector2 position, Vector2 scale) {
         super();
-        isHovering = false;
         allowOverflow = false;
         this.position = position;
         this.scale = scale;
@@ -88,28 +79,5 @@ public class Panel extends GeneralUIComponent {
 
         if (!allowOverflow)
             nvgResetScissor(userInterface.getVG());
-
-        boolean isColliding = UserInterface.isColliding(getGlobalPosition(), getGlobalScale(), new Vector2(handler.getMouseInput().getPosition()));
-        if (isColliding && !isHovering) {
-            isHovering = true;
-            triggerEvent(UIHoverEnterEvent.class, handler.getMouseInput().getCurrentPosition());
-        } else if (!isColliding && isHovering) {
-            isHovering = false;
-            triggerEvent(UIHoverLeaveEvent.class, handler.getMouseInput().getCurrentPosition());
-        }
-    }
-
-    @EventHandler
-    public void onClick(MouseClickEvent evt) {
-        if (UserInterface.isColliding(position, scale, new Vector2(evt.getMousePosition()))) {
-            triggerEvent(UIClickEvent.class, position, evt.getMouseClickType());
-        }
-    }
-
-    @EventHandler
-    public void onRelease(MouseReleaseEvent evt) {
-        if (UserInterface.isColliding(getGlobalPosition(), scale, new Vector2(evt.getMousePosition()))) {
-            triggerEvent(UIReleaseEvent.class, position, evt.getMouseClickType());
-        }
     }
 }

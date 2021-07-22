@@ -3,12 +3,15 @@ package org.kakara.engine.ui.components;
 import org.jetbrains.annotations.Nullable;
 import org.kakara.engine.GameEngine;
 import org.kakara.engine.GameHandler;
+import org.kakara.engine.events.EventHandler;
+import org.kakara.engine.events.event.MouseClickEvent;
+import org.kakara.engine.events.event.MouseReleaseEvent;
 import org.kakara.engine.exceptions.ui.HierarchyException;
 import org.kakara.engine.math.Vector2;
 import org.kakara.engine.ui.UICanvas;
 import org.kakara.engine.ui.UserInterface;
 import org.kakara.engine.ui.constraints.Constraint;
-import org.kakara.engine.ui.events.UActionEvent;
+import org.kakara.engine.ui.events.*;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -23,6 +26,9 @@ import java.util.stream.Collectors;
  *
  * <p>For a definition of what a UIComponent is see {@link UIComponent}.</p>
  *
+ * <p>Generic events like, {@link UIClickEvent}, {@link UIReleaseEvent}, {@link UIHoverEnterEvent}, and {@link UIHoverLeaveEvent} are all automatically handled
+ * by this class.</p>
+ *
  * <p>When overriding the render method you want to call super.render() in order to draw child objects.</p>
  * <code>
  *
@@ -32,7 +38,6 @@ import java.util.stream.Collectors;
  * }<br>
  * </code>
  */
-@SuppressWarnings("unchecked")
 public abstract class GeneralUIComponent implements UIComponent {
 
     public Vector2 position;
@@ -48,6 +53,7 @@ public abstract class GeneralUIComponent implements UIComponent {
     private Vector2 globalPosition;
     private Vector2 globalScale;
     private boolean isVisible;
+    private boolean isHovering;
 
     /*
      * Tagable data
@@ -69,6 +75,7 @@ public abstract class GeneralUIComponent implements UIComponent {
         globalPosition = new Vector2(0, 0);
         globalScale = new Vector2(0, 0);
         isVisible = true;
+        isHovering = false;
     }
 
     /**
@@ -87,8 +94,21 @@ public abstract class GeneralUIComponent implements UIComponent {
         return events;
     }
 
+    /**
+     * The default renderer for the UI Components.
+     *
+     * <p>If you override this then you should call this method at the top by doing super.render().</p>
+     * <p>This method will render all sub-components and will take into account visibility. It will also call
+     * {@link #pollRender(Vector2, UserInterface, GameHandler)} on all sub-components.</p>
+     *
+     * @param relative      The absolute position of the UIComponent (This is relative to the current mode).
+     * @param userInterface The user interface.
+     * @param handler       The game handler.
+     */
     @Override
     public void render(Vector2 relative, UserInterface userInterface, GameHandler handler) {
+        if (!isVisible) return;
+
         for (UIComponent c : components) {
             if (c instanceof GeneralUIComponent)
                 ((GeneralUIComponent) c).pollRender(relative.add(position), userInterface, handler);
@@ -221,7 +241,7 @@ public abstract class GeneralUIComponent implements UIComponent {
      *
      * <p>This method: Updates the Global Position, Global Scale, and handles constraints.</p>
      *
-     * <p>This method is called for you by the ComponentCanvas and other GeneralUIComponents.</p>
+     * <p>This method is called for you by the ComponentCanvas and other GeneralUIComponents, there is not need to call it manually.</p>
      *
      * @param relative      The global position of the item.
      * @param userInterface The user interface instance.
@@ -237,6 +257,16 @@ public abstract class GeneralUIComponent implements UIComponent {
         } else {
             this.globalPosition = position.clone().add(relative);
             this.globalScale = scale;
+        }
+
+        // Handle hovering events.
+        boolean isColliding = UserInterface.isColliding(getGlobalPosition(), getGlobalScale(), new Vector2(handler.getMouseInput().getPosition()));
+        if (isColliding && !isHovering) {
+            isHovering = true;
+            triggerEvent(UIHoverEnterEvent.class, handler.getMouseInput().getCurrentPosition());
+        } else if (!isColliding && isHovering) {
+            isHovering = false;
+            triggerEvent(UIHoverLeaveEvent.class, handler.getMouseInput().getCurrentPosition());
         }
 
         for (Constraint cc : constraints) {
@@ -265,6 +295,8 @@ public abstract class GeneralUIComponent implements UIComponent {
                 cc.setParentCanvas(getParentCanvas());
             }
         }
+
+        userInterface.getScene().getEventManager().registerHandler(this);
     }
 
     /**
@@ -279,7 +311,9 @@ public abstract class GeneralUIComponent implements UIComponent {
     }
 
     /**
-     * Get the GLOBAL position of the object.
+     * Get the GLOBAL position of the object. The global position is the true screen
+     * position of the component. Even if auto-scale is enabled. This will differ from
+     * {@link #getPosition()} and should be used for rendering with NanoVG.
      *
      * <p>Note: The global position is not calculated until after 1 render cycle.</p>
      *
@@ -290,7 +324,9 @@ public abstract class GeneralUIComponent implements UIComponent {
     }
 
     /**
-     * Get the GLOBAL scale of an object.
+     * Get the GLOBAL scale of an object. The global scale is the true screen scale
+     * of the component. Even if auto-scale is enabled. This will differ from
+     * {@link #getScale()} and should be used for rendering with NanoVG.
      *
      * <p>Note: The global scale is not calculated until after 1 render cycle</p>
      *
@@ -306,6 +342,7 @@ public abstract class GeneralUIComponent implements UIComponent {
      * @param clazz The type of event
      * @param objs  The parameters
      */
+    @SafeVarargs
     public final <T> void triggerEvent(Class<? extends UActionEvent> clazz, T... objs) {
         try {
             for (Map.Entry<UActionEvent, Class<? extends UActionEvent>> event : events.entrySet()) {
@@ -425,5 +462,29 @@ public abstract class GeneralUIComponent implements UIComponent {
                 ", tag='" + tag + '\'' +
                 ", parentcanvas='" + parentCanvas.getTag() + "\'" +
                 '}';
+    }
+
+    /**
+     * Detects the click event.
+     *
+     * @param evt The click event.
+     */
+    @EventHandler
+    public void onEventClick(MouseClickEvent evt) {
+        if (UserInterface.isColliding(getGlobalPosition(), getGlobalScale(), new Vector2(evt.getMousePosition()))) {
+            triggerEvent(UIClickEvent.class, new Vector2(evt.getMousePosition()), evt.getMouseClickType());
+        }
+    }
+
+    /**
+     * Detects the release event.
+     *
+     * @param evt The release event.
+     */
+    @EventHandler
+    protected void onEventRelease(MouseReleaseEvent evt) {
+        if (UserInterface.isColliding(getGlobalPosition(), scale, new Vector2(evt.getMousePosition()))) {
+            triggerEvent(UIReleaseEvent.class, position, evt.getMouseClickType());
+        }
     }
 }

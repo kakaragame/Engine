@@ -10,10 +10,17 @@ possible that the Kakara Engine could use Vulkan in the future; however, that fe
 The Kakara Engine has a robust documentation that includes advanced topics and beginner tutorials.  
 [The documentation can be viewed here.](https://docs.kakara.org/engine/)
 
+# Sample Projects
+- [Live Earthquake Tracker](https://github.com/ryandw11/EarthquakeViewer)
+- [Kakara](https://github.com/kakaragame/Kakara) (Complex Example)
+
 # Contributing
 
 The Kakara Engine is open source and contributions are welcomed.  
-The Kakara Engine can be built using Gradle.
+## Building
+Before starting ensure you have [git](https://git-scm.com/) properly installed as it is required.  
+The Engine requires Java 11 to compile.  
+To build the Engine run `gradlew shadowJar`.
 
 # Addons
 
@@ -22,3 +29,9 @@ Through the Extensible Render Pipeline and component system it is easy to create
 
 - [2D Kakara Engne](https://github.com/ryandw11/KakaraEngine2D) -> Adds 2D functionality to the engine. (Currently
   Experimental)
+  
+# Images
+Example title screen:
+![An example title screen.](https://img.ryandw11.com/raw/ree6ufuii.png)
+Example Scene:
+![Example monkey with small, purple spot light](https://img.ryandw11.com/raw/ree7mvglm.png)

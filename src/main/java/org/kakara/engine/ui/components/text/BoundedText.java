@@ -106,7 +106,7 @@ public class BoundedText extends GeneralUIComponent {
 
         long start = MemoryUtil.memAddress(paragraph);
         long end = start + paragraph.remaining();
-        int nrows, lnum = 0;
+        int nrows;
 
 
         nvgTextMetrics(userInterface.getVG(), null, null, lineh);
@@ -128,7 +128,7 @@ public class BoundedText extends GeneralUIComponent {
 
                 nvgBeginPath(userInterface.getVG());
                 nvgFontSize(userInterface.getVG(), calculateSize(handler));
-                nvgFontFaceId(userInterface.getVG(), font.getFont());
+                nvgFontFaceId(userInterface.getVG(), font.getFontId());
                 nvgTextAlign(userInterface.getVG(), textAlign);
                 nvgFontBlur(userInterface.getVG(), blur);
                 nvgTextLetterSpacing(userInterface.getVG(), letterSpacing);
@@ -139,7 +139,6 @@ public class BoundedText extends GeneralUIComponent {
 
                 nnvgText(userInterface.getVG(), getGlobalPosition().x, y, row.start(), row.end());
 
-                lnum++;
                 y += lineh.get(0);
             }
             start = rows.get(nrows - 1).next();

@@ -145,6 +145,7 @@ public class TextureAtlas {
      * @return The image
      * @deprecated Use {@link #resize(BufferedImage, int, int)} instead. To be removed in a future update.
      */
+    @Deprecated
     private BufferedImage scale(BufferedImage imageToScale, int dWidth, int dHeight) {
         BufferedImage scaledImage = null;
         if (imageToScale != null) {

@@ -19,7 +19,6 @@ import static org.lwjgl.system.MemoryUtil.NULL;
 
 /**
  * Handles the UI.
- * TODO This class might need to be renamed to something better.
  * This class is per scene.
  */
 public class UserInterface {

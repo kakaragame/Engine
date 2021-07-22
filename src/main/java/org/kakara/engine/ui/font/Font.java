@@ -1,16 +1,23 @@
 package org.kakara.engine.ui.font;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.kakara.engine.GameEngine;
+import org.kakara.engine.GameHandler;
 import org.kakara.engine.resources.Resource;
 import org.kakara.engine.scene.Scene;
 import org.kakara.engine.ui.UserInterface;
 
 import java.nio.ByteBuffer;
+import java.util.Optional;
 
 import static org.lwjgl.nanovg.NanoVG.nvgCreateFontMem;
 
 /**
  * Handles the font for the UI.
+ *
+ * <p>Note: Fonts are Scene dependent, meaning you cannot get a font defined in a previous scene. You will need to redfine
+ * the font with every new Scene.</p>
  */
 public class Font {
 
@@ -53,7 +60,7 @@ public class Font {
      *
      * @return The id of the font.
      */
-    public int getFont() {
+    public int getFontId() {
         return font;
     }
 
@@ -74,5 +81,31 @@ public class Font {
      */
     public ByteBuffer getByteBuffer() {
         return thisNeedsToBeHereSoTheGarbageCollectorDoesNotComeAndGetMeTMDotCom;
+    }
+
+    /**
+     * Get a Font by name.
+     *
+     * <p>Note: Fonts are Scene dependent, meaning you cannot get a font defined in a previous scene.</p>
+     *
+     * @param name The name of the font to get.
+     * @return The font. (Can be null if not found.)
+     */
+    @Nullable
+    public static Font getFont(String name) {
+        return GameHandler.getInstance().getCurrentScene().getUserInterface().getFont(name);
+    }
+
+    /**
+     * Get a Font by name.
+     *
+     * <p>Note: Fonts are Scene dependent, meaning you cannot get a font defined in a previous scene.</p>
+     *
+     * @param name The name of the font to get.
+     * @return An optional that may contain the retrieved font.
+     */
+    @NotNull
+    public static Optional<Font> getFontOptional(String name) {
+        return GameHandler.getInstance().getCurrentScene().getUserInterface().getOptionalFont(name);
     }
 }

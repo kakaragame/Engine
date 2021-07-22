@@ -1,32 +1,20 @@
 package org.kakara.engine.ui.components.shapes;
 
 import org.kakara.engine.GameHandler;
-import org.kakara.engine.events.EventHandler;
-import org.kakara.engine.events.event.MouseClickEvent;
-import org.kakara.engine.events.event.MouseReleaseEvent;
 import org.kakara.engine.math.Vector2;
 import org.kakara.engine.ui.UserInterface;
 import org.kakara.engine.ui.components.GeneralUIComponent;
-import org.kakara.engine.ui.events.UIClickEvent;
-import org.kakara.engine.ui.events.UIHoverEnterEvent;
-import org.kakara.engine.ui.events.UIHoverLeaveEvent;
-import org.kakara.engine.ui.events.UIReleaseEvent;
 import org.kakara.engine.utils.RGBA;
 import org.lwjgl.nanovg.NVGColor;
 
 import static org.lwjgl.nanovg.NanoVG.*;
 
 /**
- * Base Rectangle Component
+ * The general Rectangle component for the User Interface.
  */
 public class Rectangle extends GeneralUIComponent {
     private final NVGColor nvgColor;
     private RGBA color;
-    private boolean isHovering;
-
-    public Rectangle() {
-        this(new Vector2(0, 0), new Vector2(40, 40), new RGBA());
-    }
 
     /**
      * Create a rectangle
@@ -36,15 +24,30 @@ public class Rectangle extends GeneralUIComponent {
      * @param color    The color of the rectangle.
      */
     public Rectangle(Vector2 position, Vector2 scale, RGBA color) {
+        super();
         this.position = position;
         this.scale = scale;
         this.color = color;
         this.nvgColor = NVGColor.create();
-        this.isHovering = false;
     }
 
+    /**
+     * Construct a Rectangle with only a position and scale.
+     *
+     * @param position The position of the Rectangle.
+     * @param scale    THe scale of the Rectangle.
+     */
     public Rectangle(Vector2 position, Vector2 scale) {
         this(position, scale, new RGBA());
+    }
+
+    /**
+     * Construct a Rectangle with the default values.
+     *
+     * <p>Default scale is 40 x 40.</p>
+     */
+    public Rectangle() {
+        this(new Vector2(0, 0), new Vector2(40, 40), new RGBA());
     }
 
     /**
@@ -65,45 +68,28 @@ public class Rectangle extends GeneralUIComponent {
         this.color = color;
     }
 
-    @EventHandler
-    public void onClick(MouseClickEvent evt) {
-        if (UserInterface.isColliding(getGlobalPosition(), getGlobalScale(), new Vector2(evt.getMousePosition()))) {
-            triggerEvent(UIClickEvent.class, new Vector2(evt.getMousePosition()), evt.getMouseClickType());
-        }
-    }
 
-    @EventHandler
-    public void onRelease(MouseReleaseEvent evt) {
-        if (UserInterface.isColliding(getGlobalPosition(), scale, new Vector2(evt.getMousePosition()))) {
-            triggerEvent(UIReleaseEvent.class, position, evt.getMouseClickType());
-        }
-    }
-
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void init(UserInterface userInterface, GameHandler handler) {
         pollInit(userInterface, handler);
-        userInterface.getScene().getEventManager().registerHandler(this);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void render(Vector2 relative, UserInterface userInterface, GameHandler handler) {
         if (!isVisible()) return;
-        boolean isColliding = UserInterface.isColliding(getGlobalPosition(), getGlobalScale(), new Vector2(handler.getMouseInput().getPosition()));
-        if (isColliding && !isHovering) {
-            isHovering = true;
-            triggerEvent(UIHoverEnterEvent.class, handler.getMouseInput().getCurrentPosition());
-        } else if (!isColliding && isHovering) {
-            isHovering = false;
-            triggerEvent(UIHoverLeaveEvent.class, handler.getMouseInput().getCurrentPosition());
-        }
 
         nvgBeginPath(userInterface.getVG());
         nvgRect(userInterface.getVG(), getGlobalPosition().x, getGlobalPosition().y, getGlobalScale().x, getGlobalScale().y);
-
         nvgRGBA((byte) color.r, (byte) color.g, (byte) color.b, (byte) color.aToNano(), nvgColor);
         nvgFillColor(userInterface.getVG(), nvgColor);
         nvgFill(userInterface.getVG());
+        nvgClosePath(userInterface.getVG());
 
         super.render(relative, userInterface, handler);
     }

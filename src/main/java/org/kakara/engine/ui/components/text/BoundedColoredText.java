@@ -193,7 +193,7 @@ public class BoundedColoredText extends GeneralUIComponent {
 
                         nvgBeginPath(userInterface.getVG());
                         nvgFontSize(userInterface.getVG(), calculateSize(handler));
-                        nvgFontFaceId(userInterface.getVG(), font.getFont());
+                        nvgFontFaceId(userInterface.getVG(), font.getFontId());
                         nvgTextAlign(userInterface.getVG(), textAlign);
                         nvgFontBlur(userInterface.getVG(), blur);
                         nvgTextLetterSpacing(userInterface.getVG(), letterSpacing);

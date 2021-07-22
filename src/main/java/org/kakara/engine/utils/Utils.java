@@ -97,6 +97,7 @@ public class Utils {
      * @return if it exists
      * @deprecated unused
      */
+    @Deprecated
     public static boolean existsResourceFile(String fileName) {
         try (InputStream is = Utils.class.getResourceAsStream(fileName)) {
             return is != null;

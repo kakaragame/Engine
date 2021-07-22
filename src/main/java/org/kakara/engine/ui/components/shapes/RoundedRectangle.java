@@ -1,16 +1,9 @@
 package org.kakara.engine.ui.components.shapes;
 
 import org.kakara.engine.GameHandler;
-import org.kakara.engine.events.EventHandler;
-import org.kakara.engine.events.event.MouseClickEvent;
-import org.kakara.engine.events.event.MouseReleaseEvent;
 import org.kakara.engine.math.Vector2;
 import org.kakara.engine.ui.UserInterface;
 import org.kakara.engine.ui.components.GeneralUIComponent;
-import org.kakara.engine.ui.events.UIClickEvent;
-import org.kakara.engine.ui.events.UIHoverEnterEvent;
-import org.kakara.engine.ui.events.UIHoverLeaveEvent;
-import org.kakara.engine.ui.events.UIReleaseEvent;
 import org.kakara.engine.utils.RGBA;
 import org.lwjgl.nanovg.NVGColor;
 
@@ -30,16 +23,6 @@ public class RoundedRectangle extends GeneralUIComponent {
     private RGBA color;
     private float radius;
 
-    private boolean isHovering;
-
-    /**
-     * Create a rounded rectangle with the default values.
-     * <p>Position starts at (0, 0) while scale starts at (40, 40). Radius starts at 1.0f.</p>
-     */
-    public RoundedRectangle() {
-        this(new Vector2(0, 0), new Vector2(40, 40), 1.0f, new RGBA());
-    }
-
     /**
      * Create a rectangle
      *
@@ -53,7 +36,6 @@ public class RoundedRectangle extends GeneralUIComponent {
         this.scale = scale;
         this.color = color;
         this.nvgColor = NVGColor.create();
-        this.isHovering = false;
         this.radius = radius;
     }
 
@@ -65,6 +47,14 @@ public class RoundedRectangle extends GeneralUIComponent {
      */
     public RoundedRectangle(Vector2 position, Vector2 scale) {
         this(position, scale, 1.0f, new RGBA());
+    }
+
+    /**
+     * Create a rounded rectangle with the default values.
+     * <p>Position starts at (0, 0) while scale starts at (40, 40). Radius starts at 1.0f.</p>
+     */
+    public RoundedRectangle() {
+        this(new Vector2(0, 0), new Vector2(40, 40), 1.0f, new RGBA());
     }
 
     /**
@@ -103,20 +93,6 @@ public class RoundedRectangle extends GeneralUIComponent {
         this.radius = radius;
     }
 
-    @EventHandler
-    public void onClick(MouseClickEvent evt) {
-        if (UserInterface.isColliding(getGlobalPosition(), getGlobalScale(), new Vector2(evt.getMousePosition()))) {
-            triggerEvent(UIClickEvent.class, new Vector2(evt.getMousePosition()), evt.getMouseClickType());
-        }
-    }
-
-    @EventHandler
-    public void onRelease(MouseReleaseEvent evt) {
-        if (UserInterface.isColliding(getGlobalPosition(), scale, new Vector2(evt.getMousePosition()))) {
-            triggerEvent(UIReleaseEvent.class, position, evt.getMouseClickType());
-        }
-    }
-
 
     @Override
     public void init(UserInterface userInterface, GameHandler handler) {
@@ -127,14 +103,6 @@ public class RoundedRectangle extends GeneralUIComponent {
     @Override
     public void render(Vector2 relative, UserInterface userInterface, GameHandler handler) {
         if (!isVisible()) return;
-        boolean isColliding = UserInterface.isColliding(getGlobalPosition(), getGlobalScale(), new Vector2(handler.getMouseInput().getPosition()));
-        if (isColliding && !isHovering) {
-            isHovering = true;
-            triggerEvent(UIHoverEnterEvent.class, handler.getMouseInput().getCurrentPosition());
-        } else if (!isColliding && isHovering) {
-            isHovering = false;
-            triggerEvent(UIHoverLeaveEvent.class, handler.getMouseInput().getCurrentPosition());
-        }
 
         nvgBeginPath(userInterface.getVG());
         nvgRoundedRect(userInterface.getVG(), getGlobalPosition().x, getGlobalPosition().y, getGlobalScale().x, getGlobalScale().y, radius);

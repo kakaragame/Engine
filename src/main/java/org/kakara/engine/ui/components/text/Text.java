@@ -50,12 +50,18 @@ public class Text extends GeneralUIComponent {
         this.nvgColor = NVGColor.create();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void init(UserInterface userInterface, GameHandler handler) {
         pollInit(userInterface, handler);
         this.userInterface = userInterface;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void render(Vector2 relative, UserInterface userInterface, GameHandler handler) {
         if (!isVisible()) return;
@@ -64,7 +70,7 @@ public class Text extends GeneralUIComponent {
 
         nvgBeginPath(userInterface.getVG());
         nvgFontSize(userInterface.getVG(), calculateSize(handler));
-        nvgFontFaceId(userInterface.getVG(), font.getFont());
+        nvgFontFaceId(userInterface.getVG(), font.getFontId());
         nvgTextAlign(userInterface.getVG(), textAlign);
         nvgFontBlur(userInterface.getVG(), blur);
         nvgTextLetterSpacing(userInterface.getVG(), letterSpacing);

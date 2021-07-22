@@ -125,6 +125,7 @@ public final class Renderer {
      * @param lightViewMatrix    The lightViewMatrix
      * @deprecated Unused
      */
+    @Deprecated
     private void doOcclusionTest(List<VoxelChunk> chunks, Shader chunkShaderProgram, Matrix4f viewMatrix, Matrix4f lightViewMatrix) {
         if (chunks == null || chunks.isEmpty() || chunks.get(0).getVoxelMesh() == null) return;
         if (chunks.get(0).getVoxelMesh().getQuery() == null) return;

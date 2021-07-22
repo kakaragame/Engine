@@ -4,6 +4,7 @@ import org.kakara.engine.GameEngine;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -36,8 +37,25 @@ public class EventManager {
      */
     public void fireHandler(Object eventInstance) {
         for (Object event : handlers) {
-            List<Method> mtd = new ArrayList<>(Arrays.asList(event.getClass().getDeclaredMethods()));
+            List<Method> mtd = new ArrayList<>(Arrays.asList(event.getClass().getMethods()));
+            List<Method> privateMethods = new ArrayList<>(Arrays.asList(event.getClass().getMethods()));
             for (Method msd : mtd) {
+                if (msd.getParameterCount() != 1) continue;
+                if (!msd.isAnnotationPresent(EventHandler.class)) continue;
+                if (msd.getParameters()[0].getType().isInstance(eventInstance)) {
+                    try {
+                        msd.invoke(event, eventInstance);
+                    } catch (IllegalAccessException | InvocationTargetException ex) {
+                        GameEngine.LOGGER.error("Cannot fire event specified : " + eventInstance.getClass().getName(), ex);
+                    }
+                }
+
+            }
+
+            // Execute events for the protected and private methods.
+            for (Method msd : privateMethods) {
+                // Ignore the public methods.
+                if (Modifier.isPublic(msd.getModifiers())) continue;
                 if (msd.getParameterCount() != 1) continue;
                 if (!msd.isAnnotationPresent(EventHandler.class)) continue;
                 if (msd.getParameters()[0].getType().isInstance(eventInstance)) {

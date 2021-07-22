@@ -77,7 +77,9 @@ public interface UIComponent extends Tagable, UIListener {
     void add(UIComponent component);
 
     /**
-     * Internal Use Only
+     * Called by the Renderer to render the component.
+     *
+     * <p>Internal Use Only</p>
      *
      * @param relativePosition the relative position
      * @param userInterface    the user interface
@@ -86,7 +88,9 @@ public interface UIComponent extends Tagable, UIListener {
     void render(Vector2 relativePosition, UserInterface userInterface, GameHandler handler);
 
     /**
-     * Internal Use Only
+     * Called by the Engine to init the component.
+     *
+     * <p>Internal Use Only</p>
      *
      * @param userInterface the user interface
      * @param handler       the handler
@@ -94,7 +98,9 @@ public interface UIComponent extends Tagable, UIListener {
     void init(UserInterface userInterface, GameHandler handler);
 
     /**
-     * Internal Use Only
+     * This is used to cleanup any memory at the end of the program or when the scene switches.
+     *
+     * <p>Internal Use Only</p>
      *
      * @param handler gameHandler
      */
@@ -118,7 +124,7 @@ public interface UIComponent extends Tagable, UIListener {
     /**
      * Set the position of the element
      *
-     * @param pos The Vector 2
+     * @param pos The Vector2 to set the position of the UIComponent to.
      */
     void setPosition(Vector2 pos);
 

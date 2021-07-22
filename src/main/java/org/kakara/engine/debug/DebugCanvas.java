@@ -19,11 +19,11 @@ import java.util.List;
 import java.util.Stack;
 
 /**
- * Debug Canvas for debugging only.
+ * A canvas intended for debugging the the engine.
  *
- * @deprecated Will be removed in next version.
- * TODO remove this.
+ * @deprecated This should not be used in production.
  */
+@Deprecated
 public class DebugCanvas implements UICanvas {
 
     private final ImGuiImplGlfw imGuiGlfw = new ImGuiImplGlfw();

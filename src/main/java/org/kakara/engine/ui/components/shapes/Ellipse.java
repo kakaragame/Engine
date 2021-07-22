@@ -1,16 +1,9 @@
 package org.kakara.engine.ui.components.shapes;
 
 import org.kakara.engine.GameHandler;
-import org.kakara.engine.events.EventHandler;
-import org.kakara.engine.events.event.MouseClickEvent;
-import org.kakara.engine.events.event.MouseReleaseEvent;
 import org.kakara.engine.math.Vector2;
 import org.kakara.engine.ui.UserInterface;
 import org.kakara.engine.ui.components.GeneralUIComponent;
-import org.kakara.engine.ui.events.UIClickEvent;
-import org.kakara.engine.ui.events.UIHoverEnterEvent;
-import org.kakara.engine.ui.events.UIHoverLeaveEvent;
-import org.kakara.engine.ui.events.UIReleaseEvent;
 import org.kakara.engine.utils.RGBA;
 import org.lwjgl.nanovg.NVGColor;
 
@@ -32,29 +25,38 @@ import static org.lwjgl.nanovg.NanoVG.*;
 public class Ellipse extends GeneralUIComponent {
     private final NVGColor nvgColor;
     private RGBA color;
-    private boolean isHovering;
 
-    public Ellipse() {
-        this(new Vector2(0, 0), new Vector2(40, 40), new RGBA());
+    /**
+     * Create an Ellipse.
+     *
+     * @param position The position of the ellipse.
+     * @param radii    The x and y radii of the ellipse
+     * @param color    The color of the ellipse.
+     */
+    public Ellipse(Vector2 position, Vector2 radii, RGBA color) {
+        this.position = position;
+        this.scale = radii;
+        this.color = color;
+        this.nvgColor = NVGColor.create();
     }
 
     /**
-     * Create a rectangle
+     * Create an Ellipse.
      *
-     * @param position The position of the ellipse.
-     * @param scale    The x and y radius of the ellipse
-     * @param color    The color of the ellipse.
+     * @param position The position of the Ellipse.
+     * @param radii    The x and y radii of the Ellipse.
      */
-    public Ellipse(Vector2 position, Vector2 scale, RGBA color) {
-        this.position = position;
-        this.scale = scale;
-        this.color = color;
-        this.nvgColor = NVGColor.create();
-        this.isHovering = false;
+    public Ellipse(Vector2 position, Vector2 radii) {
+        this(position, radii, new RGBA());
     }
 
-    public Ellipse(Vector2 position, Vector2 scale) {
-        this(position, scale, new RGBA());
+    /**
+     * Create an Ellipse.
+     *
+     * <p>The default X and Y Radii are 40.</p>
+     */
+    public Ellipse() {
+        this(new Vector2(0, 0), new Vector2(40, 40), new RGBA());
     }
 
     /**
@@ -75,38 +77,39 @@ public class Ellipse extends GeneralUIComponent {
         this.color = color;
     }
 
-    @EventHandler
-    public void onClick(MouseClickEvent evt) {
-        if (UserInterface.isColliding(getGlobalPosition(), getGlobalScale(), new Vector2(evt.getMousePosition()))) {
-            triggerEvent(UIClickEvent.class, new Vector2(evt.getMousePosition()), evt.getMouseClickType());
-        }
+    /**
+     * Set the Radii of the Ellipse.
+     *
+     * @param radii The radii to set.
+     */
+    public void setRadii(Vector2 radii) {
+        this.scale.set(radii);
     }
 
-    @EventHandler
-    public void onRelease(MouseReleaseEvent evt) {
-        if (UserInterface.isColliding(getGlobalPosition(), scale, new Vector2(evt.getMousePosition()))) {
-            triggerEvent(UIReleaseEvent.class, position, evt.getMouseClickType());
-        }
+    /**
+     * Get the radii of the Ellipse.
+     *
+     * @return The radii of the Ellipse.
+     */
+    public Vector2 getRadii() {
+        return scale;
     }
 
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void init(UserInterface userInterface, GameHandler handler) {
         pollInit(userInterface, handler);
         userInterface.getScene().getEventManager().registerHandler(this);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void render(Vector2 relative, UserInterface userInterface, GameHandler handler) {
         if (!isVisible()) return;
-        boolean isColliding = UserInterface.isColliding(getGlobalPosition(), getGlobalScale(), new Vector2(handler.getMouseInput().getPosition()));
-        if (isColliding && !isHovering) {
-            isHovering = true;
-            triggerEvent(UIHoverEnterEvent.class, handler.getMouseInput().getCurrentPosition());
-        } else if (!isColliding && isHovering) {
-            isHovering = false;
-            triggerEvent(UIHoverLeaveEvent.class, handler.getMouseInput().getCurrentPosition());
-        }
 
         nvgBeginPath(userInterface.getVG());
         nvgEllipse(userInterface.getVG(), getGlobalPosition().x, getGlobalPosition().y, getGlobalScale().x, getGlobalScale().y);

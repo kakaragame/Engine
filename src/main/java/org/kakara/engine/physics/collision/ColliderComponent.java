@@ -106,6 +106,7 @@ public abstract class ColliderComponent extends Component {
     /**
      * @deprecated Currently unused
      */
+    @Deprecated
     public abstract void updateX();
 
     /**
