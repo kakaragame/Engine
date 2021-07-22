@@ -14,7 +14,9 @@ import static org.lwjgl.glfw.GLFW.*;
  * <p>A controller can be obtained through {@link ControllerManager}.</p>
  *
  * <p>Note: A bug currently exists where the Nintendo Switch Pro-Controller does not work
- * properly.</p>
+ * properly. This is a bug with GLFW, not the Kakara Engine.</p>
+ *
+ * <p>Also check out {@link org.kakara.engine.input.Input} for simple controller input.</p>
  */
 public class Controller {
     private final int controllerID;
@@ -76,7 +78,7 @@ public class Controller {
      * Check if a button is held down.
      * <p>Note: triggers are considered an axis, not button.</p>
      *
-     * @param buttonID The ID of the button.
+     * @param buttonID The ID of the button. Use {@link org.kakara.engine.input.controller.ids.GamePadButton} for the values.
      * @return If the button is being held down.
      */
     public boolean isButtonDown(int buttonID) {
@@ -87,9 +89,11 @@ public class Controller {
     /**
      * Get an axis from the controller.
      *
-     * @param axisID The id of an axis.
+     * <p>Example of axes are: Left and Right sticks, triggers, etcs. </p>
+     *
+     * @param axisID The id of an axis. Use {@link org.kakara.engine.input.controller.ids.GamePadAxis} for the values.
      * @return The value of the axis. (|value| is always &gt; 0.05 and &lt; 1. In other conditions it is
-     * perfectly 0).
+     * perfectly 0.).
      */
     public float getAxis(int axisID) {
         glfwGetGamepadState(controllerID, state);

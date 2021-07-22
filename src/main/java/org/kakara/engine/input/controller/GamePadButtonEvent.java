@@ -1,7 +1,9 @@
 package org.kakara.engine.input.controller;
 
 /**
- * An event that occurs when a button is pressed on the GamePad.
+ * The event that occurs when a button is pressed on the GamePad.
+ *
+ * <p>Register this event through the {@link org.kakara.engine.events.EventManager}.</p>
  */
 public class GamePadButtonEvent {
     private final int buttonID;

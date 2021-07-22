@@ -17,6 +17,11 @@ import static org.lwjgl.glfw.GLFW.*;
 public class ControllerManager {
     private final List<Controller> controllers;
 
+    /**
+     * Construct the Controller Manager.
+     *
+     * <p>This is constructed by the GameHandler.</p>
+     */
     public ControllerManager() {
         controllers = new CopyOnWriteArrayList<>();
     }
@@ -73,6 +78,9 @@ public class ControllerManager {
 
     /**
      * Check if a controller exists.
+     *
+     * <p>See {@link org.kakara.engine.input.controller.ids.ControllerID} for a complete
+     * list of valid IDS.</p>
      *
      * @param id The Controller ID.
      * @return If the controller exists at a specific id.
