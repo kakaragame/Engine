@@ -73,21 +73,6 @@ public class Sprite extends GeneralUIComponent {
             nvgImageSize(userInterface.getVG(), image, w, h);
             this.setScale(w[0], h[0]);
         }
-        userInterface.getScene().getEventManager().registerHandler(this);
-    }
-
-    @EventHandler
-    public void onClick(MouseClickEvent evt) {
-        if (UserInterface.isColliding(getGlobalPosition(), scale, new Vector2(evt.getMousePosition()))) {
-            triggerEvent(UIClickEvent.class, position, evt.getMouseClickType());
-        }
-    }
-
-    @EventHandler
-    public void onRelease(MouseReleaseEvent evt) {
-        if (UserInterface.isColliding(getGlobalPosition(), scale, new Vector2(evt.getMousePosition()))) {
-            triggerEvent(UIReleaseEvent.class, position, evt.getMouseClickType());
-        }
     }
 
     /**
