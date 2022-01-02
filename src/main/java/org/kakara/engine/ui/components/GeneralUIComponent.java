@@ -110,8 +110,8 @@ public abstract class GeneralUIComponent implements UIComponent {
         if (!isVisible) return;
 
         for (UIComponent c : components) {
-            if (c instanceof GeneralUIComponent)
-                ((GeneralUIComponent) c).pollRender(relative.add(position), userInterface, handler);
+            if (c instanceof GeneralUIComponent generalUIComponent)
+                generalUIComponent.pollRender(relative.add(position), userInterface, handler);
             c.render(relative.add(position), userInterface, handler);
         }
     }
