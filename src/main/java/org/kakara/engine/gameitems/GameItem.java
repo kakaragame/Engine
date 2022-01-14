@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
  * {@link #addComponent(Class)}. Please see the documentation for more information on making
  * custom components.
  * </p>
- * <h3>Examples:</h3>
+ *
  * <code>
  * GameItem item = new GameItem(exampleMesh); <br>
  * item.transform.setPosition(10, 10, 10);<br>
