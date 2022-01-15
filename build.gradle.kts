@@ -3,7 +3,7 @@ import org.gradle.internal.os.OperatingSystem
 plugins {
     java
     `java-library`
-    id("com.github.johnrengelman.shadow") version "6.1.0"
+    id("com.github.johnrengelman.shadow") version "7.1.2"
     id("org.kakara.versionfile") version "1.0.0"
     `maven-publish`
     signing
@@ -120,8 +120,8 @@ dependencies {
     // Regular Depends
     implementation(group = "me.ryandw11", name = "Octree", version = "1.0")
     implementation("org.apache.commons:commons-lang3:3.12.0")
-    implementation("commons-io:commons-io:2.8.0")
-    implementation("org.jetbrains:annotations:20.1.0")
+    implementation("commons-io:commons-io:2.11.0")
+    implementation("org.jetbrains:annotations:23.0.0")
     implementation("com.github.nifty-gui:nifty:1.4.3")
     implementation("org.l33tlabs.twl:pngdecoder:1.0")
     implementation("io.imgui.java:binding:1.77-0.17.2")
