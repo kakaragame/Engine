@@ -141,6 +141,11 @@ dependencies {
     implementation("org.lwjgl", "lwjgl-opengl")
     implementation("org.lwjgl", "lwjgl-par")
     implementation("org.lwjgl", "lwjgl-stb")
+    if (lwjglNatives.equals("natives-windows", true)) {
+        implementation(project(":windows"))
+    } else if (lwjglNatives.equals("natives-linux", true)) {
+        implementation(project(":linux"))
+    }
     if (!lwjglNatives.equals("build", true)) {
         runtimeOnly("org.lwjgl", "lwjgl", classifier = lwjglNatives)
         runtimeOnly("org.lwjgl", "lwjgl-assimp", classifier = lwjglNatives)
