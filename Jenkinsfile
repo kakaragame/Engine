@@ -7,6 +7,7 @@ pipeline {
         stage ('Build') {
             steps {
               sh 'sh build.sh'
+              sh './gradlew javadoc'
             }
             post {
                 success {
