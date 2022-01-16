@@ -1,5 +1,7 @@
 rootProject.name = "engine"
-
+include("core")
+include("linux")
+include("windows")
 
 
 object Versions {

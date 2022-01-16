@@ -10,8 +10,8 @@ pipeline {
             }
             post {
                 success {
-                    archiveArtifacts artifacts: 'archives/*.jar, files.txt, build/version.properties', followSymlinks: false
-                    javadoc javadocDir: 'build/docs/javadoc', keepAll: true
+                    archiveArtifacts artifacts: 'archives/*.jar, files.txt, core/build/version.properties', followSymlinks: false
+                    javadoc javadocDir: 'core/build/docs/javadoc', keepAll: true
                 }
             }
         }
