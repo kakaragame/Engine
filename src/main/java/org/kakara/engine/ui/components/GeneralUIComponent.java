@@ -7,6 +7,7 @@ import org.kakara.engine.events.EventHandler;
 import org.kakara.engine.events.event.MouseClickEvent;
 import org.kakara.engine.events.event.MouseReleaseEvent;
 import org.kakara.engine.exceptions.ui.HierarchyException;
+import org.kakara.engine.input.mouse.MouseClickType;
 import org.kakara.engine.math.Vector2;
 import org.kakara.engine.ui.UICanvas;
 import org.kakara.engine.ui.UserInterface;
@@ -465,14 +466,37 @@ public abstract class GeneralUIComponent implements UIComponent {
     }
 
     /**
+     * Detects when the UIComponent is clicked.
+     * <p>Default behavior is to trigger the UIClickEvent. Override to add additional checks.</p>
+     *
+     * @param mousePosition  The mouse position.
+     * @param mouseClickType The mouse click type.
+     */
+    public void onMouseClick(Vector2 mousePosition, MouseClickType mouseClickType) {
+        triggerEvent(UIClickEvent.class, mousePosition, mouseClickType);
+    }
+
+    /**
+     * Detects when a click on the UIComponent is released.
+     * <p>Default behavior is to trigger the UIReleaseEvent. Override to add additional checks.</p>
+     *
+     * @param mousePosition  The mouse position.
+     * @param mouseClickType The mouse click type.
+     */
+    public void onMouseRelease(Vector2 mousePosition, MouseClickType mouseClickType) {
+        triggerEvent(UIReleaseEvent.class, mousePosition, mouseClickType);
+    }
+
+    /**
      * Detects the click event.
      *
      * @param evt The click event.
      */
     @EventHandler
     public void onEventClick(MouseClickEvent evt) {
-        if (UserInterface.isColliding(getGlobalPosition(), getGlobalScale(), new Vector2(evt.getMousePosition()))) {
-            triggerEvent(UIClickEvent.class, new Vector2(evt.getMousePosition()), evt.getMouseClickType());
+        Vector2 mousePosition = new Vector2(evt.getMousePosition());
+        if (UserInterface.isColliding(getGlobalPosition(), getGlobalScale(), mousePosition)) {
+            onMouseClick(mousePosition, evt.getMouseClickType());
         }
     }
 
@@ -482,9 +506,10 @@ public abstract class GeneralUIComponent implements UIComponent {
      * @param evt The release event.
      */
     @EventHandler
-    protected void onEventRelease(MouseReleaseEvent evt) {
-        if (UserInterface.isColliding(getGlobalPosition(), scale, new Vector2(evt.getMousePosition()))) {
-            triggerEvent(UIReleaseEvent.class, position, evt.getMouseClickType());
+    public void onEventRelease(MouseReleaseEvent evt) {
+        Vector2 mousePosition = new Vector2(evt.getMousePosition());
+        if (UserInterface.isColliding(getGlobalPosition(), getGlobalScale(), mousePosition)) {
+            onMouseRelease(mousePosition, evt.getMouseClickType());
         }
     }
 }
