@@ -120,10 +120,11 @@ public abstract class GeneralUIComponent implements UIComponent {
     /**
      * When overriding the cleanup method {@link #pollCleanup(GameHandler)} should be used.
      *
-     * <code>
+     *
      *
      * @param handler The instance of the game handler.
      *                <br>
+     *                <code>
      *                public void cleanup(GameHandler handler) {<br>
      *                pollCleanup(handler);<br>
      *                }<br>

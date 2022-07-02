@@ -1,5 +1,6 @@
 package org.kakara.engine.input.key;
 
+import org.kakara.engine.GameHandler;
 import org.kakara.engine.window.Window;
 
 import static org.lwjgl.glfw.GLFW.glfwGetClipboardString;
@@ -34,5 +35,15 @@ public class Clipboard {
      */
     public void setClipboard(String text) {
         glfwSetClipboardString(window.getWindowHandler(), text);
+    }
+
+    /**
+     * Get the user's clipboard.
+     * <p>This method will work as long as the user's clipboard can be converted to UTF-8.</p>
+     *
+     * @return The user's clipboard.
+     */
+    public static String getCurrentClipboard() {
+        return GameHandler.getInstance().getClipboard().getClipboard();
     }
 }

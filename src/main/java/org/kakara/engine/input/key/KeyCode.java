@@ -56,7 +56,7 @@ public enum KeyCode {
     RIGHT_BRACKET(']', 93),
     GRAVE_ACCENT('`', 96),
     WORLD_ONE((char) 161, 161),
-    WORLD_TWO((char) 161, 162),
+    WORLD_TWO((char) 162, 162),
     ESCAPE((char) 256, 256),
     ENTER((char) 257, 257),
     TAB((char) 258, 258),
@@ -129,8 +129,8 @@ public enum KeyCode {
     MENU((char) 348, 348);
 
 
-    char character;
-    int id;
+    private char character;
+    private int id;
 
     KeyCode(char character, int id) {
         this.character = character;

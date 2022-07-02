@@ -1,4 +1,4 @@
-# Kakara Engine [![Maven Version](https://mvnhelper.potatocorp.dev/kakara/org.kakara/engine/badge.png)](https://mvnhelper.potatocorp.dev/kakara/org.kakara/engine)
+# Kakara Engine [![kakara Repository](https://repo.kingtux.me/badge/maven/kakara/org/kakara/engine/badge)](https://repo.kingtux.me/project/maven/kakara/org.kakara:engine)
 
 The Kakara Engine is a 3D hybrid voxel engine made using OpenGL and Java. The engine is mainly developed for use in
 the [Kakara](https://github.com/kakaragame/Kakara) video game; however, the engine can be used to make any game. The
@@ -8,7 +8,7 @@ possible that the Kakara Engine could use Vulkan in the future; however, that fe
 # Documentation
 
 The Kakara Engine has a robust documentation that includes advanced topics and beginner tutorials.  
-[The documentation can be viewed here.](https://docs.kakara.org/engine/)
+[The documentation can be viewed here.](https://kakara.gitbook.io/engine/)
 
 # Sample Projects
 - [Live Earthquake Tracker](https://github.com/ryandw11/EarthquakeViewer)
