@@ -4,7 +4,7 @@ plugins {
     java
     `java-library`
     id("com.github.johnrengelman.shadow") version "7.1.2"
-    id("org.kakara.versionfile") version "1.0.0"
+    id("me.kingtux.versionfile") version "1.0.0"
     `maven-publish`
     signing
 }
