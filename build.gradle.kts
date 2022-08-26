@@ -56,6 +56,7 @@ java {
 repositories {
     mavenCentral()
     maven("https://repo.ryandw11.com/repository/maven-releases")
+    jcenter()
 }
 
 publishing {
@@ -81,8 +82,8 @@ publishing {
     repositories {
         maven {
 
-            val releasesRepoUrl = uri("https://repo.kingtux.dev/repositories/maven/kakara")
-            val snapshotsRepoUrl = uri("https://repo.kingtux.dev/repositories/maven/kakara")
+            val releasesRepoUrl = uri("http://127.0.0.1:6742/repositories/public/maven")
+            val snapshotsRepoUrl = uri("http://127.0.0.1:6742/repositories/public/maven")
             url = if (version.toString().endsWith("SNAPSHOT")) snapshotsRepoUrl else releasesRepoUrl
             credentials(PasswordCredentials::class)
 
