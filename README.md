@@ -1,4 +1,4 @@
-# Kakara Engine [![kakara Repository](https://repo.kingtux.me/badge/maven/kakara/org/kakara/engine/badge)](https://repo.kingtux.me/project/maven/kakara/org.kakara:engine)
+# Kakara Engine [![kakara Repository](https://repo.kingtux.dev/badge/repositories/maven/kakara/org.kakara:engine)](https://repo.kingtux.me/project/maven/kakara/org.kakara:engine)
 
 The Kakara Engine is a 3D hybrid voxel engine made using OpenGL and Java. The engine is mainly developed for use in
 the [Kakara](https://github.com/kakaragame/Kakara) video game; however, the engine can be used to make any game. The

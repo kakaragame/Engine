@@ -15,14 +15,14 @@ val jomlVersion = "1.9.25"
 // LWJGL Native Versions
 var lwjglNatives = when (OperatingSystem.current()) {
     OperatingSystem.LINUX -> System.getProperty("os.arch").let {
-        if (it.startsWith("arm") || it.startsWith("aarch64"))
-            "natives-linux-${if (it.contains("64") || it.startsWith("armv8")) "arm64" else "arm32"}"
-        else
-            "natives-linux"
+        if (it.startsWith("arm") || it.startsWith("aarch64")) "natives-linux-${if (it.contains("64") || it.startsWith("armv8")) "arm64" else "arm32"}"
+        else "natives-linux"
     }
+
     OperatingSystem.WINDOWS -> if (System.getProperty("os.arch")
             .contains("64")
     ) "natives-windows" else "natives-windows-x86"
+
     OperatingSystem.MAC_OS -> "natives-macos"
     else -> throw Error("Unrecognized or unsupported Operating system. Please set \"lwjglNatives\" manually")
 }
@@ -56,7 +56,6 @@ java {
 repositories {
     mavenCentral()
     maven("https://repo.ryandw11.com/repository/maven-releases")
-    jcenter()
 }
 
 publishing {
@@ -82,8 +81,8 @@ publishing {
     repositories {
         maven {
 
-            val releasesRepoUrl = uri("https://repo.kingtux.me/storages/maven/kakara")
-            val snapshotsRepoUrl = uri("https://repo.kingtux.me/storages/maven/kakara")
+            val releasesRepoUrl = uri("https://repo.kingtux.dev/repositories/maven/kakara")
+            val snapshotsRepoUrl = uri("https://repo.kingtux.dev/repositories/maven/kakara")
             url = if (version.toString().endsWith("SNAPSHOT")) snapshotsRepoUrl else releasesRepoUrl
             credentials(PasswordCredentials::class)
 
@@ -107,7 +106,7 @@ tasks {
         archiveClassifier.set("");
         dependsOn(project.tasks.getByName("vftask"));
     }
-    "jar"{
+    "jar" {
         dependsOn(project.tasks.getByName("vftask"));
     }
 }
