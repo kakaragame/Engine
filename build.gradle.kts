@@ -64,7 +64,8 @@ publishing {
 
         create<MavenPublication>("mavenJava") {
             artifact(tasks["shadowJar"])
-
+            artifact(tasks["sourcesJar"])
+            artifact(tasks["javadocJar"])
             artifactId = artifactName
             versionMapping {
                 usage("java-api") {
@@ -82,8 +83,8 @@ publishing {
     repositories {
         maven {
 
-            val releasesRepoUrl = uri("http://127.0.0.1:6742/repositories/public/maven")
-            val snapshotsRepoUrl = uri("http://127.0.0.1:6742/repositories/public/maven")
+            val releasesRepoUrl = uri("https://repo.kingtux.dev/repositories/maven/kakara")
+            val snapshotsRepoUrl = uri("https://repo.kingtux.dev/repositories/maven/kakara")
             url = if (version.toString().endsWith("SNAPSHOT")) snapshotsRepoUrl else releasesRepoUrl
             credentials(PasswordCredentials::class)
 
