@@ -9,7 +9,7 @@ plugins {
     signing
 }
 
-val lwjglVersion = "3.2.3"
+val lwjglVersion = "3.3.1"
 val jomlVersion = "1.9.25"
 
 // LWJGL Native Versions
