@@ -3,7 +3,7 @@ import org.gradle.internal.os.OperatingSystem
 plugins {
     java
     `java-library`
-    id("com.github.johnrengelman.shadow") version "7.1.2"
+    id("com.github.johnrengelman.shadow") version "8.0.0"
     id("me.kingtux.versionfile") version "1.0.0"
     `maven-publish`
     signing
